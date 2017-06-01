@@ -8,9 +8,9 @@ import numpy as np
 import re
 
 
-def getpointcount(line):
+def getcount(keyword,line):
     # get pointcount number from .geo file
-    index=line.find("pointcount",0,len(line))
+    index=line.find(keyword,0,len(line))
     count = -1
     if index != -1:
         count = int(re.search(r'\d+', line).group())
@@ -31,14 +31,18 @@ def main():
 
     while "" != nextline:
         if ptnum == 0:
-            ptnum=getpointcount(nextline) if getpointcount(nextline) != -1 else 0
+            n=getcount("pointcount",nextline)
+            ptnum=n if n != -1 else 0
         if primnum == 0:
-            primnum=getprimtivecount(nextline) if 
+            n = getcount("primitivecount", nextline)
+            primnum=n if n !=-1 else 0
+
         nextline = f.readline()
 
     f.close()
 
     print "ptnum is:"+ str(ptnum)
+    print "primnum is:" + str(primnum)
 
 
 if __name__ == "__main__":
