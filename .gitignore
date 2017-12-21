@@ -1,0 +1,8 @@
+# only ignore the backup file in the current directory, not subdir/backup
+/backup
+/Human_Models
+
+# ignore objects and archives, anywhere in the tree.
+*.DS_Store
+*.7z
+
