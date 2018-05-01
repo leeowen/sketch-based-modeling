@@ -86,9 +86,9 @@ drawnow
 % Set the model parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-params.lambda = 1; % 0: no SfS / >0: weight of the SfS
+params.lambda = 0.85; % 0: no SfS / >0: weight of the SfS
 params.mu = 0.0001; % 0: no shape prior / >0: weight of the shape Prior 
-params.nu = 0.25; % 0: no spatial regularization / >0: weight of the smoothing
+params.nu = 0.5; % 0: no spatial regularization / >0: weight of the smoothing
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set the algorithm parameters
