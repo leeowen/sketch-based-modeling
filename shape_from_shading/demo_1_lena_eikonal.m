@@ -15,7 +15,7 @@ addpath(genpath('Toolbox/'));
 
 % Load Lena image, and scale to [0,1]
 %data.I = imresize(rgb2gray(imread('Data/lena.png')),0.5); 
-data.I = imresize(rgb2gray(imread('Data/medusa.jpg')),0.5);
+data.I = imresize(rgb2gray(imread('Data/smog.jpg')),0.5);
 data.I = double(data.I)./255;
 
 % Set frontal, gray lighting
@@ -31,7 +31,7 @@ data.K = zeros(3,3); % Intrinsics
 
 % Set reconstruction domain
 %data.mask = ones(size(data.I(:,:,1))); % SFS mask
-data.mask = double(rgb2gray(imresize(imread('Data/medusa_mask.jpg'),0.5)))>0;
+data.mask = double(rgb2gray(imresize(imread('Data/smog_mask.jpg'),0.5)))>0;
 
 % Set shape prior
 data.z0 = zeros(size(data.I(:,:,1))); % Flat depth map at z = 0
@@ -86,9 +86,9 @@ drawnow
 % Set the model parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-params.lambda = 0.85; % 0: no SfS / >0: weight of the SfS
+params.lambda = 1; % 0: no SfS / >0: weight of the SfS
 params.mu = 0.0001; % 0: no shape prior / >0: weight of the shape Prior 
-params.nu = 0.5; % 0: no spatial regularization / >0: weight of the smoothing
+params.nu = 0.2; % 0: no spatial regularization / >0: weight of the smoothing
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set the algorithm parameters
@@ -139,5 +139,5 @@ if(do_export_obj)
 	if(size(rho,3) == 1)
 		rho = repmat(rho,[1 1 3]);
 	end
-	export_obj2(XYZ,N,rho,data.mask,'result_medusa_prior_smooth');
+	export_obj2(XYZ,N,rho,data.mask,'result_smog_prior_smooth');
 end
