@@ -15,7 +15,7 @@ addpath(genpath('Toolbox/'));
 
 % Load Lena image, and scale to [0,1]
 %data.I = imresize(rgb2gray(imread('Data/lena.png')),0.5); 
-data.I = imresize(rgb2gray(imread('Data/smog.jpg')),0.5);
+data.I = imresize(rgb2gray(imread('Data/smog_relief.jpg')),0.5);
 data.I = double(data.I)./255;
 
 % Set frontal, gray lighting
