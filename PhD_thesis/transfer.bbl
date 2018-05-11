@@ -1,0 +1,747 @@
+\begin{thebibliography}{}
+
+\harvarditem[Aiger et~al.]{Aiger, et~al.}{2008}{aiger20084}
+D.~Aiger, et~al. (2008).
+\newblock `4-points congruent sets for robust pairwise surface registration'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 27}(3):85.
+
+\harvarditem[Alexa et~al.]{Alexa, et~al.}{2000}{alexa2000rigid}
+M.~Alexa, et~al. (2000).
+\newblock `As-rigid-as-possible shape interpolation'.
+\newblock In {\em Proceedings of the 27th annual conference on Computer
+  graphics and interactive techniques}, pp. 157--164. ACM Press/Addison-Wesley
+  Publishing Co.
+
+\harvarditem[Allen et~al.]{Allen, et~al.}{2003}{allen2003space}
+B.~Allen, et~al. (2003).
+\newblock `The space of human body shapes: reconstruction and parameterization
+  from range scans'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~22, pp. 587--594.
+  ACM.
+
+\harvarditem[Amberg et~al.]{Amberg, et~al.}{2007}{amberg2007optimal}
+B.~Amberg, et~al. (2007).
+\newblock `Optimal step nonrigid icp algorithms for surface registration'.
+\newblock In {\em 2007 IEEE Conference on Computer Vision and Pattern
+  Recognition}, pp. 1--8. IEEE.
+
+\harvarditem[Angelidis et~al.]{Angelidis, et~al.}{2006}{angelidis2006swirling}
+A.~Angelidis, et~al. (2006).
+\newblock `Swirling-sweepers: Constant-volume modeling'.
+\newblock {\em Graphical Models} {\bf 68}(4):324--332.
+
+\harvarditem[Anguelov et~al.]{Anguelov, et~al.}{2005}{anguelov2005correlated}
+D.~Anguelov, et~al. (2005).
+\newblock `The correlated correspondence algorithm for unsupervised
+  registration of nonrigid surfaces'.
+\newblock In {\em Advances in neural information processing systems}, pp.
+  33--40.
+
+\harvarditem[Au et~al.]{Au, et~al.}{2007}{au2007handle}
+O.~K.-C. Au, et~al. (2007).
+\newblock `Handle-aware isolines for scalable shape editing'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~26, p.~83. ACM.
+
+\harvarditem[Aubry et~al.]{Aubry, et~al.}{2011}{aubry2011wave}
+M.~Aubry, et~al. (2011).
+\newblock `The wave kernel signature: A quantum mechanical approach to shape
+  analysis'.
+\newblock In {\em Computer Vision Workshops (ICCV Workshops), 2011 IEEE
+  International Conference on}, pp. 1626--1633. IEEE.
+
+\harvarditem[Audette et~al.]{Audette, et~al.}{2000}{audette2000algorithmic}
+M.~A. Audette, et~al. (2000).
+\newblock `An algorithmic overview of surface registration techniques for
+  medical imaging'.
+\newblock {\em Medical image analysis} {\bf 4}(3):201--217.
+
+\harvarditem[Belongie et~al.]{Belongie, et~al.}{2002}{belongie2002shape}
+S.~Belongie, et~al. (2002).
+\newblock `Shape matching and object recognition using shape contexts'.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}
+  {\bf 24}(4):509--522.
+
+\harvarditem[Besl \& McKay]{Besl \& McKay}{1992}{besl1992method}
+P.~J. Besl \& N.~D. McKay (1992).
+\newblock `Method for registration of 3-D shapes'.
+\newblock In {\em Robotics-DL tentative}, pp. 586--606. International Society
+  for Optics and Photonics.
+
+\harvarditem[Biasotti et~al.]{Biasotti, et~al.}{2006}{biasotti2006sub}
+S.~Biasotti, et~al. (2006).
+\newblock `Sub-part correspondence by structural descriptors of 3D shapes'.
+\newblock {\em Computer-Aided Design} {\bf 38}(9):1002--1019.
+
+\harvarditem[Bickel et~al.]{Bickel, et~al.}{2008}{bickel2008pose}
+B.~Bickel, et~al. (2008).
+\newblock `Pose-space animation and transfer of facial details'.
+\newblock In {\em Proceedings of the 2008 ACM SIGGRAPH/Eurographics Symposium
+  on Computer Animation}, pp. 57--66. Eurographics Association.
+
+\harvarditem[Bonet \& Wood]{Bonet \& Wood}{1997}{bonet1997nonlinear}
+J.~Bonet \& R.~D. Wood (1997).
+\newblock {\em Nonlinear continuum mechanics for finite element analysis}.
+\newblock Cambridge university press.
+
+\harvarditem[Botsch \& Kobbelt]{Botsch \&
+  Kobbelt}{2003}{botsch2003multiresolution}
+M.~Botsch \& L.~Kobbelt (2003).
+\newblock `Multiresolution surface representation based on displacement
+  volumes'.
+\newblock In {\em Computer Graphics Forum}, vol.~22, pp. 483--491. Wiley Online
+  Library.
+
+\harvarditem[Botsch \& Kobbelt]{Botsch \& Kobbelt}{2004}{botsch2004intuitive}
+M.~Botsch \& L.~Kobbelt (2004).
+\newblock `An intuitive framework for real-time freeform modeling'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~23, pp. 630--634.
+  ACM.
+
+\harvarditem[Botsch \& Kobbelt]{Botsch \& Kobbelt}{2005}{botsch2005real}
+M.~Botsch \& L.~Kobbelt (2005).
+\newblock `Real-Time Shape Editing using Radial Basis Functions'.
+\newblock In {\em Computer graphics forum}, vol.~24, pp. 611--621. Wiley Online
+  Library.
+
+\harvarditem[Botsch et~al.]{Botsch, et~al.}{2006}{botsch2006primo}
+M.~Botsch, et~al. (2006).
+\newblock `PriMo: coupled prisms for intuitive surface modeling'.
+\newblock In {\em Symposium on Geometry Processing}, no. EPFL-CONF-149310, pp.
+  11--20.
+
+\harvarditem[Botsch et~al.]{Botsch, et~al.}{2007}{botsch2007adaptive}
+M.~Botsch, et~al. (2007).
+\newblock `Adaptive space deformations based on rigid cells'.
+\newblock In {\em Computer Graphics Forum}, vol.~26, pp. 339--347. Wiley Online
+  Library.
+
+\harvarditem[Botsch \& Sorkine]{Botsch \& Sorkine}{2008}{botsch2008linear}
+M.~Botsch \& O.~Sorkine (2008).
+\newblock `On linear variational surface deformation methods'.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics} {\bf
+  14}(1):213--230.
+
+\harvarditem[Bouaziz et~al.]{Bouaziz, et~al.}{2013}{bouaziz2013sparse}
+S.~Bouaziz, et~al. (2013).
+\newblock `Sparse iterative closest point'.
+\newblock In {\em Computer graphics forum}, vol.~32, pp. 113--123. Wiley Online
+  Library.
+
+\harvarditem[Bronstein \& Kokkinos]{Bronstein \&
+  Kokkinos}{2010}{bronstein2010scale}
+M.~M. Bronstein \& I.~Kokkinos (2010).
+\newblock `Scale-invariant heat kernel signatures for non-rigid shape
+  recognition'.
+\newblock In {\em Computer Vision and Pattern Recognition (CVPR), 2010 IEEE
+  Conference on}, pp. 1704--1711. IEEE.
+
+\harvarditem[Castellani et~al.]{Castellani, et~al.}{2008}{castellani2008sparse}
+U.~Castellani, et~al. (2008).
+\newblock `Sparse points matching by combining 3D mesh saliency with
+  statistical descriptors'.
+\newblock In {\em Computer Graphics Forum}, vol.~27, pp. 643--652. Wiley Online
+  Library.
+
+\harvarditem[Celniker \& Gossard]{Celniker \&
+  Gossard}{1991}{celniker1991deformable}
+G.~Celniker \& D.~Gossard (1991).
+\newblock `Deformable curve and surface finite-elements for free-form shape
+  design'.
+\newblock {\em ACM SIGGRAPH computer graphics} {\bf 25}(4):257--266.
+
+\harvarditem[Chang \& Zwicker]{Chang \& Zwicker}{2008}{chang2008automatic}
+W.~Chang \& M.~Zwicker (2008).
+\newblock `Automatic registration for articulated shapes'.
+\newblock In {\em Computer Graphics Forum}, vol.~27, pp. 1459--1468. Wiley
+  Online Library.
+
+\harvarditem[Chao et~al.]{Chao, et~al.}{2010}{chao2010simple}
+I.~Chao, et~al. (2010).
+\newblock `A simple geometric model for elastic deformations'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 29}(4):38.
+
+\harvarditem[Chen et~al.]{Chen, et~al.}{2014}{chen2014asymptotic}
+X.~Chen, et~al. (2014).
+\newblock `An asymptotic numerical method for inverse elastic shape design'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 33}(4):95.
+
+\harvarditem[Chui \& Rangarajan]{Chui \& Rangarajan}{2003}{chui2003new}
+H.~Chui \& A.~Rangarajan (2003).
+\newblock `A new point matching algorithm for non-rigid registration'.
+\newblock {\em Computer Vision and Image Understanding} {\bf 89}(2):114--141.
+
+\harvarditem[Civit-Flores \& Sus{\'\i}n]{Civit-Flores \&
+  Sus{\'\i}n}{2014}{civit2014robust}
+O.~Civit-Flores \& A.~Sus{\'\i}n (2014).
+\newblock `Robust treatment of degenerate elements in interactive corotational
+  fem simulations'.
+\newblock In {\em Computer Graphics Forum}, vol.~33, pp. 298--309. Wiley Online
+  Library.
+
+\harvarditem[Coquillart]{Coquillart}{1990}{coquillart1990extended}
+S.~Coquillart (1990).
+\newblock {\em Extended free-form deformation: a sculpturing tool for 3D
+  geometric modeling}, vol.~24.
+\newblock ACM.
+
+\harvarditem[Degener et~al.]{Degener, et~al.}{2003}{degener2003adaptable}
+P.~Degener, et~al. (2003).
+\newblock `An Adaptable Surface Parameterization Method.'.
+\newblock {\em IMR} {\bf 3}:201--213.
+
+\harvarditem[Eigensatz \& Pauly]{Eigensatz \&
+  Pauly}{2009}{eigensatz2009positional}
+M.~Eigensatz \& M.~Pauly (2009).
+\newblock `Positional, Metric, and Curvature Control for Constraint-Based
+  Surface Deformation'.
+\newblock In {\em Computer Graphics Forum}, vol.~28, pp. 551--558. Wiley Online
+  Library.
+
+\harvarditem[Elad \& Kimmel]{Elad \& Kimmel}{2003}{elad2003bending}
+A.~Elad \& R.~Kimmel (2003).
+\newblock `On bending invariant signatures for surfaces'.
+\newblock {\em IEEE Transactions on pattern analysis and machine intelligence}
+  {\bf 25}(10):1285--1295.
+
+\harvarditem[Floater]{Floater}{2003}{floater2003one}
+M.~Floater (2003).
+\newblock `One-to-one piecewise linear mappings over triangulations'.
+\newblock {\em Mathematics of Computation} {\bf 72}(242):685--696.
+
+\harvarditem[Floater \& Pham-Trong]{Floater \&
+  Pham-Trong}{2006}{floater2006convex}
+M.~S. Floater \& V.~Pham-Trong (2006).
+\newblock `Convex combination maps over triangulations, tilings, and
+  tetrahedral meshes'.
+\newblock {\em Advances in Computational Mathematics} {\bf 25}(4):347--356.
+
+\harvarditem[Freitag \& Knupp]{Freitag \& Knupp}{2002}{freitag2002tetrahedral}
+L.~A. Freitag \& P.~M. Knupp (2002).
+\newblock `Tetrahedral mesh improvement via optimization of the element
+  condition number'.
+\newblock {\em International Journal for Numerical Methods in Engineering} {\bf
+  53}(6):1377--1391.
+
+\harvarditem[Gelfand et~al.]{Gelfand, et~al.}{2005}{gelfand2005robust}
+N.~Gelfand, et~al. (2005).
+\newblock `Robust global registration'.
+\newblock In {\em Symposium on geometry processing}, vol.~2, p.~5.
+
+\harvarditem[Gilles et~al.]{Gilles, et~al.}{2010}{gilles2010creating}
+B.~Gilles, et~al. (2010).
+\newblock `Creating and Animating Subject-Specific Anatomical Models'.
+\newblock In {\em Computer Graphics Forum}, vol.~29, pp. 2340--2351. Wiley
+  Online Library.
+
+\harvarditem[Guskov et~al.]{Guskov, et~al.}{1999}{guskov1999multiresolution}
+I.~Guskov, et~al. (1999).
+\newblock `Multiresolution signal processing for meshes'.
+\newblock In {\em Proceedings of the 26th annual conference on Computer
+  graphics and interactive techniques}, pp. 325--334. ACM Press/Addison-Wesley
+  Publishing Co.
+
+\harvarditem[Hormann \& Greiner]{Hormann \& Greiner}{2000}{hormann2000mips}
+K.~Hormann \& G.~Greiner (2000).
+\newblock `MIPS: An efficient global parametrization method'.
+\newblock Tech. rep., ERLANGEN-NUERNBERG UNIV (GERMANY) COMPUTER GRAPHICS
+  GROUP.
+
+\harvarditem[Hormann \& Sukumar]{Hormann \& Sukumar}{2008}{hormann2008maximum}
+K.~Hormann \& N.~Sukumar (2008).
+\newblock `Maximum entropy coordinates for arbitrary polytopes'.
+\newblock In {\em Computer Graphics Forum}, vol.~27, pp. 1513--1520. Wiley
+  Online Library.
+
+\harvarditem[Hsu et~al.]{Hsu, et~al.}{1992}{hsu1992direct}
+W.~M. Hsu, et~al. (1992).
+\newblock `Direct manipulation of free-form deformations'.
+\newblock In {\em ACM Siggraph Computer Graphics}, vol.~26, pp. 177--184. ACM.
+
+\harvarditem[Huang et~al.]{Huang, et~al.}{2006}{huang2006subspace}
+J.~Huang, et~al. (2006).
+\newblock `Subspace gradient domain mesh deformation'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~25, pp. 1126--1134.
+  ACM.
+
+\harvarditem[Huang et~al.]{Huang, et~al.}{2008}{huang2008non}
+Q.-X. Huang, et~al. (2008).
+\newblock `Non-rigid registration under isometric deformations'.
+\newblock In {\em Computer Graphics Forum}, vol.~27, pp. 1449--1457. Wiley
+  Online Library.
+
+\harvarditem[Igarashi et~al.]{Igarashi, et~al.}{2005}{igarashi2005rigid}
+T.~Igarashi, et~al. (2005).
+\newblock `As-rigid-as-possible shape manipulation'.
+\newblock In {\em ACM transactions on Graphics (TOG)}, vol.~24, pp. 1134--1141.
+  ACM.
+
+\harvarditem[Irani \& Raghavan]{Irani \&
+  Raghavan}{1999}{irani1999combinatorial}
+S.~Irani \& P.~Raghavan (1999).
+\newblock `Combinatorial and experimental results for randomized point matching
+  algorithms'.
+\newblock {\em Computational Geometry} {\bf 12}(1-2):17--31.
+
+\harvarditem[Irving et~al.]{Irving, et~al.}{2004}{irving2004invertible}
+G.~Irving, et~al. (2004).
+\newblock `Invertible finite elements for robust simulation of large
+  deformation'.
+\newblock In {\em Proceedings of the 2004 ACM SIGGRAPH/Eurographics symposium
+  on Computer animation}, pp. 131--140. Eurographics Association.
+
+\harvarditem[Jacobson]{Jacobson}{2013}{jacobson2013algorithms}
+A.~Jacobson (2013).
+\newblock {\em Algorithms and interfaces for real-time deformation of 2d and 3d
+  shapes}.
+\newblock Ph.D. thesis.
+
+\harvarditem[Jacobson et~al.]{Jacobson, et~al.}{2011}{jacobson2011bounded}
+A.~Jacobson, et~al. (2011).
+\newblock `Bounded biharmonic weights for real-time deformation.'.
+\newblock {\em ACM Trans. Graph.} {\bf 30}(4):78.
+
+\harvarditem[Jacobson et~al.]{Jacobson, et~al.}{2010}{jacobson2010mixed}
+A.~Jacobson, et~al. (2010).
+\newblock `Mixed finite elements for variational surface modeling'.
+\newblock In {\em Computer Graphics Forum}, vol.~29, pp. 1565--1574. Wiley
+  Online Library.
+
+\harvarditem[Jacobson et~al.]{Jacobson, et~al.}{2012}{jacobson2012smooth}
+A.~Jacobson, et~al. (2012).
+\newblock `Smooth Shape-Aware Functions with Controlled Extrema'.
+\newblock In {\em Computer Graphics Forum}, vol.~31, pp. 1577--1586. Wiley
+  Online Library.
+
+\harvarditem[Jain et~al.]{Jain, et~al.}{2007}{jain2007non}
+V.~Jain, et~al. (2007).
+\newblock `Non-rigid spectral correspondence of triangle meshes'.
+\newblock {\em International Journal of Shape Modeling} {\bf 13}(01):101--124.
+
+\harvarditem[Jiao et~al.]{Jiao, et~al.}{2011}{jiao2011simple}
+X.~Jiao, et~al. (2011).
+\newblock `Simple and effective variational optimization of surface and volume
+  triangulations'.
+\newblock {\em Engineering with Computers} {\bf 27}(1):81--94.
+
+\harvarditem[Jin et~al.]{Jin, et~al.}{2014}{jin2014remeshing}
+Y.~Jin, et~al. (2014).
+\newblock `Remeshing-assisted Optimization for Locally Injective Mappings'.
+\newblock In {\em Computer Graphics Forum}, vol.~33, pp. 269--279. Wiley Online
+  Library.
+
+\harvarditem[Johnson \& Hebert]{Johnson \& Hebert}{1999}{johnson1999using}
+A.~E. Johnson \& M.~Hebert (1999).
+\newblock `Using spin images for efficient object recognition in cluttered 3D
+  scenes'.
+\newblock {\em IEEE Transactions on pattern analysis and machine intelligence}
+  {\bf 21}(5):433--449.
+
+\harvarditem[Joshi et~al.]{Joshi, et~al.}{2007}{joshi2007harmonic}
+P.~Joshi, et~al. (2007).
+\newblock `Harmonic coordinates for character articulation'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~26, p.~71. ACM.
+
+\harvarditem[Ju et~al.]{Ju, et~al.}{2005}{ju2005mean}
+T.~Ju, et~al. (2005).
+\newblock `Mean value coordinates for closed triangular meshes'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~24, pp. 561--566.
+  ACM.
+
+\harvarditem[Katz et~al.]{Katz, et~al.}{2005}{katz2005mesh}
+S.~Katz, et~al. (2005).
+\newblock `Mesh segmentation using feature point and core extraction'.
+\newblock {\em The Visual Computer} {\bf 21}(8-10):649--658.
+
+\harvarditem[Kharevych et~al.]{Kharevych, et~al.}{2006}{kharevych2006discrete}
+L.~Kharevych, et~al. (2006).
+\newblock `Discrete conformal mappings via circle patterns'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 25}(2):412--438.
+
+\harvarditem[Kin-Chung~Au et~al.]{Kin-Chung~Au, et~al.}{2010}{kin2010electors}
+O.~Kin-Chung~Au, et~al. (2010).
+\newblock `Electors voting for fast automatic shape correspondence'.
+\newblock In {\em Computer Graphics Forum}, vol.~29, pp. 645--654. Wiley Online
+  Library.
+
+\harvarditem[Kobbelt et~al.]{Kobbelt, et~al.}{1998}{kobbelt1998interactive}
+L.~Kobbelt, et~al. (1998).
+\newblock `Interactive multi-resolution modeling on arbitrary meshes'.
+\newblock In {\em Proceedings of the 25th annual conference on Computer
+  graphics and interactive techniques}, pp. 105--114. ACM.
+
+\harvarditem[Kobbelt et~al.]{Kobbelt, et~al.}{1999}{kobbelt1999multiresolution}
+L.~Kobbelt, et~al. (1999).
+\newblock `Multiresolution hierarchies on unstructured triangle meshes'.
+\newblock {\em Computational Geometry} {\bf 14}(1-3):5--24.
+
+\harvarditem[Kovalsky et~al.]{Kovalsky, et~al.}{2015}{kovalsky2015large}
+S.~Z. Kovalsky, et~al. (2015).
+\newblock `Large-scale bounded distortion mappings.'.
+\newblock {\em ACM Trans. Graph.} {\bf 34}(6):191--1.
+
+\harvarditem[Kraevoy \& Sheffer]{Kraevoy \& Sheffer}{2004}{kraevoy2004cross}
+V.~Kraevoy \& A.~Sheffer (2004).
+\newblock `Cross-parameterization and compatible remeshing of 3D models'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~23, pp. 861--869.
+  ACM.
+
+\harvarditem[Kraevoy \& Sheffer]{Kraevoy \& Sheffer}{2005}{kraevoy2005template}
+V.~Kraevoy \& A.~Sheffer (2005).
+\newblock `Template-Based Mesh Completion.'.
+\newblock In {\em Symposium on Geometry Processing}, vol. 385, pp. 13--22.
+
+\harvarditem[Levi \& Gotsman]{Levi \& Gotsman}{2015}{levi2015smooth}
+Z.~Levi \& C.~Gotsman (2015).
+\newblock `Smooth rotation enhanced as-rigid-as-possible mesh animation'.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics} {\bf
+  21}(2):264--277.
+
+\harvarditem[Levi \& Zorin]{Levi \& Zorin}{2014}{levi2014strict}
+Z.~Levi \& D.~Zorin (2014).
+\newblock `Strict minimizers for geometric optimization'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 33}(6):185.
+
+\harvarditem[Li et~al.]{Li, et~al.}{2009}{li2009robust}
+H.~Li, et~al. (2009).
+\newblock `Robust single-view geometry and motion reconstruction'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~28, p. 175. ACM.
+
+\harvarditem[Li et~al.]{Li, et~al.}{2008}{li2008global}
+H.~Li, et~al. (2008).
+\newblock `Global Correspondence Optimization for Non-Rigid Registration of
+  Depth Scans'.
+\newblock In {\em Computer Graphics Forum}, vol.~27, pp. 1421--1430. Wiley
+  Online Library.
+
+\harvarditem[Li \& Hu]{Li \& Hu}{2013}{li2013poisson}
+X.-Y. Li \& S.-M. Hu (2013).
+\newblock `Poisson coordinates'.
+\newblock {\em IEEE Transactions on visualization and computer graphics} {\bf
+  19}(2):344--352.
+
+\harvarditem[Lipman]{Lipman}{2012}{lipman2012bounded}
+Y.~Lipman (2012).
+\newblock `Bounded distortion mapping spaces for triangular meshes'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 31}(4):108.
+
+\harvarditem[Lipman et~al.]{Lipman, et~al.}{2007}{lipman2007gpu}
+Y.~Lipman, et~al. (2007).
+\newblock `GPU-assisted positive mean value coordinates for mesh deformations'.
+\newblock In {\em Symposium on geometry processing}.
+
+\harvarditem[Lipman et~al.]{Lipman, et~al.}{2008}{lipman2008green}
+Y.~Lipman, et~al. (2008).
+\newblock `Green coordinates'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~27, p.~78. ACM.
+
+\harvarditem[Lipman et~al.]{Lipman, et~al.}{2004}{lipman2004differential}
+Y.~Lipman, et~al. (2004).
+\newblock `Differential coordinates for interactive mesh editing'.
+\newblock In {\em Shape Modeling Applications, 2004. Proceedings}, pp.
+  181--190. IEEE.
+
+\harvarditem[Lipman et~al.]{Lipman, et~al.}{2005}{lipman2005linear}
+Y.~Lipman, et~al. (2005).
+\newblock `Linear rotation-invariant coordinates for meshes'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 24}(3):479--487.
+
+\harvarditem[Liu et~al.]{Liu, et~al.}{2008}{liu2008local}
+L.~Liu, et~al. (2008).
+\newblock `A local/global approach to mesh parameterization'.
+\newblock In {\em Computer Graphics Forum}, vol.~27, pp. 1495--1504. Wiley
+  Online Library.
+
+\harvarditem[Liu et~al.]{Liu, et~al.}{2016}{liu2016fast}
+T.~Liu, et~al. (2016).
+\newblock `Fast and Robust Inversion-Free Shape Manipulation'.
+\newblock In {\em Computer Graphics Forum}, vol.~35, pp. 1--11. Wiley Online
+  Library.
+
+\harvarditem[MacCracken \& Joy]{MacCracken \& Joy}{1996}{maccracken1996free}
+R.~MacCracken \& K.~I. Joy (1996).
+\newblock `Free-form deformations with lattices of arbitrary topology'.
+\newblock In {\em Proceedings of the 23rd annual conference on Computer
+  graphics and interactive techniques}, pp. 181--188. ACM.
+
+\harvarditem[Maron et~al.]{Maron, et~al.}{2016}{maron2016point}
+H.~Maron, et~al. (2016).
+\newblock `Point registration via efficient convex relaxation'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 35}(4):73.
+
+\harvarditem[Meyer et~al.]{Meyer, et~al.}{2003}{meyer2003discrete}
+M.~Meyer, et~al. (2003).
+\newblock `Discrete differential-geometry operators for triangulated
+  2-manifolds'.
+\newblock In {\em Visualization and Mathematics III}, pp. 35--57. Springer.
+
+\harvarditem[Moenning \& Dodgson]{Moenning \& Dodgson}{2003}{moenning2003fast}
+C.~Moenning \& N.~A. Dodgson (2003).
+\newblock `Fast marching farthest point sampling'.
+
+\harvarditem[M{\"u}ller et~al.]{M{\"u}ller, et~al.}{2005}{muller2005meshless}
+M.~M{\"u}ller, et~al. (2005).
+\newblock `Meshless deformations based on shape matching'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 24}(3):471--478.
+
+\harvarditem[Ohtake et~al.]{Ohtake, et~al.}{2004}{ohtake2004ridge}
+Y.~Ohtake, et~al. (2004).
+\newblock `Ridge-valley lines on meshes via implicit surface fitting'.
+\newblock {\em ACM transactions on graphics (TOG)} {\bf 23}(3):609--612.
+
+\harvarditem[Panozzo et~al.]{Panozzo, et~al.}{2010}{panozzo2010efficient}
+D.~Panozzo, et~al. (2010).
+\newblock `Efficient multiscale curvature and crease estimation'.
+\newblock {\em Proceedings of Computer Graphics, Computer Vision and
+  Mathematics (Brno, Czech Rapubic} {\bf 1}(6).
+
+\harvarditem[Papazov \& Burschka]{Papazov \&
+  Burschka}{2011}{papazov2011deformable}
+C.~Papazov \& D.~Burschka (2011).
+\newblock `Deformable 3D shape registration based on local similarity
+  transforms'.
+\newblock In {\em Computer Graphics Forum}, vol.~30, pp. 1493--1502. Wiley
+  Online Library.
+
+\harvarditem[Pauly et~al.]{Pauly, et~al.}{2005}{pauly2005example}
+M.~Pauly, et~al. (2005).
+\newblock `Example-based 3D scan completion'.
+\newblock In {\em Symposium on Geometry Processing}, no. EPFL-CONF-149337, pp.
+  23--32.
+
+\harvarditem[Poranne \& Lipman]{Poranne \& Lipman}{2014}{poranne2014provably}
+R.~Poranne \& Y.~Lipman (2014).
+\newblock `Provably good planar mappings'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 33}(4):76.
+
+\harvarditem[Qixing et~al.]{Qixing, et~al.}{2008}{qixing2008non}
+H.~Qixing, et~al. (2008).
+\newblock `Non-Rigid Registration Under Isometric Deformations'.
+\newblock In {\em Computer Graphics Forum}, vol.~5. North Holland.
+
+\harvarditem[Rivers \& James]{Rivers \& James}{2007}{rivers2007fastlsm}
+A.~R. Rivers \& D.~L. James (2007).
+\newblock `FastLSM: fast lattice shape matching for robust real-time
+  deformation'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 26}(3):82.
+
+\harvarditem[Rusinkiewicz \& Levoy]{Rusinkiewicz \&
+  Levoy}{2001}{rusinkiewicz2001efficient}
+S.~Rusinkiewicz \& M.~Levoy (2001).
+\newblock `Efficient variants of the ICP algorithm'.
+\newblock In {\em 3-D Digital Imaging and Modeling, 2001. Proceedings. Third
+  International Conference on}, pp. 145--152. IEEE.
+
+\harvarditem[Sander et~al.]{Sander, et~al.}{2001}{sander2001texture}
+P.~V. Sander, et~al. (2001).
+\newblock `Texture mapping progressive meshes'.
+\newblock In {\em Proceedings of the 28th annual conference on Computer
+  graphics and interactive techniques}, pp. 409--416. ACM.
+
+\harvarditem[Sch{\"u}ller et~al.]{Sch{\"u}ller,
+  et~al.}{2013}{schuller2013locally}
+C.~Sch{\"u}ller, et~al. (2013).
+\newblock `Locally injective mappings'.
+\newblock In {\em Computer Graphics Forum}, vol.~32, pp. 125--135. Wiley Online
+  Library.
+
+\harvarditem[Sederberg \& Parry]{Sederberg \& Parry}{1986}{sederberg1986free}
+T.~W. Sederberg \& S.~R. Parry (1986).
+\newblock `Free-form deformation of solid geometric models'.
+\newblock {\em ACM SIGGRAPH computer graphics} {\bf 20}(4):151--160.
+
+\harvarditem[Setaluri et~al.]{Setaluri, et~al.}{2014}{setaluri2014fast}
+R.~Setaluri, et~al. (2014).
+\newblock `Fast grid-based nonlinear elasticity for 2D deformations'.
+\newblock In {\em Proceedings of the ACM SIGGRAPH/Eurographics Symposium on
+  Computer Animation}, pp. 67--76. Eurographics Association.
+
+\harvarditem[Sheffer et~al.]{Sheffer, et~al.}{2005}{sheffer2005abf++}
+A.~Sheffer, et~al. (2005).
+\newblock `ABF++: fast and robust angle based flattening'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 24}(2):311--330.
+
+\harvarditem[Sheffer et~al.]{Sheffer, et~al.}{2007}{sheffer2007mesh}
+A.~Sheffer, et~al. (2007).
+\newblock `Mesh parameterization methods and their applications'.
+\newblock {\em Foundations and Trends{\textregistered} in Computer Graphics and
+  Vision} {\bf 2}(2):105--171.
+
+\harvarditem[Shi et~al.]{Shi, et~al.}{2007}{shi2007mesh}
+X.~Shi, et~al. (2007).
+\newblock `Mesh puppetry: cascading optimization of mesh deformation with
+  inverse kinematics'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~26, p.~81. ACM.
+
+\harvarditem[Singh \& Fiume]{Singh \& Fiume}{1998}{singh1998wires}
+K.~Singh \& E.~Fiume (1998).
+\newblock `Wires: a geometric deformation technique'.
+\newblock In {\em Proceedings of the 25th annual conference on Computer
+  graphics and interactive techniques}, pp. 405--414. ACM.
+
+\harvarditem[Singh \& Kokkevis]{Singh \& Kokkevis}{2000}{singh2000skinning}
+K.~Singh \& E.~Kokkevis (2000).
+\newblock `Skinning Characters using Surface Oriented Free-Form Deformations.'.
+\newblock In {\em Graphics interface}, vol. 2000, pp. 35--42.
+
+\harvarditem[Solomon et~al.]{Solomon, et~al.}{2011}{solomon2011killing}
+J.~Solomon, et~al. (2011).
+\newblock `As-Killing-As-Possible Vector Fields for Planar Deformation'.
+\newblock In {\em Computer Graphics Forum}, vol.~30, pp. 1543--1552. Wiley
+  Online Library.
+
+\harvarditem[Sorkine \& Alexa]{Sorkine \& Alexa}{2007}{sorkine2007rigid}
+O.~Sorkine \& M.~Alexa (2007).
+\newblock `As-rigid-as-possible surface modeling'.
+\newblock In {\em Symposium on Geometry processing}, vol.~4.
+
+\harvarditem[Sorkine et~al.]{Sorkine, et~al.}{2004}{sorkine2004laplacian}
+O.~Sorkine, et~al. (2004).
+\newblock `Laplacian surface editing'.
+\newblock In {\em Proceedings of the 2004 Eurographics/ACM SIGGRAPH symposium
+  on Geometry processing}, pp. 175--184. ACM.
+
+\harvarditem[Stomakhin et~al.]{Stomakhin,
+  et~al.}{2012}{stomakhin2012energetically}
+A.~Stomakhin, et~al. (2012).
+\newblock `Energetically consistent invertible elasticity'.
+\newblock In {\em Proceedings of the ACM SIGGRAPH/Eurographics Symposium on
+  Computer Animation}, pp. 25--32. Eurographics Association.
+
+\harvarditem[Sumner et~al.]{Sumner, et~al.}{2007}{sumner2007embedded}
+R.~W. Sumner, et~al. (2007).
+\newblock `Embedded deformation for shape manipulation'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~26, p.~80. ACM.
+
+\harvarditem[Sun et~al.]{Sun, et~al.}{2009}{sun2009concise}
+J.~Sun, et~al. (2009).
+\newblock `A Concise and Provably Informative Multi-Scale Signature Based on
+  Heat Diffusion'.
+\newblock In {\em Computer graphics forum}, vol.~28, pp. 1383--1392. Wiley
+  Online Library.
+
+\harvarditem[Surazhsky et~al.]{Surazhsky, et~al.}{2005}{surazhsky2005fast}
+V.~Surazhsky, et~al. (2005).
+\newblock `Fast exact and approximate geodesics on meshes'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~24, pp. 553--560.
+  ACM.
+
+\harvarditem[Tam et~al.]{Tam, et~al.}{2013}{tam2013registration}
+G.~K. Tam, et~al. (2013).
+\newblock `Registration of 3D point clouds and meshes: a survey from rigid to
+  nonrigid'.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics} {\bf
+  19}(7):1199--1217.
+
+\harvarditem[Terzopoulos et~al.]{Terzopoulos,
+  et~al.}{1987}{terzopoulos1987elastically}
+D.~Terzopoulos, et~al. (1987).
+\newblock `Elastically deformable models'.
+\newblock In {\em ACM Siggraph Computer Graphics}, vol.~21, pp. 205--214. ACM.
+
+\harvarditem[Tevs et~al.]{Tevs, et~al.}{2009}{tevs2009isometric}
+A.~Tevs, et~al. (2009).
+\newblock `Isometric registration of ambiguous and partial data'.
+\newblock In {\em Computer Vision and Pattern Recognition, 2009. CVPR 2009.
+  IEEE Conference on}, pp. 1185--1192. IEEE.
+
+\harvarditem[Turk \& Levoy]{Turk \& Levoy}{1994}{turk1994zippered}
+G.~Turk \& M.~Levoy (1994).
+\newblock `Zippered polygon meshes from range images'.
+\newblock In {\em Proceedings of the 21st annual conference on Computer
+  graphics and interactive techniques}, pp. 311--318. ACM.
+
+\harvarditem[Tutte]{Tutte}{1963}{tutte1963draw}
+W.~T. Tutte (1963).
+\newblock `How to draw a graph'.
+\newblock {\em Proceedings of the London Mathematical Society} {\bf
+  3}(1):743--767.
+
+\harvarditem[Van~Kaick et~al.]{Van~Kaick, et~al.}{2011}{van2011survey}
+O.~Van~Kaick, et~al. (2011).
+\newblock `A survey on shape correspondence'.
+\newblock In {\em Computer Graphics Forum}, vol.~30, pp. 1681--1707. Wiley
+  Online Library.
+
+\harvarditem[von Funck et~al.]{von Funck, et~al.}{2006}{von2006vector}
+W.~von Funck, et~al. (2006).
+\newblock `Vector field based shape deformations'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 25}(3):1118--1125.
+
+\harvarditem[Weber et~al.]{Weber, et~al.}{2011}{weber2011complex}
+O.~Weber, et~al. (2011).
+\newblock `A complex view of barycentric mappings'.
+\newblock In {\em Computer Graphics Forum}, vol.~30, pp. 1533--1542. Wiley
+  Online Library.
+
+\harvarditem[Weber et~al.]{Weber, et~al.}{2012}{weber2012computing}
+O.~Weber, et~al. (2012).
+\newblock `Computing extremal quasiconformal maps'.
+\newblock In {\em Computer Graphics Forum}, vol.~31, pp. 1679--1689. Wiley
+  Online Library.
+
+\harvarditem[Weber et~al.]{Weber, et~al.}{2007}{weber2007context}
+O.~Weber, et~al. (2007).
+\newblock `Context-Aware Skeletal Shape Deformation'.
+\newblock In {\em Computer Graphics Forum}, vol.~26, pp. 265--274. Wiley Online
+  Library.
+
+\harvarditem[Weber \& Zorin]{Weber \& Zorin}{2014}{weber2014locally}
+O.~Weber \& D.~Zorin (2014).
+\newblock `Locally injective parametrization with arbitrary fixed boundaries'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 33}(4):75.
+
+\harvarditem[Weise et~al.]{Weise, et~al.}{2009}{weise2009face}
+T.~Weise, et~al. (2009).
+\newblock `Face/off: Live facial puppetry'.
+\newblock In {\em Proceedings of the 2009 ACM SIGGRAPH/Eurographics Symposium
+  on Computer animation}, pp. 7--16. ACM.
+
+\harvarditem[Yamazaki et~al.]{Yamazaki, et~al.}{2013}{yamazaki2013non}
+S.~Yamazaki, et~al. (2013).
+\newblock `Non-rigid shape registration using similarity-invariant differential
+  coordinates'.
+\newblock In {\em 2013 International Conference on 3D Vision-3DV 2013}, pp.
+  191--198. IEEE.
+
+\harvarditem[Yang et~al.]{Yang, et~al.}{2015}{yang2015sparse}
+J.~Yang, et~al. (2015).
+\newblock `Sparse Non-rigid Registration of 3D Shapes'.
+\newblock In {\em Computer Graphics Forum}, vol.~34, pp. 89--99. Wiley Online
+  Library.
+
+\harvarditem[Yeh et~al.]{Yeh, et~al.}{2011}{yeh2011template}
+I.-C. Yeh, et~al. (2011).
+\newblock `Template-based 3d model fitting using dual-domain relaxation'.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics} {\bf
+  17}(8):1178--1190.
+
+\harvarditem[Yoshiyasu et~al.]{Yoshiyasu, et~al.}{2014}{yoshiyasu2014conformal}
+Y.~Yoshiyasu, et~al. (2014).
+\newblock `As-Conformal-As-Possible Surface Registration'.
+\newblock In {\em Computer Graphics Forum}, vol.~33, pp. 257--267. Wiley Online
+  Library.
+
+\harvarditem[Yu et~al.]{Yu, et~al.}{2004}{yu2004mesh}
+Y.~Yu, et~al. (2004).
+\newblock `Mesh editing with poisson-based gradient field manipulation'.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, vol.~23, pp. 644--651.
+  ACM.
+
+\harvarditem[Zayer et~al.]{Zayer, et~al.}{2005}{zayer2005harmonic}
+R.~Zayer, et~al. (2005).
+\newblock `Harmonic guidance for surface deformation'.
+\newblock In {\em Computer Graphics Forum}, vol.~24, pp. 601--609. Wiley Online
+  Library.
+
+\harvarditem[Zhang et~al.]{Zhang, et~al.}{2005}{zhang2005feature}
+E.~Zhang, et~al. (2005).
+\newblock `Feature-based surface parameterization and texture mapping'.
+\newblock {\em ACM Transactions on Graphics (TOG)} {\bf 24}(1):1--27.
+
+\harvarditem[Zhang et~al.]{Zhang, et~al.}{2008}{zhang2008deformation}
+H.~Zhang, et~al. (2008).
+\newblock `Deformation-Driven Shape Correspondence'.
+\newblock In {\em Computer Graphics Forum}, vol.~27, pp. 1431--1439. Wiley
+  Online Library.
+
+\end{thebibliography}

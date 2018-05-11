@@ -1,0 +1,39 @@
+
+\newcommand{\isEmbedded}{true}
+
+\input{format/format-setup}
+
+\begin{document}
+
+% Front page
+\input{format/front}
+% Copyrights
+\setcounter{page}{1}
+\pagenumbering{roman}
+\input{format/copyright}
+\input{format/publication}
+\pagebreak
+\input{format/abstract}
+% Table of contents, figures and tables.
+\addcontentsline{toc}{section}{Table of contents}
+\tableofcontents
+\pagebreak
+\pagebreak
+
+\setcounter{page}{1}
+\pagenumbering{arabic}
+% Chapters
+\input{chap/introduction}
+\input{chap/Literature}
+\input{chap/Deformation} 
+\input{chap/Registration}
+\input{chap/Future}
+
+% References
+\addcontentsline{toc}{chapter}{References}
+\bibliographystyle{ref/harvard}
+\bibliography{ref/master}
+\pagebreak
+
+\end{document}
+

@@ -1,0 +1,27 @@
+\begin{titlepage}
+
+
+\begin{center}
+%\linespread{1.5}
+~\\[1.0cm]
+{ \huge \bfseries Deformable 3D Shape Registration}\\[2.5cm]
+
+
+
+{\large
+\textsc{Tao Jiang}\\[2.0cm]
+
+\textbf{Transfer of Doctor of Philosophy}\\[0.5cm]
+\textbf{}\\[1.0cm]
+
+\includegraphics[width=0.3\textwidth]{img/bu_logo}\\[1cm]
+
+}
+
+\vfill
+
+{\large \today}
+
+\end{center}
+
+\end{titlepage}

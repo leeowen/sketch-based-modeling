@@ -1,0 +1,80 @@
+
+\documentclass[12pt]{report}
+\usepackage{tikz}
+% FONT RELATED
+%\usepackage{times} %Move to times font
+\usepackage[labelfont=bf,textfont=it]{caption}
+
+% LINKS, PAGE OF CONTENT, REF AND CROSS-REF, HEADERS/FOOTERS
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+
+
+% FIGURES, GRAPHICS, TABLES
+%\usepackage{subfig}
+
+%\usepackage{graphicx}
+\usepackage{parskip}
+%\usepackage{subfigure}
+%\usepackage[dvips]{graphicx}
+%\usepackage{pgfkeys}% gantt chart
+\usepackage{lscape}
+\usepackage{rotating}
+
+% Algorithms
+%\usepackage[ruled]{algorithm2e}
+
+% COLOURS, TEXT AND FORMATTING
+\usepackage{array}
+\usepackage{color}
+\usepackage{setspace}
+\usepackage{longtable}
+\usepackage{multirow}
+
+% ADVANCED MATHS, PSEUDO-CODE
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{alltt}
+\usepackage{gensymb}
+
+% GANTT
+
+\usepackage{pgfgantt}
+
+% algorithm
+\usepackage{algorithm,algpseudocode}
+\usepackage{algorithmicx}
+
+\usepackage{subfig}
+
+% BIBLIOGRAPHY
+\usepackage[authoryear]{natbib}
+\bibpunct{[}{]}{;}{a}{}{,}
+
+% USE IN DISSER:
+
+\setlength\oddsidemargin{1.5cm}
+\setlength\evensidemargin{5cm}
+
+\setlength\textheight{9.0in}
+\setlength\textwidth{5.1in}
+
+% indent at each new paragrapg
+\setlength\parindent{0.5cm}
+
+\setlength\topmargin{-0.2in}
+\renewcommand{\baselinestretch}{1.3}
+
+
+
+%REPORT
+\algdef{SE}[DOWHILE]{Do}{doWhile}{\algorithmicdo}[1]{\algorithmicwhile\ #1}%
+\newcommand{\HRule}{\rule{\linewidth}{0.0mm}}
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+% Color definitions (RGB model)
+\definecolor{ms-comment}{rgb}{0.1, 0.4, 0.1}
+\definecolor{ms-question}{rgb}{0.4, 0.0, 0.0}
+\definecolor{ms-new}{rgb}{0.2, 0.4, 0.8}
+

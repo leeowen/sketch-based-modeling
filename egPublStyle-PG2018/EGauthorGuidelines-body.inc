@@ -46,16 +46,20 @@
 \maketitle
 %-------------------------------------------------------------------------
 \begin{abstract}
-   The ABSTRACT is to be in fully-justified italicized text, 
-   between two horizontal lines,
-   in one-column format, 
-   below the author and affiliation information. 
-   Use the word ``Abstract'' as the title, in 9-point Times, boldface type, 
-   left-aligned to the text, initially capitalized. 
-   The abstract is to be in 9-point, single-spaced type.
-   The abstract may be up to 3 inches (7.62 cm) long. \\
-   Leave one blank line after the abstract, 
-   then add the subject categories according to the ACM Classification Index 
+This paper proposes a new sketch-guided and ODE-driven character modelling technique and develops an easy-to-use and efficient character modelling system. Our system consists of two main components: primitive deformer and detail generator.
+With such a technique, we first extract 2D silhouette contours from an existing character sketch or draw 2D silhouette contours of a character model. Then, we select proper primitives and align them with the corresponding silhouette contours. After that, we develop a sketch-guided and ODE-driven primitive deformer. It uses ODE-based deformations to deform the primitives to exactly match the generated 2D silhouette contours in one view plane and obtain a base mesh of a character model consisting of deformed primitives. In order to add various 3D details, we develop a detail generator. It consists of a local shape creator and an image-based detail generator.  The local shape creator uses sketches in different view planes to define a local shape and employs ODE-driven deformations to create a local surface passing through all the sketches. \\
+The experimental results demonstrate that our proposed approach and developed system can create 3D character models with 3D details from 2D sketches easily and quickly. Apart from its high efficiency, our developed system is easy to learn and use.
+\\
+%The ABSTRACT is to be in fully-justified italicized text, 
+%   between two horizontal lines,
+%in one-column format, 
+%   below the author and affiliation information. 
+%   Use the word ``Abstract'' as the title, in 9-point Times, boldface type, 
+%   left-aligned to the text, initially capitalized. 
+%   The abstract is to be in 9-point, single-spaced type.
+%   The abstract may be up to 3 inches (7.62 cm) long. \\
+%   Leave one blank line after the abstract, 
+%   then add the subject categories according to the ACM Classification Index 
 %-------------------------------------------------------------------------
 %  ACM CCS 1998
 %  (see http://www.acm.org/about/class/1998)
@@ -63,53 +67,70 @@
 % \CCScat{Computer Graphics}{I.3.3}{Picture/Image Generation}{Line and curve generation}
 % \end{classification}
 %-------------------------------------------------------------------------
-%  ACM CCS 2012
-   (see http://www.acm.org/about/class/class/2012)
+%  ACM CCS 2012(see http://www.acm.org/about/class/class/2012)
 %The tool at \url{http://dl.acm.org/ccs.cfm} can be used to generate
 % CCS codes.
 %Example:
 \begin{CCSXML}
 <ccs2012>
 <concept>
-<concept_id>10010147.10010371.10010352.10010381</concept_id>
-<concept_desc>Computing methodologies~Collision detection</concept_desc>
-<concept_significance>300</concept_significance>
+<concept_id>10010147.10010371.10010396.10010397</concept_id>
+<concept_desc>Computing methodologies~Mesh models</concept_desc>
+<concept_significance>500</concept_significance>
 </concept>
-<concept>
-<concept_id>10010583.10010588.10010559</concept_id>
-<concept_desc>Hardware~Sensors and actuators</concept_desc>
-<concept_significance>300</concept_significance>
-</concept>
-<concept>
-<concept_id>10010583.10010584.10010587</concept_id>
-<concept_desc>Hardware~PCB design and layout</concept_desc>
-<concept_significance>100</concept_significance>
-</concept>
+%</ccs2012>
+%<ccs2012>
+%<concept>
+%<concept_id>10010147.10010371.10010352.10010381</concept_id>
+%<concept_desc>Computing methodologies~Collision detection</concept_desc>
+%<concept_significance>300</concept_significance>
+%</concept>
+%<concept>
+%<concept_id>10010583.10010588.10010559</concept_id>
+%<concept_desc>Hardware~Sensors and actuators</concept_desc>
+%<concept_significance>300</concept_significance>
+%</concept>
+%<concept>
+%<concept_id>10010583.10010584.10010587</concept_id>
+%<concept_desc>Hardware~PCB design and layout</concept_desc>
+%<concept_significance>100</concept_significance>
+%</concept>
 </ccs2012>
 \end{CCSXML}
 
-\ccsdesc[300]{Computing methodologies~Collision detection}
-\ccsdesc[300]{Hardware~Sensors and actuators}
-\ccsdesc[100]{Hardware~PCB design and layout}
+%\ccsdesc[300]{Computing methodologies~Collision detection}
+%\ccsdesc[300]{Hardware~Sensors and actuators}
+%\ccsdesc[100]{Hardware~PCB design and layout}
 
-
+\ccsdesc[500]{Computing methodologies~Mesh model}
 \printccsdesc   
 \end{abstract}  
 %-------------------------------------------------------------------------
 \section{Introduction}
 
-Please follow the steps outlined in this document very carefully when
-submitting your manuscript to Eurographics.
+%Please follow the steps outlined in this document very carefully when
+%submitting your manuscript to Eurographics.
 
-You may as well use the \LaTeX\ source as a template to typeset your own
-paper. In this case we encourage you to also read the \LaTeX\ comments
-embedded in the document.
-
+%You may as well use the \LaTeX\ source as a template to typeset your own
+%paper. In this case we encourage you to also read the \LaTeX\ comments
+%embedded in the document.
+The main contributions made by our proposed approach are:
+\begin{itemize}
+  \item[$\bullet$] We develop an efficient sketch-guided and ODE-driven primitive deformer to create a base mesh. It can deform primitives to exactly match the generated silhouette contours. Compared to the existing methods, it automates shape manipulation, avoids tedious manual operations, can deform primitives to match the generated silhouette contours quickly, and is powerful in achieving different shapes of a same primitive.
+  \item[$\bullet$] We develop a detail generator to add 3D details to the base mesh. Our proposed sketch-guided and ODE-driven local shape creator can create a new local shape to match user?s drawn sketches in different views quickly. The image-based detail generator can automatically generate fine details from 2D images. 
+  \item[$\bullet$] We develop a complete character modelling system consisting of primitive deformer and detail generator. With our developed system, 3D character models with 3D details can be created easily and efficiently.
+\end{itemize}
+The rest of the paper is organised as follows. The previous related work is briefly reviewed in Section 2. The system overview of our proposed approach is presented in Section 3. Primitive deformer is examined in Section 4, and Detail generator is investigated in Section 5. Finally, the conclusions and future work are discussed in Section 6. 
 %-------------------------------------------------------------------------
-\section{Instructions}
+\section{Related Work}
 
-Please read the following carefully.
+%Please read the following carefully.
+Over the past two decades, sketch-based-modelling (SBM) has been widely studied in the computer graphic research community. Several research based systems have been proposed to generate organic models. 
+Igarashi et al [Igarashi et al, 2007], pioneered the research in inflated geometrical surfaces to create simple organic toy like character models, naming their system ?Teddy?. Their interface is designed to quickly and easily model freeform surfaces for creating stuffed animals or other organic models. The system includes tools to add 3D geometry to the model when the user sketches the outline. The algorithm first finds the spine of the silhouette by using the chordal axes introduced in [Prasad 1997]. The system then wraps the spine with the polygonal mesh and then uses constraint Delaunay triangulation of the polygon. Pruning of insignificant branches is performed using [Prasad 1997]. The algorithm progresses through several refinement steps to obtain a smooth and symmetric 3D surface. Their system also provides tools for extruding and cutting of the mesh. Extrusion on the 3D surface is implemented using a sweeping algorithm. Some disadvantages of the Teddy system are: 1) it does not accepts complex and unexpected strokes such as T-junction strokes and cusps. 2) The features provided are limited it was not suited to modeling complex and production ready models. In figure 2, note that where the neck contour passes behind the chin, we see a T shape in the projected contour (called a T-junction), and the chin contour ends abruptly (called a cusp). T-junctions and cusps indicate the presence of a hidden contour; Williams [86] has proposed a method for using these to infer hidden contour lines in an image.
 
+Several researchers have proposed improvements to the Teddy system. Karpenko & Hughes [Karpenko & Hughes, 2006] have addressed the problem of T-junctions and cusps by introducing an efficient algorithm extended from the work by William [Williams & Allen, 1996] for inferring shapes with hidden contours, on figural completion of hidden contours containing T-junctions to contours containing cusps as well. It should be noted that SmoothSketch does not offers a complete SBM system; instead this work can be used as a component to be embedded in SBM systems. Williams? thesis included 3 steps to find the 3D surface to fit the given contours. These were 1) Drawing completion by inferring hidden contours, 2) Map the contours to the abstract topological surface and map the surface to R2, and 3) Lift this mapping to a smooth surface in R3, whose projection is the mapping to R2.
+
+Our proposed system is inspired by [Structured Annotations for 2D-to-3D Modeling], while also aims at enhancing it by making use of additional geometrical primitives, in order to achieve better quality models. This system requests the artist to create spline curves and generates generalized cylinder that follows the curve path. Moreover this system provides several sketching gestures to modify the shape of generalized cylinders, while also tools to align two generalized cylinders together to match the arrangement of different parts of the targeted 3D model.
 %-------------------------------------------------------------------------
 \subsection{Language}
 

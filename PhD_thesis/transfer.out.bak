@@ -1,0 +1,48 @@
+\BOOKMARK [1][-]{section*.2}{Table of contents}{}% 1
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 2
+\BOOKMARK [1][-]{section.1.1}{Background}{chapter.1}% 3
+\BOOKMARK [1][-]{section.1.2}{Main challenges}{chapter.1}% 4
+\BOOKMARK [1][-]{section.1.3}{Research aims}{chapter.1}% 5
+\BOOKMARK [1][-]{section.1.4}{Research Objectives}{chapter.1}% 6
+\BOOKMARK [1][-]{section.1.5}{Contribution}{chapter.1}% 7
+\BOOKMARK [1][-]{section.1.6}{Structure of the following chapters}{chapter.1}% 8
+\BOOKMARK [0][-]{chapter.2}{Literature Review}{}% 9
+\BOOKMARK [1][-]{section.2.1}{3D geometric deformation}{chapter.2}% 10
+\BOOKMARK [2][-]{subsection.2.1.1}{Basic concept}{section.2.1}% 11
+\BOOKMARK [2][-]{subsection.2.1.2}{Linear deformation}{section.2.1}% 12
+\BOOKMARK [2][-]{subsection.2.1.3}{Nonlinear deformation}{section.2.1}% 13
+\BOOKMARK [2][-]{subsection.2.1.4}{3D geometric deformation summary}{section.2.1}% 14
+\BOOKMARK [1][-]{section.2.2}{3D shape correspondence}{chapter.2}% 15
+\BOOKMARK [2][-]{subsection.2.2.1}{Similarity-based correspondence}{section.2.2}% 16
+\BOOKMARK [2][-]{subsection.2.2.2}{Rigid alignment}{section.2.2}% 17
+\BOOKMARK [2][-]{subsection.2.2.3}{Non-rigid alignment}{section.2.2}% 18
+\BOOKMARK [2][-]{subsection.2.2.4}{3D shape correspondence summary}{section.2.2}% 19
+\BOOKMARK [1][-]{section.2.3}{3D shape registration}{chapter.2}% 20
+\BOOKMARK [2][-]{subsection.2.3.1}{Rigid registration}{section.2.3}% 21
+\BOOKMARK [2][-]{subsection.2.3.2}{Isometric registration}{section.2.3}% 22
+\BOOKMARK [2][-]{subsection.2.3.3}{Non-isometric registration}{section.2.3}% 23
+\BOOKMARK [2][-]{subsection.2.3.4}{3D shape registration Summary}{section.2.3}% 24
+\BOOKMARK [0][-]{chapter.3}{3D Geometric Deformation}{}% 25
+\BOOKMARK [1][-]{section.3.1}{Notation and related methods}{chapter.3}% 26
+\BOOKMARK [1][-]{section.3.2}{Consistent ASAP energy}{chapter.3}% 27
+\BOOKMARK [1][-]{section.3.3}{Optimization}{chapter.3}% 28
+\BOOKMARK [1][-]{section.3.4}{Experiments}{chapter.3}% 29
+\BOOKMARK [1][-]{section.3.5}{Conclusion}{chapter.3}% 30
+\BOOKMARK [0][-]{chapter.4}{3D shape registration}{}% 31
+\BOOKMARK [1][-]{section.4.1}{CASAP surface registration}{chapter.4}% 32
+\BOOKMARK [2][-]{subsection.4.1.1}{Correspondence constraints}{section.4.1}% 33
+\BOOKMARK [2][-]{subsection.4.1.2}{Feature point constraints}{section.4.1}% 34
+\BOOKMARK [2][-]{subsection.4.1.3}{Optimization}{section.4.1}% 35
+\BOOKMARK [1][-]{section.4.2}{Coarse-to-fine fitting strategy}{chapter.4}% 36
+\BOOKMARK [2][-]{subsection.4.2.1}{Fitting Steps}{section.4.2}% 37
+\BOOKMARK [2][-]{subsection.4.2.2}{Weights and parameters}{section.4.2}% 38
+\BOOKMARK [1][-]{section.4.3}{Experiments and Results}{chapter.4}% 39
+\BOOKMARK [1][-]{section.4.4}{Conclusion}{chapter.4}% 40
+\BOOKMARK [0][-]{chapter.5}{Future Work}{}% 41
+\BOOKMARK [1][-]{section.5.1}{Element inversion remove}{chapter.5}% 42
+\BOOKMARK [2][-]{subsection.5.1.1}{Locally injective mapping}{section.5.1}% 43
+\BOOKMARK [2][-]{subsection.5.1.2}{Distortion measurement}{section.5.1}% 44
+\BOOKMARK [2][-]{subsection.5.1.3}{Summary}{section.5.1}% 45
+\BOOKMARK [1][-]{section.5.2}{Automatic feature selection for correspondence}{chapter.5}% 46
+\BOOKMARK [1][-]{section.5.3}{Future Research Plan}{chapter.5}% 47
+\BOOKMARK [0][-]{figure.caption.24}{References}{}% 48

@@ -1,0 +1,82 @@
+\ifx\isEmbedded\undefined
+\input{../format/format-setup}
+
+%\documentclass[tikz]{standalone}
+%\documentclass[12pt]{report}
+	
+
+\begin{document}
+\fi
+\chapter{Future Work}
+\label{chap:future}
+
+Although our \emph{consistent} ASAP deformation technique and the coarse-to-fine strategy can efficiently reduce the chance of fold-over, it cannot avoid this problem completely, especially for parts with large curvature. Another limitation is that although our method only requires litter user efforts to specify several feature points on the shapes, it cannot achieve automatic goal without any user intervention. The following challenges need to be solved:
+
+\begin{itemize}
+\item A constrain penalizing element inversion need to be designed, or solutions must be provided when fold-overs or flips happen.
+\item An automatic feature correspondence algorithm capable of handling large, non-isometric shape variations are required.
+\end{itemize}
+
+To tackle these challenges, my future work will continue on tackling these challenges to provide more robust, accurate and automatic non-isometric shape registration techniques, which is not only able to find the correspondence between non-isometric shapes automatically, but also avoid inverse element to achieve robust to fold-over and self-intersection. In the following sections I will discuss existing techniques that are used to deal with these problems and their limitations, and outline my future plan to address these limitations.
+
+\section{Element inversion remove}
+In surface modeling and physics-based animation, a common way to avoid inversion elements is to design penalizing inversion constraints \citep{irving2004invertible,chao2010simple,stomakhin2012energetically,setaluri2014fast,civit2014robust}. There are some specialized material models such as Neo-hookean elasticity \citep{bonet1997nonlinear} contain energies that increase to infinity as the area/volume of a deformed element degenerates to zero. Unfortunately, the numeric solutions to these energies are extremely complicate and may bring the classical Newton's method to a halt \citep{schuller2013locally}. In the context of inverse elastic shape design \citep{chen2014asymptotic} discusses how to deal with these numerical complexities.
+
+\cite{schuller2013locally} propose Locally Injective Mapping (LIM), they apply a custom barrier function which results in real-time feedback to the user. \cite{jin2014remeshing} improved LIM subsequently by online remeshing.  LIM guarantees that no inverse elements will produce as long as the initial input configuration is inversion-free. \cite{poranne2014provably} present an interactive inversion-free deformation approach with provable guarantees, however, their method is only limited to 2D deformations. Based on projections onto approximate tangent planes, \cite{kovalsky2015large} provide an efficient algorithm to calculate bounded distortion mappings.
+
+\subsection{Locally injective mapping}
+Locally injective mapping is critical and desirable in shape deformation and mesh parameterization.
+
+
+According to Tutte's theorem, a convex combination mapping in 2D from a disk-topology mesh is bijective if the target domain is convex \citep{tutte1963draw,floater2003one}. However, the bijectivity will lose if the domains are concave or self-overlapping, and even cannot be guaranteed on 3D convex domains \citep{floater2006convex}. Boundary-free methods aiming at isometric/conformal parameterization are shown in the well-known MIPS method \citep{hormann2000mips} and its variations \citep{sander2001texture,degener2003adaptable}. They also have their applicatons in mesh deformation \citep{eigensatz2009positional} and mesh improvement \citep{freitag2002tetrahedral,jiao2011simple}. However, the calculation speed of MIPS is slow and it tends to converge to local minimum, as shown in \citep{sheffer2007mesh}.
+
+
+
+Local injectivity can be achieved by parameterization methods like ABF++ \citep{sheffer2005abf++} and circle pattern \citep{kharevych2006discrete}, but it is difficult to extend them to 3D and are not applicable to mesh deformation. \citep{schuller2013locally} provide a barrier term in their nonlinear optimization to avoid inverted elements so that the mapping always keeps locally injective. Although their method is efficient enough to offer interactive feedback to users for moderate-size meshes, it is out of control under extreme distortion. \citep{lipman2012bounded} build a maximal convex subspace to bound the maximal distortion and prevent inverted mesh elements. While their algorithm converge, locally injective mapping with bounded distortion can be achieved but with high computational cost, since a quadratic programming or semidefinite programming problem needs to optimize at each iteration. Moreover, a feasible solution space may not exist with empty convexified subspace or small upper bound of distortion. \cite{poranne2014provably} also achieve smooth and low-distortion mappings by introducing the bounded distortion mapping technique to 2D meshless deformation. But it is hard to extend this method to 3D meshless deformation since the bound constraint is complicate. \cite{weber2014locally} triangulate both the source and target domain to find a fixed boundary 2D mapping. \citep{jin2014remeshing} change mesh connectivity in 2D mesh deformation to ensure a valid map. These two methods do not take control on maximal distortion and are only limited in 2D mesh deformation.
+
+\subsection{Distortion measurement}
+The standard 2D MIPS energy measures the distortion of conformality of the mapping: $\sigma _1 \sigma _2^{-1} + \sigma _2 \sigma _1^{-1}$ where $\sigma _1$, $\sigma _2$ are the singular values of the Jacobian of the mapping associated with a triangle. \cite{degener2003adaptable} propose to minimize $(\sigma _1 \sigma _2^{-1})(\sigma_2 \sigma^{-1})(\sigma_1 \sigma_2 + \sigma_1^{-1} \sigma_2^{-1})^\theta$ to measure isometric distortion, which penalizes both conformal distortion and area distortion.
+
+
+Other type energies like Dirichlet energy $\sigma_1^2 + \sigma_2^2$, stretch energy max ${\sigma_1, \sigma_2}$, and Green-Lagrange energy $(\sigma_1^2 - 1)^2+(\sigma_2^2-1)^2$ are also based on the measurement of singular values. As rigid as possible (ARAP), as similar as possible (ASAP) and as killing as possible (AKAP) are other three ways aiming at minimizing isometric/conformal distortions \citep{alexa2000rigid,igarashi2005rigid,sorkine2007rigid,solomon2011killing}, but the mapping is not guaranteed bo be local injective due to the solvers \citep{liu2008local,solomon2011killing} they used. All of the above methods sum up the distortions in a least squares way and do not consider the maximum distortion or the distortion distribution. To address these issues, \cite{levi2014strict} provides a strict $L_\infty$-norm minimizer to take control of distortion control. To minimize the maximal conformal distortion, \cite{weber2012computing} compute extremal quasiconformal maps while satisfying boundary constraints.
+
+\subsection{Summary}
+In this section, we reviewed the state-of-the-art methods of removing element inversion and distortion measurement. Since locally injective mapping guarantees that there is no inversion element as long as the initial input configuration is inversion-free. Following the work of \citep{schuller2013locally,liu2016fast}, we will add a barrier function into the total energy to make our mapping locally injective. Meanwhile, distortion will be measured to insure an inversion-free initial configuration and to evaluate the results of registration.
+
+\section{Automatic feature selection for correspondence}
+Geometric features on shapes can be presented in different ways, e.g., ridge and valley lines \citep{ohtake2004ridge}, prominent tip points \citep{zhang2005feature}, or points with most unusual signatures \citep{gelfand2005robust}. Line-type features are usually unstable under shape articulation. The most prominent features of a model part are its extremity. They are suitable to be chosen to find feature correspondence as they are stable under bending and stretching. Regarding shape extremities as features enhances the correlation between correspondence analysis and object recognition. They have also been utilized in applications such as mesh parameterization \citep{zhang2005feature} and segmentation \citep{katz2005mesh}.
+
+In this section, we reviewed the methods of automatic feature selection for correspondence between large non-rigid shapes. Following \citep{zhang2008deformation}, we will extract extremities for the template and the target respectively, then use a search tree to find out the best correspondence between these extremities via a best-first strategy.
+
+
+\section{Future Research Plan}
+Considering the research progress so far and the unsolved challenges, I will continue my research on 3D shape deformation and 3D shape registration. First I will work on removing the fold-over completely and investigating automatically searching the correspondence between non-isometric shapes. Then, I will work on the applications of the developed technique like patient specific modeling and dynamic fusion. The research plan is detailed as follow:
+\begin{itemize}
+\item Applying inversion removing technique to avoid fold-overs and self-overlaps (3 Months);
+\item Using shape extremities to find correspondences between non-isometric shapes automatically and fitting it into our registration energy (3 Months);
+\item Applying and extending our novel registration method to dynamic fusion allowing large deformation during fusion (6 Months);
+\item Writing PhD Thesis (6 Months).
+\end{itemize}
+
+\begin{figure}[!htb]
+\begin{ganttchart}[
+	hgrid,
+	vgrid,
+    time slot format={isodate-yearmonth},
+	compress calendar
+	]{2017-10}{2019-03}
+	\gantttitlecalendar{year, month} \\
+	\ganttbar{Inversion removing}{2017-10}{2017-12} \\
+	\ganttbar{Automatic correspondence searching}{2018-01}{2018-03} \\
+	\ganttbar{Application Fusion}{2018-04}{2018-09} \\
+	\ganttbar{Thesis}{2018-10}{2019-03} \\
+\end{ganttchart}
+\end{figure}
+
+
+\ifx\isEmbedded\undefined
+ References
+\addcontentsline{toc}{chapter}{References}
+\pagebreak
+\end{document}
+\fi

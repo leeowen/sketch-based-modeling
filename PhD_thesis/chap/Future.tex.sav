@@ -1,0 +1,77 @@
+\ifx\isEmbedded\undefined
+\input{../format/format-setup}
+
+%\documentclass[tikz]{standalone}
+%\documentclass[12pt]{report}
+	
+
+\begin{document}
+\fi
+\chapter{Future Work}
+\label{chap:future}
+
+Although our \emph{consistent} ASAP deformation technique and the coarse-to-fine strategy can efficiently reduce the chance of fold-over, it cannot avoid this problem completely, especially for parts with large curvature. Another limitation is that although our method only requires litter user efforts to specify several feature points on the shapes, it cannot achieve automatic goal without any user intervention. The following challenges require to be solved to deliver more accurate and automatic registration results.
+
+\begin{itemize}
+\item A constrain which penalizes element inversion need to be designed, or solutions must be provided when fold-overs or flips happen.
+\item An automatic feature correspondence algorithm capable of handling large, non-isometric shape variations require to be proposed.
+\end{itemize}
+
+To achieve the initial goal of this research, my future work will continue on tackling these challenges to provide more robust, accurate and automatic non-isometric shape registration techniques. In the following sections I will discuss existing techniques that are used to deal with these problems and their limitations, and outline my future plan to address these limitations.
+
+\section{Element inversion remove}
+In surface modeling and physics-based animation, a common way to avoid inversion elements is to design penalize inversion constraints or material models\cite{irving2004invertible,chao2010simple,stomakhin2012energetically,setaluri2014fast,civit2014robust}. There are some specialized material models such as Neo-hookean elasticity \cite{bonet1997nonlinear} contain energies that increase to infinity as the area/volume of a deformed element degenerates to zero. Unfortunately, the numeric solutions to these energies are extremely complicate and may bring the classical Newton's method to a halt \cite{schuller2013locally}. In the context of inverse elastic shape design \cite{chen2014asymptotic} discusses how to deal with these numerical complexities.
+
+\cite{schuller2013locally} propose Locally Injective Mapping (LIM), they apply a custom barrier function which results in real-time feedback to the user. \cite{jin2014remeshing} improved LIM subsequently by online remeshing.  LIM guarantees that no inverse elements will produce as long as the initial input configuration is inversion-free.
+
+\cite{poranne2014provably} present an i    investigated an interactive approach of inversion-free deformations with provable guarantees. While producing fast and smooth results, their method is limited to 2D deformations with limited number of degrees of freedom.
+ 
+ 
+Recently, \cite{kovalsky2015large} proposed another efficient algorithm to compute bounded distortion mappings based on projections onto approximate tangent planes.
+
+\subsection{Locally injective mapping}
+Locally injective mapping is desired in mesh parameterization and shape deformation. Given a disk-topology mesh, a convex combination mapping in 2D is bijective based on Tutte's theorem if the target domain is convex \cite{tutte1963draw,floater2003one}. The bijectivity is broken for concave or self-overlapping domains and has no guarantee even on 3D convex domains \cite{floater2006convex}. The well-known MIPS method \cite{hormann2000mips} and its variations \cite{sander2001texture,degener2003adaptable} provide boundary-free methods for isometric/conformal parameterization. The MIPS-type energy also finds its applications in mesh deformation \cite{eigensatz2009positional} and mesh improvement\cite{freitag2002tetrahedral,jiao2011simple}. But MIPS is easily trapped by a local minimum and the computational speed is slow, as observed in \cite{sheffer2007mesh}.
+
+Parameterization methods like ABF++ \cite{sheffer2005abf++} and circle pattern \cite{kharevych2006discrete} can achieve local injectivity but are hard to extend to 3D and are not applicable to mesh deformation. \cite{schuller2013locally} design a barrier term to prevent inverted elements in their nonlinear optimization so that the mapping is always locally injective. Their method is fast enough to generate interactive results for moderate-size meshes but lacks control over extreme distortions. \cite{lipman2012bounded} construct a maximal convex subspace for bounding the maximal distortion and ensuring no inverted mesh elements. When their algorithm converge, locally injective mapping with bounded distortion is guaranteed but the computational cost is high, since a quadratic programming or semidefinite programming problem needs to solve at each iteration. Furthermore, a feasible solution space may not exist if the convexified subspace is empty or the upper bound of distortion is to small.
+
+\cite{poranne2014provably} also introduce the bounded distortion mapping technique to 2D meshless deformation and achieve smooth and low-distortion mappings. But their method is hard to extend to 3D meshless deformation due the complexity of the bound constraint. For a fixed boundary 2D mapping, \cite{weber2014locally} triangulate both the source and target domain to find a valid mapping. \cite{jin2014remeshing} update mesh connectivity in 2D mesh deformation to make sure that a valid map exists always. These two methods are limited to only 2D and have no control on maximal distortion.
+
+\subsection{Distortion measurement}
+The standard 2D MIPS energy measures the conformality of the mapping: $\sigma _1 \sigma _2^{-1} + \sigma _2 \sigma _1^{-1}$ where $\sigma _1$, $\sigma _2$ are the singular values of the Jacobian of the mapping associated with a triangle. For measuring isometric distortion, \cite{degener2003adaptable} propose to minimize $(\sigma _1 \sigma _2^{-1})(\sigma_2 \sigma^{-1})(\sigma_1 \sigma_2 + \sigma_1^{-1} \sigma_2^{-1})^\theta$, which penalized both conformal distortion and area distortion. Other type energies like Dirichlet energy $\sigma_1^2 + \sigma_2^2$, stretch energy max ${\sigma_1, \sigma_2}$, and Green-Lagrange energy $(\sigma_1^2 - 1)^2+(\sigma_2^2-1)^2$ also build on the measurement of singular values. As rigid as possible (ARAP), as similar as possible (ASAP) and as killing as possible (AKAP) are three alterative ways to minimize isometric/conformal distortions \cite{alexa2000rigid,igarashi2005rigid,sorkine2007rigid,solomon2011killing}, but their commonly used solvers \cite{liu2008local,solomon2011killing} cannot guarantee that the mapping is local injective. All of the above methods sum the distortions in a least squares sense and do not penalize the maximum distortion or control the distortion distribution. The strict minimizer \cite{levi2014strict} targets these problems and provides a minimal $L_\infty$-norm solution for distortion control. \cite{weber2012computing} compute extremal quasiconformal maps to minimize the maximal conformal distortion while satisfying boundary constraints.
+
+
+\section{Automatic feature selection for correspondence}
+Geometric features on a shape can be defined in different ways, e.g., rigde and valley lines \cite{ohtake2004ridge}, prominent tip points \cite{zhang2005feature}, or points with most unusual signatures \cite{gelfand2005robust}. Line-type features are generally not stable under shape articulation. The most prominent features of a model part are arguably near its extremity. Extremities are stable under bending and stretching, making them suitable to use for feature correspondence. Using shape extremities as features also reinforces the correlation between correspondence analysis and object recognition by parts. Extremity features have been utilized for mesh parameterization \cite{zhang2005feature} and segmentation \cite{katz2005mesh}.
+
+
+\section{Future Research Plan}
+Considering the research progress so far and the unsolved challenges, I will continue my research on 3D shape deformation and 3D shape registration. First I will work on removing the fold-over completely and investigating automatically searching the correspondence between non-isometric shapes. Then, the new registration technique will be applied to other fields like dynamic fusion. The research plan is detailed as follow:
+\begin{itemize}
+\item Applying inversion removing technique during registration to avoid fold-overs and self-overlaps completely (3 Months);
+\item Using shape extremities to find correspondences between non-isometric shapes automatically and fitting it into our registration energy (3 Months);
+\item Applying and extending our novel registration method to dynamic fusion allowing large deformation during fusion (6 Months);
+\item Writing PhD Thesis (6 Months).
+\end{itemize}
+
+\begin{figure}[h]
+\begin{ganttchart}[
+	hgrid,
+	vgrid,
+    time slot format={isodate-yearmonth},
+	compress calendar
+	]{2017-10}{2019-03}
+	\gantttitlecalendar{year, month} \\
+	\ganttbar{Inversion removing}{2017-10}{2017-12} \\
+	\ganttbar{Automatic correspondence searching}{2018-01}{2018-03} \\
+	\ganttbar{Fuse into other applications}{2018-04}{2018-09} \\
+	\ganttbar{Thesis}{2018-10}{2019-03} \\
+\end{ganttchart}
+\end{figure}
+
+
+\ifx\isEmbedded\undefined
+ References
+\addcontentsline{toc}{chapter}{References}
+\pagebreak
+\end{document}
+\fi

@@ -1,0 +1,101 @@
+
+\ifx\isEmbedded\undefined
+\input{../format/format-setup}
+\begin{document}
+\fi
+\chapter{Introduction}
+\label{chap:intro}
+\section{Background}
+3D shape registration has been a fundamental topic in computer graphics, computer vision, medical image processing and many other fields for many years. It has various applications such as geometric modeling, 3D shape acquisition, animation reconstruction and template tracking. With the development of 3D geometry acquisition technology, high-resolution and highly detailed 3D scans of objects in real-world can be obtained via current 3D scanning systems or depth cameras. However, these scanned data usually cannot be utilized directly without any further manual refinement in many real-world industries such as computer animation, films, computer games, manufacturing and medicine. Therefore, it is essential to create clean, complete and high-fidelity 3D directly usable shapes from scanning data. 3D shape registration as an essential technique to do so has been arousing intensive attentions. There are plenty of works dedicating to this purpose \citep{amberg2007optimal,papazov2011deformable,li2008global,yang2015sparse,yamazaki2013non,li2009robust,huang2008non}.
+
+Surface registration transforms multiple three-dimensional data sets into the same coordinate system so as to align overlapping components of these sets \citep{tam2013registration}. Given a template shape and a target shape, the aim of 3D shape registration is to find a mapping between them that optimally transforms the template onto the target. According to the type of mapping (\ref{tbl:mapping}), 3D shape registration is roughly divided into two categories: rigid and non-rigid. Rigid registration is to find a global rigid-body transformation that aligns two shapes. It is useful in nondeformable shape registration, but it cannot handle local transformation as it assumes that two shapes are only related by a rigid transformation. For deformable shape registration, non-rigid registration is required, which can be categorized into isometric and non-isometric. Isometric registration aims at finding a set of local rigid transformations. It is able to handle shapes undergoing isometric or quasi-isometric transformation like face expression or body movement, but it does not allow local scalability due to its length preserving property. Non-isometric registration introduce more degree of freedom in each local transformation, which can address wider range of local deformation between shapes. It
+can be classified into: equiareal, smooth and similar.  Equiareal registration aims to preserve the area of each local cell of shapes. It has scale-preserving property but is unable to address size difference between the template and the target. In contrast, smooth registration minimizing smooth regularization energy or transformation between neighboring elements is suitable for size difference. However, it allows piecewise stretching transformation, which can result in shear distortion and losing template details. Similar registration fits the deformation gradient into a similarity matrix, which is an isotropic scale factor times a rotation matrix. The scale factor is able to handle size difference, while the rotation matrix part prevents local stretch and distortion. Thus, it has been widely used in works \citep{yamazaki2013non,yoshiyasu2014conformal,papazov2011deformable} to align surfaces with different size and detail. However, the energies they adopt to constrain the local deformation similarity are not consistent. This may lead to fold over and self-intersection during transformation.
+
+\begin{table}[h]
+%\hspace{-20in}
+\resizebox{\textwidth}{!}{
+  \centering
+  \begin{tabular}{  c | c | c | c | c  }
+    \hline
+     \multicolumn{3}{c|}{Mapping}  & $df$ & Property \\ \hline
+     \multicolumn{3}{c|}{Rigid}  & $\mathbf I$ & shape-preserving \\ \hline
+    \multirow{4}{*}{Non-rigid} & \multicolumn{2}{c|}{Isometric}   & $\mathbf R$ & length-preserving \\ \cline{2-5}
+    &\multirow{3}{*}{Non-isometric} &Equiareal   & det($df$)=1 & scale-preserving \\ \cline{3-5}
+    &&Harmonic   & $\min\|df\|^2$ & smooth deformation \\ \cline{3-5}
+    &&Similar   & $s\mathbf R$ & angle-preserving \\ \hline
+  \end{tabular}
+  }
+ \caption{Classes of mapping. $df$ is the deformation gradient,  $s$ is a scalar, $\mathbf I$ is an identity matrix, $\mathbf R$ is a rotation matrix.}\label{tbl:mapping}
+ \end{table}
+
+The process of shape registration can be approximately summarized in three steps: first, generally aligning the global positions, scales, orientations between shapes; second, searching the correspondences between shapes; finally, attract the template onto the target by deformation methods according to the correspondences. The initial positions, orientations, sizes and details, as well as their resolutions of data, can be largely different between shapes. Therefore, 3D shape registration methods which are capable of dealing with the difference mentioned before and robust to noise and outliers with lower chance of fold over occurrence are highly desirable. To attain these purposes, choosing appropriate constraints in each step is required. According to the survey \citep{tam2013registration}, constrains for non-rigid registration can be categorized into markers, templates, deformation-induced constraints, features, saliency, regularization, envelopes of motion and search constraints. Since rigid and isometric registration are unable to deal with shapes with large size difference, which indeed exists in real-world circumstance, we mainly focus our research on non-isometric case. In terms of non-isometric registration, however, not all of the constrains listed above can be applied. Some constrains may be suitable for isometric case but not for non-isometric one. For example, features and signature constrains can be well defined under isometric circumstance. There are some isometry invariant features, such as heat kernel signature (HKS)\citep{sun2009concise} and wave kernel signature (WKS)\citep{aubry2011wave}, which can be employed to seek for the correspondence as they are consistent under isometric deformation. However, due to the large variations in the shapes' pose, size, local scale and geometric detail in the case of non-isometric, it is difficult to define such a signature that are invariant to non-isometric transformation, which makes the correspondence searching become a more challenging problem for non-isometric registration. Consequently, it is necessary to design appropriate constraints in each concern of non-isometric shape registration.
+
+This research aims at tackling the challenges of non-isometric 3D shape registration including devising the underlying transformation regularization and looking for the correspondent pairs between the template and the target shapes. The potential application of the developed technology could have huge impact, for example, it will allow us to easily build virtual personalized 3D character for games and films and transfer necessary features of avatar such as face performance, motion data, textures and even internal structure to virtual characters.
+
+
+\section{Main challenges}
+
+The main challenges for non-isometric 3D shape registration includes: deformation regularization and correspondence matching.
+
+\subsubsection{Deformation regularization}
+\begin{itemize}
+\item \textbf{Geometric consistency} Because there are often large variations in the orientation, size, shape and pose of two shapes, aligning the models globally while also capturing surface details at fine scale is difficult. Difference in initial positions, orientations and resolutions can also affect algorithm performance and convergence rate.
+
+\item \textbf{Mesh-connectivity preservation} During the registration of two shapes with dramatic difference in size and details, the template undergoes large deformation, which makes it susceptible to shear distortion, self-intersection and fold over. Obtaining a high-quality, clean and usable shape for application is very challenging.
+\end{itemize}
+
+
+\subsubsection{Correspondence matching}
+\begin{itemize}
+%\item \textbf{Robust to noise}
+%The data captured from 3D scan devices may contain noise, outliers. Noise may take the form of perturbations of points, or unwanted points close to a three-dimensional shape, which may mislead the correspondence matching. Outliers are unwanted points far from the shape, which can seriously affect results if they are chosen as correspondent points.
+
+\item \textbf{Semantic consistency}
+Semantic consistency is crucial for 3D shape registration. For example, during face registration, features around eyes, mouths and noses should correspond to each other. It is very challenge to achieve this goal in the case of non-isometric shape registration as these features are prone to variant under non-isometric deformation.
+
+\item \textbf{Less user efforts}
+In order to capture the details on the target, handle large deformation as well as maintain the semantic consistency, previous works require specifying dozens of landmarks from user input, which is not very efficient and prone to errors. The registration technique should not ask for a large amount of user efforts to specify many landmarks manually.
+
+\end{itemize}
+
+
+\section{Research aims}
+The aim of this research is to solve these key technical challenges in non-isometric 3D shape registration with large variation in size, pose, detail between the template and the target. The major tasks range from deformation regularization, correspondence matching, 3D surface registration. This research will propose a semi-automated method for registering a template shape onto a largely deformed target with little user efforts, which could be applied in 3D character creation, 3D facial registration and dynamic fussion.
+\section{Research Objectives}
+In order to achieve the above mentioned aim, following objectives need to be accomplished:
+\begin{itemize}
+\item \textbf{Literature Review}: review and investigate current researches on 3D geometric deformation, correspondence matching and 3D surface registration. Identifying the limitation of current approaches in non-isometric situations.
+\item \textbf{Non-isometric 3D Geometric Deformation }: design a novel non-isometric 3D shape deformation technique that is able to handle large deformation with mesh-connectivity well preserved.
+\item \textbf{Non-isometric 3D Shape Registration}: equipped the above deformation technique as regularization, find appropriate correspondences between the template and the target, design a novel non-isometric registration method with little user efforts for shapes have large variation in size and detail.
+
+\end{itemize}
+
+\section{Contribution}
+The main contributions of this research are summarized as follows:
+\begin{itemize}
+  \item We propose a novel shape deformation method, called consistent as-similar-as-possible (CASAP) deformation. It fits local transformation into scale and rotation, which is not only able to handle large deformation, but also reduces the shear distortion. Moreover, contrast to as-similar-as-possible (ASAP) deformation method, the energy in our deformation technique is consistent, leading to a parametrization invariance behavior and converge to the continuous case as the mesh is refined.
+
+
+  \item With CASAP energy as deformation regularization, we further propose a non-isometric surface registration approach. It not only produces more accurate fitting results with little user input, but also preserves angles of triangle meshes and allows local scales to change. Furthermore, a coarse-to-fine strategy is proposed to further improve the robustness and efficiency of our approach.\\
+
+       \item Taking local geometrical feature descriptors into account, we propose a new matching energy to choose more reasonable correspondent pairs between template and target models.\\
+\end{itemize}
+
+\section{Structure of the following chapters}
+
+\begin{itemize}
+\item \textbf{Chapter 2} Literature review on the related research topics, including 3D geometric deformation, 3D shape correspondence and 3D shape registration.
+
+\item \textbf{Chapter 3} Introduce a new algorithm which is able to deal with dramatic local deformation as well as preserve mesh-connectivity in order to reduce the occurrence of fold over and shear distortion during transformation.
+
+\item \textbf{Chapter 4} Design and develop a novel correspondence matching method between non-isometric shapes, present a semi-automatic registration method with little user input based on coarse-to-fine strategy for shapes undergoing large deformation.
+
+\item \textbf{Chapter 5} Future plan.
+\end{itemize}
+
+
+\ifx\isEmbedded\undefined
+\addcontentsline{toc}{chapter}{References}
+\pagebreak
+\end{document}
+\fi

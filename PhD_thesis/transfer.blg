@@ -1,0 +1,137 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: transfer.aux
+The style file: ref/harvard.bst
+Database file #1: ref/master.bib
+Repeated entry---line 250 of file ref/master.bib
+ : @inproceedings{moenning2003fast
+ :                                ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 255 of file ref/master.bib
+ : @inproceedings{surazhsky2005fast
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 415 of file ref/master.bib
+ : @inproceedings{sun2009concise
+ :                              ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 425 of file ref/master.bib
+ : @inproceedings{aubry2011wave
+ :                             ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 545 of file ref/master.bib
+ : @inproceedings{kobbelt1998interactive
+ :                                      ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 777 of file ref/master.bib
+ : @inproceedings{zayer2005harmonic
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 825 of file ref/master.bib
+ : @article{von2006vector
+ :                       ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 835 of file ref/master.bib
+ : @article{besl1992method
+ :                        ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 852 of file ref/master.bib
+ : @inproceedings{gelfand2005robust
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 908 of file ref/master.bib
+ : @inproceedings{gelfand2005robust
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1005 of file ref/master.bib
+ : @inproceedings{allen2003space
+ :                              ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1043 of file ref/master.bib
+ : @inproceedings{chang2008automatic
+ :                                  ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1053 of file ref/master.bib
+ : @inproceedings{tevs2009isometric
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1282 of file ref/master.bib
+ : @article{lipman2012bounded
+ :                           ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1293 of file ref/master.bib
+ : @article{poranne2014provably
+ :                             ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1315 of file ref/master.bib
+ : @inproceedings{jin2014remeshing
+ :                                ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1326 of file ref/master.bib
+ : @article{degener2003adaptable
+ :                              ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1412 of file ref/master.bib
+ : @inproceedings{gelfand2005robust
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 1441 of file ref/master.bib
+ : @inproceedings{huang2008non
+ :                            ,
+I'm skipping whatever remains of this entry
+`editor' is a missing field, not a string, for entry bonet1997nonlinear
+while executing---line 1236 of file ref/harvard.bst
+`editor' is a missing field, not a string, for entry coquillart1990extended
+while executing---line 1236 of file ref/harvard.bst
+Warning--can't use both volume and number fields in allen2003space
+Warning--can't use both volume and number fields in au2007handle
+Warning--can't use both volume and number fields in botsch2003multiresolution
+Warning--can't use both volume and number fields in botsch2004intuitive
+Warning--can't use both volume and number fields in botsch2005real
+Warning--there's a number but no series in botsch2006primo
+Warning--can't use both volume and number fields in botsch2007adaptive
+Warning--can't use both volume and number fields in bouaziz2013sparse
+Warning--can't use both volume and number fields in castellani2008sparse
+Warning--can't use both volume and number fields in chang2008automatic
+Warning--can't use both volume and number fields in civit2014robust
+Warning--can't use both volume and number fields in coquillart1990extended
+Warning--can't use both volume and number fields in eigensatz2009positional
+Warning--can't use both volume and number fields in gelfand2005robust
+Warning--can't use both volume and number fields in gilles2010creating
+Warning--can't use both volume and number fields in hormann2008maximum
+Warning--can't use both volume and number fields in hsu1992direct
+Warning--can't use both volume and number fields in huang2006subspace
+Warning--can't use both volume and number fields in huang2008non
+Warning--can't use both volume and number fields in igarashi2005rigid
+Warning--empty school in jacobson2013algorithms
+Warning--can't use both volume and number fields in jacobson2010mixed
+Warning--can't use both volume and number fields in jacobson2012smooth
+Warning--can't use both volume and number fields in jin2014remeshing
+Warning--can't use both volume and number fields in joshi2007harmonic
+Warning--can't use both volume and number fields in ju2005mean
+Warning--can't use both volume and number fields in kin2010electors
+Warning--can't use both volume and number fields in kraevoy2004cross
+Warning--can't use both volume and number fields in li2009robust
+Warning--can't use both volume and number fields in li2008global
+Warning--can't use both volume and number fields in lipman2008green
+Warning--can't use both volume and number fields in liu2008local
+Warning--can't use both volume and number fields in liu2016fast
+Warning--empty booktitle in moenning2003fast
+Warning--can't use both volume and number fields in papazov2011deformable
+Warning--there's a number but no series in pauly2005example
+Warning--can't use both volume and number fields in qixing2008non
+Warning--can't use both volume and number fields in schuller2013locally
+Warning--can't use both volume and number fields in shi2007mesh
+Warning--can't use both volume and number fields in solomon2011killing
+Warning--can't use both volume and number fields in sumner2007embedded
+Warning--can't use both volume and number fields in sun2009concise
+Warning--can't use both volume and number fields in surazhsky2005fast
+Warning--can't use both volume and number fields in terzopoulos1987elastically
+Warning--can't use both volume and number fields in van2011survey
+Warning--can't use both volume and number fields in weber2011complex
+Warning--can't use both volume and number fields in weber2012computing
+Warning--can't use both volume and number fields in weber2007context
+Warning--can't use both volume and number fields in yang2015sparse
+Warning--can't use both volume and number fields in yoshiyasu2014conformal
+Warning--can't use both volume and number fields in yu2004mesh
+Warning--can't use both volume and number fields in zayer2005harmonic
+Warning--can't use both volume and number fields in zhang2008deformation
+(There were 21 error messages)
