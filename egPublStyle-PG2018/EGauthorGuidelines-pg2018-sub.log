@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  11 MAY 2018 18:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  15 MAY 2018 17:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -35,12 +35,21 @@ Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
 \openout9 = `EGauthorGuidelines-pg2018-sub.lbl'.
 
 ) (./pg2018.sty)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/enumitem/enumitem.sty
+Package: enumitem 2011/09/28 v3.5.2 Customized lists
+\enitkv@toks@=\toks16
+\labelindent=\skip44
+\enit@outerparindent=\dimen102
+\enit@toks=\toks17
+\enit@inbox=\box26
+\enitdp@description=\count88
+)
 (/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
-\KV@toks@=\toks16
+\KV@toks@=\toks18
 )
 (/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2017/04/14 v1.1b Standard LaTeX Graphics (DPC,SPQR)
@@ -62,10 +71,10 @@ Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
 (/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
 Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
 )
-\Gread@gobject=\count88
+\Gread@gobject=\count89
 ))
-\Gin@req@height=\dimen102
-\Gin@req@width=\dimen103
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
 )
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2017/03/14 v6.85a Hypertext links for LaTeX
@@ -123,14 +132,14 @@ Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
 (/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 )
-\@linkdim=\dimen104
-\Hy@linkcounter=\count89
-\Hy@pagecounter=\count90
+\@linkdim=\dimen105
+\Hy@linkcounter=\count90
+\Hy@pagecounter=\count91
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2017/03/14 v6.85a Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count91
+\Hy@SavedSpaceFactor=\count92
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
@@ -153,17 +162,17 @@ Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 82.
 ))
-\c@Hy@tempcnt=\count92
+\c@Hy@tempcnt=\count93
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip10
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5104.
-\XeTeXLinkMargin=\dimen105
-\Fld@menulength=\count93
-\Field@Width=\dimen106
-\Fld@charsize=\dimen107
+\XeTeXLinkMargin=\dimen106
+\Fld@menulength=\count94
+\Field@Width=\dimen107
+\Fld@charsize=\dimen108
 Package hyperref Info: Hyper figures OFF on input line 6358.
 Package hyperref Info: Link nesting OFF on input line 6363.
 Package hyperref Info: Hyper index ON on input line 6366.
@@ -173,18 +182,18 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6383.
 Package hyperref Info: PDF/A mode OFF on input line 6388.
 LaTeX Info: Redefining \ref on input line 6428.
 LaTeX Info: Redefining \pageref on input line 6432.
-\Hy@abspage=\count94
-\c@Item=\count95
-\c@Hfootnote=\count96
+\Hy@abspage=\count95
+\c@Item=\count96
+\c@Hfootnote=\count97
 )
 
 Package hyperref Message: Driver: hpdftex.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2017/03/14 v6.85a Hyperref driver for pdfTeX
-\Fld@listcount=\count97
-\c@bookmark@seq@number=\count98
-\Hy@SectionHShift=\skip44
+\Fld@listcount=\count98
+\c@bookmark@seq@number=\count99
+\Hy@SectionHShift=\skip45
 )
 (/usr/local/texlive/2017/texmf-dist/tex/latex/base/t1enc.sty
 Package: t1enc 1994/06/01 Standard LaTeX package
@@ -238,34 +247,34 @@ Package: cite 2015/02/27  v 5.5
 (./EGauthorGuidelines-body.inc (./EGauthorGuidelines-pg2018-sub.aux)
 \openout1 = `EGauthorGuidelines-pg2018-sub.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 39.
+LaTeX Font Info:    ... okay on input line 39.
 
 (/usr/local/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count99
-\scratchdimen=\dimen108
-\scratchbox=\box26
-\nofMPsegments=\count100
-\nofMParguments=\count101
-\everyMPshowfont=\toks17
-\MPscratchCnt=\count102
-\MPscratchDim=\dimen109
-\MPnumerator=\count103
-\makeMPintoPDFobject=\count104
-\everyMPtoPDFconversion=\toks18
+\scratchcounter=\count100
+\scratchdimen=\dimen109
+\scratchbox=\box27
+\nofMPsegments=\count101
+\nofMParguments=\count102
+\everyMPshowfont=\toks19
+\MPscratchCnt=\count103
+\MPscratchDim=\dimen110
+\MPnumerator=\count104
+\makeMPintoPDFobject=\count105
+\everyMPtoPDFconversion=\toks20
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -283,7 +292,7 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\AtBeginShipoutBox=\box27
+\AtBeginShipoutBox=\box28
 
 
 Package hyperref Warning: Height of page (\paperheight) is invalid (0.0pt),
@@ -297,7 +306,7 @@ File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package color Info: Driver file: pdftex.def on input line 147.
 )
-Package hyperref Info: Link coloring ON on input line 36.
+Package hyperref Info: Link coloring ON on input line 39.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -305,167 +314,187 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 (/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count105
+\c@section@level=\count106
 )
-LaTeX Info: Redefining \ref on input line 36.
-LaTeX Info: Redefining \pageref on input line 36.
-LaTeX Info: Redefining \nameref on input line 36.
+LaTeX Info: Redefining \ref on input line 39.
+LaTeX Info: Redefining \pageref on input line 39.
+LaTeX Info: Redefining \nameref on input line 39.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 48.
-LaTeX Font Info:    Try loading font information for OT1+ptmcm on input line 48
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 51.
+LaTeX Font Info:    Try loading font information for OT1+ptmcm on input line 51
 .
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptmcm.fd
 File: ot1ptmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ptmcm.
 )
-LaTeX Font Info:    Try loading font information for OML+ptmcm on input line 48
+LaTeX Font Info:    Try loading font information for OML+ptmcm on input line 51
 .
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/omlptmcm.fd
 File: omlptmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ptmcm.
 )
-LaTeX Font Info:    Try loading font information for OMX+psycm on input line 48
+LaTeX Font Info:    Try loading font information for OMX+psycm on input line 51
 .
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/omxpsycm.fd
 File: omxpsycm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/psycm.
 )
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 48.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 51.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
-Overfull \hbox (4.0pt too wide) in paragraph at lines 48--48
- [][] 
- []
-
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 48.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 51.
+
 Excluding 'CCSXML' comment.
-Underfull \hbox (badness 10000) in paragraph at lines 48--100
-
- []
-
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 106.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 92.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/it' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 106.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 92.
 LaTeX Font Info:    Font shape `T1/ptm/bx/it' in size <9> not available
-(Font)              Font shape `T1/ptm/b/it' tried instead on input line 106.
+(Font)              Font shape `T1/ptm/b/it' tried instead on input line 92.
+
+Underfull \hbox (badness 1803) in paragraph at lines 114--115
+[]\T1/ptm/m/n/9 Over the past two decades, sketch-based-modelling
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 114--115
+
+ []
+
+
+Underfull \hbox (badness 5036) in paragraph at lines 116--117
+\T1/ptm/m/n/9 mod-elling, re-lated re-searches in-clud-ing [[][][]SAG$[]$13[][]
+, [][]CZS$[]$13[][]].
+ []
+
+
+Underfull \hbox (badness 1184) in paragraph at lines 116--117
+\T1/ptm/m/n/9 ob-jects which sim-ple sweep-ing sur-face can meet the qual-ity
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 116--117
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
+Underfull \vbox (badness 6445) has occurred while \output is active []
 
-LaTeX Warning: Reference `fig:firstExample' on page 2 undefined on input line 1
-94.
-
-
-LaTeX Warning: Reference `fig:ex1' on page 2 undefined on input line 196.
-
-
-LaTeX Warning: Reference `fig:ex3' on page 2 undefined on input line 197.
-
-
-LaTeX Warning: Reference `fig:ex3' on page 2 undefined on input line 207.
-
-
-LaTeX Warning: Citation `Lous90' on page 2 undefined on input line 238.
-
-
-LaTeX Warning: Citation `Lous90' on page 2 undefined on input line 244.
-
-
-LaTeX Warning: Citation `Fellner-Helmberg93' on page 2 undefined on input line 
-246.
-
-
-LaTeX Warning: Citation `Kobbelt97-USHDR' on page 2 undefined on input line 247
-.
-
-
-LaTeX Warning: Citation `Lafortune97-NARF' on page 2 undefined on input line 24
-7.
-
-
-LaTeX Warning: Citation `Buhmann:1998:DCQ' on page 2 undefined on input line 25
-0.
-
-
-LaTeX Warning: Citation `FolDamFeiHug.etal93' on page 2 undefined on input line
- 250.
-
-<sampleFig.jpg, id=21, 171.7617pt x 114.9093pt>
+ [2]
+<sampleFig.jpg, id=69, 171.7617pt x 114.9093pt>
 File: sampleFig.jpg Graphic file (type jpg)
  <use sampleFig.jpg>
-Package pdftex.def Info: sampleFig.jpg used on input line 268.
+Package pdftex.def Info: sampleFig.jpg used on input line 262.
 (pdftex.def)             Requested size: 192.00073pt x 128.4573pt.
- [2 <./sampleFig.jpg>]
-
-LaTeX Warning: Reference `fig:ex3' on page 3 undefined on input line 316.
-
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <9> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 336.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 330.
 
-Underfull \hbox (badness 10000) in paragraph at lines 357--359
+Underfull \hbox (badness 10000) in paragraph at lines 351--353
 \T1/ptm/m/n/9 e.g.  $\T1/pcr/mc/n/9 http : / / www . eg . org / some _ arbitrar
 y _ long / but _
  []
 
-[3]
-No file EGauthorGuidelines-pg2018-sub.bbl.
+
+Underfull \hbox (badness 10000) in paragraph at lines 360--363
+
+ []
+
+[3 <./sampleFig.jpg>] (./EGauthorGuidelines-pg2018-sub.bbl
+(./EGauthorGuidelines-pg2018-sub.brf)
+\tf@brf=\write4
+\openout4 = `EGauthorGuidelines-pg2018-sub.brf'.
+
+ [4]
+Underfull \hbox (badness 3148) in paragraph at lines 71--71
+[]\T1/ptm/m/sc/8 Kobbelt L., Stam-minger M., Sei-del H.-P.\T1/ptm/m/n/8 :  Us-
+ []
+
+
+Underfull \hbox (badness 2213) in paragraph at lines 71--71
+\T1/ptm/m/n/8 ing sub-di-vi-sion on hi-er-ar-chi-cal data to re-con-struct ra-d
+ios-ity dis-
+ []
+
+
+Underfull \hbox (badness 6859) in paragraph at lines 71--71
+\T1/ptm/m/n/8 tri-bu-tion.  \T1/ptm/m/it/8 Com-puter Graph-ics Fo-rum 16\T1/ptm
+/m/n/8 , 3 (1997), C347--
+ []
+
+
+Underfull \hbox (badness 1383) in paragraph at lines 71--71
+\T1/ptm/m/n/8 C355.  (Proc. Eu-ro-graph-ics'97) [][]\T1/pcr/mc/n/8 http:[][]$/ 
+/ diglib . eg . org / EG / CGF /
+ []
+
+
+Underfull \hbox (badness 1565) in paragraph at lines 71--71
+\T1/pcr/mc/n/8 volume16 / issue3 / CGF172 . html$\T1/ptm/m/n/8 .  [][]$\T1/pcr/
+m/n/8 doi : 10 . 1111 / 1467-[]8659 .
+ []
+
+
+Underfull \hbox (badness 2158) in paragraph at lines 108--108
+[]\T1/ptm/m/sc/8 Shtof A., Agathos A., Gin-gold Y., Shamir A.,
+ []
+
+)
 File: sampleFig.jpg Graphic file (type jpg)
-<use sampleFig.jpg>
-Package pdftex.def Info: sampleFig.jpg used on input line 490.
+ <use sampleFig.jpg>
+Package pdftex.def Info: sampleFig.jpg used on input line 485.
 (pdftex.def)             Requested size: 151.20154pt x 101.16081pt.
 File: sampleFig.jpg Graphic file (type jpg)
  <use sampleFig.jpg>
-Package pdftex.def Info: sampleFig.jpg used on input line 497.
+Package pdftex.def Info: sampleFig.jpg used on input line 492.
 (pdftex.def)             Requested size: 151.20154pt x 101.16081pt.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 511.
- [4
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 506.
+ [5
 
-] [5]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 511.
+] [6]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 506.
 
 (./EGauthorGuidelines-pg2018-sub.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 511.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 511.
-
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 511.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 506.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 506.
+Package rerunfilecheck Info: File `EGauthorGuidelines-pg2018-sub.brf' has not c
+hanged.
+(rerunfilecheck)             Checksum: 7B10C859A26E4C6282B81297416F6C21;1090.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 506.
  ) ) 
 Here is how much of TeX's memory you used:
- 5898 strings out of 492995
- 88114 string characters out of 6132703
- 186782 words of memory out of 5000000
- 9330 multiletter control sequences out of 15000+600000
- 52339 words of font info for 81 fonts, out of 8000000 for 9000
+ 6270 strings out of 492995
+ 94912 string characters out of 6132703
+ 196268 words of memory out of 5000000
+ 9677 multiletter control sequences out of 15000+600000
+ 55411 words of font info for 79 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 32i,13n,25p,923b,340s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 32i,10n,25p,1806b,432s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local
-/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/
-texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/te
-xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texl
-ive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texliv
-e/2017/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2017/t
-exmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2017/texmf-dis
-t/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
-pe1/urw/times/utmbi8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/t
-imes/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmri
-8a.pfb>
-Output written on EGauthorGuidelines-pg2018-sub.pdf (5 pages, 192539 bytes).
+/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/t
+exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/tex
+live/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texli
+ve/2017/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2017/
+texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2017/texmf-di
+st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/t
+ype1/urw/times/utmbi8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/
+times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmr
+i8a.pfb>
+Output written on EGauthorGuidelines-pg2018-sub.pdf (6 pages, 201436 bytes).
 PDF statistics:
- 99 PDF objects out of 1000 (max. 8388607)
- 80 compressed objects within 1 object stream
- 24 named destinations out of 1000 (max. 500000)
+ 189 PDF objects out of 1000 (max. 8388607)
+ 169 compressed objects within 2 object streams
+ 43 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
