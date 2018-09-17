@@ -1,0 +1,71 @@
+\begin{thebibliography}{10}\itemsep=-1pt
+
+\bibitem{chen20133}
+T.~Chen, Z.~Zhu, A.~Shamir, S.-M. Hu, and D.~Cohen-Or.
+\newblock 3-sweep: Extracting editable objects from a single photo.
+\newblock {\em ACM Transactions on Graphics (TOG)}, 32(6):195, 2013.
+
+\bibitem{draper2003gestural}
+G.~Draper and P.~K. Egbert.
+\newblock A gestural interface to free-form deformation.
+\newblock In {\em graphics interface}, volume 2003, pages 113--120, 2003.
+
+\bibitem{gingold2009structured}
+Y.~Gingold, T.~Igarashi, and D.~Zorin.
+\newblock Structured annotations for 2d-to-3d modeling.
+\newblock In {\em ACM Transactions on Graphics (TOG)}, volume~28, page 148.
+  ACM, 2009.
+
+\bibitem{igarashi1999teddy}
+T.~Igarashi, S.~Matsuoka, and H.~Tanaka.
+\newblock Teddy: a sketching interface for 3d freeform design.
+\newblock In {\em Proceedings of the 26th annual conference on Computer
+  graphics and interactive techniques}, pages 409--416. ACM
+  Press/Addison-Wesley Publishing Co., 1999.
+
+\bibitem{Karpenko:2006:SFS:1141911.1141928}
+O.~A. Karpenko and J.~F. Hughes.
+\newblock Smoothsketch: 3d free-form shapes from complex sketches.
+\newblock {\em ACM Trans. Graph.}, 25(3):589--598, July 2006.
+
+\bibitem{kho2005sketching}
+Y.~Kho and M.~Garland.
+\newblock Sketching mesh deformations.
+\newblock In {\em Proceedings of the 2005 symposium on Interactive 3D graphics
+  and games}, pages 147--154. ACM, 2005.
+
+\bibitem{lipman2004differential}
+Y.~Lipman, O.~Sorkine, D.~Cohen-Or, D.~Levin, C.~Rossi, and H.-P. Seidel.
+\newblock Differential coordinates for interactive mesh editing.
+\newblock In {\em Shape Modeling Applications, 2004. Proceedings}, pages
+  181--190. IEEE, 2004.
+
+\bibitem{nealen2007fibermesh}
+A.~Nealen, T.~Igarashi, O.~Sorkine, and M.~Alexa.
+\newblock Fibermesh: designing freeform surfaces with 3d curves.
+\newblock {\em ACM transactions on graphics (TOG)}, 26(3):41, 2007.
+
+\bibitem{nealen2007sketch}
+A.~Nealen, O.~Sorkine, M.~Alexa, and D.~Cohen-Or.
+\newblock A sketch-based interface for detail-preserving mesh editing.
+\newblock In {\em ACM SIGGRAPH 2007 courses}, page~42. ACM, 2007.
+
+\bibitem{shtof2013geosemantic}
+A.~Shtof, A.~Agathos, Y.~Gingold, A.~Shamir, and D.~Cohen-Or.
+\newblock Geosemantic snapping for sketch-based modeling.
+\newblock In {\em Computer graphics forum}, volume~32, pages 245--253. Wiley
+  Online Library, 2013.
+
+\bibitem{williams1997stochastic}
+L.~R. Williams and D.~W. Jacobs.
+\newblock Stochastic completion fields: A neural model of illusory contour
+  shape and salience.
+\newblock {\em Neural computation}, 9(4):837--858, 1997.
+
+\bibitem{SBM:SBM07:023-030}
+J.~Zimmermann, A.~Nealen, and M.~Alexa.
+\newblock {SilSketch: Automated Sketch-Based Editing of Surface Meshes}.
+\newblock In M.~van~de Panne and E.~Saund, editors, {\em EUROGRAPHICS Workshop
+  on Sketch-Based Interfaces and Modeling}. The Eurographics Association, 2007.
+
+\end{thebibliography}

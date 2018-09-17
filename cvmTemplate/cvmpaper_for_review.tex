@@ -1,0 +1,202 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{cvm}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+
+% \cvmfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvmPaperID{****} % *** Enter the cvm Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+\ifcvmfinal\pagestyle{empty}\fi
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Efficient sketch-based character modelling with primitive deformer and shape generator}
+
+\author{First Author\\
+Institution1\\
+Institution1 address\\
+{\tt\small firstauthor@i1.org}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+\and
+Second Author\\
+Institution2\\
+First line of institution2 address\\
+{\small\url{http://www.author.org/~second}}
+}
+
+\maketitle
+% \thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+This paper proposes a new sketch-guided and ODE-driven character modelling technique. Our system consists of two main components: primitive deformer and detail generator. With such a technique, we first draw 2D silhouette contours of a character model. Then, we select proper primitives and align them with the corresponding silhouette contours. After that, we develop a sketch-guided and ODE-driven primitive deformer. It uses ODE-based deformations to deform the primitives to exactly match the generated 2D silhouette contours in one view plane and obtain a base mesh of a character model consisting of deformed primitives. In order to add various 3D details, we develop a local shape generator which uses sketches in different view planes to define a local shape and employs ODE-driven deformations to create a local surface passing through all the sketches. \\
+The experimental results demonstrate that our proposed approach can create 3D character models with 3D details from 2D sketches easily, quickly and precisely.
+\\
+\end{abstract}
+
+%%%%%%%%% BODY TEXT
+\section{Introduction}
+\begin{itemize}
+  \item[$\bullet$] We develop an efficient sketch-guided and ODE-driven primitive deformer to create a base mesh. It can deform primitives to exactly match the generated silhouette contours. Compared to the existing methods, it automates shape manipulation, avoids tedious manual operations, can deform primitives to match the generated silhouette contours quickly, and is powerful in achieving different shapes of a same primitive.
+  \item[$\bullet$] We develop a detail generator to add 3D details to the base mesh. Our proposed sketch-guided and ODE-driven local shape creator can create a new local shape to match user's drawn sketches in different views quickly. The image-based detail generator can automatically generate fine details from 2D images. 
+  \item[$\bullet$] Our character modelling system provide editing operations, support users to manipulate the control curves the draw in the creation stage and adding more control curves after the surface has been created. With our developed system, 3D character models with 3D details can be created easily and efficiently.
+\end{itemize}
+The rest of the paper is organised as follows. The previous related work is briefly reviewed in Section 2. The system overview of our proposed approach is presented in Section 3. Primitive deformer is examined in Section 4, and Detail generator is investigated in Section 5. Finally, the conclusions and future work are discussed in Section 6. 
+
+
+\section{Related Work}
+
+\subsection{Inflation Technology}
+Over the past two decades, sketch-based-modelling (SBM) has been widely studied in the computer graphic research community. Several research based systems have been proposed to generate organic models. The surface inflation technique extrudes the polygonal mesh from the skeleton outwards do a good job in modelling stuffed toys. One trend is to inflate freeform surfaces to create simple stuffed animals and other rotund objects in a sketch-based modelling fashion, such as \cite{igarashi1999teddy, Karpenko:2006:SFS:1141911.1141928, nealen2007fibermesh}. The Teddy system \cite{igarashi1999teddy} is the pioneer, it takes closed curves as inputs and find their cordial axes as spline, then wrap the splines with the polygonal mesh. Later, FiberMesh\cite{nealen2007fibermesh} enriched the editing operations for the inflating base mesh. FiberMesh also presents two types of the control curves: smooth and sharp. A smooth curve constrains the surface to be smooth across it, while a sharp curve only places positional constraints with C0 continuity. Sharp control curves appears when operations like cutting, extrusion and tunnel take place. Sharp control curves also serves the creation of creases on surface. However, FiberMesh \cite{nealen2007fibermesh} doesn't allow users to specify the ROI.Based on the study from William\cite{williams1997stochastic}, the SmoothSketch system addressed the problem of T-junction and cusp, which Teddy fails to solve.\\
+%-------------------------------------------------------------------------
+\subsection{Primitive Technology}
+Unlike the inflating systems, primitives-based systems deconstruct the modelling task as a process of creating a certain set of geometry primitives and further editing on the primitives. The idea of assembling simple geometry primitives to form 3D models is very common in CSG(constructive solid geometry) modelling, related researches including \cite{shtof2013geosemantic,chen20133}. Shtof et.al \cite{shtof2013geosemantic} introduces a snapping method which helps determining the position and core parameters of several simple geometry primitives. In \cite{chen20133}, the authors provides tools for generating a cylinder from only 3 strokes: the first two strokes define the 2D profile and the last stroke defines the axis along which the profile curve will sweep. Copies of the profile are not only perpendicularly aligned to the axis, but also resized to snap to the input outlines. However their work is only for man-made objects which simple sweeping surface can meet the quality requirements of the shapes. Structured Annotations for 2D-to-3D Modelling \cite{gingold2009structured}, on the other hand, focus on organic modelling. It is a system using two sets of the primitives, one is generalized cylinders, created by the input of a single open sketch stroke representing the spline, and then modified by using simple gestures such as tilt, scale local radius, rotate symmetrical plane, and change cap size; the other primitive is ellipsoid, generated according to the drawn closed ellipse sketch stroke. As the system's name indicates, there are a set pf annotation tools to further editing the surface shape using the annotations such as same-lengths, same angles, alignment and mirror symmetry. \\
+\subsection{Mesh editing}
+A universal disadvantage of above systems is features provided are limited it was not suited to modelling complex and production ready models. This is partly due to their limitations in mesh editing operations, so several sketch-based editing methods have been development to help to improve the performance of sketch-based modelling system. One group of sketch-based editing methods \cite{draper2003gestural, kho2005sketching} treats individual sketch curve as the reference for deformations like bending. Take the \cite{kho2005sketching} for example, user will draw a first curve as a reference curve to both set the ROI (region of interest) and be a controlling 'skeleton', and a new sketch curve indicating the desired deformation of the reference curve. Then mapping the reference curve to the second curve, the ROI will be deformed. These methods are very useful for simple keyframe animation, but for more small-scaled shape's editing task, studies like \cite{lipman2004differential,nealen2007sketch,SBM:SBM07:023-030} are more suitable. These studies take mesh's contours (depend on the viewplan at the time of editing operation is happening) as reference curves, and the newly sketched curves indicating the new positions that the ROI of mesh should be reconstructed to. As they aiming at maintaining the local geometrical details, Laplacian coordinates and correspondingly laplacian surface editing technology are implemented to preserving the features. 
+
+\section{System Overview}
+Based on our proposed approach, we have developed a modelling system which is composed of two main components: primitive deformer and detail generator. The primitive deformer is used to deform primitives to exactly match user?s generated 2D silhouette contours and create a rough base mesh. The detail generator consists of local shape creator and image-based detail generator. The local shape creator creates a new local shape from four different algorithms. They are local shape creation from: 1) two open silhouette contours in two different view planes, 2) one open and one closed silhouette contour in two different view planes, 3) two open and one closed silhouette contours in three different view planes, and 4) two closed curves. The image-based detail generator generates fine 3D details from 2D images automatically through the SFS algorithm.  
+The modeling process using our developed system is demonstrated in Figure 1 where a 3D female warrior model is created. 
+First, 2D character silhouette contours are generated. Users can draw their own silhouette contours directly or input their selected sketches into our developed system. If the selected sketches are input into our developed system, a further process may be required to extract the 2D silhouette contours from the input sketches. For the example demonstrated in Figure 1, a 2D female warrior sketch shown in Figure 1(a) is input. Then, users can extract 2D silhouette contours from the input sketch as shown in Figure 1(b). After that, proper primitives are selected and placed to align with the corresponding silhouette contours through purely geometric transformations as shown in Figure 1(c). Since the silhouette contours of the primitives do not match the generated 2D silhouette contours of the 2D female warrior, the primitive deformer developed from sketch-guided and ODE driven deformations described in Section 4 is applied to deform the primitives to exactly match the corresponding 2D silhouette contours and create a rough 3D base mesh depicted in Figure 1(d). 
+Once a 3D base mesh model is obtained, the detail generator described in Section 5 is employed to add 3D details to the 3D base mesh. First, the local shape creator developed in Subsection 5.2 is used to add local shapes and smoothly connect primitives together as demonstrated in Figure 1(e). After that, we want to add fine details such as a dragon to the female warrior model. Since creating fine 3D details is not an easy task, we apply the image-based detail generator described in Subsection 5.3 to achieve the complicated 3D details shown in Figure 1(f).
+In the following two sections, we will introduce in detail the primitive deformer and the detail generator, respectively. Some examples will be presented to demonstrate their applications.
+
+
+
+\section{Primitive deformer}
+As shown in Figure 1(c), the base mesh of the female warrior without primitive deformations cannot exactly match the generated 2D silhouette contours of the female warrior. In order to tackle this problem, in this section, we develop a primitive deformer. In the subsections below, we first introduce the interface of the primitive deformer in Subsection 4.1. Then, we discuss the algorithm of the primitive deformer in Subsection 4.2.
+\subsection{User interface of primitive deformer}
+The user interface of our developed primitive deformer uses four windows. The upper left window is used to display 3D base mesh without primitive deformations in the front view. The upper right window is used to display primitives and the user-drawn 2D silhouette contours for these primitives. If required, the user can edit the generated 2D silhouette contours in the upper right window. The deformed primitives are shown in the bottom windows where the left is from the front view and the right is from the side view. 
+Taking the left leg of the female warrior shown in Figure 1(c) as an example, the primitive of the left leg is shown in the upper left window. It and the user-drawn 2D silhouette contours are depicted in the upper right window. Our proposed primitive deformer described in Subsection 4.2 deforms the primitives of the 3D base mesh to exactly match the generated 2D silhouette contours and create a deformed 3D base mesh with primitive deformations, and depicted the deformed 3D base mesh in bottom windows. 
+\subsection{Algorithm of primitive deformer}
+After 3D primitives have been placed and aligned with the generated 2D silhouette contours, these 3D primitives should be deformed so that their 2D silhouette contours can match the generated 2D silhouette contours exactly. Here we use the example shown in Figure 3 to demonstrate the algorithm of our proposed primitive deformer and how it deforms a 3D primitive to match the 2D silhouette contours. 
+\begin{figure}[t]
+\begin{center}
+\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+   %\includegraphics[width=0.8\linewidth]{egfigure.eps}
+\end{center}
+   \caption{Example of caption.  }
+\label{fig:long}
+\label{fig:onecol}
+\end{figure}
+Figure 3(a) depicts an arm model of the female warrior which is represented with a cylinder. The 2D silhouette contour to be matched is also shown in the image. Figure 3(b) shows how the cylinder is deformed with the algorithm developed below to match the 2D silhouette contour exactly. 
+To tackle the above problem, we propose a sketch-guided and ODE-drive primitive deformer. It is developed from a simplified version of the Euler-Lagrange PDE (partial differential equation) which is widely used in physically-based surface deformations and briefly introduced below.
+As discussed in [35], the main requirement for physically-based surface deformations is an elastic energy which considers locally stretching for solid objects plus bending for two-manifold surfaces called thin-shells. When a surface  parameterized by a function   is deformed to a new shape  through adding a displacement vector  to each point, the change of the first and second fundamental forms  in differential geometry [36] yields a measure of stretching and bending descried by [39]
+
+\noindent
+Compare the following:\\
+\begin{tabular}{ll}
+ \verb'$conf_a$' &  $conf_a$ \\
+ \verb'$\mathit{conf}_a$' & $\mathit{conf}_a$
+\end{tabular}\\
+See The \TeX book, p165.
+
+The space after \eg, meaning ``for example'', should not be a
+sentence-ending space. So \eg is correct, {\em e.g.} is not.  The provided
+\verb'\eg' macro takes care of this.
+
+When citing a multi-author paper, you may save space by using ``et alia'',
+shortened to ``\etal'' (not ``{\em et.\ al.}'' as ``{\em et}'' is a complete word.)
+However, use it only when there are three or more authors.  Thus, the
+following is correct: ``
+   Frobnication has been trendy lately.
+   It was introduced by Alpher~\cite{Alpher02}, and subsequently developed by
+   Alpher and Fotheringham-Smythe~\cite{Alpher03}, and Alpher \etal~\cite{Alpher04}.''
+
+This is incorrect: ``... subsequently developed by Alpher \etal~\cite{Alpher03} ...''
+because reference~\cite{Alpher03} has just two authors.  If you use the
+\verb'\etal' macro provided, then you need not worry about double periods
+when used at the end of a sentence as in Alpher \etal.
+
+For this citation style, keep multiple citations in numerical (not
+chronological) order, so prefer \cite{Alpher03,Alpher02,Authors12} to
+\cite{Alpher02,Alpher03,Authors12}.
+
+
+
+\subsection{Date}
+Computational Visual Media Conference will be held on xxx to xxx.
+%------------------------------------------------------------------------
+\subsection{Comparison with XXX}
+
+Our approach is compared against XXXX, which is the only method for XXX whose code is freely available. 
+Its main disadvantage is that it is not suited for production ready models that can be modelled with professional modelling packages such Maya or ZBrush.\\
+%------------------------------------------------------------------------
+\subsection{Future work}
+
+For now in the modelling stage of our system, all our control curves are creating smooth surfaces with C2 continuity, and the result template mesh looks pleasing as it is. In our future work, we will investigate the potentials of creases in more detailed character sculpting.
+%-------------------------------------------------------------------------
+
+\subsection{References}
+
+List and number all bibliographical references in 9-point Times,
+single-spaced, at the end of your paper. When referenced in the text,
+enclose the citation number in square brackets, for
+example~\cite{Authors12}.  Where appropriate, include the name(s) of
+editors of referenced books.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+Name & Performance \\
+\hline\hline
+A & OK\\
+B & Bad \\
+Ours & Great\\
+\hline
+\end{tabular}
+\end{center}
+\caption{An example for using tables.}
+\end{table}
+
+%-------------------------------------------------------------------------
+\subsection{Illustrations, graphs, and photographs}
+
+All graphics should be centered.  Please ensure that any point you wish to
+make is resolvable in a printed copy of the paper.  Resize fonts in figures
+to match the font in the body text, and choose line widths which render
+effectively in print.  Many readers (and reviewers), even of an electronic
+copy, will choose to print your paper in order to read it.  You cannot
+insist that they do otherwise, and therefore must not assume that they can
+zoom in to see tiny details on a graphic.
+
+When placing figures in \LaTeX, it's almost always best to use
+\verb+\includegraphics+, and to specify the  figure width as a multiple of
+the line width as in the example below
+{\small\begin{verbatim}
+   \usepackage[dvips]{graphicx} ...
+   \includegraphics[width=0.8\linewidth]
+                   {myfile.eps}
+\end{verbatim}
+}
+
+
+%-------------------------------------------------------------------------
+
+{\small
+\bibliographystyle{cvm}
+\bibliography{cvmbib}
+}
+
+
+\end{document}
