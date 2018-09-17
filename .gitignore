@@ -2,6 +2,7 @@
 # ignore objects and archives, anywhere in the tree.
 dont_git
 PythonOnXcode
+cvmTemplate
 =====================================================
 # only ignore the backup file in the current directory, not subdir/backup
 /backup
@@ -11,5 +12,6 @@ PythonOnXcode
 # ignore objects and archives, anywhere in the tree.
 *.DS_Store
 *.7z
-
+*.pages
+*.docx
 >>>>>>> ca78ccc092842b09ddeb24fcfae00578ce5e0150
