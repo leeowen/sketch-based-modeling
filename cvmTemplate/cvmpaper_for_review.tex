@@ -8,7 +8,6 @@
 \usepackage{amssymb}
 \usepackage{subcaption}
 
-
 % Include other packages here, before hyperref.
 
 % If you comment hyperref and then uncomment it, you should delete
@@ -87,11 +86,11 @@ The modeling process using our developed system is demonstrated in Figure 1 wher
   \begin{subfigure}[!t]{0.32\linewidth}
        \includegraphics[height=2.3in]{./figure/female_warrior_original_sketch.jpg}
         \caption{}\label{fig:reference_image}
-    \end{subfigure}
-     \begin{subfigure}[!t]{0.32\linewidth}
+   \end{subfigure}
+   \begin{subfigure}[!t]{0.32\linewidth}
        \includegraphics[height=2.3in]{./figure/female_warrior_extract_contour.jpg}
         \caption{}\label{fig:extract_contour}
-    \end{subfigure}
+   \end{subfigure}
  \begin{subfigure}[!t]{0.32\linewidth}
        \includegraphics[height=2.3in]{./figure/primitives_before_deformation.jpg}
         \caption{}\label{fig:superellipsoid_primitives}
@@ -130,12 +129,15 @@ Figure 3(a) depicts an arm model of the female warrior which is represented with
 To tackle the above problem, we propose a sketch-guided and ODE-drive primitive deformer. It is developed from a simplified version of the Euler-Lagrange PDE (partial differential equation) which is widely used in physically-based surface deformations and briefly introduced below.
 As discussed in \cite{botsch2008linear}, the main requirement for physically-based surface deformations is an elastic energy which considers locally stretching for solid objects plus bending for two-manifold surfaces called thin-shells. When a surface $\mathbb{S} \subset \mathbb{R}^3$ parameterized by a function $\mathbf{P(u,v)}: \Omega \subset  \mathbb{R}^2 \mapsto \mathbb{S} \subset \mathbb{R}^3 $is deformed to a new shape $\mathbb{S'}$ through adding a displacement vector $\mathbf{d(u,v)}$ to each point $\mathbf{P(u,v)}$, the change of the first and second fundamental $I(u,v),\Pi(u,v) \in \mathbb{R}^{2\times2}$,forms in differential geometry \cite{do2017differential} yields a measure of stretching and bending descried by \cite{terzopoulos1987elastically}
 \begin{equation}
-E_{shell}(S') = \int_{\Omega}k_s\|I'-I\|_F^2+k_b\|\Pi'-\Pi\|_F^2 dudv \label{energy}
+E_{shell}(S') = \int_{\Omega}k_s\|I'-I\|_F^2 +k_b\|\Pi'-\Pi\|_F^2 dudv \label{energy}
 \end{equation}
 Where ,$I'$,$\Pi'$ are the first and second fundamental forms of the surface $\mathbf{S'}$,  $ \| . \|$ indicates a (weighted) Frobenius norm, and the stiffness parameters $k_s$  and $k_b$ are used to control the resistance to stretching and bending. 
 Generating a new deformed surface requires the minimization of the above equation which is non-linear and computationally too expensive for interactive applications. In order to avoid the nonlinear minimization, the change of the first and second fundamental forms is replaced by the first and second order partial derivatives of the displacement function $\mathbf{d(u,v)}$ (Celniker, 1991), (Welch, 1992) , i. e.,   
 \begin{equation}
-\tilde{E}_{shell}(d) = \int_{\Omega}k_s(\|d_u\|^2+\|d_v\|^2)+k_b(\|d_{uu}\|^2+2\|d_{uv}\|+\|d_{vv}\|^2) dudv \label{energydiffgeo}
+\begin{aligned}
+\tilde{E}_{shell}(d)&= \int_{\Omega}k_s(\|d_u\|^2+\|d_v\|^2) \\
+&+k_b(\|d_{uu}\|^2+2\|d_{uv}\|+\|d_{vv}\|^2) dudv \label{energydiffgeo}
+\end{aligned}
 \end{equation}
 where $d_x=\frac{\partial}{\partial{x}}$ and $d_{xy}=\frac{\partial^2}{\partial{x}\partial{y}}$ .
 The minimization of the above equation can be obtained by applying variational calculus which leads to the following Euler-Lagrange PDE
@@ -146,8 +148,8 @@ The minimization of the above equation can be obtained by applying variational c
 where $\triangle$ and $\triangle^2$ are the Laplacian and the bi-Laplacian operator, respectively.
 \begin{equation}
 \begin{aligned}
-\triangle d &=div\nabla d=d_{uu}+d_{vv} \\
-\triangle^2d=\triangle(\triangle d) &=d_{uuuu}+2d_{uuvv}+d_{vvvv}
+&\triangle d=div\nabla d=d_{uu}+d_{vv} \\
+&\triangle^2d=\triangle(\triangle d) =d_{uuuu}+2d_{uuvv}+d_{vvvv}
 \label{laplacianoperator}
 \end{aligned}
 \end{equation}
@@ -159,7 +161,7 @@ k_b\frac{\partial^4d}{\partial u^4}-k_s\frac{\partial^2 d}{\partial u^2}=0
 As pointed out in \cite{chaudhry2013shape} and \cite{chaudhry2015dynamic} , the finite difference solution of ordinary differential equations is very efficient, we here investigate such a numerical solution of Equation \eqref{laplacianoperator}.
 \begin{figure}[h!tb]
 	\begin{center}
-	\includegraphics[width=0.9\columnwidth]{./figure/FDM.png}
+	\includegraphics[width=0.8\columnwidth]{./figure/FDM.png}
 	\end{center}
 	\caption{Typical node i  for the finite difference approximations of derivatives}
 	\label{fig:fdm}
@@ -181,31 +183,40 @@ Introducing Equation \eqref{FDM} into Equation \eqref{ODE}, the following finite
 \label{odefdm}
 \end{equation}
 For character models, the 3D shape defined by two silhouette contours is closed in the parametric direction u as indicated in Figure \ref{fig:FDMnode}(b). Therefore, we can extract some closed curves each of which passes through the two corresponding points on the two silhouette contours. Taking the silhouette contours in Figure 3(b) as an example, we find two corresponding points $\mathbf{c_{13}}$ and $\mathbf{c_{23}}$ on the original silhouette contours $\mathbf{c_1}$ and $\mathbf{c_2}$, and two corresponding points $\mathbf{c'_{13}}$ and $\mathbf{c'_{23}}$ on the deformed silhouette contours $\mathbf{c'_1}$ and $\mathbf{c'_2}$ as shown in Figure \ref{fig:FDMnode}(b). Then we extract a closed curve $\mathbf{c(u)}$ passing through the two corresponding points $\mathbf{c_{13}}$ and $\mathbf{c_{23}}$ from the 3D model in Figure \ref{fig:FDMnode}(a) and depicted it as a dashed curve in Figure \ref{fig:FDMnode}(b). Assuming that the deformed shape of the closed curve $\mathbf{c(u)}$ is $\mathbf{c'(u)}$, the displacement difference between the original closed curve and deformed closed curve is $\mathbf{d(u)=c'(u)-c(u)}$. Our task is to find the displacement difference $\mathbf{d(u)}$ and generate the deformed curve $\mathbf{c'(u)=d(u)+c(u)}$.
-\begin{figure}[h!tb]
-	\begin{center}
-	\includegraphics[width=0.9\columnwidth]{./figure/fdmnode.png}
-	\end{center}
+\begin{figure}[t]
+\begin{center}
+  \begin{subfigure}[!b]{0.45\linewidth}
+       \centering
+       \includegraphics[width=0.9\linewidth]{./figure/fdmnode_a.png}
+        \caption{}\label{fig:fdmnode_side}
+   \end{subfigure}
+   \begin{subfigure}[!b]{0.45\linewidth}
+       \centering
+       \includegraphics[width=0.9\linewidth]{./figure/fdmnode_b.png}
+        \caption{}\label{fig:fdmnode_top}
+   \end{subfigure}
+\end{center}
 	\caption{Finite difference nodes for local shape manipulation from sketches in the same view plane}
 	\label{fig:FDMnode}
 \end{figure}
-In order to use the finite difference method to find the displacement difference $\mathbf{d(u)}$, we uniformly divide the closed curve into $2N$ equal interval as indicated in Figure \ref{fig:FDMnode}. The displacement difference at node 1 and node $\mathbf{N}$ is known, i. e. $\mathbf{d_1=c'_{13}-c_{13}}$ and $\mathbf{d_{N+1}=c'_{23}-c_{23}}$. 
-When we write the finite difference equations for the nodes 2, 3, $2N-1$ and $2N$, the node 1 will be involved, and we have  $\mathbf{d_1=c'_{13}-c_{13}}$. The finite difference equations at these points can be derived from Equation \eqref{odefdm}. Substituting  $\mathbf{d_1=c'_{13}-c_{13}}$ into these equations, we obtain the finite difference equations for the nodes 2, 3, $2N-1$ and $2N$%, and present them in Appendix A. 
-When we write the finite difference equations for the nodes $N-1$,$N$, $N+2$ and $N+3$, the node $N+1$ will be involved, and we have $\mathbf{d_{N+1}=c'_{23}-c_{23}}$. Once again, the finite difference equations at these points can be derived from Equation \eqref{odefdm}. Substituting $\mathbf{d_{N+1}=c'_{23}-c_{23}}$ into these equations, we obtain the finite difference equations for the nodes N-1, N, N+2 and N+3%, and present them in Appendix A as well. 
+In order to use the finite difference method to find the displacement difference $\mathbf{d(u)}$, we uniformly divide the closed curve into $2N$ equal interval as indicated in Figure \ref{fig:FDMnode}. The displacement difference at node 1 and node $\mathbf{N}$ is known, i. e. $\mathbf{d_1=c'_{13}-c_{13}}$ and $\mathbf{d_{N+1}=c'_{23}-c_{23}}$. \\
+When we write the finite difference equations for the nodes 2, 3, $2N-1$ and $2N$, the node 1 will be involved, and we have  $\mathbf{d_1=c'_{13}-c_{13}}$. The finite difference equations at these points can be derived from Equation \eqref{odefdm}. Substituting  $\mathbf{d_1=c'_{13}-c_{13}}$ into these equations, we obtain the finite difference equations for the nodes 2, 3, $2N-1$ and $2N$\\%, and present them in Appendix A. 
+When we write the finite difference equations for the nodes $N-1$,$N$, $N+2$ and $N+3$, the node $N+1$ will be involved, and we have $\mathbf{d_{N+1}=c'_{23}-c_{23}}$. Once again, the finite difference equations at these points can be derived from Equation \eqref{odefdm}. Substituting $\mathbf{d_{N+1}=c'_{23}-c_{23}}$ into these equations, we obtain the finite difference equations for the nodes N-1, N, N+2 and N+3\\%, and present them in Appendix A as well. 
 For all other nodes 3, 4, 5,\ldots, $N-3$ , $N-2$ and $N+4$,$N+5$ ,\ldots, $2N-3$, $2N-2$, the finite difference equations are the same as Equation \eqref{odefdm}. For these nodes, there are $2N-5$ finite difference equations. Plus the 8 finite difference equations at node 2, 3, $N-1$ , $N$ , $N+2$ , $N+3$ , $2N-1$ and $2N$, we get  $2N-2$linear algebra equations which can be solved to determine the  unknown constants $\mathbf{d_2}$, $\mathbf{d_3}$ , \ldots,$\mathbf{d_{N-1}}$, $\mathbf{d_{N}}$ , $\mathbf{d_{N+2}}$ , $\mathbf{d_{N+3}}$ ,\ldots, $\mathbf{d_{2N-1}}$, and $\mathbf{d_{2N}}$. Adding the $\mathbf{d_i}$ ( $i=1,2,\ldots,2N-1,2N$) to the original curve $\mathbf{c(u)}$, we obtain the deformed curve $\mathbf{c'(u)}$, and depict it as a solid curve in Figure \ref{fig:FDMnode}(b). Repeating the above operations for all other points on the two silhouette contours, we obtain all deformed curves. These curves describe a new 3D deformed shape.\\
 Taking a finger shown in Figure 5(c) as an example, the left image shows the silhouette contours. It is used deform a cylinder into the middle 3D model (the second image from the left). The cross-section shapes of the finger model are depicted in the third image from the left. The rightmost image shows the five finger models created with the above method.\\
 With the primitive deformer developed above, we deform the primitive of the 3D base mesh shown in Figure 1(c), obtain a deformed 3D base mesh, and depicted it in Figure 1(d). We have also deformed the primitives to match the silhouette contours of the Knight sketches shown in Figure 6(a), and obtain the deformed 3D base mesh of the knight model shown in Figure 6(b). It is clear that deformed primitives have matched the generated 2D silhouette contours exactly. 
 
 Figure \ref{fig:arm} depicts an arm model which is represented with a generalized cylinder. Figure \ref{fig:arm}b shows the generated 2D silhouette contours of the arm and the generalized cylinder. Figure \ref{fig:arm}c shows after deforming the generalized cylinder, its 2D silhouette contours match generated 2D silhouette contours of the arm exactly. Since the silhouettes only define the shape on one dimension, we control the thickness of the arms via a ramp parameter (see fig.\ref{fig:arm} c,d)
-\begin{figure}[!htb]
+\begin{figure}[t]
 \centering
-\begin{multicols}{2}
-\resizebox{6.7cm}{3.4cm}{\includegraphics[width=\linewidth]{./figure/cylinder.png}}
-\resizebox{6.7cm}{3.4cm}{\includegraphics[width=\linewidth]{./figure/deformer.png}}
-\end{multicols}
-\begin{multicols}{2}
-\resizebox{6.7cm}{3.4cm}{\includegraphics{./figure/ramp.png}}
-\resizebox{6.7cm}{3.4cm}{\includegraphics{./figure/armtopview.png}}
-\end{multicols}
+ \begin{subfigure}[!t]{0.32\linewidth}
+       \includegraphics[height=1in]{./figure/cylinder.png}
+        \caption{}\label{fig:are_cylinder}
+   \end{subfigure}
+   \begin{subfigure}[!t]{0.32\linewidth}
+       \includegraphics[height=1in]{./figure/deformer.png}
+        \caption{}\label{fig:arm_finish}
+   \end{subfigure}
 \caption{Primitive deformer: a)male arm represented with a generalized cylinder, and the 2D silhouette contours of the male, b)deformed shape of the generalized cylinder c)the ramp parameter controlling the arm thickness d)arm on another view plane}
  \label{fig:arm}
 \end{figure}
