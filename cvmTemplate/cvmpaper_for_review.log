@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  17 SEP 2018 15:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  18 SEP 2018 10:34
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -157,7 +157,40 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ))
-(/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/local/texlive/2017/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2016/05/22 v1.1-161 Sub-captions (AR)
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2016/02/21 v3.3-144 Customizing captions (AR)
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2016/05/22 v1.7-166 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 67.
+\captionmargin=\dimen119
+\captionmargin@=\dimen120
+\captionwidth=\dimen121
+\caption@tempdima=\dimen122
+\caption@indent=\dimen123
+\caption@parindent=\dimen124
+\caption@hangindent=\dimen125
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used.
+)
+
+Package caption Warning: Unsupported document class (or package) detected,
+(caption)                usage of the caption package is not recommended.
+See the caption package documentation for explanation.
+
+Package caption Info: \@makecaption = \long macro:#1#2-> \setbox \@tempboxa \hb
+ox {\small \noindent #1.~#2} \setlength {\@ctmp }{\hsize } \addtolength {\@ctmp
+ }{-\@figindent }\addtolength {\@ctmp }{-\@figindent } \ifdim \wd \@tempboxa >\
+@ctmp {\small #1.~#2\par } \else \hbox to\hsize {\hfil \box \@tempboxa \hfil } 
+\fi .
+\c@ContinuedFloat=\count105
+)
+\c@subfigure=\count106
+\c@subtable=\count107
+) (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2017/03/14 v6.85a Hypertext links for LaTeX
 
 (/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
@@ -213,14 +246,14 @@ Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
 (/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 )
-\@linkdim=\dimen119
-\Hy@linkcounter=\count105
-\Hy@pagecounter=\count106
+\@linkdim=\dimen126
+\Hy@linkcounter=\count108
+\Hy@pagecounter=\count109
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2017/03/14 v6.85a Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count107
+\Hy@SavedSpaceFactor=\count110
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
@@ -247,17 +280,17 @@ Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 82.
 ))
-\c@Hy@tempcnt=\count108
+\c@Hy@tempcnt=\count111
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip11
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5104.
-\XeTeXLinkMargin=\dimen120
-\Fld@menulength=\count109
-\Field@Width=\dimen121
-\Fld@charsize=\dimen122
+\XeTeXLinkMargin=\dimen127
+\Fld@menulength=\count112
+\Field@Width=\dimen128
+\Fld@charsize=\dimen129
 Package hyperref Info: Hyper figures OFF on input line 6358.
 Package hyperref Info: Link nesting OFF on input line 6363.
 Package hyperref Info: Hyper index ON on input line 6366.
@@ -267,37 +300,37 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6383.
 Package hyperref Info: PDF/A mode OFF on input line 6388.
 LaTeX Info: Redefining \ref on input line 6428.
 LaTeX Info: Redefining \pageref on input line 6432.
-\Hy@abspage=\count110
-\c@Item=\count111
-\c@Hfootnote=\count112
+\Hy@abspage=\count113
+\c@Item=\count114
+\c@Hfootnote=\count115
 )
 
 Package hyperref Message: Driver (autodetected): hpdftex.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2017/03/14 v6.85a Hyperref driver for pdfTeX
-\Fld@listcount=\count113
-\c@bookmark@seq@number=\count114
+\Fld@listcount=\count116
+\c@bookmark@seq@number=\count117
 \Hy@SectionHShift=\skip48
 )
 (./cvmpaper_for_review.aux)
 \openout1 = `cvmpaper_for_review.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 25.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 27.
+LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 27.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
@@ -313,16 +346,16 @@ Package color Info: Driver file: pdftex.def on input line 147.
 )
 (/usr/local/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count115
-\scratchdimen=\dimen123
+\scratchcounter=\count118
+\scratchdimen=\dimen130
 \scratchbox=\box30
-\nofMPsegments=\count116
-\nofMParguments=\count117
+\nofMPsegments=\count119
+\nofMParguments=\count120
 \everyMPshowfont=\toks20
-\MPscratchCnt=\count118
-\MPscratchDim=\dimen124
-\MPnumerator=\count119
-\makeMPintoPDFobject=\count120
+\MPscratchCnt=\count121
+\MPscratchDim=\dimen131
+\MPnumerator=\count122
+\makeMPintoPDFobject=\count123
 \everyMPtoPDFconversion=\toks21
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
@@ -341,9 +374,12 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: hyperref package is loaded.
+Package caption Info: End \AtBeginDocument code.
 \AtBeginShipoutBox=\box31
 Package atbegshi Info: Package `everyshi' patched.
-Package hyperref Info: Link coloring ON on input line 25.
+Package hyperref Info: Link coloring ON on input line 27.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -351,133 +387,189 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 (/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count121
+\c@section@level=\count124
 )
-LaTeX Info: Redefining \ref on input line 25.
-LaTeX Info: Redefining \pageref on input line 25.
-LaTeX Info: Redefining \nameref on input line 25.
+LaTeX Info: Redefining \ref on input line 27.
+LaTeX Info: Redefining \pageref on input line 27.
+LaTeX Info: Redefining \nameref on input line 27.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 48.
-LaTeX Font Info:    Try loading font information for U+msa on input line 48.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 50.
+LaTeX Font Info:    Try loading font information for U+msa on input line 50.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 48.
+LaTeX Font Info:    Try loading font information for U+msb on input line 50.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 50.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 52.
 
-Underfull \hbox (badness 1365) in paragraph at lines 59--60
+Underfull \hbox (badness 1365) in paragraph at lines 61--62
 []\OT1/ptm/m/n/10 We de-velop an ef-fi-cient sketch-guided and ODE-
  []
 
 
-Underfull \hbox (badness 1629) in paragraph at lines 69--71
+Underfull \hbox (badness 1629) in paragraph at lines 71--73
 []\OT1/ptm/m/n/10 Over the past two decades, sketch-based-modelling
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 69--71
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 72--73
-
- []
-
-
-Underfull \vbox (badness 1406) has occurred while \output is active []
+Underfull \vbox (badness 5260) has occurred while \output is active []
 
  [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
-] [2]
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 108.
+]
+<./figure/female_warrior_original_sketch.jpg, id=38, 236.3229pt x 570.6921pt>
+File: ./figure/female_warrior_original_sketch.jpg Graphic file (type jpg)
+
+<use ./figure/female_warrior_original_sketch.jpg>
+Package pdftex.def Info: ./figure/female_warrior_original_sketch.jpg used on in
+put line 88.
+(pdftex.def)             Requested size: 68.83118pt x 166.2212pt.
+
+<./figure/female_warrior_extract_contour.jpg, id=39, 334.24875pt x 788.9475pt>
+File: ./figure/female_warrior_extract_contour.jpg Graphic file (type jpg)
+
+<use ./figure/female_warrior_extract_contour.jpg>
+Package pdftex.def Info: ./figure/female_warrior_extract_contour.jpg used on in
+put line 92.
+(pdftex.def)             Requested size: 70.41872pt x 166.2212pt.
+
+<./figure/primitives_before_deformation.jpg, id=40, 305.14pt x 722.7pt>
+File: ./figure/primitives_before_deformation.jpg Graphic file (type jpg)
+
+<use ./figure/primitives_before_deformation.jpg>
+Package pdftex.def Info: ./figure/primitives_before_deformation.jpg used on inp
+ut line 96.
+(pdftex.def)             Requested size: 70.18071pt x 166.2212pt.
+
+<./figure/primitives_after_deformation_without_blending.jpg, id=41, 280.04625pt
+ x 722.7pt>
+File: ./figure/primitives_after_deformation_without_blending.jpg Graphic file (
+type jpg)
+ <use ./figure/primitives_after_deformation_without_blending.jpg>
+Package pdftex.def Info: ./figure/primitives_after_deformation_without_blending
+.jpg used on input line 101.
+(pdftex.def)             Requested size: 64.40927pt x 166.2212pt.
+
+<./figure/primitives_after_deformation_and_lattice_with_breast.jpg, id=42, 273.
+02pt x 722.7pt>
+File: ./figure/primitives_after_deformation_and_lattice_with_breast.jpg Graphic
+ file (type jpg)
+
+<use ./figure/primitives_after_deformation_and_lattice_with_breast.jpg>
+Package pdftex.def Info: ./figure/primitives_after_deformation_and_lattice_with
+_breast.jpg used on input line 105.
+(pdftex.def)             Requested size: 62.79327pt x 166.2212pt.
+
+<./figure/final_shot.jpg, id=43, 1284.8pt x 722.7pt>
+File: ./figure/final_shot.jpg Graphic file (type jpg)
+
+<use ./figure/final_shot.jpg>
+Package pdftex.def Info: ./figure/final_shot.jpg used on input line 109.
+(pdftex.def)             Requested size: 295.49779pt x 166.2212pt.
+
+Overfull \hbox (219.61256pt too wide) in paragraph at lines 109--110
+[][][][] 
+ []
+
+Missing character: There is no © in font ptmr7t!
+Missing character: There is no © in font ptmr7t!
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[2]
+Underfull \vbox (badness 8038) has occurred while \output is active []
+
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 142.
 
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)
+) [3 <./figure/female_warrior_original_sketch.jpg> <./figure/female_warrior_ext
+ract_contour.jpg> <./figure/primitives_before_deformation.jpg> <./figure/primit
+ives_after_deformation_without_blending.jpg> <./figure/primitives_after_deforma
+tion_and_lattice_with_breast.jpg> <./figure/final_shot.jpg>]
 
-LaTeX Warning: Citation `Alpher02' on page 3 undefined on input line 122.
-
-
-LaTeX Warning: Citation `Alpher03' on page 3 undefined on input line 123.
-
-
-LaTeX Warning: Citation `Alpher04' on page 3 undefined on input line 123.
+LaTeX Warning: Citation `Alpher02' on page 4 undefined on input line 156.
 
 
-LaTeX Warning: Citation `Alpher03' on page 3 undefined on input line 125.
+LaTeX Warning: Citation `Alpher03' on page 4 undefined on input line 157.
 
 
-LaTeX Warning: Citation `Alpher03' on page 3 undefined on input line 126.
+LaTeX Warning: Citation `Alpher04' on page 4 undefined on input line 157.
 
 
-LaTeX Warning: Citation `Alpher03' on page 3 undefined on input line 131.
+LaTeX Warning: Citation `Alpher03' on page 4 undefined on input line 159.
 
 
-LaTeX Warning: Citation `Alpher02' on page 3 undefined on input line 131.
+LaTeX Warning: Citation `Alpher03' on page 4 undefined on input line 160.
 
 
-LaTeX Warning: Citation `Authors12' on page 3 undefined on input line 131.
+LaTeX Warning: Citation `Alpher03' on page 4 undefined on input line 165.
 
 
-LaTeX Warning: Citation `Alpher02' on page 3 undefined on input line 132.
+LaTeX Warning: Citation `Alpher02' on page 4 undefined on input line 165.
 
 
-LaTeX Warning: Citation `Alpher03' on page 3 undefined on input line 132.
+LaTeX Warning: Citation `Authors12' on page 4 undefined on input line 165.
 
 
-LaTeX Warning: Citation `Authors12' on page 3 undefined on input line 132.
+LaTeX Warning: Citation `Alpher02' on page 4 undefined on input line 166.
 
 
-Underfull \hbox (badness 1577) in paragraph at lines 141--144
+LaTeX Warning: Citation `Alpher03' on page 4 undefined on input line 166.
+
+
+LaTeX Warning: Citation `Authors12' on page 4 undefined on input line 166.
+
+
+Underfull \hbox (badness 1577) in paragraph at lines 175--178
 \OT1/ptm/m/n/10 ready mod-els that can be mod-elled with pro-fes-sional
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 141--144
+Underfull \hbox (badness 10000) in paragraph at lines 175--178
 
  []
 
-[3]
 
-LaTeX Warning: Citation `Authors12' on page 4 undefined on input line 154.
+LaTeX Warning: Citation `Authors12' on page 4 undefined on input line 188.
 
 (./cvmpaper_for_review.bbl (./cvmpaper_for_review.brf)
 \tf@brf=\write3
 \openout3 = `cvmpaper_for_review.brf'.
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 202.
- [4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 202.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 236.
+ [4] [5
+
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 236.
 
 (./cvmpaper_for_review.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 202.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 202.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 236.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 236.
 Package rerunfilecheck Info: File `cvmpaper_for_review.brf' has not changed.
-(rerunfilecheck)             Checksum: BC1E8A03445168B3B2AB9A5EFAE09CBE;1180.
+(rerunfilecheck)             Checksum: 3213392514FF9ED6CE0788A366A5921D;1222.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 202.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 236.
  ) 
 Here is how much of TeX's memory you used:
- 6549 strings out of 492995
- 95381 string characters out of 6132703
- 192042 words of memory out of 5000000
- 9967 multiletter control sequences out of 15000+600000
+ 7677 strings out of 492995
+ 116944 string characters out of 6132703
+ 216115 words of memory out of 5000000
+ 11078 multiletter control sequences out of 15000+600000
  30019 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,9n,29p,1760b,324s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,9n,40p,1757b,517s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/te
 xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texl
@@ -488,10 +580,10 @@ exmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/texmf-di
 st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/t
 ype1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/t
 imes/utmri8a.pfb>
-Output written on cvmpaper_for_review.pdf (4 pages, 121142 bytes).
+Output written on cvmpaper_for_review.pdf (5 pages, 1114060 bytes).
 PDF statistics:
- 128 PDF objects out of 1000 (max. 8388607)
- 111 compressed objects within 2 object streams
- 34 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 138 PDF objects out of 1000 (max. 8388607)
+ 114 compressed objects within 2 object streams
+ 35 named destinations out of 1000 (max. 500000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
 
