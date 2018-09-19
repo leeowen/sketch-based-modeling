@@ -13,45 +13,46 @@ Warning--I didn't find a database entry for "Alpher04"
 Warning--I didn't find a database entry for "Authors12"
 Warning--can't use both volume and number fields in gingold2009structured
 Warning--can't use both volume and number fields in shtof2013geosemantic
-You've used 12 entries,
+Warning--can't use both volume and number fields in terzopoulos1987elastically
+You've used 17 entries,
             2120 wiz_defined-function locations,
-            591 strings with 6153 characters,
-and the built_in function-call counts, 5175 in all, are:
-= -- 517
-> -- 249
-< -- 10
-+ -- 98
-- -- 84
-* -- 366
-:= -- 807
-add.period$ -- 43
-call.type$ -- 12
-change.case$ -- 77
+            625 strings with 7062 characters,
+and the built_in function-call counts, 7457 in all, are:
+= -- 749
+> -- 369
+< -- 13
++ -- 145
+- -- 126
+* -- 545
+:= -- 1168
+add.period$ -- 60
+call.type$ -- 17
+change.case$ -- 113
 chr.to.int$ -- 0
-cite$ -- 14
-duplicate$ -- 213
-empty$ -- 397
-format.name$ -- 84
-if$ -- 1133
+cite$ -- 20
+duplicate$ -- 293
+empty$ -- 559
+format.name$ -- 126
+if$ -- 1615
 int.to.chr$ -- 0
-int.to.str$ -- 12
-missing$ -- 12
-newline$ -- 63
-num.names$ -- 26
-pop$ -- 90
+int.to.str$ -- 17
+missing$ -- 17
+newline$ -- 88
+num.names$ -- 36
+pop$ -- 124
 preamble$ -- 1
-purify$ -- 65
+purify$ -- 96
 quote$ -- 0
-skip$ -- 158
+skip$ -- 217
 stack$ -- 0
-substring$ -- 297
-swap$ -- 82
-text.length$ -- 10
+substring$ -- 461
+swap$ -- 108
+text.length$ -- 13
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 48
-warning$ -- 2
-while$ -- 48
-width$ -- 14
-write$ -- 143
+type$ -- 68
+warning$ -- 3
+while$ -- 70
+width$ -- 19
+write$ -- 201
 (There was 1 error message)

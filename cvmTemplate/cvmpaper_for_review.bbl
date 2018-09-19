@@ -1,9 +1,32 @@
 \begin{thebibliography}{10}\itemsep=-1pt
 
+\bibitem{botsch2008linear}
+M.~Botsch and O.~Sorkine.
+\newblock On linear variational surface deformation methods.
+\newblock {\em IEEE transactions on visualization and computer graphics},
+  14(1):213--230, 2008.
+
+\bibitem{chaudhry2015dynamic}
+E.~Chaudhry, S.~Bian, H.~Ugail, X.~Jin, L.~You, and J.~J. Zhang.
+\newblock Dynamic skin deformation using finite difference solutions for
+  character animation.
+\newblock {\em Computers \& Graphics}, 46:294--305, 2015.
+
+\bibitem{chaudhry2013shape}
+E.~Chaudhry, L.~You, X.~Jin, X.~Yang, and J.~J. Zhang.
+\newblock Shape modeling for animated characters using ordinary differential
+  equations.
+\newblock {\em Computers \& Graphics}, 37(6):638--644, 2013.
+
 \bibitem{chen20133}
 T.~Chen, Z.~Zhu, A.~Shamir, S.-M. Hu, and D.~Cohen-Or.
 \newblock 3-sweep: Extracting editable objects from a single photo.
 \newblock {\em ACM Transactions on Graphics (TOG)}, 32(6):195, 2013.
+
+\bibitem{do2017differential}
+M.~P. Do~Carmo, G.~Fischer, U.~Pinkall, and H.~Reckziegel.
+\newblock Differential geometry.
+\newblock In {\em Mathematical Models}, pages 155--180. Springer, 2017.
 
 \bibitem{draper2003gestural}
 G.~Draper and P.~K. Egbert.
@@ -55,6 +78,12 @@ A.~Shtof, A.~Agathos, Y.~Gingold, A.~Shamir, and D.~Cohen-Or.
 \newblock Geosemantic snapping for sketch-based modeling.
 \newblock In {\em Computer graphics forum}, volume~32, pages 245--253. Wiley
   Online Library, 2013.
+
+\bibitem{terzopoulos1987elastically}
+D.~Terzopoulos, J.~Platt, A.~Barr, and K.~Fleischer.
+\newblock Elastically deformable models.
+\newblock In {\em ACM Siggraph Computer Graphics}, volume~21, pages 205--214.
+  ACM, 1987.
 
 \bibitem{williams1997stochastic}
 L.~R. Williams and D.~W. Jacobs.
