@@ -62,9 +62,7 @@ The experimental results demonstrate that our proposed approach can create 3D ch
   \item[$\bullet$] Our character modelling system provide editing operations, support users to manipulate the control curves the draw in the creation stage and adding more control curves after the surface has been created. With our developed system, 3D character models with 3D details can be created easily and efficiently.
 \end{itemize}
 The rest of the paper is organised as follows. The previous related work is briefly reviewed in Section \ref{related_work}. The system overview of our proposed approach is presented in Section \ref{system_overview}. Primitive deformer is examined in Section \ref{primitive_deformer}, and Detail generator is investigated in Section \ref{detail_generator}. Finally, the conclusions and future work are discussed in Section \ref{conclusions_and_future_work}. 
-
 \section{Related Work}\label{related_work}
-
 \subsection{Inflation Technology}
 Over the past two decades, sketch-based-modelling (SBM) has been widely studied in the computer graphic research community. Several research based systems have been proposed to generate organic models. The surface inflation technique extrudes the polygonal mesh from the skeleton outwards do a good job in modelling stuffed toys. One trend is to inflate freeform surfaces to create simple stuffed animals and other rotund objects in a sketch-based modelling fashion, such as \cite{igarashi1999teddy, Karpenko:2006:SFS:1141911.1141928, nealen2007fibermesh}. The Teddy system \cite{igarashi1999teddy} is the pioneer, it takes closed curves as inputs and find their cordial axes as spline, then wrap the splines with the polygonal mesh. Later, FiberMesh\cite{nealen2007fibermesh} enriched the editing operations for the inflating base mesh. FiberMesh also presents two types of the control curves: smooth and sharp. A smooth curve constrains the surface to be smooth across it, while a sharp curve only places positional constraints with C0 continuity. Sharp control curves appears when operations like cutting, extrusion and tunnel take place. Sharp control curves also serves the creation of creases on surface. However, FiberMesh \cite{nealen2007fibermesh} doesn't allow users to specify the ROI.Based on the study from William\cite{williams1997stochastic}, the SmoothSketch system addressed the problem of T-junction and cusp, which Teddy fails to solve.
 %-------------------------------------------------------------------------
@@ -75,9 +73,9 @@ Unlike the inflating systems, primitives-based systems deconstruct the modelling
 A universal disadvantage of above systems is features provided are limited it was not suited to modelling complex and production ready models. This is partly due to their limitations in mesh editing operations, so several sketch-based editing methods have been development to help to improve the performance of sketch-based modelling system. One group of sketch-based editing methods \cite{draper2003gestural, kho2005sketching} treats individual sketch curve as the reference for deformations like bending. Take the \cite{kho2005sketching} for example, user will draw a first curve as a reference curve to both set the ROI (region of interest) and be a controlling 'skeleton', and a new sketch curve indicating the desired deformation of the reference curve. Then mapping the reference curve to the second curve, the ROI will be deformed. These methods are very useful for simple keyframe animation, but for more small-scaled shape's editing task, studies like \cite{lipman2004differential,nealen2007sketch,SBM:SBM07:023-030} are more suitable. These studies take mesh's contours (depend on the viewplan at the time of editing operation is happening) as reference curves, and the newly sketched curves indicating the new positions that the ROI of mesh should be reconstructed to. As they aiming at maintaining the local geometrical details, Laplacian coordinates and correspondingly laplacian surface editing technology are implemented to preserving the features. 
 
 \section{System Overview}\label{system_overview}
-Based on our proposed approach, we have developed a modelling system which is composed of two main components: primitive deformer and detail generator. The primitive deformer is used to deform primitives to exactly match user's generated 2D silhouette contours and create a rough base mesh. The detail generator consists of local shape creator and image-based detail generator. The local shape creator creates a new local shape from four different algorithms. They are local shape creation from: 1) two open silhouette contours in two different view planes, 2) one open and one closed silhouette contour in two different view planes, 3) two open and one closed silhouette contours in three different view planes, and 4) two closed curves. The image-based detail generator generates fine 3D details from 2D images automatically through the SFS algorithm.  
-The modeling process using our developed system is demonstrated in Figure 1 where a 3D female warrior model is created. 
- \begin{figure}[t]
+Based on our proposed approach, we have developed a modelling system which is composed of two main components: primitive deformer and detail generator. The primitive deformer is used to deform primitives to exactly match user's generated 2D silhouette contours and create a rough base mesh. The detail generator consists of local shape creator and image-based detail generator. The local shape creator creates a new local shape from four different algorithms. They are local shape creation from: 1) two open silhouette contours in two different view planes, 2) one open and one closed silhouette contour in two different view planes, 3) two open and one closed silhouette contours in three different view planes, and 4) two closed curves. The image-based detail generator generates fine 3D details from 2D images automatically through the SFS algorithm. \\
+The modeling process using our developed system is demonstrated in Figure \ref{fig:system_overview} where a 3D female warrior model is created. \\
+ \begin{figure}[h]
 \begin{center}
 %\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
  %  \includegraphics[width=0.7\linewidth]{./figure/primitives_before_deformation.jpg}\label{fig:long}
@@ -107,21 +105,18 @@ The modeling process using our developed system is demonstrated in Figure 1 wher
         \caption{}\label{fig:final_shot}
     \end{subfigure}
 \end{center}
-   \caption{Quick creation of a 3D female warrior model: (a) 2D female warrior sketch, (b) 2D silhouette contours, (c) base mesh without primitive deformations, (d) base mesh by deforming primitives to match generated 2D silhouette contours or adding local shapes created from 2D silhouette contours, (e) base mesh by adding blending surfaces to smoothly connect deformed primitives, (f) detail generation through local shape creation and shape from shading (Sketch by © EngKit Leong) 
-  }
+   \caption{Quick creation of a 3D female warrior model: (a) 2D female warrior sketch, (b) 2D silhouette contours, (c) base mesh without primitive deformations, (d) base mesh by deforming primitives to match generated 2D silhouette contours or adding local shapes created from 2D silhouette contours, (e) base mesh by adding blending surfaces to smoothly connect deformed primitives, (f) detail generation through local shape creation and shape from shading (Sketch by © EngKit Leong)}
 \label{fig:system_overview}
-\end{figure}
-
+\end{figure}\\
 First, 2D character silhouette contours are generated. Users can draw their own silhouette contours directly or input their selected sketches into our developed system. If the selected sketches are input into our developed system, a further process may be required to extract the 2D silhouette contours from the input sketches. For the example demonstrated in Figure \ref{fig:system_overview}, a 2D female warrior sketch shown in Figure \ref{fig:system_overview}\subref{fig:reference_image} is input. Then, users can extract 2D silhouette contours from the input sketch as shown in Figure \ref{fig:system_overview}\subref{fig:extract_contour}. After that, proper primitives are selected and placed to align with the corresponding silhouette contours through purely geometric transformations as shown in Figure \ref{fig:system_overview}\subref{fig:superellipsoid_primitives}. Since the silhouette contours of the primitives do not match the generated 2D silhouette contours of the 2D female warrior, the primitive deformer developed from sketch-guided and ODE driven deformations described in Section 4 is applied to deform the primitives to exactly match the corresponding 2D silhouette contours and create a rough 3D base mesh depicted in Figure \ref{fig:system_overview}\subref{fig:primitives_after_deformation}. 
 Once a 3D base mesh model is obtained, the detail generator described in Section 5 is employed to add 3D details to the 3D base mesh. First, the local shape creator developed in Subsection 5.2 is used to add local shapes and smoothly connect primitives together as demonstrated in Figure \ref{fig:system_overview}\subref{fig:blending_body_parts}. After that, we want to add fine details such as a dragon to the female warrior model. Since creating fine 3D details is not an easy task, we apply the image-based detail generator described in Subsection 5.3 to achieve the complicated 3D details shown in Figure \ref{fig:system_overview}\subref{fig:final_shot}.\\
 In the following two sections, we will introduce in detail the primitive deformer and the detail generator, respectively. Some examples will be presented to demonstrate their applications.
-
 \section{Primitive deformer}\label{primitive_deformer}
 As shown in Figure \ref{fig:system_overview}\subref{fig:superellipsoid_primitives}, the base mesh of the female warrior without primitive deformations cannot exactly match the generated 2D silhouette contours of the female warrior. In order to tackle this problem, in this section, we develop a primitive deformer. In the subsections below, we first introduce the interface of the primitive deformer in Subsection \ref{user_interface_of_primitive_deformer}. Then, we discuss the algorithm of the primitive deformer in Subsection \label{algorithm_of_primitive_deformer}.
 %------------------------------------------------------------------------
 \subsection{User interface of primitive deformer}\label{user_interface_of_primitive_deformer}
-The user interface of our developed primitive deformer uses four windows. The upper left window is used to display 3D base mesh without primitive deformations in the front view. The upper right window is used to display primitives and the user-drawn 2D silhouette contours for these primitives. If required, the user can edit the generated 2D silhouette contours in the upper right window. The deformed primitives are shown in the bottom windows where the left is from the front view and the right is from the side view. 
-Taking the left leg of the female warrior shown in Figure \ref{fig:deformer_UI} as an example, the primitive of the left leg is shown in the upper left window. It and the user-drawn 2D silhouette contours are depicted in the upper right window. Our proposed primitive deformer described in Subsection \ref{algorithm_of_primitive_deformer} deforms the primitives of the 3D base mesh to exactly match the generated 2D silhouette contours and create a deformed 3D base mesh with primitive deformations, and depicted the deformed 3D base mesh in bottom windows. 
+The user interface of our developed primitive deformer uses four windows. The upper left window is used to display 3D base mesh without primitive deformations in the front view. The upper right window is used to display primitives and the user-drawn 2D silhouette contours for these primitives. If required, the user can edit the generated 2D silhouette contours in the upper right window. The deformed primitives are shown in the bottom windows where the left is from the front view and the right is from the side view. \\
+Taking the left leg of the female warrior shown in Figure \ref{fig:deformer_UI} as an example, the primitive of the left leg is shown in the upper left window. It and the user-drawn 2D silhouette contours are depicted in the upper right window. Our proposed primitive deformer described in Subsection \ref{algorithm_of_primitive_deformer} deforms the primitives of the 3D base mesh to exactly match the generated 2D silhouette contours and create a deformed 3D base mesh with primitive deformations, and depicted the deformed 3D base mesh in bottom windows. \\
 \begin{figure}[h]
 \centering
        \includegraphics[width=1.0\linewidth]{./figure/deformer_UI.jpg}
@@ -140,17 +135,14 @@ After 3D primitives have been placed and aligned with the generated 2D silhouett
    \end{subfigure}
 \caption{Primitive deformer: a) female warrior arm represented with a cylinder and its 2D silhouette contour, b) deformed shape of the cylinder }
  \label{fig:arm}
-\end{figure}
-
+\end{figure}\\
 Figure \ref{fig:arm}\subref{fig:are_cylinder} depicts an arm model of the female warrior which is represented with a cylinder. The 2D silhouette contour to be matched is also shown in the image. Figure \ref{fig:arm}\subref{fig:arm_finish} shows how the cylinder is deformed with the algorithm developed below to match the 2D silhouette contour exactly. This is achieved by a sketch-guided and ODE-drive primitive deformer. It is developed from a simplified version of the Euler-Lagrange PDE (partial differential equation) which is widely used in physically-based surface deformations and briefly introduced below.\\
-
-As discussed in \cite{botsch2008linear}, the main requirement for physically-based surface deformations is an elastic energy which considers locally stretching for solid objects plus bending for two-manifold surfaces called thin-shells. When a surface $\mathbb{S} \subset \mathbb{R}^3$ parameterized by a function $\mathbf{P(u,v)}: \Omega \subset  \mathbb{R}^2 \mapsto \mathbb{S} \subset \mathbb{R}^3 $is deformed to a new shape $\mathbb{S'}$ through adding a displacement vector $\mathbf{d(u,v)}$ to each point $\mathbf{P(u,v)}$, the change of the first and second fundamental $I(u,v),\Pi(u,v) \in \mathbb{R}^{2\times2}$,forms in differential geometry \cite{do2017differential} yields a measure of stretching and bending descried by \cite{terzopoulos1987elastically}
+As discussed in \cite{botsch2008linear}, the main requirement for physically-based surface deformations is an elastic energy which considers locally stretching for solid objects plus bending for two-manifold surfaces called thin-shells. When a surface $\mathbb{S} \subset \mathbb{R}^3$ parameterized by a function $\mathbf{P(u,v)}: \Omega \subset  \mathbb{R}^2 \mapsto \mathbb{S} \subset \mathbb{R}^3 $is deformed to a new shape $\mathbb{S'}$ through adding a displacement vector $\mathbf{d(u,v)}$ to each point $\mathbf{P(u,v)}$, the change of the first and second fundamental $I(u,v),\Pi(u,v) \in \mathbb{R}^{2\times2}$,forms in differential geometry \cite{do2017differential} yields a measure of stretching and bending descried by \cite{terzopoulos1987elastically}\\
 \begin{equation}
 E_{shell}(S') = \int_{\Omega}k_s\|I'-I\|_F^2 +k_b\|\Pi'-\Pi\|_F^2 dudv \label{energy}
 \end{equation}
 Where ,$I'$,$\Pi'$ are the first and second fundamental forms of the surface $\mathbf{S'}$,  $ \| . \|$ indicates a (weighted) Frobenius norm, and the stiffness parameters $k_s$  and $k_b$ are used to control the resistance to stretching and bending. \\
-
-Generating a new deformed surface requires the minimization of the above equation which is non-linear and computationally too expensive for interactive applications. In order to avoid the nonlinear minimization, the change of the first and second fundamental forms is replaced by the first and second order partial derivatives of the displacement function $\mathbf{d(u,v)}$ (Celniker, 1991), (Welch, 1992) , i. e.,   
+Generating a new deformed surface requires the minimization of the above equation which is non-linear and computationally too expensive for interactive applications. In order to avoid the nonlinear minimization, the change of the first and second fundamental forms is replaced by the first and second order partial derivatives of the displacement function $\mathbf{d(u,v)}$ (Celniker, 1991), (Welch, 1992) , i. e.,   \\
 \begin{equation}
 \begin{aligned}
 \tilde{E}_{shell}(d)&= \int_{\Omega}k_s(\|d_u\|^2+\|d_v\|^2) \\
@@ -158,7 +150,7 @@ Generating a new deformed surface requires the minimization of the above equatio
 \end{aligned}
 \end{equation}
 where $d_x=\frac{\partial}{\partial{x}}$ and $d_{xy}=\frac{\partial^2}{\partial{x}\partial{y}}$ .
-The minimization of the above equation can be obtained by applying variational calculus which leads to the following Euler-Lagrange PDE
+The minimization of the above equation can be obtained by applying variational calculus which leads to the following Euler-Lagrange PDE\\
 \begin{equation}
 -k_s\triangle d+k_b\triangle^2d=0
 \label{lagrange}
@@ -171,13 +163,11 @@ where $\triangle$ and $\triangle^2$ are the Laplacian and the bi-Laplacian opera
 \label{laplacianoperator}
 \end{aligned}
 \end{equation}\\
-
 Using the sketched 2D silhouette contours shown in Figure \ref{fig:arm}\subref{fig:are_cylinder} to change the shape of the primitive can be transformed into generation of a sweeping surface which passes through the two sketched 2D silhouette contours. The generator creating the sweeping surface is a curve of the parametric variable $u$ only, and the two silhouette contours are trajectories. If Equation \eqref{lagrange} is used to describe the generator, the parametric variable  in Equation \eqref{lagrange} drops, and we have  $d_{vv}=0$ and $d_{vvvv}=0$. Substituting  and  into Equation \eqref{lagrange}, we obtain the following simplified version of the Euler-Lagrange PDE \eqref{lagrange}which is actually a vector-valued ordinary differential equation
 \begin{equation}
 k_b\frac{\partial^4d}{\partial u^4}-k_s\frac{\partial^2 d}{\partial u^2}=0
 \label{ODE}
 \end{equation}\\
-
 As pointed out in \cite{chaudhry2013shape} and \cite{chaudhry2015dynamic} , the finite difference solution of ordinary differential equations is very efficient, we here investigate such a numerical solution of Equation \eqref{laplacianoperator}. \\
 \begin{figure}[h]
 	\begin{center}
@@ -185,8 +175,7 @@ As pointed out in \cite{chaudhry2013shape} and \cite{chaudhry2015dynamic} , the 
 	\caption{Typical node i  for the finite difference approximations of derivatives}
 	\label{fig:fdm}
 	\end{center}
-\end{figure}
-
+\end{figure}\\
 For a typical node  shown in Figure \ref{fig:fdm}, the central finite difference approximations of the second and fourth order derivatives can be written as \cite{chaudhry2013shape}
 \begin{equation}
 \begin{split}
@@ -194,8 +183,7 @@ For a typical node  shown in Figure \ref{fig:fdm}, the central finite difference
 \frac{\partial^4d}{\partial u^4}|_i &=\frac{1}{\triangle u^4}[6d_i-4(d_{i-1}+d_{i+1})+d_{i-2}+d_{i+2}]
 \label{FDM}
 \end{split}
-\end{equation}
-
+\end{equation}\\
 Introducing Equation \eqref{FDM} into Equation \eqref{ODE}, the following finite difference equation at the representative node $i$ can be written as:
 \begin{equation}
 \begin{split}
@@ -204,7 +192,6 @@ Introducing Equation \eqref{FDM} into Equation \eqref{ODE}, the following finite
 \end{split}
 \label{odefdm}
 \end{equation}\\
-
 For character models, the 3D shape defined by two silhouette contours is closed in the parametric direction u as indicated in Figure \ref{fig:FDMnode}\subref{fig:fdmnode_top}. Therefore, we can extract some closed curves each of which passes through the two corresponding points on the two silhouette contours. Taking the silhouette contours in Figure \ref{fig:FDMnode}\subref{fig:fdmnode_top} as an example, we find two corresponding points $\mathbf{c_{13}}$ and $\mathbf{c_{23}}$ on the original silhouette contours $\mathbf{c_1}$ and $\mathbf{c_2}$, and two corresponding points $\mathbf{c'_{13}}$ and $\mathbf{c'_{23}}$ on the deformed silhouette contours $\mathbf{c'_1}$ and $\mathbf{c'_2}$ as shown in Figure \ref{fig:FDMnode}\subref{fig:fdmnode_top}. Then we extract a closed curve $\mathbf{c(u)}$ passing through the two corresponding points $\mathbf{c_{13}}$ and $\mathbf{c_{23}}$ from the 3D model in Figure \ref{fig:FDMnode}\subref{fig:fdmnode_side} and depicted it as a dashed curve in Figure \ref{fig:FDMnode}(b). Assuming that the deformed shape of the closed curve $\mathbf{c(u)}$ is $\mathbf{c'(u)}$, the displacement difference between the original closed curve and deformed closed curve is $\mathbf{d(u)=c'(u)-c(u)}$. Our task is to find the displacement difference $\mathbf{d(u)}$ and generate the deformed curve $\mathbf{c'(u)=d(u)+c(u)}$.
 \begin{figure}[h]
 \begin{center}
@@ -226,56 +213,64 @@ For character models, the 3D shape defined by two silhouette contours is closed 
 	\caption{Finite difference nodes for local shape manipulation from sketches in different view planes and the deformed 3D finger models}
 	\label{fig:FDMnode}
 	\end{center}
-\end{figure}
-
+\end{figure}\\
 In order to use the finite difference method to find the displacement difference $\mathbf{d(u)}$, we uniformly divide the closed curve into $2N$ equal interval as indicated in Figure \ref{fig:FDMnode}. The displacement difference at node 1 and node $\mathbf{N}$ is known, i. e. $\mathbf{d_1=c'_{13}-c_{13}}$ and $\mathbf{d_{N+1}=c'_{23}-c_{23}}$. \\
-
 When we write the finite difference equations for the nodes 2, 3, $2N-1$ and $2N$, the node 1 will be involved, and we have  $\mathbf{d_1=c'_{13}-c_{13}}$. The finite difference equations at these points can be derived from Equation \eqref{odefdm}. Substituting  $\mathbf{d_1=c'_{13}-c_{13}}$ into these equations, we obtain the finite difference equations for the nodes 2, 3, $2N-1$ and $2N$\\%, and present them in Appendix A. 
 When we write the finite difference equations for the nodes $N-1$,$N$, $N+2$ and $N+3$, the node $N+1$ will be involved, and we have $\mathbf{d_{N+1}=c'_{23}-c_{23}}$. Once again, the finite difference equations at these points can be derived from Equation \eqref{odefdm}. Substituting $\mathbf{d_{N+1}=c'_{23}-c_{23}}$ into these equations, we obtain the finite difference equations for the nodes N-1, N, N+2 and N+3\\%, and present them in Appendix A as well. 
-
-For all other nodes 3, 4, 5,\ldots, $N-3$ , $N-2$ and $N+4$,$N+5$ ,\ldots, $2N-3$, $2N-2$, the finite difference equations are the same as Equation \eqref{odefdm}. For these nodes, there are $2N-5$ finite difference equations. Plus the 8 finite difference equations at node 2, 3, $N-1$ , $N$ , $N+2$ , $N+3$ , $2N-1$ and $2N$, we get  $2N-2$linear algebra equations which can be solved to determine the  unknown constants $\mathbf{d_2}$, $\mathbf{d_3}$ , \ldots,$\mathbf{d_{N-1}}$, $\mathbf{d_{N}}$ , $\mathbf{d_{N+2}}$ , $\mathbf{d_{N+3}}$ ,\ldots, $\mathbf{d_{2N-1}}$, and $\mathbf{d_{2N}}$. Adding the $\mathbf{d_i}$ ( $i=1,2,\ldots,2N-1,2N$) to the original curve $\mathbf{c(u)}$, we obtain the deformed curve $\mathbf{c'(u)}$, and depict it as a solid curve in Figure \ref{fig:FDMnode}(b). Repeating the above operations for all other points on the two silhouette contours, we obtain all deformed curves. These curves describe a new 3D deformed shape.\\
-
+For all other nodes 3, 4, 5,\ldots, $N-3$ , $N-2$ and $N+4$,$N+5$ ,\ldots, $2N-3$, $2N-2$, the finite difference equations are the same as Equation \eqref{odefdm}. For these nodes, there are $2N-5$ finite difference equations. Plus the 8 finite difference equations at node 2, 3, $N-1$ , $N$ , $N+2$ , $N+3$ , $2N-1$ and $2N$, we get  $2N-2$linear algebra equations which can be solved to determine the  unknown constants $\mathbf{d_2}$, $\mathbf{d_3}$ , \ldots,$\mathbf{d_{N-1}}$, $\mathbf{d_{N}}$ , $\mathbf{d_{N+2}}$ , $\mathbf{d_{N+3}}$ ,\ldots, $\mathbf{d_{2N-1}}$, and $\mathbf{d_{2N}}$. Adding the $\mathbf{d_i}$ ( $i=1,2,\ldots,2N-1,2N$) to the original curve $\mathbf{c(u)}$, we obtain the deformed curve $\mathbf{c'(u)}$, and depict it as a solid curve in Figure \ref{fig:FDMnode}\subref{fig:fdmnode_top}. Repeating the above operations for all other points on the two silhouette contours, we obtain all deformed curves. These curves describe a new 3D deformed shape.\\
 Taking a finger shown in Figure \ref{fig:FDMnode}\subref{fig:fingers} as an example, the left image shows the silhouette contours. It is used deform a cylinder into the middle 3D model (the second image from the left). The cross-section shapes of the finger model are depicted in the third image from the left. The rightmost image shows the five finger models created with the above method.\\
-
-With the primitive deformer developed above, we deform the primitive of the 3D base mesh shown in Figure \ref{fig:system_overview}\subref{fig:superellipsoid_primitives}, obtain a deformed 3D base mesh, and depicted it in Figure \ref{fig:system_overview}\subref{fig:primitives_after_deformation}. It is clear that deformed primitives have matched the generated 2D silhouette contours exactly. \\
-% We have also deformed the primitives to match the silhouette contours of the Knight sketches shown in Figure 6(a), and obtain the deformed 3D base mesh of the knight model shown in Figure 6(b). 
-
-%However, there are times when deforming from a uniform primitive is not ideal because the area of cross-section changes a lot. See Fig.\ref{fig:footfinger}(a). In such cases, we extract the cross-section first, scale them accordingly (Fig.\ref{fig:footfinger} (b)), and then using the same algorithm mentioned above to deform the pre-processed (Fig.\ref{fig:footfinger} (c)) primitives.
-%\begin{figure}[!htb]
-%\centering
-%\begin{multicols}{3}
-%\resizebox{4.3cm}{4.1cm}{\includegraphics[width=\linewidth]{./figure/foot1.png}}
-%\resizebox{4.3cm}{4.1cm}{\includegraphics[width=\linewidth]{./figure/foot_scale_cross-section.png}}
-%\resizebox{4.3cm}{4.1cm}{\includegraphics[width=\linewidth]{./figure/foot2.png}}
-%\end{multicols}
-%\begin{multicols}{3}
-%\resizebox{4.3cm}{4.1cm}{\includegraphics[width=\linewidth]{./figure/finger_scale_cross_section.png}}
-%\resizebox{4.3cm}{4.1cm}{\includegraphics[width=\linewidth]{./figure/finger.png}}
-%\resizebox{4.3cm}{4.1cm}{\includegraphics[width=\linewidth]{./figure/5fingers.png}}
-%\end{multicols}
-%\caption{a)direct deform from superellipsoid primitive, b)pre-process the superellipsoid's cross-sections c) deform the modified primitive and get the foot mesh d) e) f) same applies to the fingers}
-%\label{fig:footfinger}
-%\end{figure}
+With the primitive deformer developed above, we deform the primitive of the 3D base mesh shown in Figure \ref{fig:system_overview}\subref{fig:superellipsoid_primitives}, obtain a deformed 3D base mesh, and depicted it in Figure \ref{fig:system_overview}\subref{fig:primitives_after_deformation}. It is clear that deformed primitives have matched the generated 2D silhouette contours exactly. \\% We have also deformed the primitives to match the silhouette contours of the Knight sketches shown in Figure 6(a), and obtain the deformed 3D base mesh of the knight model shown in Figure 6(b). 
 \section{Detail generator}\label{detail_generator}
-In order to add 3D details to 3D base mesh created from the primitive generator, we develop a detail generator consisting of a local shape creator and an image-based detail generator. In what follows, we first introduce the user interface of our developed detail generator in Subsection\ref{user_interface_of_detail_generator}. Then we discuss the local shape creator and image-based detail generator in Subsections 5.2 and 5.3, respectively.
+In order to add 3D details to 3D base mesh created from the primitive generator, we develop a detail generator consisting of a local shape creator and an image-based detail generator. In what follows, we first introduce the user interface of our developed detail generator in Subsection\ref{user_interface_of_detail_generator}. Then we discuss the local shape creator in Subsection\ref{local_shape_creator}.
 \subsection{User interface of detail generator}\label{user_interface_of_detail_generator}
 The user interface of our developed detail generator uses different windows. They are used to respectively treat local model creation from sketches in different view planes, and 2D image-based detail generation.
 For local model creation, four windows are used to help provide depth information and control the shape of 3D local details to be created. As shown in Figure 7, the two top windows and left bottom window allow users to sketch 2D silhouette contours from two or all of three orthotropic views: front view, side view, and top view in the local coordinates of a local shape, or project a 3D model to the three orthotropic views to modify them. The right bottom window is used to display the created 3D models.\\
-Taking the upper body model as an example, we first sketch a 2D silhouette contour in the front view window as indicted in Figure 7(a). The sketched silhouette contour is displayed in the side view window. Then we sketch the second 2D silhouette contour in the side view window shown in Figure 7(b) which intersects with the 2D silhouette contour in the front view window. Both the 2D silhouette contours sketched in the front and side view windows are displayed in the top view window. In the top view window shown in Figure 7(c), we sketch the third 2D silhouette contour shown which intersects with the two sketched silhouette contours respectively obtained from the front view and the side view. Once a 3D model is created from the two or three sketched silhouette contours, it is displayed in the right bottom window. \\
+\begin{figure}[h]
+\centering
+       \includegraphics[width=1.0\linewidth]{./figure/detail_mode_UI.png}
+\caption{Interface for sketching three orthotropic silhouette contours and viewing generated 3D models}
+ \label{fig:detail_UI}
+\end{figure}
+Taking the upper body model as an example, we first sketch a 2D silhouette contour in the front view window as indicted in the upper left part in Figure \ref{fig:detail_UI}. The sketched silhouette contour is also displayed in the side view window, which locates at the upper right part of the Figure \ref{fig:detail_UI}. Then we sketch the second 2D silhouette contour in the side view window which intersects with the 2D silhouette contour in the front view window. Both the 2D silhouette contours sketched in the front and side view windows are displayed in the top view window in the lower left part of Figure \ref{fig:detail_UI}. In the top view window, we sketch the third 2D silhouette contour shown which intersects with the two sketched silhouette contours respectively obtained from the front view and the side view. Once a 3D model is created from the two or three sketched silhouette contours, it is displayed in the right bottom window. \\
 For 2D image-based detail generation, 2D images are input into the left window. After carrying out the calculations of shape-from-shading, the generated 3D models are displayed in the right windows. Users can input a whole character model into the window and perform the operations of adding the generated models to the whole character model.
 \subsection{local shape creator}\label{local_shape_creator}
-Although a 3D regional model can be created from two sketched silhouette contours in the same view plane as discussed in Subsection 4.2, the shape changes in the depth direction may not be our expected ones. In order to allow users to control shape changes in the depth direction and smoothly connect primitives together, we develop a new local shape creator to create a 3D model from two or three silhouette contours in different view planes. It is developed from the four algorithms which can create a model from two open sketches, one open and one closed sketches, two open and one closed sketches, and two closed curves, respectively. In the following four subsections, we will investigate these four algorithms. 
+Although a 3D regional model can be created from two sketched silhouette contours in the same view plane as discussed in Subsection \ref{algorithm_of_primitive_deformer}, the shape changes in the depth direction may not be our expected ones. In order to allow users to control shape changes in the depth direction and smoothly connect primitives together, we develop a new local shape creator to create a 3D model from two or three silhouette contours in different view planes. It is developed from the four algorithms which can create a model from two open sketches, one open and one closed sketches, two open and one closed sketches, and two closed curves, respectively. In the following four subsections, we will investigate these four algorithms. 
 \subsubsection{Algorithm for two open silhouette contours in two different view planes}
-For creation of a local 3D model from two open silhouette contours in two different view plans, we use the intersecting point  to segment each of the two sketched 2D silhouette contours obtained from the front view and the side view into two curves and denote all the four segmented curves with ,  ,  and . Then we find the four corresponding points from the four curves, and denote them with ,  ,  and  , respectively as shown in Figure 8(a). Since the four points are on the two sketched 2D silhouette contours in the front view and the side view, their coordinate values are known. 
-The 3D model to be created from the two sketched 2D silhouette contours can be regarded as a sweeping surface whose generator is a closed curve  shown in Figure 8(a) passing through the four corresponding points ,  ,  and shown in Figure (a) and (b). We uniformly divide the domain of the parametric variable  corresponding to the closed curve (generator)  into  equal intervals. The nodes corresponding to ,  ,  and are 1, , , and , respectively as demonstrated in Figure 8(b). Here, the selection of  should ensure that is an even number and . 
-The finite difference equations for the nodes 4, 5, ?,,;,, ?, ,;, ,?,, ; , , ?, , and  are the same as Equation (7).
-Figure 8: Finite difference nodes for the algorithm for two open silhouette contours in two different view planes
-The finite difference equations for the nodes 2, 3, , , , ,, ,,, , , , , , and  can be obtained by introducing the corresponding one of ,  ,  and into Equation (7) to replace , , and  accordingly. The finite difference equations for these nodes are given in Appendix B.
-Putting all obtained finite difference equations together, we obtain all the unknown constants , , ?, , ; , , ?, , ; , ,?, , ; , , ?, , and . They together with the known four points ,  ,  and  are used to define the generator.
-Repeating the above treatment for all other points on the four curves ,  ,  and , we obtain the generators at the other positions. With these generators, we create local 3D shapes.
-A head model is first used to demonstrate the above method. The left two images show two open head silhouette contours in two different view plans. The right image depicted the created 3D head model. 
-Figure 9: leg model creation from two open silhouette contours in two different view planes
+For creation of a local 3D model from two open silhouette contours in two different view planes, we use the intersecting point  $\mathbf{p}$ to segment each of the two sketched 2D silhouette contours obtained from the front view and the side view into two curves and denote all the four segmented curves with  $\mathbf{c_1}$, $\mathbf{c_2}$ , $\mathbf{c_3}$ and $\mathbf{c_4}$. Then we find the four corresponding points from the four curves, and denote them with $\mathbf{c_{1j}}$, $\mathbf{c_{2j}}$, $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$, respectively as shown in Figure \ref{fig:2open}. Since the four points are on the two sketched 2D silhouette contours in the front view and the side view, their coordinate values are known. \\
+\begin{figure}[h]
+	\begin{center}
+  \begin{subfigure}[b]{0.45\linewidth}
+       \centering
+       \includegraphics[width=\linewidth]{./figure/2opens_a.jpg}
+        \caption{side view}\label{fig:2opens_side}
+   \end{subfigure}
+   \begin{subfigure}[b]{0.45\linewidth}
+       \centering
+       \includegraphics[width=0.9\linewidth]{./figure/2opens_b.jpg}
+        \caption{top view}\label{fig:2opens_top}
+   \end{subfigure}
+	\caption{Finite difference nodes for the algorithm for two open silhouette contours in two different view planes}
+	\label{fig:2open}
+		\end{center}
+\end{figure}\\
+The 3D model to be created from the two sketched 2D silhouette contours can be regarded as a sweeping surface whose generator is a closed curve $\mathbf{c(u)}$ shown in Figure \ref{fig:2open}() passing through the four corresponding points $\mathbf{c_{1j}}$ , $\mathbf{c_{2j}}$ , $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$,  and shown in Figure \ref{fig:2open}(a) and (b). We uniformly divide the domain of the parametric variable $u$ corresponding to the closed curve (generator) $\mathbf{c(u)}$ into $2N$ equal intervals. The nodes corresponding to $\mathbf{c_{1j}}$ , $\mathbf{c_{2j}}$ , $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$ are 1, $N/2+1$ , $N+1$ and $3/2N+1$ , respectively as demonstrated in Figure \ref{fig:2open}(b). Here, the selection of  $N$ should ensure that  is an even number and $N\geqslant4$. \\
+The finite difference equations for the nodes 4, 5, \ldots, $N/2-3$, $N/2-2$; $N/2+4$, $N/2+5$, \ldots, $N-3$, $N-2$; $N+4$, $N+5$, \ldots, $3N/2-3$, $3N/2-2$; $3N/2+2$, $3N/2+3$, \ldots, $2N-3$, and $2N-2$ are the same as Equation \eqref{odefdm}.\\
+The finite difference equations for the nodes 2, 3, $N/2-1$, $N/2$, $N/2+2$, $N/2+3$, $N-1$, $N$, $N+2$, $N+3$, $3N/2-1$, $3N/2$, $3N/2+2$, $3N/2+3$, $2N-1$, and $2N$ can be obtained by introducing the corresponding one of $\mathbf{c_{1j}}$, $\mathbf{c_{2j}}$ , $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$ into Equation \eqref{odefdm} to replace $d_1$ , $d_{N/2+1}$ , $d_{N+1}$ and $d_{3N/2+1}$ accordingly. \\%The finite difference equations for these nodes are given in Appendix B.
+Putting all obtained finite difference equations together, we obtain all the unknown constants $\mathbf{d_2}$ , $\mathbf{d_3}$ , \ldots, $\mathbf{d_{N/2-1}}$ , $\mathbf{d_{N/2}}$ , $\mathbf{d_{N/2+2}}$, $\mathbf{d_{N/2+3}}$ , \ldots , $\mathbf{d_{N-1}}$ , $\mathbf{d_N}$ , $\mathbf{d_{N+2}}$ , $\mathbf{d_{N+3}}$ ,\ldots, $\mathbf{d_{3N/2-1}}$ , $\mathbf{d_{3N/2}}$ , $\mathbf{d_{3N/2+2}}$ , $\mathbf{d_{3N/2+3}}$ , \ldots , $\mathbf{d_{2N-1}}$ and $d_{2N}$ . They together with the known four points $\mathbf{c_{1j}}$, $\mathbf{c_{2j}}$ , $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$ are used to define the generator.\\
+Repeating the above treatment for all other points on the four curves $\mathbf{c_1}$ , $\mathbf{c_2}$ , $\mathbf{c_3}$ and $\mathbf{c_4}$, we obtain the generators at the other positions. With these generators, we create local 3D shapes.
+\begin{figure}[!htb]
+\centering
+\begin{multicols}{3}
+\includegraphics[width=\linewidth]{./figure/headcontourfront.png}\label{fig:head_contour_front}
+\includegraphics[width=\linewidth]{./figure/headcontourside.png}\label{fig:head_contour_side}
+\includegraphics[width=\linewidth]{./figure/head.png}\label{fig:head_mesh}
+\end{multicols}
+\caption{Primitive generator: a) 2D silhouette contours of the male head in front view, b)-2D silhouette contours of the male head in front view, c) generated male head}
+\label{fig:head}
+\end{figure}\\
+A head model is first used to demonstrate the above method Figure \ref{fig:head}. Figure \ref{fig:head}\subref{fig:head_contour_front} and Figure \ref{fig:head}\subref{fig:head_contour_side} show two open head silhouette contours in two different view plans. Figure \ref{fig:head}\subref{fig:head_mesh} depicted the created 3D head model. 
 
+Figure 9: leg model creation from two open silhouette contours in two different view planes
 The above method can be directly extended to deal with local shape creation from four disconnected silhouette contours. The silhouette contours of the leg model in the front and side views are shown in Figure 9(a) and (b), respectively. The corresponding four points on the four silhouette contours are used to define a cross-section curve. All of these cross section curves are used to generate the 3D leg model with the front and side views in Figure 9(c) and (d), respectively. 
 
 More modeling examples are given in Figures 10. Figure 10(a) shows the four silhouette contours of a foot model in the front and side views. Figure 10(b) depicts the 3D foot model created from the four silhouette contours. Figure 10(c) shows the cross-section curves. Figures 10(d) and 10(e) give 3D neck model and torso model generated from the above method.

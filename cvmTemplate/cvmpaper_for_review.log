@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  19 SEP 2018 20:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  20 SEP 2018 00:03
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -366,7 +366,11 @@ File: hpdftex.def 2017/03/14 v6.85a Hyperref driver for pdfTeX
 \c@bookmark@seq@number=\count126
 \Hy@SectionHShift=\skip50
 )
-No file cvmpaper_for_review.aux.
+(./cvmpaper_for_review.aux
+
+LaTeX Warning: Label `algorithm_of_primitive_deformer' multiply defined.
+
+)
 \openout1 = `cvmpaper_for_review.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
@@ -384,7 +388,7 @@ LaTeX Font Info:    ... okay on input line 27.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 27.
 LaTeX Font Info:    ... okay on input line 27.
 LaTeX Font Info:    Try loading font information for OT1+ptm on input line 27.
-(/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+ (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 ABD: EveryShipout initializing macros
@@ -464,324 +468,130 @@ Underfull \hbox (badness 1365) in paragraph at lines 60--61
  []
 
 
-LaTeX Warning: Reference `related_work' on page 1 undefined on input line 64.
-
-
-LaTeX Warning: Reference `system_overview' on page 1 undefined on input line 64
-.
-
-
-LaTeX Warning: Reference `primitive_deformer' on page 1 undefined on input line
- 64.
-
-
-LaTeX Warning: Reference `detail_generator' on page 1 undefined on input line 6
-4.
-
-
-LaTeX Warning: Reference `conclusions_and_future_work' on page 1 undefined on i
-nput line 64.
-
-
-LaTeX Warning: Citation `igarashi1999teddy' on page 1 undefined on input line 6
-9.
-
-
-LaTeX Warning: Citation `Karpenko:2006:SFS:1141911.1141928' on page 1 undefined
- on input line 69.
-
-
-LaTeX Warning: Citation `nealen2007fibermesh' on page 1 undefined on input line
- 69.
-
-
-LaTeX Warning: Citation `igarashi1999teddy' on page 1 undefined on input line 6
-9.
-
-
-LaTeX Warning: Citation `nealen2007fibermesh' on page 1 undefined on input line
- 69.
-
-
-LaTeX Warning: Citation `nealen2007fibermesh' on page 1 undefined on input line
- 69.
-
-
-LaTeX Warning: Citation `williams1997stochastic' on page 1 undefined on input l
-ine 69.
-
-
-Underfull \hbox (badness 1629) in paragraph at lines 69--71
+Underfull \hbox (badness 1629) in paragraph at lines 67--69
 []\OT1/ptm/m/n/10 Over the past two decades, sketch-based-modelling
  []
-
-
-LaTeX Warning: Citation `shtof2013geosemantic' on page 1 undefined on input lin
-e 72.
-
-
-LaTeX Warning: Citation `chen20133' on page 1 undefined on input line 72.
-
-
-LaTeX Warning: Citation `shtof2013geosemantic' on page 1 undefined on input lin
-e 72.
-
-
-LaTeX Warning: Citation `chen20133' on page 1 undefined on input line 72.
-
-
-LaTeX Warning: Citation `gingold2009structured' on page 1 undefined on input li
-ne 72.
 
 [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
-
-LaTeX Warning: Citation `draper2003gestural' on page 2 undefined on input line 
-75.
-
-
-LaTeX Warning: Citation `kho2005sketching' on page 2 undefined on input line 75
-.
-
-
-LaTeX Warning: Citation `kho2005sketching' on page 2 undefined on input line 75
-.
-
-
-LaTeX Warning: Citation `lipman2004differential' on page 2 undefined on input l
-ine 75.
-
-
-LaTeX Warning: Citation `nealen2007sketch' on page 2 undefined on input line 75
-.
-
-
-LaTeX Warning: Citation `SBM:SBM07:023-030' on page 2 undefined on input line 7
-5.
-
-<./figure/female_warrior_original_sketch.jpg, id=17, 236.3229pt x 570.6921pt>
+<./figure/female_warrior_original_sketch.jpg, id=49, 236.3229pt x 570.6921pt>
 File: ./figure/female_warrior_original_sketch.jpg Graphic file (type jpg)
 
 <use ./figure/female_warrior_original_sketch.jpg>
 Package pdftex.def Info: ./figure/female_warrior_original_sketch.jpg used on in
-put line 85.
+put line 83.
 (pdftex.def)             Requested size: 68.83118pt x 166.2212pt.
 
-<./figure/female_warrior_extract_contour.jpg, id=18, 334.24875pt x 788.9475pt>
+<./figure/female_warrior_extract_contour.jpg, id=50, 334.24875pt x 788.9475pt>
 File: ./figure/female_warrior_extract_contour.jpg Graphic file (type jpg)
 
 <use ./figure/female_warrior_extract_contour.jpg>
 Package pdftex.def Info: ./figure/female_warrior_extract_contour.jpg used on in
-put line 89.
+put line 87.
 (pdftex.def)             Requested size: 70.41872pt x 166.2212pt.
 
-<./figure/primitives_before_deformation.jpg, id=19, 305.14pt x 722.7pt>
+<./figure/primitives_before_deformation.jpg, id=51, 305.14pt x 722.7pt>
 File: ./figure/primitives_before_deformation.jpg Graphic file (type jpg)
 
 <use ./figure/primitives_before_deformation.jpg>
 Package pdftex.def Info: ./figure/primitives_before_deformation.jpg used on inp
-ut line 93.
+ut line 91.
 (pdftex.def)             Requested size: 70.18071pt x 166.2212pt.
 
-<./figure/primitives_after_deformation_without_blending.jpg, id=20, 280.04625pt
+<./figure/primitives_after_deformation_without_blending.jpg, id=52, 280.04625pt
  x 722.7pt>
 File: ./figure/primitives_after_deformation_without_blending.jpg Graphic file (
 type jpg)
  <use ./figure/primitives_after_deformation_without_blending.jpg>
 Package pdftex.def Info: ./figure/primitives_after_deformation_without_blending
-.jpg used on input line 98.
+.jpg used on input line 96.
 (pdftex.def)             Requested size: 64.40927pt x 166.2212pt.
 
-<./figure/primitives_after_deformation_and_lattice_with_breast.jpg, id=21, 273.
+<./figure/primitives_after_deformation_and_lattice_with_breast.jpg, id=53, 273.
 02pt x 722.7pt>
 File: ./figure/primitives_after_deformation_and_lattice_with_breast.jpg Graphic
  file (type jpg)
 
 <use ./figure/primitives_after_deformation_and_lattice_with_breast.jpg>
 Package pdftex.def Info: ./figure/primitives_after_deformation_and_lattice_with
-_breast.jpg used on input line 102.
+_breast.jpg used on input line 100.
 (pdftex.def)             Requested size: 62.79327pt x 166.2212pt.
 
-<./figure/final_shot.jpg, id=22, 305.14pt x 722.7pt>
+<./figure/final_shot.jpg, id=54, 305.14pt x 722.7pt>
 File: ./figure/final_shot.jpg Graphic file (type jpg)
 
 <use ./figure/final_shot.jpg>
-Package pdftex.def Info: ./figure/final_shot.jpg used on input line 106.
+Package pdftex.def Info: ./figure/final_shot.jpg used on input line 104.
 (pdftex.def)             Requested size: 70.18071pt x 166.2212pt.
 Missing character: There is no © in font ptmr7t!
 Missing character: There is no © in font ptmr7t!
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-LaTeX Warning: Reference `fig:system_overview' on page 2 undefined on input lin
-e 115.
-
-
-LaTeX Warning: Reference `fig:system_overview' on page 2 undefined on input lin
-e 115.
-
-
-LaTeX Warning: Hyper reference `fig:reference_image' on page 2 undefined on inp
-ut line 115.
-
-
-LaTeX Warning: Reference `sub@fig:reference_image' on page 2 undefined on input
- line 115.
-
-
-LaTeX Warning: Reference `fig:system_overview' on page 2 undefined on input lin
-e 115.
-
-
-LaTeX Warning: Hyper reference `fig:extract_contour' on page 2 undefined on inp
-ut line 115.
-
-
-LaTeX Warning: Reference `sub@fig:extract_contour' on page 2 undefined on input
- line 115.
-
-
-LaTeX Warning: Reference `fig:system_overview' on page 2 undefined on input lin
-e 115.
-
-
-LaTeX Warning: Hyper reference `fig:superellipsoid_primitives' on page 2 undefi
-ned on input line 115.
-
-
-LaTeX Warning: Reference `sub@fig:superellipsoid_primitives' on page 2 undefine
-d on input line 115.
-
-
-LaTeX Warning: Reference `fig:system_overview' on page 2 undefined on input lin
-e 115.
-
-
-LaTeX Warning: Hyper reference `fig:primitives_after_deformation' on page 2 und
-efined on input line 115.
-
-
-LaTeX Warning: Reference `sub@fig:primitives_after_deformation' on page 2 undef
-ined on input line 115.
-
-
-LaTeX Warning: Reference `fig:system_overview' on page 2 undefined on input lin
-e 116.
-
-
-LaTeX Warning: Hyper reference `fig:blending_body_parts' on page 2 undefined on
- input line 116.
-
-
-LaTeX Warning: Reference `sub@fig:blending_body_parts' on page 2 undefined on i
-nput line 116.
-
-
-LaTeX Warning: Reference `fig:system_overview' on page 2 undefined on input lin
-e 116.
-
-
-LaTeX Warning: Hyper reference `fig:final_shot' on page 2 undefined on input li
-ne 116.
-
-
-LaTeX Warning: Reference `sub@fig:final_shot' on page 2 undefined on input line
- 116.
-
-
-LaTeX Warning: Reference `fig:system_overview' on page 2 undefined on input lin
-e 120.
-
-
-LaTeX Warning: Hyper reference `fig:superellipsoid_primitives' on page 2 undefi
-ned on input line 120.
-
-
-LaTeX Warning: Reference `sub@fig:superellipsoid_primitives' on page 2 undefine
-d on input line 120.
-
-
-LaTeX Warning: Reference `user_interface_of_primitive_deformer' on page 2 undef
-ined on input line 120.
+Underfull \hbox (badness 1546) in paragraph at lines 76--114
+\OT1/ptm/m/n/10 The mod-el-ing pro-cess us-ing our de-vel-oped sys-tem is
+ []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [2]
-
-LaTeX Warning: Reference `fig:deformer_UI' on page 3 undefined on input line 12
-4.
-
-
-LaTeX Warning: Reference `algorithm_of_primitive_deformer' on page 3 undefined 
-on input line 124.
-
-<./figure/deformer_UI.jpg, id=29, 983.17313pt x 745.78625pt>
-File: ./figure/deformer_UI.jpg Graphic file (type jpg)
-
-<use ./figure/deformer_UI.jpg>
-Package pdftex.def Info: ./figure/deformer_UI.jpg used on input line 127.
-(pdftex.def)             Requested size: 237.13594pt x 179.87997pt.
-
-Underfull \vbox (badness 8038) has occurred while \output is active []
-
-
-
-LaTeX Warning: Reference `fig:arm' on page 3 undefined on input line 132.
-
-<./figure/cylinder.png, id=30, 559.08875pt x 284.06125pt>
-File: ./figure/cylinder.png Graphic file (type png)
-
-<use ./figure/cylinder.png>
-Package pdftex.def Info: ./figure/cylinder.png used on input line 136.
-(pdftex.def)             Requested size: 113.78642pt x 57.81621pt.
-
-Overfull \hbox (7.07597pt too wide) in paragraph at lines 136--136
-[][] 
- []
-
-<./figure/deformer.png, id=31, 493.845pt x 260.975pt>
-File: ./figure/deformer.png Graphic file (type png)
-
-<use ./figure/deformer.png>
-Package pdftex.def Info: ./figure/deformer.png used on input line 139.
-(pdftex.def)             Requested size: 109.39978pt x 57.81621pt.
-
-Overfull \hbox (2.68933pt too wide) in paragraph at lines 139--139
-[][] 
- []
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-LaTeX Warning: Reference `fig:arm' on page 3 undefined on input line 145.
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [2]
+<./figure/deformer_UI.jpg, id=87, 983.17313pt x 745.78625pt>
+File: ./figure/deformer_UI.jpg Graphic file (type jpg)
+
+<use ./figure/deformer_UI.jpg>
+Package pdftex.def Info: ./figure/deformer_UI.jpg used on input line 122.
+(pdftex.def)             Requested size: 237.13594pt x 179.87997pt.
+
+Underfull \vbox (badness 8038) has occurred while \output is active []
 
 
-LaTeX Warning: Hyper reference `fig:are_cylinder' on page 3 undefined on input 
-line 145.
+<./figure/cylinder.png, id=89, 559.08875pt x 284.06125pt>
+File: ./figure/cylinder.png Graphic file (type png)
+
+<use ./figure/cylinder.png>
+Package pdftex.def Info: ./figure/cylinder.png used on input line 131.
+(pdftex.def)             Requested size: 113.78642pt x 57.81621pt.
+
+Overfull \hbox (7.07597pt too wide) in paragraph at lines 131--131
+[][] 
+ []
+
+<./figure/deformer.png, id=90, 493.845pt x 260.975pt>
+File: ./figure/deformer.png Graphic file (type png)
+
+<use ./figure/deformer.png>
+Package pdftex.def Info: ./figure/deformer.png used on input line 134.
+(pdftex.def)             Requested size: 109.39978pt x 57.81621pt.
+
+Overfull \hbox (2.68933pt too wide) in paragraph at lines 134--134
+[][] 
+ []
 
 
-LaTeX Warning: Reference `sub@fig:are_cylinder' on page 3 undefined on input li
-ne 145.
+Underfull \hbox (badness 1028) in paragraph at lines 127--141
+\OT1/ptm/m/n/10 the al-go-rithm of our pro-posed prim-i-tive de-former and
+ []
 
 
-LaTeX Warning: Reference `fig:arm' on page 3 undefined on input line 145.
+Underfull \hbox (badness 10000) in paragraph at lines 127--141
+\OT1/ptm/m/n/10 con-sid-ers lo-cally stretch-ing for solid ob-jects plus
+ []
 
 
-LaTeX Warning: Hyper reference `fig:arm_finish' on page 3 undefined on input li
-ne 145.
+Underfull \hbox (badness 4024) in paragraph at lines 127--141
+\OT1/ptm/m/n/10 bend-ing for two-manifold sur-faces called thin-shells.
+ []
 
 
-LaTeX Warning: Reference `sub@fig:arm_finish' on page 3 undefined on input line
- 145.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 145--146
+Underfull \hbox (badness 10000) in paragraph at lines 127--141
 
  []
 
@@ -790,338 +600,190 @@ ct_contour.jpg> <./figure/primitives_before_deformation.jpg> <./figure/primitiv
 es_after_deformation_without_blending.jpg> <./figure/primitives_after_deformati
 on_and_lattice_with_breast.jpg> <./figure/final_shot.jpg> <./figure/deformer_UI
 .jpg>]
-
-LaTeX Warning: Citation `botsch2008linear' on page 4 undefined on input line 14
-7.
-
-
-LaTeX Warning: Citation `do2017differential' on page 4 undefined on input line 
-147.
-
-
-LaTeX Warning: Citation `terzopoulos1987elastically' on page 4 undefined on inp
-ut line 147.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 150--152
+Underfull \hbox (badness 10000) in paragraph at lines 143--146
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 173--174
+Underfull \vbox (badness 2269) has occurred while \output is active []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 151--154
 
  []
 
-
-LaTeX Warning: Reference `fig:arm' on page 4 undefined on input line 175.
-
-
-LaTeX Warning: Hyper reference `fig:are_cylinder' on page 4 undefined on input 
-line 175.
-
-
-LaTeX Warning: Reference `sub@fig:are_cylinder' on page 4 undefined on input li
-ne 175.
-
-
-LaTeX Warning: Reference `lagrange' on page 4 undefined on input line 175.
-
-
-LaTeX Warning: Reference `lagrange' on page 4 undefined on input line 175.
-
-
-LaTeX Warning: Reference `lagrange' on page 4 undefined on input line 175.
-
-
-LaTeX Warning: Reference `lagrange' on page 4 undefined on input line 175.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 179--180
-
- []
-
-
-LaTeX Warning: Citation `chaudhry2013shape' on page 4 undefined on input line 1
-81.
-
-
-LaTeX Warning: Citation `chaudhry2015dynamic' on page 4 undefined on input line
- 181.
-
-
-LaTeX Warning: Reference `laplacianoperator' on page 4 undefined on input line 
-181.
-
-<./figure/FDM.png, id=42, 326.1786pt x 73.7154pt>
+<./figure/FDM.png, id=116, 326.1786pt x 73.7154pt>
 File: ./figure/FDM.png Graphic file (type png)
  <use ./figure/FDM.png>
-Package pdftex.def Info: ./figure/FDM.png used on input line 184.
+Package pdftex.def Info: ./figure/FDM.png used on input line 174.
 (pdftex.def)             Requested size: 189.70947pt x 42.87418pt.
 
-
-LaTeX Warning: Reference `fig:fdm' on page 4 undefined on input line 190.
-
-
-LaTeX Warning: Citation `chaudhry2013shape' on page 4 undefined on input line 1
-90.
-
-
-LaTeX Warning: Reference `FDM' on page 4 undefined on input line 199.
-
-
-LaTeX Warning: Reference `ODE' on page 4 undefined on input line 199.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 206--207
-
- []
-
 [4 <./figure/cylinder.png (PNG copy)> <./figure/deformer.png> <./figure/FDM.png
->]
-
-LaTeX Warning: Reference `fig:FDMnode' on page 5 undefined on input line 208.
-
-
-LaTeX Warning: Hyper reference `fig:fdmnode_top' on page 5 undefined on input l
-ine 208.
-
-
-LaTeX Warning: Reference `sub@fig:fdmnode_top' on page 5 undefined on input lin
-e 208.
-
-
-LaTeX Warning: Reference `fig:FDMnode' on page 5 undefined on input line 208.
-
-
-LaTeX Warning: Hyper reference `fig:fdmnode_top' on page 5 undefined on input l
-ine 208.
-
-
-LaTeX Warning: Reference `sub@fig:fdmnode_top' on page 5 undefined on input lin
-e 208.
-
-
-LaTeX Warning: Reference `fig:FDMnode' on page 5 undefined on input line 208.
-
-
-LaTeX Warning: Hyper reference `fig:fdmnode_top' on page 5 undefined on input l
-ine 208.
-
-
-LaTeX Warning: Reference `sub@fig:fdmnode_top' on page 5 undefined on input lin
-e 208.
-
-
-LaTeX Warning: Reference `fig:FDMnode' on page 5 undefined on input line 208.
-
-
-LaTeX Warning: Hyper reference `fig:fdmnode_side' on page 5 undefined on input 
-line 208.
-
-
-LaTeX Warning: Reference `sub@fig:fdmnode_side' on page 5 undefined on input li
-ne 208.
-
-
-LaTeX Warning: Reference `fig:FDMnode' on page 5 undefined on input line 208.
-
-<./figure/fdmnode_a.png, id=66, 349.7868pt x 331.9602pt>
+>] <./figure/fdmnode_a.png, id=157, 349.7868pt x 331.9602pt>
 File: ./figure/fdmnode_a.png Graphic file (type png)
 
 <use ./figure/fdmnode_a.png>
-Package pdftex.def Info: ./figure/fdmnode_a.png used on input line 213.
+Package pdftex.def Info: ./figure/fdmnode_a.png used on input line 200.
 (pdftex.def)             Requested size: 96.03874pt x 91.14497pt.
 
-<./figure/fdmnode_b.png, id=67, 312.6882pt x 291.9708pt>
+<./figure/fdmnode_b.png, id=158, 312.6882pt x 291.9708pt>
 File: ./figure/fdmnode_b.png Graphic file (type png)
 
 <use ./figure/fdmnode_b.png>
-Package pdftex.def Info: ./figure/fdmnode_b.png used on input line 218.
+Package pdftex.def Info: ./figure/fdmnode_b.png used on input line 205.
 (pdftex.def)             Requested size: 96.03874pt x 89.6769pt.
 
-<./figure/finger_group.png, id=68, 1059.96pt x 412.54124pt>
+<./figure/finger_group.png, id=159, 1059.96pt x 412.54124pt>
 File: ./figure/finger_group.png Graphic file (type png)
 
 <use ./figure/finger_group.png>
-Package pdftex.def Info: ./figure/finger_group.png used on input line 223.
+Package pdftex.def Info: ./figure/finger_group.png used on input line 210.
 (pdftex.def)             Requested size: 192.0775pt x 74.75151pt.
 
-
-LaTeX Warning: Reference `fig:FDMnode' on page 5 undefined on input line 231.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 231--232
+Underfull \hbox (badness 10000) in paragraph at lines 194--223
 
  []
 
+<./figure/detail_mode_UI.png, id=174, 1010.77625pt x 766.865pt>
+File: ./figure/detail_mode_UI.png Graphic file (type png)
 
-LaTeX Warning: Reference `odefdm' on page 5 undefined on input line 233.
-
-
-LaTeX Warning: Reference `odefdm' on page 5 undefined on input line 234.
-
-
-Underfull \hbox (badness 1838) in paragraph at lines 233--235
-\OT1/ptm/m/n/10 and we have $[]$. The fi-nite dif-fer-ence
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 233--235
-
- []
+<use ./figure/detail_mode_UI.png>
+Package pdftex.def Info: ./figure/detail_mode_UI.png used on input line 230.
+(pdftex.def)             Requested size: 237.13594pt x 179.90906pt.
+ [5 <./figure/fdmnode_a.png> <./figure/fdmnode_b.png> <./figure/finger_group.pn
+g (PNG copy)>]
+Underfull \vbox (badness 1331) has occurred while \output is active []
 
 
-LaTeX Warning: Reference `odefdm' on page 5 undefined on input line 236.
+<./figure/2opens_a.jpg, id=192, 466.74374pt x 344.28625pt>
+File: ./figure/2opens_a.jpg Graphic file (type jpg)
+
+<use ./figure/2opens_a.jpg>
+Package pdftex.def Info: ./figure/2opens_a.jpg used on input line 244.
+(pdftex.def)             Requested size: 106.71045pt x 78.71136pt.
+
+<./figure/2opens_b.jpg, id=193, 467.7475pt x 319.1925pt>
+File: ./figure/2opens_b.jpg Graphic file (type jpg)
+
+<use ./figure/2opens_b.jpg>
+Package pdftex.def Info: ./figure/2opens_b.jpg used on input line 249.
+(pdftex.def)             Requested size: 96.03874pt x 65.53716pt.
+
+<./figure/headcontourfront.png, id=199, 400.49625pt x 381.425pt>
+File: ./figure/headcontourfront.png Graphic file (type png)
+
+<use ./figure/headcontourfront.png>
+Package pdftex.def Info: ./figure/headcontourfront.png used on input line 264.
+(pdftex.def)             Requested size: 63.98906pt x 60.94194pt.
+
+<./figure/headcontourside.png, id=200, 439.6425pt x 371.3875pt>
+File: ./figure/headcontourside.png Graphic file (type png)
+
+<use ./figure/headcontourside.png>
+Package pdftex.def Info: ./figure/headcontourside.png used on input line 265.
+(pdftex.def)             Requested size: 63.98906pt x 54.05098pt.
+
+<./figure/head.png, id=201, 401.5pt x 330.23375pt>
+File: ./figure/head.png Graphic file (type png)
+ <use ./figure/head.png>
+Package pdftex.def Info: ./figure/head.png used on input line 266.
+(pdftex.def)             Requested size: 63.98906pt x 52.62683pt.
 
 
-LaTeX Warning: Reference `fig:FDMnode' on page 5 undefined on input line 236.
+LaTeX Warning: Reference `sub@fig:head_contour_front' on page 6 undefined on in
+put line 271.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 236--237
-
- []
-
-
-LaTeX Warning: Reference `fig:FDMnode' on page 5 undefined on input line 238.
+LaTeX Warning: Reference `sub@fig:head_contour_side' on page 6 undefined on inp
+ut line 271.
 
 
-LaTeX Warning: Hyper reference `fig:fingers' on page 5 undefined on input line 
-238.
+LaTeX Warning: Reference `sub@fig:head_mesh' on page 6 undefined on input line 
+271.
 
-
-LaTeX Warning: Reference `sub@fig:fingers' on page 5 undefined on input line 23
-8.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 238--239
-
- []
-
-
-LaTeX Warning: Reference `fig:system_overview' on page 5 undefined on input lin
-e 240.
-
-
-LaTeX Warning: Hyper reference `fig:superellipsoid_primitives' on page 5 undefi
-ned on input line 240.
-
-
-LaTeX Warning: Reference `sub@fig:superellipsoid_primitives' on page 5 undefine
-d on input line 240.
-
-
-LaTeX Warning: Reference `fig:system_overview' on page 5 undefined on input lin
-e 240.
-
-
-LaTeX Warning: Hyper reference `fig:primitives_after_deformation' on page 5 und
-efined on input line 240.
-
-
-LaTeX Warning: Reference `sub@fig:primitives_after_deformation' on page 5 undef
-ined on input line 240.
-
-
-Underfull \hbox (badness 2376) in paragraph at lines 240--242
-[]\OT1/ptm/m/n/10 With the prim-i-tive de-former de-vel-oped above, we
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 240--242
-
- []
-
-
-LaTeX Warning: Reference `user_interface_of_detail_generator' on page 5 undefin
-ed on input line 260.
-
-[5 <./figure/fdmnode_a.png> <./figure/fdmnode_b.png> <./figure/finger_group.png
- (PNG copy)>]
+[6 <./figure/detail_mode_UI.png> <./figure/2opens_a.jpg> <./figure/2opens_b.jpg
+>] [7 <./figure/headcontourfront.png> <./figure/headcontourside.png> <./figure/
+head.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [6]
-[7]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 336.
+ [8]
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 331.
 
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
 
-LaTeX Warning: Citation `Alpher02' on page 8 undefined on input line 350.
+LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 345.
 
 
-LaTeX Warning: Citation `Alpher03' on page 8 undefined on input line 351.
+LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 346.
 
 
-LaTeX Warning: Citation `Alpher04' on page 8 undefined on input line 351.
+LaTeX Warning: Citation `Alpher04' on page 9 undefined on input line 346.
 
-[8]
 
-LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 353.
+LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 348.
+
+
+LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 349.
 
 
 LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 354.
 
 
-LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 359.
+LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 354.
 
 
-LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 359.
+LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 354.
 
 
-LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 359.
+LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 355.
 
 
-LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 360.
+LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 355.
 
 
-LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 360.
+LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 355.
 
 
-LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 360.
+LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 371.
 
-
-LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 376.
-
-(./cvmpaper_for_review.bbl
-No file cvmpaper_for_review.brf.
+(./cvmpaper_for_review.bbl (./cvmpaper_for_review.brf)
 \tf@brf=\write3
 \openout3 = `cvmpaper_for_review.brf'.
 
-)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 418.
- [9]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 418.
- (./cvmpaper_for_review.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 418.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 418.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 14.
+ [9])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 413.
+ [10
 
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 413.
 
-Package rerunfilecheck Warning: File `cvmpaper_for_review.brf' has changed.
-(rerunfilecheck)                Rerun to get bibliographical references right.
+(./cvmpaper_for_review.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 413.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 413.
+Package rerunfilecheck Info: File `cvmpaper_for_review.brf' has not changed.
+(rerunfilecheck)             Checksum: C102A9C6F3182CD0A2019F3C694C4C53;1622.
 
-Package rerunfilecheck Info: Checksums for `cvmpaper_for_review.brf':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  AD241438FFA6A049C3E8987C1C495F8A;1622.
 
 LaTeX Warning: There were undefined references.
 
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 418.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 413.
  ) 
 Here is how much of TeX's memory you used:
- 7903 strings out of 492995
- 120809 string characters out of 6132703
- 221241 words of memory out of 5000000
- 11268 multiletter control sequences out of 15000+600000
- 30946 words of font info for 73 fonts, out of 8000000 for 9000
+ 7978 strings out of 492995
+ 122228 string characters out of 6132703
+ 226103 words of memory out of 5000000
+ 11321 multiletter control sequences out of 15000+600000
+ 35431 words of font info for 85 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,15n,40p,1757b,519s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,15n,40p,1757b,518s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/te
 xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texl
@@ -1134,16 +796,17 @@ texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2017/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2017/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2017/texmf-
 dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2017/texmf-d
-ist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2017/tex
-mf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2017/texmf-dist/
-fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/t
-ype1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/t
-imes/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmri
-8a.pfb>
-Output written on cvmpaper_for_review.pdf (9 pages, 1551278 bytes).
+ist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2017/tex
+mf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2017
+/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2017/texmf-d
+ist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/texmf-dist/fon
+ts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/u
+rw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/u
+tmri8a.pfb>
+Output written on cvmpaper_for_review.pdf (10 pages, 1910756 bytes).
 PDF statistics:
- 199 PDF objects out of 1000 (max. 8388607)
- 152 compressed objects within 2 object streams
- 61 named destinations out of 1000 (max. 500000)
- 66 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 341 PDF objects out of 1000 (max. 8388607)
+ 281 compressed objects within 3 object streams
+ 65 named destinations out of 1000 (max. 500000)
+ 96 words of extra memory for PDF output out of 10000 (max. 10000000)
 
