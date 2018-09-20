@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  20 SEP 2018 00:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  20 SEP 2018 11:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -243,7 +243,45 @@ Package multicol Warning: May not work with the twocolumn option on input line
 \mult@nat@firstbox=\box54
 \colbreak@box=\box55
 \mc@col@check@num=\count116
-) (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/hyperref.sty
+) (/usr/local/texlive/2017/texmf-dist/tex/latex/floatrow/floatrow.sty
+Package: floatrow 2008/08/02 v0.3b floatrow: float package extension
+\c@float@type=\count117
+\float@exts=\toks20
+\float@box=\box56
+\@floatcapt=\box57
+Package floatrow Info: Modified float package code loaded on input line 455.
+Package floatrow Info: Modified rotfloat package code loaded on input line 473.
+
+\FR@everyfloat=\toks21
+\flrow@foot=\insert199
+\FB@wd=\dimen135
+\FBo@wd=\dimen136
+\FBc@wd=\dimen137
+\FBo@ht=\skip50
+\FBc@ht=\skip51
+\FBf@ht=\skip52
+\FBo@max=\skip53
+\FBc@max=\skip54
+\FBf@max=\skip55
+\c@FBl@b=\count118
+\floatbox@depth=\count119
+\c@FRobj=\count120
+\c@FRsobj=\count121
+\Xhsize=\skip56
+\sXhsize=\skip57
+\Zhsize=\skip58
+\sZhsize=\skip59
+\flrow@rowbox=\box58
+\FR@Zunitlength=\dimen138
+\c@FBcnt=\count122
+\FPOScnt=\count123
+\LTleft=\skip60
+\LTright=\skip61
+\LTleft=\skip62
+\LTright=\skip63
+\flrow@types=\toks22
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2017/03/14 v6.85a Hypertext links for LaTeX
 
 (/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
@@ -299,14 +337,14 @@ Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
 (/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 )
-\@linkdim=\dimen135
-\Hy@linkcounter=\count117
-\Hy@pagecounter=\count118
+\@linkdim=\dimen139
+\Hy@linkcounter=\count124
+\Hy@pagecounter=\count125
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2017/03/14 v6.85a Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count119
+\Hy@SavedSpaceFactor=\count126
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
@@ -333,17 +371,17 @@ Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 82.
 ))
-\c@Hy@tempcnt=\count120
+\c@Hy@tempcnt=\count127
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip11
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5104.
-\XeTeXLinkMargin=\dimen136
-\Fld@menulength=\count121
-\Field@Width=\dimen137
-\Fld@charsize=\dimen138
+\XeTeXLinkMargin=\dimen140
+\Fld@menulength=\count128
+\Field@Width=\dimen141
+\Fld@charsize=\dimen142
 Package hyperref Info: Hyper figures OFF on input line 6358.
 Package hyperref Info: Link nesting OFF on input line 6363.
 Package hyperref Info: Hyper index ON on input line 6366.
@@ -353,18 +391,18 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6383.
 Package hyperref Info: PDF/A mode OFF on input line 6388.
 LaTeX Info: Redefining \ref on input line 6428.
 LaTeX Info: Redefining \pageref on input line 6432.
-\Hy@abspage=\count122
-\c@Item=\count123
-\c@Hfootnote=\count124
+\Hy@abspage=\count129
+\c@Item=\count130
+\c@Hfootnote=\count131
 )
 
 Package hyperref Message: Driver (autodetected): hpdftex.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2017/03/14 v6.85a Hyperref driver for pdfTeX
-\Fld@listcount=\count125
-\c@bookmark@seq@number=\count126
-\Hy@SectionHShift=\skip50
+\Fld@listcount=\count132
+\c@bookmark@seq@number=\count133
+\Hy@SectionHShift=\skip64
 )
 (./cvmpaper_for_review.aux
 
@@ -373,21 +411,21 @@ LaTeX Warning: Label `algorithm_of_primitive_deformer' multiply defined.
 )
 \openout1 = `cvmpaper_for_review.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 27.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 28.
  (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
@@ -402,17 +440,17 @@ Package color Info: Driver file: pdftex.def on input line 147.
 )
 (/usr/local/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count127
-\scratchdimen=\dimen139
-\scratchbox=\box56
-\nofMPsegments=\count128
-\nofMParguments=\count129
-\everyMPshowfont=\toks20
-\MPscratchCnt=\count130
-\MPscratchDim=\dimen140
-\MPnumerator=\count131
-\makeMPintoPDFobject=\count132
-\everyMPtoPDFconversion=\toks21
+\scratchcounter=\count134
+\scratchdimen=\dimen143
+\scratchbox=\box59
+\nofMPsegments=\count135
+\nofMParguments=\count136
+\everyMPshowfont=\toks23
+\MPscratchCnt=\count137
+\MPscratchDim=\dimen144
+\MPnumerator=\count138
+\makeMPintoPDFobject=\count139
+\everyMPtoPDFconversion=\toks24
 ) (/usr/local/texlive/2017/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -431,11 +469,14 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: floatrow package is loaded.
+Package caption Info: float package is loaded.
+Package caption Info: floatrow package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-\AtBeginShipoutBox=\box57
+\AtBeginShipoutBox=\box60
 Package atbegshi Info: Package `everyshi' patched.
-Package hyperref Info: Link coloring ON on input line 27.
+Package hyperref Info: Link coloring ON on input line 28.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -443,32 +484,32 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 (/usr/local/texlive/2017/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count133
+\c@section@level=\count140
 )
-LaTeX Info: Redefining \ref on input line 27.
-LaTeX Info: Redefining \pageref on input line 27.
-LaTeX Info: Redefining \nameref on input line 27.
+LaTeX Info: Redefining \ref on input line 28.
+LaTeX Info: Redefining \pageref on input line 28.
+LaTeX Info: Redefining \nameref on input line 28.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 50.
-LaTeX Font Info:    Try loading font information for U+msa on input line 50.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 51.
+LaTeX Font Info:    Try loading font information for U+msa on input line 51.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 50.
+LaTeX Font Info:    Try loading font information for U+msb on input line 51.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 52.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 53.
 
-Underfull \hbox (badness 1365) in paragraph at lines 60--61
+Underfull \hbox (badness 1365) in paragraph at lines 61--62
 []\OT1/ptm/m/n/10 We de-velop an ef-fi-cient sketch-guided and ODE-
  []
 
 
-Underfull \hbox (badness 1629) in paragraph at lines 67--69
+Underfull \hbox (badness 1629) in paragraph at lines 68--70
 []\OT1/ptm/m/n/10 Over the past two decades, sketch-based-modelling
  []
 
@@ -481,7 +522,7 @@ File: ./figure/female_warrior_original_sketch.jpg Graphic file (type jpg)
 
 <use ./figure/female_warrior_original_sketch.jpg>
 Package pdftex.def Info: ./figure/female_warrior_original_sketch.jpg used on in
-put line 83.
+put line 84.
 (pdftex.def)             Requested size: 68.83118pt x 166.2212pt.
 
 <./figure/female_warrior_extract_contour.jpg, id=50, 334.24875pt x 788.9475pt>
@@ -489,7 +530,7 @@ File: ./figure/female_warrior_extract_contour.jpg Graphic file (type jpg)
 
 <use ./figure/female_warrior_extract_contour.jpg>
 Package pdftex.def Info: ./figure/female_warrior_extract_contour.jpg used on in
-put line 87.
+put line 88.
 (pdftex.def)             Requested size: 70.41872pt x 166.2212pt.
 
 <./figure/primitives_before_deformation.jpg, id=51, 305.14pt x 722.7pt>
@@ -497,7 +538,7 @@ File: ./figure/primitives_before_deformation.jpg Graphic file (type jpg)
 
 <use ./figure/primitives_before_deformation.jpg>
 Package pdftex.def Info: ./figure/primitives_before_deformation.jpg used on inp
-ut line 91.
+ut line 92.
 (pdftex.def)             Requested size: 70.18071pt x 166.2212pt.
 
 <./figure/primitives_after_deformation_without_blending.jpg, id=52, 280.04625pt
@@ -506,7 +547,7 @@ File: ./figure/primitives_after_deformation_without_blending.jpg Graphic file (
 type jpg)
  <use ./figure/primitives_after_deformation_without_blending.jpg>
 Package pdftex.def Info: ./figure/primitives_after_deformation_without_blending
-.jpg used on input line 96.
+.jpg used on input line 97.
 (pdftex.def)             Requested size: 64.40927pt x 166.2212pt.
 
 <./figure/primitives_after_deformation_and_lattice_with_breast.jpg, id=53, 273.
@@ -516,19 +557,19 @@ File: ./figure/primitives_after_deformation_and_lattice_with_breast.jpg Graphic
 
 <use ./figure/primitives_after_deformation_and_lattice_with_breast.jpg>
 Package pdftex.def Info: ./figure/primitives_after_deformation_and_lattice_with
-_breast.jpg used on input line 100.
+_breast.jpg used on input line 101.
 (pdftex.def)             Requested size: 62.79327pt x 166.2212pt.
 
 <./figure/final_shot.jpg, id=54, 305.14pt x 722.7pt>
 File: ./figure/final_shot.jpg Graphic file (type jpg)
 
 <use ./figure/final_shot.jpg>
-Package pdftex.def Info: ./figure/final_shot.jpg used on input line 104.
+Package pdftex.def Info: ./figure/final_shot.jpg used on input line 105.
 (pdftex.def)             Requested size: 70.18071pt x 166.2212pt.
 Missing character: There is no © in font ptmr7t!
 Missing character: There is no © in font ptmr7t!
 
-Underfull \hbox (badness 1546) in paragraph at lines 76--114
+Underfull \hbox (badness 1546) in paragraph at lines 77--115
 \OT1/ptm/m/n/10 The mod-el-ing pro-cess us-ing our de-vel-oped sys-tem is
  []
 
@@ -539,15 +580,11 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [2]
-<./figure/deformer_UI.jpg, id=87, 983.17313pt x 745.78625pt>
+[2] <./figure/deformer_UI.jpg, id=87, 983.17313pt x 745.78625pt>
 File: ./figure/deformer_UI.jpg Graphic file (type jpg)
 
 <use ./figure/deformer_UI.jpg>
-Package pdftex.def Info: ./figure/deformer_UI.jpg used on input line 122.
+Package pdftex.def Info: ./figure/deformer_UI.jpg used on input line 123.
 (pdftex.def)             Requested size: 237.13594pt x 179.87997pt.
 
 Underfull \vbox (badness 8038) has occurred while \output is active []
@@ -557,10 +594,10 @@ Underfull \vbox (badness 8038) has occurred while \output is active []
 File: ./figure/cylinder.png Graphic file (type png)
 
 <use ./figure/cylinder.png>
-Package pdftex.def Info: ./figure/cylinder.png used on input line 131.
+Package pdftex.def Info: ./figure/cylinder.png used on input line 132.
 (pdftex.def)             Requested size: 113.78642pt x 57.81621pt.
 
-Overfull \hbox (7.07597pt too wide) in paragraph at lines 131--131
+Overfull \hbox (7.07597pt too wide) in paragraph at lines 132--132
 [][] 
  []
 
@@ -568,30 +605,30 @@ Overfull \hbox (7.07597pt too wide) in paragraph at lines 131--131
 File: ./figure/deformer.png Graphic file (type png)
 
 <use ./figure/deformer.png>
-Package pdftex.def Info: ./figure/deformer.png used on input line 134.
+Package pdftex.def Info: ./figure/deformer.png used on input line 135.
 (pdftex.def)             Requested size: 109.39978pt x 57.81621pt.
 
-Overfull \hbox (2.68933pt too wide) in paragraph at lines 134--134
+Overfull \hbox (2.68933pt too wide) in paragraph at lines 135--135
 [][] 
  []
 
 
-Underfull \hbox (badness 1028) in paragraph at lines 127--141
+Underfull \hbox (badness 1028) in paragraph at lines 128--142
 \OT1/ptm/m/n/10 the al-go-rithm of our pro-posed prim-i-tive de-former and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 127--141
+Underfull \hbox (badness 10000) in paragraph at lines 128--142
 \OT1/ptm/m/n/10 con-sid-ers lo-cally stretch-ing for solid ob-jects plus
  []
 
 
-Underfull \hbox (badness 4024) in paragraph at lines 127--141
+Underfull \hbox (badness 4024) in paragraph at lines 128--142
 \OT1/ptm/m/n/10 bend-ing for two-manifold sur-faces called thin-shells.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 127--141
+Underfull \hbox (badness 10000) in paragraph at lines 128--142
 
  []
 
@@ -600,7 +637,7 @@ ct_contour.jpg> <./figure/primitives_before_deformation.jpg> <./figure/primitiv
 es_after_deformation_without_blending.jpg> <./figure/primitives_after_deformati
 on_and_lattice_with_breast.jpg> <./figure/final_shot.jpg> <./figure/deformer_UI
 .jpg>]
-Underfull \hbox (badness 10000) in paragraph at lines 143--146
+Underfull \hbox (badness 10000) in paragraph at lines 144--147
 
  []
 
@@ -608,14 +645,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 143--146
 Underfull \vbox (badness 2269) has occurred while \output is active []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 151--154
+Underfull \hbox (badness 10000) in paragraph at lines 152--155
 
  []
 
 <./figure/FDM.png, id=116, 326.1786pt x 73.7154pt>
 File: ./figure/FDM.png Graphic file (type png)
  <use ./figure/FDM.png>
-Package pdftex.def Info: ./figure/FDM.png used on input line 174.
+Package pdftex.def Info: ./figure/FDM.png used on input line 175.
 (pdftex.def)             Requested size: 189.70947pt x 42.87418pt.
 
 [4 <./figure/cylinder.png (PNG copy)> <./figure/deformer.png> <./figure/FDM.png
@@ -623,24 +660,24 @@ Package pdftex.def Info: ./figure/FDM.png used on input line 174.
 File: ./figure/fdmnode_a.png Graphic file (type png)
 
 <use ./figure/fdmnode_a.png>
-Package pdftex.def Info: ./figure/fdmnode_a.png used on input line 200.
+Package pdftex.def Info: ./figure/fdmnode_a.png used on input line 201.
 (pdftex.def)             Requested size: 96.03874pt x 91.14497pt.
 
 <./figure/fdmnode_b.png, id=158, 312.6882pt x 291.9708pt>
 File: ./figure/fdmnode_b.png Graphic file (type png)
 
 <use ./figure/fdmnode_b.png>
-Package pdftex.def Info: ./figure/fdmnode_b.png used on input line 205.
+Package pdftex.def Info: ./figure/fdmnode_b.png used on input line 206.
 (pdftex.def)             Requested size: 96.03874pt x 89.6769pt.
 
 <./figure/finger_group.png, id=159, 1059.96pt x 412.54124pt>
 File: ./figure/finger_group.png Graphic file (type png)
 
 <use ./figure/finger_group.png>
-Package pdftex.def Info: ./figure/finger_group.png used on input line 210.
+Package pdftex.def Info: ./figure/finger_group.png used on input line 211.
 (pdftex.def)             Requested size: 192.0775pt x 74.75151pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 194--223
+Underfull \hbox (badness 10000) in paragraph at lines 195--224
 
  []
 
@@ -648,7 +685,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 194--223
 File: ./figure/detail_mode_UI.png Graphic file (type png)
 
 <use ./figure/detail_mode_UI.png>
-Package pdftex.def Info: ./figure/detail_mode_UI.png used on input line 230.
+Package pdftex.def Info: ./figure/detail_mode_UI.png used on input line 231.
 (pdftex.def)             Requested size: 237.13594pt x 179.90906pt.
  [5 <./figure/fdmnode_a.png> <./figure/fdmnode_b.png> <./figure/finger_group.pn
 g (PNG copy)>]
@@ -659,114 +696,210 @@ Underfull \vbox (badness 1331) has occurred while \output is active []
 File: ./figure/2opens_a.jpg Graphic file (type jpg)
 
 <use ./figure/2opens_a.jpg>
-Package pdftex.def Info: ./figure/2opens_a.jpg used on input line 244.
+Package pdftex.def Info: ./figure/2opens_a.jpg used on input line 245.
 (pdftex.def)             Requested size: 106.71045pt x 78.71136pt.
 
 <./figure/2opens_b.jpg, id=193, 467.7475pt x 319.1925pt>
 File: ./figure/2opens_b.jpg Graphic file (type jpg)
 
 <use ./figure/2opens_b.jpg>
-Package pdftex.def Info: ./figure/2opens_b.jpg used on input line 249.
+Package pdftex.def Info: ./figure/2opens_b.jpg used on input line 250.
 (pdftex.def)             Requested size: 96.03874pt x 65.53716pt.
 
-<./figure/headcontourfront.png, id=199, 400.49625pt x 381.425pt>
+<./figure/headcontourfront.png, id=200, 400.49625pt x 381.425pt>
 File: ./figure/headcontourfront.png Graphic file (type png)
 
 <use ./figure/headcontourfront.png>
-Package pdftex.def Info: ./figure/headcontourfront.png used on input line 264.
-(pdftex.def)             Requested size: 63.98906pt x 60.94194pt.
+Package pdftex.def Info: ./figure/headcontourfront.png used on input line 265.
+(pdftex.def)             Requested size: 68.29123pt x 65.04256pt.
 
-<./figure/headcontourside.png, id=200, 439.6425pt x 371.3875pt>
+<./figure/headcontourside.png, id=201, 439.6425pt x 371.3875pt>
 File: ./figure/headcontourside.png Graphic file (type png)
 
 <use ./figure/headcontourside.png>
-Package pdftex.def Info: ./figure/headcontourside.png used on input line 265.
-(pdftex.def)             Requested size: 63.98906pt x 54.05098pt.
+Package pdftex.def Info: ./figure/headcontourside.png used on input line 268.
+(pdftex.def)             Requested size: 76.99225pt x 65.04256pt.
 
-<./figure/head.png, id=201, 401.5pt x 330.23375pt>
+Overfull \hbox (1.10703pt too wide) in paragraph at lines 268--268
+[][] 
+ []
+
+<./figure/head.png, id=202, 401.5pt x 330.23375pt>
 File: ./figure/head.png Graphic file (type png)
  <use ./figure/head.png>
-Package pdftex.def Info: ./figure/head.png used on input line 266.
-(pdftex.def)             Requested size: 63.98906pt x 52.62683pt.
+Package pdftex.def Info: ./figure/head.png used on input line 271.
+(pdftex.def)             Requested size: 79.07942pt x 65.04256pt.
+
+Overfull \hbox (3.1942pt too wide) in paragraph at lines 271--271
+[][] 
+ []
+
+<./figure/legcontourfront.png, id=218, 160.6pt x 468.75125pt>
+File: ./figure/legcontourfront.png Graphic file (type png)
+
+<use ./figure/legcontourfront.png>
+Package pdftex.def Info: ./figure/legcontourfront.png used on input line 281.
+(pdftex.def)             Requested size: 47.0433pt x 137.31255pt.
+
+<./figure/legcontourside.png, id=219, 200.75pt x 442.65375pt>
+File: ./figure/legcontourside.png Graphic file (type png)
+
+<use ./figure/legcontourside.png>
+Package pdftex.def Info: ./figure/legcontourside.png used on input line 284.
+(pdftex.def)             Requested size: 62.27473pt x 137.31255pt.
+
+Overfull \hbox (5.36081pt too wide) in paragraph at lines 284--284
+[][] 
+ []
+
+<./figure/legfront.png, id=220, 168.63pt x 460.72125pt>
+File: ./figure/legfront.png Graphic file (type png)
+
+<use ./figure/legfront.png>
+Package pdftex.def Info: ./figure/legfront.png used on input line 287.
+(pdftex.def)             Requested size: 50.25745pt x 137.31255pt.
+
+<./figure/legside.png, id=221, 182.6825pt x 396.48125pt>
+File: ./figure/legside.png Graphic file (type png)
+
+<use ./figure/legside.png>
+Package pdftex.def Info: ./figure/legside.png used on input line 290.
+(pdftex.def)             Requested size: 63.26804pt x 137.31255pt.
+
+Overfull \hbox (6.35411pt too wide) in paragraph at lines 290--290
+[][] 
+ []
 
 
-LaTeX Warning: Reference `sub@fig:head_contour_front' on page 6 undefined on in
-put line 271.
+Underfull \hbox (badness 1184) in paragraph at lines 240--295
+\OT1/ptm/m/n/10 lo-cal shape cre-ation from four dis-con-nected sil-hou-ette
+ []
 
 
-LaTeX Warning: Reference `sub@fig:head_contour_side' on page 6 undefined on inp
-ut line 271.
+Underfull \hbox (badness 10000) in paragraph at lines 240--295
 
-
-LaTeX Warning: Reference `sub@fig:head_mesh' on page 6 undefined on input line 
-271.
+ []
 
 [6 <./figure/detail_mode_UI.png> <./figure/2opens_a.jpg> <./figure/2opens_b.jpg
->] [7 <./figure/headcontourfront.png> <./figure/headcontourside.png> <./figure/
-head.png>]
+>] <./figure/foot2.png, id=230, 243.91125pt x 260.975pt>
+File: ./figure/foot2.png Graphic file (type png)
+
+<use ./figure/foot2.png>
+Package pdftex.def Info: ./figure/foot2.png used on input line 300.
+(pdftex.def)             Requested size: 67.54288pt x 72.26999pt.
+
+<./figure/foot1.png, id=231, 217.81375pt x 272.01625pt>
+File: ./figure/foot1.png Graphic file (type png)
+
+<use ./figure/foot1.png>
+Package pdftex.def Info: ./figure/foot1.png used on input line 303.
+(pdftex.def)             Requested size: 57.86992pt x 72.26999pt.
+
+<./figure/foot_scale_cross-section.png, id=232, 223.83624pt x 251.94125pt>
+File: ./figure/foot_scale_cross-section.png Graphic file (type png)
+
+<use ./figure/foot_scale_cross-section.png>
+Package pdftex.def Info: ./figure/foot_scale_cross-section.png used on input li
+ne 306.
+(pdftex.def)             Requested size: 64.20726pt x 72.26999pt.
+
+<./figure/neck.png, id=233, 255.95625pt x 128.48pt>
+File: ./figure/neck.png Graphic file (type png)
+ <use ./figure/neck.png>
+Package pdftex.def Info: ./figure/neck.png used on input line 310.
+(pdftex.def)             Requested size: 143.97502pt x 72.26999pt.
+
+<./figure/torso.png, id=234, 276.03125pt x 251.94125pt>
+File: ./figure/torso.png Graphic file (type png)
+
+<use ./figure/torso.png>
+Package pdftex.def Info: ./figure/torso.png used on input line 313.
+(pdftex.def)             Requested size: 79.17935pt x 72.26999pt.
+
+Overfull \hbox (8.03786pt too wide) in paragraph at lines 313--313
+[][] 
+ []
+
+
+Underfull \hbox (badness 1565) in paragraph at lines 319--320
+[]\OT1/ptm/m/n/10 More mod-el-ing ex-am-ples are given in Fig-ures [][]10[][].
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 319--320
+
+ []
+
+[7 <./figure/headcontourfront.png> <./figure/headcontourside.png> <./figure/hea
+d.png> <./figure/legcontourfront.png> <./figure/legcontourside.png> <./figure/l
+egfront.png> <./figure/legside.png> <./figure/foot2.png> <./figure/foot1.png> <
+./figure/foot_scale_cross-section.png> <./figure/neck.png (PNG copy)> <./figure
+/torso.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [8]
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 331.
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 371.
 
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
 
-LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 345.
+LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 385.
 
 
-LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 346.
+LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 386.
 
 
-LaTeX Warning: Citation `Alpher04' on page 9 undefined on input line 346.
+LaTeX Warning: Citation `Alpher04' on page 9 undefined on input line 386.
 
 
-LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 348.
+LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 388.
 
 
-LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 349.
+LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 389.
 
 
-LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 354.
+LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 394.
 
 
-LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 354.
+LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 394.
 
 
-LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 354.
+LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 394.
 
 
-LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 355.
+LaTeX Warning: Citation `Alpher02' on page 9 undefined on input line 395.
 
 
-LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 355.
+LaTeX Warning: Citation `Alpher03' on page 9 undefined on input line 395.
 
 
-LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 355.
+LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 395.
 
 
-LaTeX Warning: Citation `Authors12' on page 9 undefined on input line 371.
+Underfull \vbox (badness 1406) has occurred while \output is active []
+
+ [9]
+
+LaTeX Warning: Citation `Authors12' on page 10 undefined on input line 411.
 
 (./cvmpaper_for_review.bbl (./cvmpaper_for_review.brf)
 \tf@brf=\write3
 \openout3 = `cvmpaper_for_review.brf'.
 
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 14.
- [9])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 413.
- [10
-
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 413.
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 453.
+ [10]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 453.
 
 (./cvmpaper_for_review.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 413.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 413.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 453.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 453.
 Package rerunfilecheck Info: File `cvmpaper_for_review.brf' has not changed.
-(rerunfilecheck)             Checksum: C102A9C6F3182CD0A2019F3C694C4C53;1622.
+(rerunfilecheck)             Checksum: FAF2A1ECDE773BC293BE143F4A24D2D8;1623.
 
 
 LaTeX Warning: There were undefined references.
@@ -774,16 +907,16 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 413.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 453.
  ) 
 Here is how much of TeX's memory you used:
- 7978 strings out of 492995
- 122228 string characters out of 6132703
- 226103 words of memory out of 5000000
- 11321 multiletter control sequences out of 15000+600000
- 35431 words of font info for 85 fonts, out of 8000000 for 9000
+ 8544 strings out of 492995
+ 131127 string characters out of 6132703
+ 241665 words of memory out of 5000000
+ 11879 multiletter control sequences out of 15000+600000
+ 30946 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,15n,40p,1757b,518s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,15n,41p,1757b,552s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/te
 xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texl
@@ -803,10 +936,10 @@ ist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/texmf-dist/fon
 ts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/u
 rw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/u
 tmri8a.pfb>
-Output written on cvmpaper_for_review.pdf (10 pages, 1910756 bytes).
+Output written on cvmpaper_for_review.pdf (10 pages, 2289142 bytes).
 PDF statistics:
- 341 PDF objects out of 1000 (max. 8388607)
- 281 compressed objects within 3 object streams
- 65 named destinations out of 1000 (max. 500000)
- 96 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 371 PDF objects out of 1000 (max. 8388607)
+ 299 compressed objects within 3 object streams
+ 67 named destinations out of 1000 (max. 500000)
+ 141 words of extra memory for PDF output out of 10000 (max. 10000000)
 

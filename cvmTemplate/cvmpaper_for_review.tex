@@ -8,6 +8,7 @@
 \usepackage{amssymb}
 \usepackage{subcaption}
 \usepackage{multicol}
+\usepackage{floatrow} 
 
 % Include other packages here, before hyperref.
 
@@ -108,7 +109,7 @@ The modeling process using our developed system is demonstrated in Figure \ref{f
    \caption{Quick creation of a 3D female warrior model: (a) 2D female warrior sketch, (b) 2D silhouette contours, (c) base mesh without primitive deformations, (d) base mesh by deforming primitives to match generated 2D silhouette contours or adding local shapes created from 2D silhouette contours, (e) base mesh by adding blending surfaces to smoothly connect deformed primitives, (f) detail generation through local shape creation and shape from shading (Sketch by © EngKit Leong)}
 \label{fig:system_overview}
 \end{figure}\\
-First, 2D character silhouette contours are generated. Users can draw their own silhouette contours directly or input their selected sketches into our developed system. If the selected sketches are input into our developed system, a further process may be required to extract the 2D silhouette contours from the input sketches. For the example demonstrated in Figure \ref{fig:system_overview}, a 2D female warrior sketch shown in Figure \ref{fig:system_overview}\subref{fig:reference_image} is input. Then, users can extract 2D silhouette contours from the input sketch as shown in Figure \ref{fig:system_overview}\subref{fig:extract_contour}. After that, proper primitives are selected and placed to align with the corresponding silhouette contours through purely geometric transformations as shown in Figure \ref{fig:system_overview}\subref{fig:superellipsoid_primitives}. Since the silhouette contours of the primitives do not match the generated 2D silhouette contours of the 2D female warrior, the primitive deformer developed from sketch-guided and ODE driven deformations described in Section 4 is applied to deform the primitives to exactly match the corresponding 2D silhouette contours and create a rough 3D base mesh depicted in Figure \ref{fig:system_overview}\subref{fig:primitives_after_deformation}. 
+First, 2D character silhouette contours are generated. Users can draw their own silhouette contours directly or input their selected sketches into our developed system. If the selected sketches are input into our developed system, a further process may be required to extract the 2D silhouette contours from the input sketches. For the example demonstrated in Figure \ref{fig:system_overview}, a 2D female warrior sketch shown in Figure \ref{fig:system_overview}\subref{fig:reference_image} is input. Then, users can extract 2D silhouette contours from the input sketch as shown in Figure \ref{fig:system_overview}\subref{fig:extract_contour}. After that, proper primitives are selected and placed to align with the corresponding silhouette contours through purely geometric transformations as shown in Figure \ref{fig:system_overview}\subref{fig:superellipsoid_primitives}. Since the silhouette contours of the primitives do not match the generated 2D silhouette contours of the 2D female warrior, the primitive deformer developed from sketch-guided and ODE driven deformations described in Section 4 is applied to deform the primitives to exactly match the corresponding 2D silhouette contours and create a rough 3D base mesh depicted in Figure \ref{fig:system_overview}\subref{fig:primitives_after_deformation}. \\
 Once a 3D base mesh model is obtained, the detail generator described in Section 5 is employed to add 3D details to the 3D base mesh. First, the local shape creator developed in Subsection 5.2 is used to add local shapes and smoothly connect primitives together as demonstrated in Figure \ref{fig:system_overview}\subref{fig:blending_body_parts}. After that, we want to add fine details such as a dragon to the female warrior model. Since creating fine 3D details is not an easy task, we apply the image-based detail generator described in Subsection 5.3 to achieve the complicated 3D details shown in Figure \ref{fig:system_overview}\subref{fig:final_shot}.\\
 In the following two sections, we will introduce in detail the primitive deformer and the detail generator, respectively. Some examples will be presented to demonstrate their applications.
 \section{Primitive deformer}\label{primitive_deformer}
@@ -253,29 +254,69 @@ For creation of a local 3D model from two open silhouette contours in two differ
 	\label{fig:2open}
 		\end{center}
 \end{figure}\\
-The 3D model to be created from the two sketched 2D silhouette contours can be regarded as a sweeping surface whose generator is a closed curve $\mathbf{c(u)}$ shown in Figure \ref{fig:2open}() passing through the four corresponding points $\mathbf{c_{1j}}$ , $\mathbf{c_{2j}}$ , $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$,  and shown in Figure \ref{fig:2open}(a) and (b). We uniformly divide the domain of the parametric variable $u$ corresponding to the closed curve (generator) $\mathbf{c(u)}$ into $2N$ equal intervals. The nodes corresponding to $\mathbf{c_{1j}}$ , $\mathbf{c_{2j}}$ , $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$ are 1, $N/2+1$ , $N+1$ and $3/2N+1$ , respectively as demonstrated in Figure \ref{fig:2open}(b). Here, the selection of  $N$ should ensure that  is an even number and $N\geqslant4$. \\
+The 3D model to be created from the two sketched 2D silhouette contours can be regarded as a sweeping surface whose generator is a closed curve $\mathbf{c(u)}$ shown in Figure \ref{fig:2open}\subref{fig:2opens_top} passing through the four corresponding points $\mathbf{c_{1j}}$ , $\mathbf{c_{2j}}$ , $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$,  and shown in Figure \ref{fig:2open}(a) and (b). We uniformly divide the domain of the parametric variable $u$ corresponding to the closed curve (generator) $\mathbf{c(u)}$ into $2N$ equal intervals. The nodes corresponding to $\mathbf{c_{1j}}$ , $\mathbf{c_{2j}}$ , $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$ are 1, $N/2+1$ , $N+1$ and $3/2N+1$ , respectively as demonstrated in Figure \ref{fig:2open}(b). Here, the selection of  $N$ should ensure that  is an even number and $N\geqslant4$. \\
 The finite difference equations for the nodes 4, 5, \ldots, $N/2-3$, $N/2-2$; $N/2+4$, $N/2+5$, \ldots, $N-3$, $N-2$; $N+4$, $N+5$, \ldots, $3N/2-3$, $3N/2-2$; $3N/2+2$, $3N/2+3$, \ldots, $2N-3$, and $2N-2$ are the same as Equation \eqref{odefdm}.\\
 The finite difference equations for the nodes 2, 3, $N/2-1$, $N/2$, $N/2+2$, $N/2+3$, $N-1$, $N$, $N+2$, $N+3$, $3N/2-1$, $3N/2$, $3N/2+2$, $3N/2+3$, $2N-1$, and $2N$ can be obtained by introducing the corresponding one of $\mathbf{c_{1j}}$, $\mathbf{c_{2j}}$ , $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$ into Equation \eqref{odefdm} to replace $d_1$ , $d_{N/2+1}$ , $d_{N+1}$ and $d_{3N/2+1}$ accordingly. \\%The finite difference equations for these nodes are given in Appendix B.
 Putting all obtained finite difference equations together, we obtain all the unknown constants $\mathbf{d_2}$ , $\mathbf{d_3}$ , \ldots, $\mathbf{d_{N/2-1}}$ , $\mathbf{d_{N/2}}$ , $\mathbf{d_{N/2+2}}$, $\mathbf{d_{N/2+3}}$ , \ldots , $\mathbf{d_{N-1}}$ , $\mathbf{d_N}$ , $\mathbf{d_{N+2}}$ , $\mathbf{d_{N+3}}$ ,\ldots, $\mathbf{d_{3N/2-1}}$ , $\mathbf{d_{3N/2}}$ , $\mathbf{d_{3N/2+2}}$ , $\mathbf{d_{3N/2+3}}$ , \ldots , $\mathbf{d_{2N-1}}$ and $d_{2N}$ . They together with the known four points $\mathbf{c_{1j}}$, $\mathbf{c_{2j}}$ , $\mathbf{c_{3j}}$ and $\mathbf{c_{4j}}$ are used to define the generator.\\
 Repeating the above treatment for all other points on the four curves $\mathbf{c_1}$ , $\mathbf{c_2}$ , $\mathbf{c_3}$ and $\mathbf{c_4}$, we obtain the generators at the other positions. With these generators, we create local 3D shapes.
-\begin{figure}[!htb]
+\begin{figure}[!hbt]
 \centering
-\begin{multicols}{3}
-\includegraphics[width=\linewidth]{./figure/headcontourfront.png}\label{fig:head_contour_front}
-\includegraphics[width=\linewidth]{./figure/headcontourside.png}\label{fig:head_contour_side}
-\includegraphics[width=\linewidth]{./figure/head.png}\label{fig:head_mesh}
-\end{multicols}
+\begin{subfigure}{0.32\linewidth}
+\includegraphics[height=0.9in]{./figure/headcontourfront.png}\caption{}\label{fig:head_contour_front}
+\end{subfigure}
+\begin{subfigure}{0.32\linewidth}
+\includegraphics[height=0.9in]{./figure/headcontourside.png}\caption{}\label{fig:head_contour_side}
+\end{subfigure}
+\begin{subfigure}{0.32\linewidth}
+\includegraphics[height=0.9in]{./figure/head.png}\caption{}\label{fig:head_mesh}
+\end{subfigure}
 \caption{Primitive generator: a) 2D silhouette contours of the male head in front view, b)-2D silhouette contours of the male head in front view, c) generated male head}
 \label{fig:head}
 \end{figure}\\
-A head model is first used to demonstrate the above method Figure \ref{fig:head}. Figure \ref{fig:head}\subref{fig:head_contour_front} and Figure \ref{fig:head}\subref{fig:head_contour_side} show two open head silhouette contours in two different view plans. Figure \ref{fig:head}\subref{fig:head_mesh} depicted the created 3D head model. 
+A head model is first used to demonstrate the above method Figure \ref{fig:head}. Figure \ref{fig:head}\subref{fig:head_contour_front} and Figure \ref{fig:head}\subref{fig:head_contour_side} show two open head silhouette contours in two different view plans. Figure \ref{fig:head}\subref{fig:head_mesh} depicted the created 3D head model. \\
+The above method can be directly extended to deal with local shape creation from four disconnected silhouette contours. The silhouette contours of the leg model in the front and side views are shown in Figure \ref{fig:male_leg}\subref{fig:leg_contour_front} and Figure \ref{fig:male_leg}\subref{fig:leg_contour_side}, respectively. The corresponding four points on the four silhouette contours are used to define a cross-section curve. All of these cross section curves are used to generate the 3D leg model with the front and side views in Figure \ref{fig:male_leg}\subref{fig:leg_mesh_front} and Figure \ref{fig:male_leg}\subref{fig:leg_mesh_side}, respectively. \\
+\begin{figure}[h!tb]
+\centering
+\begin{subfigure}{0.24\linewidth}
+\includegraphics[height=1.9in]{./figure/legcontourfront.png}\caption{}\label{fig:leg_contour_front}
+\end{subfigure}
+\begin{subfigure}{0.24\linewidth}
+\includegraphics[height=1.9in]{./figure/legcontourside.png}\caption{}\label{fig:leg_contour_side}
+\end{subfigure}
+\begin{subfigure}{0.24\linewidth}
+\includegraphics[height=1.9in]{./figure/legfront.png}\caption{}\label{fig:leg_mesh_front}
+\end{subfigure}
+\begin{subfigure}{0.24\linewidth}
+\includegraphics[height=1.9in]{./figure/legside.png}\caption{}\label{fig:leg_mesh_side}
+\end{subfigure}
+\caption{leg model creation from two open silhouette contours in two different view planes}
+\label{fig:male_leg}
+\end{figure}\\
 
-Figure 9: leg model creation from two open silhouette contours in two different view planes
-The above method can be directly extended to deal with local shape creation from four disconnected silhouette contours. The silhouette contours of the leg model in the front and side views are shown in Figure 9(a) and (b), respectively. The corresponding four points on the four silhouette contours are used to define a cross-section curve. All of these cross section curves are used to generate the 3D leg model with the front and side views in Figure 9(c) and (d), respectively. 
 
-More modeling examples are given in Figures 10. Figure 10(a) shows the four silhouette contours of a foot model in the front and side views. Figure 10(b) depicts the 3D foot model created from the four silhouette contours. Figure 10(c) shows the cross-section curves. Figures 10(d) and 10(e) give 3D neck model and torso model generated from the above method.
-Figure 10: Creation of 3D foot, neck, and torso models from two open silhouette contours in two different view planes
-
+\begin{figure}[!htb]
+\begin{center}
+\begin{subfigure}{0.32\linewidth}
+\includegraphics[height=1in]{./figure/foot2.png}\caption{}\label{fig:foot_mesh}
+\end{subfigure}
+\begin{subfigure}{0.32\linewidth}
+\includegraphics[height=1in]{./figure/foot1.png}\caption{}\label{fig:foot_failed_mesh}
+\end{subfigure}
+\begin{subfigure}{0.32\linewidth}
+\includegraphics[height=1in]{./figure/foot_scale_cross-section.png}\caption{}\label{fig:foot_cross_section}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.65\linewidth}
+\includegraphics[height=1in]{./figure/neck.png}\caption{}\label{fig:neck}
+\end{subfigure}
+\begin{subfigure}{0.3\linewidth}
+\includegraphics[height=1in]{./figure/torso.png}\caption{}\label{fig:lower_torso}
+\end{subfigure}
+\caption{Creation of 3D foot, neck, and torso models from two open silhouette contours in two different view planes}
+\label{fig:more_example_on_2opens}
+\end{center}
+\end{figure}
+More modeling examples are given in Figures \ref{fig:more_example_on_2opens}. Figure \ref{fig:more_example_on_2opens}(a) shows the four silhouette contours of a foot model in the front and side views. Figure \ref{fig:more_example_on_2opens}(b) depicts the 3D foot model created from the four silhouette contours. Figure \ref{fig:more_example_on_2opens}(c) shows the cross-section curves. Figures \ref{fig:more_example_on_2opens}(d) and \ref{fig:more_example_on_2opens}(e) give 3D neck model and torso model generated from the above method.\\
 \subsubsection{Algorithm for one open and one closed silhouette contours in two different view planes}
 For creation of a local 3D model from one open and one closed silhouette contours in two different view plans as shown in Figure 11, the intersecting points  and  between the open silhouette contour and the closed silhouette contour divide the closed silhouette contour into two curves. Then we find the middle points  and  of the two curves. These four points  ,  ,  and  divide the closed silhouette contour into four curves  ,  ,  and . Next, we find the middle point  of the open silhouette contour which divides the open silhouette contour into two curves  and . With this treatment, the creation of the local 3D detail model is changed into creation of two sweeping surfaces: one is defined by the three curves  ,  and , and the other is defined by the three curves  ,  and . 
 Since the creation process of the two weeping surfaces is the same, we take the creation of the sweeping surface defined by the three curves  ,  and  to demonstrate the process.
@@ -283,8 +324,7 @@ For each of the three curves  ,  and , we uniformly divide it into   equal inter
 The sweeping surface can be generated by sweeping a generator  passing through the points  ,  and . Based on this consideration, the creation of the sweeping surface is transformed into determination of the generator at different positions along the curve .  
 In order to create the generator  passing the points  ,  and , we uniformly divide the domain of the parametric variable  corresponding to  the generator  into 2N equal intervals, and get the nodes 1, 2, ?, , and . Since the nodes 1, N+1, and 2N+1 are on the curves  ,  and , their values are known, i. e., , , and . When writing the finite difference equations for the node 2 and the node 2N, the node 0 beyond the boundary node 1 and the node 2N+2 beyond the boundary node 2N+1 will be involved. They can be determined below.
 If the created local 3D model is to be smoothly connected to another 3D model, we can obtain a closed curve close to but larger than the closed silhouette contour from another 3D model. Then, the vector-valued first derivative on the curve   and on the curve   can be calculated from the closed curve and the closed silhouette contour.
-Figure 11: Finite difference nodes for Algorithm for one open and one closed silhouette contours in two different view planes  
-
+Figure 11: Finite difference nodes for Algorithm for one open and one closed silhouette contours in two different view planes  \\
 If the created local 3D model is to be connected to another 3D model with positional continuation only, the vector-valued first derivative  on the curve   and  on the curve  can be estimated from the three points  ,  and by first constructing a curve passing through the three points and then calculating the vector-valued first derivative of the constructed curve at the points   and . Once the vector-valued first derivatives  and  are obtained. The nodes 0 and 2N+2 can be determined by the following finite difference approximation.
                           (8)
 Solving the above equation, we obtain the nodes 0 and   2N+2 by
