@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  20 SEP 2018 11:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  20 SEP 2018 14:24
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -839,97 +839,155 @@ Underfull \hbox (badness 10000) in paragraph at lines 319--333
 d.png> <./figure/legcontourfront.png> <./figure/legcontourside.png> <./figure/l
 egfront.png> <./figure/legside.png> <./figure/foot2.png> <./figure/foot1.png> <
 ./figure/foot_scale_cross-section.png> <./figure/neck.png (PNG copy)> <./figure
-/torso.png>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-<./figure/referencebum.png, id=268, 724.7075pt x 538.01pt>
+/torso.png>] <./figure/referencebum.png, id=268, 724.7075pt x 538.01pt>
 File: ./figure/referencebum.png Graphic file (type png)
 
 <use ./figure/referencebum.png>
 Package pdftex.def Info: ./figure/referencebum.png used on input line 353.
-(pdftex.def)             Requested size: 724.70573pt x 538.00868pt.
+(pdftex.def)             Requested size: 97.34473pt x 72.26999pt.
 
 <./figure/buttcheck.png, id=269, 296.10625pt x 344.28625pt>
 File: ./figure/buttcheck.png Graphic file (type png)
 
 <use ./figure/buttcheck.png>
-Package pdftex.def Info: ./figure/buttcheck.png used on input line 354.
-(pdftex.def)             Requested size: 296.10551pt x 344.2854pt.
+Package pdftex.def Info: ./figure/buttcheck.png used on input line 356.
+(pdftex.def)             Requested size: 62.15703pt x 72.26999pt.
 
-Overfull \hbox (83.35535pt too wide) in paragraph at lines 353--355
- [][] 
+<./figure/2open1close.jpeg, id=273, 707.64375pt x 447.6725pt>
+File: ./figure/2open1close.jpeg Graphic file (type jpg)
+
+<use ./figure/2open1close.jpeg>
+Package pdftex.def Info: ./figure/2open1close.jpeg used on input line 366.
+(pdftex.def)             Requested size: 165.99443pt x 105.01178pt.
+ [8 <./figure/1open1close.jpeg> <./figure/referencebum.png> <./figure/buttcheck
+.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 376--378
+
  []
 
 
-Overfull \hbox (46.37051pt too wide) in paragraph at lines 353--355
- [] 
+LaTeX Warning: Reference `ssec:num2' on page 9 undefined on input line 387.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 384--388
+
  []
 
-[8 <./figure/1open1close.jpeg>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [9 <./figure/referencebum.png> <./figure/buttcheck.png>]
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 392.
-
-
-(/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1pcr.fd
-File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)
-
-LaTeX Warning: Citation `Alpher02' on page 10 undefined on input line 406.
+Underfull \hbox (badness 4060) in paragraph at lines 394--398
+\OT1/ptm/m/n/10 from these equa-tions,. We de-note these sculpt-ing
+ []
 
 
-LaTeX Warning: Citation `Alpher03' on page 10 undefined on input line 407.
+Underfull \hbox (badness 1158) in paragraph at lines 394--398
+\OT1/ptm/m/n/10 the same method, we can ob-tain the sculpt-ing forces
+ []
 
 
-LaTeX Warning: Citation `Alpher04' on page 10 undefined on input line 407.
+Underfull \hbox (badness 10000) in paragraph at lines 394--398
+
+ []
 
 
-LaTeX Warning: Citation `Alpher03' on page 10 undefined on input line 409.
+Underfull \hbox (badness 10000) in paragraph at lines 402--405
+
+ []
 
 
-LaTeX Warning: Citation `Alpher03' on page 10 undefined on input line 410.
+Underfull \vbox (badness 1824) has occurred while \output is active []
+
+ [9 <./figure/2open1close.jpeg>]
+<./figure/palmwithfingers.png, id=298, 477.785pt x 389.455pt>
+File: ./figure/palmwithfingers.png Graphic file (type png)
+
+<use ./figure/palmwithfingers.png>
+Package pdftex.def Info: ./figure/palmwithfingers.png used on input line 418.
+(pdftex.def)             Requested size: 88.65858pt x 72.26999pt.
+
+<./figure/palm.png, id=299, 260.975pt x 221.82875pt>
+File: ./figure/palm.png Graphic file (type png)
+ <use ./figure/palm.png>
+Package pdftex.def Info: ./figure/palm.png used on input line 421.
+(pdftex.def)             Requested size: 85.02293pt x 72.26999pt.
+
+<./figure/uppertorso.png, id=309, 503.8825pt x 346.29375pt>
+File: ./figure/uppertorso.png Graphic file (type png)
+
+<use ./figure/uppertorso.png>
+Package pdftex.def Info: ./figure/uppertorso.png used on input line 431.
+(pdftex.def)             Requested size: 93.33212pt x 64.14352pt.
+
+<./figure/hip.png, id=310, 422.57875pt x 361.35pt>
+File: ./figure/hip.png Graphic file (type png)
+ <use ./figure/hip.png>
+Package pdftex.def Info: ./figure/hip.png used on input line 434.
+(pdftex.def)             Requested size: 75.00986pt x 64.14352pt.
 
 
-LaTeX Warning: Citation `Alpher03' on page 10 undefined on input line 415.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-LaTeX Warning: Citation `Alpher02' on page 10 undefined on input line 415.
+Underfull \hbox (badness 10000) in paragraph at lines 440--441
+
+ []
 
 
-LaTeX Warning: Citation `Authors12' on page 10 undefined on input line 415.
+Underfull \hbox (badness 10000) in paragraph at lines 444--446
+
+ []
 
 
-LaTeX Warning: Citation `Alpher02' on page 10 undefined on input line 416.
+Underfull \hbox (badness 10000) in paragraph at lines 450--451
 
-
-LaTeX Warning: Citation `Alpher03' on page 10 undefined on input line 416.
-
-
-LaTeX Warning: Citation `Authors12' on page 10 undefined on input line 416.
-
-
-LaTeX Warning: Citation `Authors12' on page 10 undefined on input line 432.
+ []
 
 (./cvmpaper_for_review.bbl (./cvmpaper_for_review.brf)
 \tf@brf=\write3
 \openout3 = `cvmpaper_for_review.brf'.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 48.
- [10])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 474.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
+ [10 <./figure/palmwithfingers.png> <./figure/palm.png> <./figure/uppertorso.pn
+g> <./figure/hip.png>]
+
+LaTeX Warning: Command \^ invalid in math mode on input line 99.
+
+./cvmpaper_for_review.bbl:99: Please use \mathaccent for accents in math mode.
+\add@accent ...@spacefactor \spacefactor }\accent 
+                                                  #1 #2\egroup \spacefactor ...
+l.99 
+     
+? 
+./cvmpaper_for_review.bbl:99: Missing { inserted.
+<to be read again> 
+                   \egroup 
+l.99 
+     
+? 
+./cvmpaper_for_review.bbl:99: You can't use `\spacefactor' in math mode.
+\add@accent ...}\accent #1 #2\egroup \spacefactor 
+                                                  \accent@spacefactor 
+l.99 
+     
+? 
+./cvmpaper_for_review.bbl:99: Missing } inserted.
+<inserted text> 
+                }
+l.99 
+     
+? 
+Missing character: There is no è in font cmex9!
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 471.
  [11
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 474.
-
-(./cvmpaper_for_review.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 474.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 474.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 471.
+ (./cvmpaper_for_review.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 471.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 471.
 Package rerunfilecheck Info: File `cvmpaper_for_review.brf' has not changed.
-(rerunfilecheck)             Checksum: 1430FF950CFF7D1DD84B106A8A3DE074;1630.
+(rerunfilecheck)             Checksum: 4AC12B99897D3D17A0A07EDC7751C430;1220.
 
 
 LaTeX Warning: There were undefined references.
@@ -937,14 +995,14 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 474.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 471.
  ) 
 Here is how much of TeX's memory you used:
- 8592 strings out of 492995
- 131913 string characters out of 6132703
- 244514 words of memory out of 5000000
- 11910 multiletter control sequences out of 15000+600000
- 35431 words of font info for 85 fonts, out of 8000000 for 9000
+ 8589 strings out of 492995
+ 132240 string characters out of 6132703
+ 245871 words of memory out of 5000000
+ 11907 multiletter control sequences out of 15000+600000
+ 29394 words of font info for 72 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,16n,41p,1757b,552s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
@@ -953,23 +1011,23 @@ xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texl
 ive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texli
 ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texliv
 e/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/
-2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/20
-17/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2017/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2017/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2017/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2017/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2017/texmf-d
-ist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2017/tex
-mf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2017
-/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2017/texmf-d
-ist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/texmf-dist/fon
-ts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/u
-rw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/u
-tmri8a.pfb>
-Output written on cvmpaper_for_review.pdf (11 pages, 2572415 bytes).
+2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/20
+17/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2017
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2017/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2017/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2017/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2017/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2017/texmf-dist/
+fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2017/texmf-d
+ist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2017/tex
+mf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/texmf-dist
+/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/typ
+e1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/tim
+es/utmri8a.pfb>
+Output written on cvmpaper_for_review.pdf (11 pages, 3057379 bytes).
 PDF statistics:
- 396 PDF objects out of 1000 (max. 8388607)
- 317 compressed objects within 4 object streams
- 72 named destinations out of 1000 (max. 500000)
- 156 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 433 PDF objects out of 1000 (max. 8388607)
+ 345 compressed objects within 4 object streams
+ 78 named destinations out of 1000 (max. 500000)
+ 181 words of extra memory for PDF output out of 10000 (max. 10000000)
 

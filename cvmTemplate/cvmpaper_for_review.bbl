@@ -91,6 +91,12 @@ L.~R. Williams and D.~W. Jacobs.
   shape and salience.
 \newblock {\em Neural computation}, 9(4):837--858, 1997.
 
+\bibitem{you2014blending}
+L.~You, H.~Ugail, B.~Tang, X.~Jin, X.~You, and J.~J. Zhang.
+\newblock Blending using ode swept surfaces with shape control and $$ c\^{} 1$$
+  c 1 continuity.
+\newblock {\em The Visual Computer}, 30(6-8):625--636, 2014.
+
 \bibitem{SBM:SBM07:023-030}
 J.~Zimmermann, A.~Nealen, and M.~Alexa.
 \newblock {SilSketch: Automated Sketch-Based Editing of Surface Meshes}.

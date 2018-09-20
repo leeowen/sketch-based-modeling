@@ -9,7 +9,7 @@
 \usepackage{subcaption}
 \usepackage{multicol}
 \usepackage{floatrow} 
-
+%\usepackage[polish]{babel}
 % Include other packages here, before hyperref.
 
 % If you comment hyperref and then uncomment it, you should delete
@@ -326,7 +326,7 @@ If the created local 3D model is to be smoothly connected to another 3D model, w
 	\begin{center}
 	\includegraphics[width=0.7\columnwidth]{./figure/1open1close.jpeg}
 	\end{center}
-	\caption{Finite difference nodes for Algorithm for one open and one closed silhouette contours in two different view planes}
+	\caption{Finite difference nodes for Algorithm for one open and one closed silhouette contours}
 	\label{fig:1open1close}
 \end{figure}
 If the created local 3D model is to be connected to another 3D model with positional continuation only, the vector-valued first derivative $\mathbf{T_{1j}}$ on the curve $\mathbf{c_1}$ and $\mathbf{T_{3j}}$ on the curve $\mathbf{c_3}$ can be estimated from the three points $\mathbf{c_{1j}}$ , $\mathbf{c_{2j}}$ and $\mathbf{c_{3j}}$ by first constructing a curve passing through the three points and then calculating the vector-valued first derivative of the constructed curve at the points $\mathbf{c_{1j}}$ and $\mathbf{c_{3j}}$ . Once the vector-valued first derivatives $\mathbf{T_{1j}}$ and $\mathbf{T_{3j}}$ are obtained. The nodes 0 and $2N+2$ can be determined by the following finite difference approximation.\\
@@ -349,120 +349,117 @@ Solving the finite difference equations for all the inner nodes 2, 3, \ldots , $
 Using the same treatment, we can obtain the generator at the other positions. From these obtained generators, a local detail 3D model is created and depicted in (b) of Figure \ref{fig:bum}.\\
 \begin{figure}[!htb]
 \centering
-\begin{multicols}{2}
-\resizebox{6.7cm}{5cm}{\includegraphics{./figure/referencebum.png}}
-\resizebox{5.4cm}{5cm}{\includegraphics{./figure/buttcheck.png}}
-\end{multicols}
-\caption{Algorithm for two open and one closed silhouette contours in three different view planes}
+\begin{subfigure}{0.45\linewidth}
+\includegraphics[height=1in]{./figure/referencebum.png}\caption{}\label{reference_bum}
+\end{subfigure}
+\begin{subfigure}{0.45\linewidth}
+\includegraphics[height=1in]{./figure/buttcheck.png}\caption{}\label{buttcheck}
+\end{subfigure}
+\caption{creation of two open and one closed silhouette contours in three different view planes}
 \label{fig:bum}
 \end{figure}
 \subsubsection{Algorithm for two open and one closed silhouette contours in three different view planes}\label{algorithm_2_opens_1_close}
 By introducing depth information, users can have more power to control the shape of the 3D model to be created as demonstrated by the algorithms given in Subsections \ref{algorithm_2_opens} and \ref{algorithm_1_open_1_closed}. Users can further control the shape of 3D models by using one or more silhouette contours in other view planes. In this subsection, we discuss construct a 3D detail model from two open and one closed silhouette contours in three orthotropic view planes.\\
-As shown in Figure 13, the task of creating a local 3D detail model passing through two open and one closed silhouette contours can be transformed into constructing 4 sweeping surfaces encircled by the curves , , , and , respectively.
-Figure 13: Creation of a 3D local detail model from two open and one closed silhouette contours
-Since the construction algorithm for the 4 sweeping surfaces is the same, we take the sweeping surface encircled by the three curves ,  and  to demonstrate the construction algorithm. This algorithm will require reconstruction of the curves  and  to get additional information called sculpting forces for generating the sweeping surface. 
-In order to reconstruct the curves  and  accurately, we modify the vector-valued ordinary differential equation (e) by introducing a sculpting force  and obtain
-Accordingly, the finite difference equation for the above ordinary differential equation becomes
-The reconstruction algorithm for the curve  is exactly same as that of the curve . Here we take the reconstruction of the curve  to demonstrate the algorithm. 
-Similar to the previous treatment, we uniformly divide the domain of the parametric variable  for the curve  into 2N equal intervals. The vector-valued first derivatives of the curves  at the node 1 and 2N+1 can be determined from the curve  and indicated by  and .
-When writing the finite difference equations for the inner nodes 2, and 2N, the node 0 beyond the boundary node 1 and the node 2N+2 beyond the boundary node 2N+1 will be involved. We can use the method given in Subsection 5.2.2 to determine the nodes 0 and 2N+2 from the vector-valued first derivatives  and  through
-For each of the inner nodes 2, 3, ?, 2N-1, 2N, we can write a finite difference equation. Since the coordinate values for all the nodes on the curve  are known, we can calculate the sculpting force  from these equations,. We denote these sculpting forces as . With the same method, we can obtain the sculpting forces  acting on the curve .
-The curves  and  can be regarded as generators. The generation of the sweeping surface defined by the three curves ,  and  is to sweep the generator from the curve  to the curve  along the curve  and the point . In order to determine the shape of the generator at different positions along the curve , we uniformly divide  the curve  into  equal intervals and obtain the nodes  where and are the intersecting points between the curves     and  and between  and . Then we determine the shape of the generator between the node   and the point . 
-With the same treatment, we divide the domain of the parametric variable  for the generator between the node  and the point  into 2N equal intervals (the node  on the curve  is the node 0 on the generator between the node  and the point ). When sweeping the curve  along the curve  to the curve , the sculpting force  acting at the node  of the curve  is gradually changed to the sculpting force  acting at the node  of the curve  . Here we use a linear interpolation to describe the gradual change and obtain the sculpting force  below acting at the node  of the generator between the node  and the point 
-where  is the length from the point  to the node  and  is the length from the point  to the point .
-When sweeping the curve  along the curve  to the curve , the vector-valued first derivatives of the curve  at the points  and  are also gradually changed to the vector-valued first derivatives of the curve  at the points  and . The same linear interpolation is used to describe such a gradual change and determine the vector-valued first derivatives  and  of the generator at the node  and the point 
-Having known the sculpting forces at all the inner nodes 2, 3, ?, 2N-1, 2N, and the coordinate values at the boundary nodes 0 and 2N+1 and the nodes 0 and 2N+2 beyond the boundary nodes, we can write the finite difference equations for all the inner nodes where the finite difference equations for the nodes 4, 5,?, 2N-3, 2N-2 are the same as Equation (11) with the sculpting force  being calculated by Equation (13), and the finite difference equations for the nodes 2, 3, 2N-1, and 2N are given in Appendix D.
-Solving all the finite difference equations, we obtain all the unknown constants , , ?, , and . They together with the two known points  and   are used to create the generator.
-With the same method, we obtain all the curves of the generator at the positions. They are used to create the sweeping surface. 
-Figure 14: palm model creation from two open and one closed silhouette contours in three different view planes
-  
-With the above method, we draw a closed palm contour and two open curves shown in Figure 14(a). They divide the palm into four regions. One surface is created each of the four regions. Figure 14(b) depicts the palm model consisting of the four surfaces. 
-The above method can be also extended to deal with the situations where the two open curves do not intersect. For such situations, the intersecting point of the two open curves becomes the upper closed curve as indicated in Figures 15(a) and (b), and a sweeping surface is encircled by four curves. With this extension, we created 3D shoulder and hip models and depicted them in Figures 15(a) and (b), respectively.   
-Figure 15: palm model creation from two open and one closed silhouette contours in three different view planes
+As shown in Figure \ref{fig:2open1close}, the task of creating a local 3D detail model passing through two open and one closed silhouette contours can be transformed into constructing 4 sweeping surfaces encircled by the curves $\mathbf{c_1c_6c_5}$, $\mathbf{c_2c_7c_6}$, $\mathbf{c_3c_8c_7}$, and $\mathbf{c_4c_5c_8}$ respectively.\\
+\begin{figure}[h]
+	\begin{center}
+	\includegraphics[width=0.7\columnwidth]{./figure/2open1close.jpeg}
+	\end{center}
+	\caption{Finite difference nodes for Algorithm for two open and one closed silhouette contours}
+	\label{fig:2open1close}
+\end{figure}\\
+Since the construction algorithm for the 4 sweeping surfaces is the same, we take the sweeping surface defined by the three curves $\mathbf{c_1}$, $\mathbf{c_6}$ and $\mathbf{c_5}$ to demonstrate the construction algorithm. This algorithm will require reconstruction of the curves $\mathbf{c_5}$ and $\mathbf{c_6}$ to get additional information called sculpting forces for generating the sweeping surface.\\
+In order to reconstruct the curves $\mathbf{c_5}$ and $\mathbf{c_6}$ accurately, we modify the vector-valued ordinary differential equation \eqref{ODE} by introducing a sculpting force $\mathbf{f}$ and obtain
+\begin{equation}
+k_b\frac{\partial^4d}{\partial u^4}-k_s\frac{\partial^2 d}{\partial u^2}=f
+\label{ODEwithforce}
+\end{equation}
+Accordingly, the finite difference equation for the above ordinary differential equation becomes\\
+\begin{equation}
+\begin{split}
+(6k_b+2k_sh^2)d_i+k_bd_{i-2}+k_bd_{i+2} \\
+-(4k_b+k_sh^2)d_{i-1}-(4k_b+k_sh^2)d_{i+1}=\triangle u^4f_i
+\end{split}
+\label{odefdmwithforce}
+\end{equation}
+The reconstruction algorithm for the curve $\mathbf{c_6}$ is exactly same as that of the curve $\mathbf{c_5}$. Here we take the reconstruction of the curve $\mathbf{c_5}$ to demonstrate the algorithm.\\
+Similar to the previous treatment, we uniformly divide the domain of the parametric variable $u$ for the curve $\mathbf{c_5(u)}$ into $2N$ equal intervals. The vector-valued first derivatives of the curves $\mathbf{c_5(u)}$ at the node 1 and $2N+1$ can be determined from the curve $\mathbf{c_5(u)}$ and indicated by $\mathbf{\mathbf{T_{5,0}}}$ and $\mathbf{T_{5,1}}$.\\
+When writing the finite difference equations for the inner nodes 2, and $2N$, the node 0 beyond the boundary node 1 and the node $2N+2$ beyond the boundary node $2N+1$ will be involved. We can use the method given in Subsection \ref{ssec:num2} to determine the nodes 0 and 2N+2 from the vector-valued first derivatives $\mathbf{\mathbf{T_{5,0}}}$ and $\mathbf{T_{5,1}}$ through\\
+\begin{equation}
+\begin{split}
+d_0=d_2-2T_{5,0}\triangle u \\
+d_(2N+2)=d_{2N}+2T_{5,1}\triangle u
+\end{split}
+\label{2endsdelta}
+\end{equation}\\
+For each of the inner nodes 2, 3, \ldots, $2N-1$, $2N$, we can write a finite difference equation. Since the coordinate values for all the nodes on the curve $c_6$ are known, we can calculate the sculpting force $\mathbf{f_i}$$(i=2,3,\ldots,2N-1,2N)$ from these equations,. We denote these sculpting forces as $\mathbf{f_{5,i}=f_i}$$(i=2,3,\ldots,2N-1,2N)$. With the same method, we can obtain the sculpting forces $\mathbf{f_{5,i}=f_i}$$(i=2,3,\ldots,2N-1,2N)$ acting on the curve $c_6$.\\
+The curves $\mathbf{c_5}$ and $\mathbf{c_6}$ can be regarded as generators. The generation of the sweeping surface defined by the three curves $\mathbf{c_1}$, $\mathbf{c_6}$ and $\mathbf{c_5}$ is to sweep the generator from the curve $\mathbf{c_5}$ to the curve $\mathbf{c_6}$ along the curve $\mathbf{c_1}$ and the point $\mathbf{p}$. In order to determine the shape of the generator at different positions along the curve $\mathbf{c_1}$, we uniformly divide the curve $\mathbf{c_1}$ into $J$ equal intervals and obtain the nodes $j=1,2,3,\ldots,J-2,J-1,J$ where $j=1$ and $j=J$ are the intersecting points between the curves $\mathbf{c_5}$ and $\mathbf{c_1}$ and between $\mathbf{c_6}$ and $\mathbf{c_1}$. Then we determine the shape of the generator between the node $j(j=2,3,\ldots,J-2,J-1,J)$ and the point $\mathbf{p}$.\\
+With the same treatment, we divide the domain of the parametric variable $u$ for the generator between the node $j$ and the point $\mathbf{p}$ into $2N$ equal intervals (the node $j$ on the curve $\mathbf{c_1}$ is the node 0 on the generator between the node $j$ and the point $\mathbf{p}$). When sweeping the curve $\mathbf{c_5}$ along the curve $\mathbf{c_1}$ to the curve $\mathbf{c_6}$, the sculpting force  acting at the node  of the curve is gradually changed to the sculpting force $\mathbf{f_i}$ acting at the node $i$ of the curve $\mathbf{c_6}$ . Here we use a linear interpolation to describe the gradual change and obtain the sculpting force $\mathbf{fi}$ below acting at the node $i$ of the generator between the node $j$ and the point $\mathbf{p}$\\
+\begin{equation}
+\centering
+\mathbf{f_i}=\mathbf{f_{5,i}}+\frac{L_j}{L}(\mathbf{f_{6,i}}-\mathbf{f_{5,i}})
+\label{forceinterpolate}
+\end{equation}
+where $L_j$ is the length from the point $\mathbf{p_1}$ to the node j and $L$ is the length from the point $\mathbf{p_1}$ to the point $\mathbf{p_2}$.
+When sweeping the curve $\mathbf{c_5}$ along the curve $\mathbf{c_1}$ to the curve $\mathbf{c_6}$, the vector-valued first derivatives of the curve $\mathbf{c_5}$ at the points $\mathbf{p}$ and $\mathbf{p_1}$ are also gradually changed to the vector-valued first derivatives of the curve $\mathbf{c_6}$ at the points $\mathbf{p}$ and $\mathbf{p_2}$ . The same linear interpolation is used to describe such a gradual change and determine the vector-valued first derivatives $\mathbf{T_0}$ and $\mathbf{T_1}$ of the generator at the node $j$ and the point $\mathbf{p}$.\\
+\begin{equation}
+\begin{split}
+\mathbf{T_0}=\mathbf{T_{5,0}}+\frac{L_j}{L}(\mathbf{T_{6,0}}-\mathbf{T_{5,0}}) \\
+\mathbf{T_1}=\mathbf{T_{5,1}}+\frac{L_j}{L}(\mathbf{T_{6,1}}-\mathbf{T_{5,1}})
+\end{split}
+\label{tangentinterpolate}
+\end{equation}
+Having known the sculpting forces at all the inner nodes 2, 3, \ldots, $2N-1$, $2N$, and the coordinate values at the boundary nodes 1 and $2N+1$ and the nodes 0 and $2N+2$ beyond the boundary nodes, we can write the finite difference equations for all the inner nodes where the finite difference equations for the nodes 4, 5,\ldots, $2N-3$, $2N-2$ are the same as Equation \eqref{ODEwithforce} with the sculpting force $\mathbf{f_i}$ being calculated by Equation \eqref{forceinterpolate}\\%, and the finite difference equations for the nodes 2, 3, 2N-1, and 2N are given in Appendix D.
+Solving all the finite difference equations, we obtain all the unknown constants $\mathbf{d_2}$, $\mathbf{d_3}$ , \ldots, $\mathbf{d_{2N-1}}$ and $\mathbf{d_{2N}}$ . They together with the two known points  $\mathbf{d_1}$ and  $\mathbf{p}$ are used to create the generator.\\
+With the same method, we obtain all the curves of the generator at the positions $j=1,2,3,\ldots, J-2, J-1, J$. They are used to create the sweeping surface shown in Figure \ref{fig:2open1close}(b).\\
+\begin{figure}[!h]
+\centering
+ \begin{subfigure}{0.45\linewidth}
+ \includegraphics[height=1in]{./figure/palmwithfingers.png}\caption{}\label{fig:palmwithfingers}
+ \end{subfigure}
+ \begin{subfigure}{0.45\linewidth}
+ \includegraphics[height=1in]{./figure/palm.png}\caption{}\label{fig:palmmesh}
+  \end{subfigure}
+ \caption{palm model creation from two open and one closed silhouette contours in three different view planes}
+ \label{fig:palm}
+\end{figure}  
+With the above method, we draw a closed palm contour and two open curves shown in Figure \ref{fig:palm}\subref{fig:palmwithfingers}. They divide the palm into four regions. One surface is created each of the four regions. Figure \ref{fig:palm}\subref{fig:palmmesh} depicts the palm model consisting of the four surfaces. 
+The above method can be also extended to deal with the situations where the two open curves do not intersect. For such situations, the intersecting point of the two open curves becomes the upper closed curve as indicated in Figures \ref{fig:shoulder_and_hip}, and a sweeping surface is encircled by four curves. With this extension, we created 3D shoulder and hip models and depicted them in Figures \ref{fig:shoulder_and_hip}\subref{fig:shoulder} and Figure \ref{fig:shoulder_and_hip}\subref{fig:hip}, respectively. \\
+\begin{figure}[!h]
+\centering
+ \begin{subfigure}{0.45\linewidth}
+ \includegraphics[height=0.1\textheight]{./figure/uppertorso.png}\caption{}\label{fig:shoulder}
+  \end{subfigure}
+\begin{subfigure}{0.45\linewidth}
+\includegraphics[height=0.1\textheight]{./figure/hip.png}\caption{}\label{fig:hip}
+  \end{subfigure}
+ \caption{shoulder and hip model creation from two open and one closed silhouette contours}
+ \label{fig:shoulder_and_hip}
+\end{figure}  
 \subsubsection{Algorithm for two closed curves}
-This algorithm is to create smooth transition surfaces between two disconnected primitives. Users can interactively draw two closed curves on two disconnect primitives or use two planes to intersect the two primitives to obtain two boundary curves of the transition surface. In order to obtain smooth transition between the two primitives and the transition surface, the tangents at the two boundary curves are obtained from the two primitives. With the two boundary curves and the tangents at the two boundary curves as the boundary conditions, the ODE-based surface blending method introduced in [34] is used to create the smooth transition surface which smoothly connects two primitives together. Figure 17 gives such an example.
+This algorithm is to create smooth transition surfaces between two disconnected primitives. Users can interactively draw two closed curves on two disconnect primitives or use two planes to intersect the two primitives to obtain two boundary curves of the transition surface. In order to obtain smooth transition between the two primitives and the transition surface, the tangents at the two boundary curves are obtained from the two primitives. With the two boundary curves and the tangents at the two boundary curves as the boundary conditions, the ODE-based surface blending method introduced in \cite{you2014blending} is used to create the smooth transition surface which smoothly connects two primitives together. Figure 17 gives such an example.\\
+
 Figure 17: Creation of smooth transition surfaces between primitives
 
-By adding local shapes and smooth transition surfaces, the base mesh shown in Figure 1(d) is changed into that depicted in Figure 1(e).  
-
-
-\noindent
-Compare the following:\\
-\begin{tabular}{ll}
- \verb'$conf_a$' &  $conf_a$ \\
- \verb'$\mathit{conf}_a$' & $\mathit{conf}_a$
-\end{tabular}\\
-See The \TeX book, p165.
-
-The space after \eg, meaning ``for example'', should not be a
-sentence-ending space. So \eg is correct, {\em e.g.} is not.  The provided
-\verb'\eg' macro takes care of this.
-
-When citing a multi-author paper, you may save space by using ``et alia'',
-shortened to ``\etal'' (not ``{\em et.\ al.}'' as ``{\em et}'' is a complete word.)
-However, use it only when there are three or more authors.  Thus, the
-following is correct: ``
-   Frobnication has been trendy lately.
-   It was introduced by Alpher~\cite{Alpher02}, and subsequently developed by
-   Alpher and Fotheringham-Smythe~\cite{Alpher03}, and Alpher \etal~\cite{Alpher04}.''
-
-This is incorrect: ``... subsequently developed by Alpher \etal~\cite{Alpher03} ...''
-because reference~\cite{Alpher03} has just two authors.  If you use the
-\verb'\etal' macro provided, then you need not worry about double periods
-when used at the end of a sentence as in Alpher \etal.
-
-For this citation style, keep multiple citations in numerical (not
-chronological) order, so prefer \cite{Alpher03,Alpher02,Authors12} to
-\cite{Alpher02,Alpher03,Authors12}.
-
-
+By adding local shapes and smooth transition surfaces, the base mesh shown in Figure \ref{fig:system_overview}\subref{fig:primitives_after_deformation} is changed into that depicted in Figure \ref{fig:system_overview}\subref{fig:blending_body_parts}. \\
 %------------------------------------------------------------------------
-
 \section{Conclusions and Future work}\label{conclusions_and_future_work}
-For now in the modelling stage of our system, all our control curves are creating smooth surfaces with C2 continuity, and the result template mesh looks pleasing as it is. In our future work, we will investigate the potentials of creases in more detailed character sculpting.
+%For now in the modelling stage of our system, all our control curves are creating smooth surfaces with C2 continuity, and the result template mesh looks pleasing as it is. In our future work, we will investigate the potentials of creases in more detailed character sculpting.
 %-------------------------------------------------------------------------
 \section*{Acknowledgement}
-This research is supported the PDE-GIR project which has received funding from the European Union?s Horizon 2020 research and innovation programme under the Marie Sk?odowska-Curie grant agreement No 778035.
+This research is supported the PDE-GIR project which has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie grant agreement No 778035.\\
 
-\subsection{References}
+%\subsection{References}
 
-List and number all bibliographical references in 9-point Times,
-single-spaced, at the end of your paper. When referenced in the text,
-enclose the citation number in square brackets, for
-example~\cite{Authors12}.  Where appropriate, include the name(s) of
-editors of referenced books.
+%List and number all bibliographical references in 9-point Times, single-spaced, at the end of your paper. When referenced in the text, enclose the citation number in square brackets, for example~\cite{Authors12}.  Where appropriate, include the name(s) of editors of referenced books.
 
-\begin{table}
-\begin{center}
-\begin{tabular}{|l|c|}
-\hline
-Name & Performance \\
-\hline\hline
-A & OK\\
-B & Bad \\
-Ours & Great\\
-\hline
-\end{tabular}
-\end{center}
-\caption{An example for using tables.}
-\end{table}
 
 %-------------------------------------------------------------------------
-\subsection{Illustrations, graphs, and photographs}
+%\subsection{Illustrations, graphs, and photographs}
 
 %All graphics should be centered.  Please ensure that any point you wish to make is resolvable in a printed copy of the paper.  Resize fonts in figures to match the font in the body text, and choose line widths which render effectively in print.  Many readers (and reviewers), even of an electronic copy, will choose to print your paper in order to read it.  You cannot insist that they do otherwise, and therefore must not assume that they can zoom in to see tiny details on a graphic.
 
-When placing figures in \LaTeX, it's almost always best to use
-\verb+\includegraphics+, and to specify the  figure width as a multiple of
-the line width as in the example below
-{\small\begin{verbatim}
-   \usepackage[dvips]{graphicx} ...
-   \includegraphics[width=0.8\linewidth]
-                   {myfile.eps}
-\end{verbatim}
-}
-
-
+%When placing figures in \LaTeX, it's almost always best to use \verb+\includegraphics+, and to specify the  figure width as a multiple of the line width as in the example below
 %-------------------------------------------------------------------------
 
 {\small
