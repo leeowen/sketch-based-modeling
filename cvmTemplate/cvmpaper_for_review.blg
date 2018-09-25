@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d (TeX Live 2017)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: cvmpaper_for_review.aux
+The style file: cvm.bst
+Database file #1: cvmbib.bib
+Repeated entry---line 440 of file cvmbib.bib
+ : @article{nealen2007fibermesh
+ :                             ,
+I'm skipping whatever remains of this entry
+Warning--can't use both volume and number fields in gingold2009structured
+Warning--can't use both volume and number fields in shtof2013geosemantic
+Warning--can't use both volume and number fields in terzopoulos1987elastically
+You've used 18 entries,
+            2120 wiz_defined-function locations,
+            625 strings with 7203 characters,
+and the built_in function-call counts, 7914 in all, are:
+= -- 792
+> -- 402
+< -- 13
++ -- 158
+- -- 138
+* -- 588
+:= -- 1247
+add.period$ -- 63
+call.type$ -- 18
+change.case$ -- 122
+chr.to.int$ -- 0
+cite$ -- 21
+duplicate$ -- 304
+empty$ -- 586
+format.name$ -- 138
+if$ -- 1703
+int.to.chr$ -- 0
+int.to.str$ -- 18
+missing$ -- 18
+newline$ -- 93
+num.names$ -- 38
+pop$ -- 131
+preamble$ -- 1
+purify$ -- 104
+quote$ -- 0
+skip$ -- 224
+stack$ -- 0
+substring$ -- 491
+swap$ -- 109
+text.length$ -- 13
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 72
+warning$ -- 3
+while$ -- 74
+width$ -- 20
+write$ -- 212
+(There was 1 error message)

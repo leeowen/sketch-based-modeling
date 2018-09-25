@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  20 SEP 2018 14:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  24 SEP 2018 12:27
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -590,45 +590,37 @@ Package pdftex.def Info: ./figure/deformer_UI.jpg used on input line 123.
 Underfull \vbox (badness 8038) has occurred while \output is active []
 
 
-<./figure/cylinder.png, id=89, 559.08875pt x 284.06125pt>
-File: ./figure/cylinder.png Graphic file (type png)
+<./figure/torso_primitive.jpg, id=89, 455.7025pt x 436.63126pt>
+File: ./figure/torso_primitive.jpg Graphic file (type jpg)
 
-<use ./figure/cylinder.png>
-Package pdftex.def Info: ./figure/cylinder.png used on input line 132.
-(pdftex.def)             Requested size: 113.78642pt x 57.81621pt.
+<use ./figure/torso_primitive.jpg>
+Package pdftex.def Info: ./figure/torso_primitive.jpg used on input line 133.
+(pdftex.def)             Requested size: 60.33508pt x 57.81621pt.
 
-Overfull \hbox (7.07597pt too wide) in paragraph at lines 132--132
-[][] 
- []
+<./figure/torso_after_deformed.jpg, id=90, 455.7025pt x 436.63126pt>
+File: ./figure/torso_after_deformed.jpg Graphic file (type jpg)
 
-<./figure/deformer.png, id=90, 493.845pt x 260.975pt>
-File: ./figure/deformer.png Graphic file (type png)
+<use ./figure/torso_after_deformed.jpg>
+Package pdftex.def Info: ./figure/torso_after_deformed.jpg used on input line 1
+37.
+(pdftex.def)             Requested size: 60.33508pt x 57.81621pt.
 
-<use ./figure/deformer.png>
-Package pdftex.def Info: ./figure/deformer.png used on input line 135.
-(pdftex.def)             Requested size: 109.39978pt x 57.81621pt.
-
-Overfull \hbox (2.68933pt too wide) in paragraph at lines 135--135
-[][] 
- []
-
-
-Underfull \hbox (badness 1028) in paragraph at lines 128--142
+Underfull \hbox (badness 1028) in paragraph at lines 128--144
 \OT1/ptm/m/n/10 the al-go-rithm of our pro-posed prim-i-tive de-former and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 128--142
+Underfull \hbox (badness 10000) in paragraph at lines 128--144
 \OT1/ptm/m/n/10 con-sid-ers lo-cally stretch-ing for solid ob-jects plus
  []
 
 
-Underfull \hbox (badness 4024) in paragraph at lines 128--142
+Underfull \hbox (badness 4024) in paragraph at lines 128--144
 \OT1/ptm/m/n/10 bend-ing for two-manifold sur-faces called thin-shells.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 128--142
+Underfull \hbox (badness 10000) in paragraph at lines 128--144
 
  []
 
@@ -637,307 +629,322 @@ ct_contour.jpg> <./figure/primitives_before_deformation.jpg> <./figure/primitiv
 es_after_deformation_without_blending.jpg> <./figure/primitives_after_deformati
 on_and_lattice_with_breast.jpg> <./figure/final_shot.jpg> <./figure/deformer_UI
 .jpg>]
-Underfull \hbox (badness 10000) in paragraph at lines 144--147
+Underfull \hbox (badness 10000) in paragraph at lines 146--149
 
  []
 
 
-Underfull \vbox (badness 2269) has occurred while \output is active []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 152--155
+Underfull \hbox (badness 10000) in paragraph at lines 154--157
 
  []
 
-<./figure/FDM.png, id=116, 326.1786pt x 73.7154pt>
+
+LaTeX Warning: Reference `fig:leg' on page 4 undefined on input line 169.
+
+
+LaTeX Warning: Hyper reference `fig:leg_cylinder' on page 4 undefined on input 
+line 169.
+
+
+LaTeX Warning: Reference `sub@fig:leg_cylinder' on page 4 undefined on input li
+ne 169.
+
+<./figure/FDM.png, id=113, 326.1786pt x 73.7154pt>
 File: ./figure/FDM.png Graphic file (type png)
  <use ./figure/FDM.png>
-Package pdftex.def Info: ./figure/FDM.png used on input line 175.
+Package pdftex.def Info: ./figure/FDM.png used on input line 177.
 (pdftex.def)             Requested size: 189.70947pt x 42.87418pt.
 
-[4 <./figure/cylinder.png (PNG copy)> <./figure/deformer.png> <./figure/FDM.png
->] <./figure/fdmnode_a.png, id=157, 349.7868pt x 331.9602pt>
+<./figure/fdmnode_a.png, id=128, 349.7868pt x 331.9602pt>
 File: ./figure/fdmnode_a.png Graphic file (type png)
 
 <use ./figure/fdmnode_a.png>
-Package pdftex.def Info: ./figure/fdmnode_a.png used on input line 201.
+Package pdftex.def Info: ./figure/fdmnode_a.png used on input line 203.
 (pdftex.def)             Requested size: 96.03874pt x 91.14497pt.
 
-<./figure/fdmnode_b.png, id=158, 312.6882pt x 291.9708pt>
+<./figure/fdmnode_b.png, id=129, 312.6882pt x 291.9708pt>
 File: ./figure/fdmnode_b.png Graphic file (type png)
 
 <use ./figure/fdmnode_b.png>
-Package pdftex.def Info: ./figure/fdmnode_b.png used on input line 206.
+Package pdftex.def Info: ./figure/fdmnode_b.png used on input line 208.
 (pdftex.def)             Requested size: 96.03874pt x 89.6769pt.
 
-<./figure/finger_group.png, id=159, 1059.96pt x 412.54124pt>
-File: ./figure/finger_group.png Graphic file (type png)
-
-<use ./figure/finger_group.png>
-Package pdftex.def Info: ./figure/finger_group.png used on input line 211.
-(pdftex.def)             Requested size: 192.0775pt x 74.75151pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 195--224
+Underfull \hbox (badness 10000) in paragraph at lines 197--226
 
  []
 
-<./figure/detail_mode_UI.png, id=174, 1010.77625pt x 766.865pt>
-File: ./figure/detail_mode_UI.png Graphic file (type png)
+[4 <./figure/torso_primitive.jpg> <./figure/torso_after_deformed.jpg> <./figure
+/FDM.png>] <./figure/detail_UI.jpg, id=169, 1010.77625pt x 766.865pt>
+File: ./figure/detail_UI.jpg Graphic file (type jpg)
 
-<use ./figure/detail_mode_UI.png>
-Package pdftex.def Info: ./figure/detail_mode_UI.png used on input line 231.
+<use ./figure/detail_UI.jpg>
+Package pdftex.def Info: ./figure/detail_UI.jpg used on input line 233.
 (pdftex.def)             Requested size: 237.13594pt x 179.90906pt.
- [5 <./figure/fdmnode_a.png> <./figure/fdmnode_b.png> <./figure/finger_group.pn
-g (PNG copy)>]
-Underfull \vbox (badness 1331) has occurred while \output is active []
 
 
-<./figure/2opens_a.jpg, id=192, 466.74374pt x 344.28625pt>
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[5 <./figure/fdmnode_a.png> <./figure/fdmnode_b.png>]
+<./figure/2opens_a.jpg, id=188, 466.74374pt x 344.28625pt>
 File: ./figure/2opens_a.jpg Graphic file (type jpg)
 
 <use ./figure/2opens_a.jpg>
-Package pdftex.def Info: ./figure/2opens_a.jpg used on input line 245.
+Package pdftex.def Info: ./figure/2opens_a.jpg used on input line 248.
 (pdftex.def)             Requested size: 106.71045pt x 78.71136pt.
 
-<./figure/2opens_b.jpg, id=193, 467.7475pt x 319.1925pt>
+<./figure/2opens_b.jpg, id=189, 467.7475pt x 319.1925pt>
 File: ./figure/2opens_b.jpg Graphic file (type jpg)
 
 <use ./figure/2opens_b.jpg>
-Package pdftex.def Info: ./figure/2opens_b.jpg used on input line 250.
+Package pdftex.def Info: ./figure/2opens_b.jpg used on input line 253.
 (pdftex.def)             Requested size: 96.03874pt x 65.53716pt.
 
-<./figure/headcontourfront.png, id=200, 400.49625pt x 381.425pt>
+<./figure/headcontourfront.png, id=196, 339.2675pt x 381.425pt>
 File: ./figure/headcontourfront.png Graphic file (type png)
 
 <use ./figure/headcontourfront.png>
-Package pdftex.def Info: ./figure/headcontourfront.png used on input line 265.
-(pdftex.def)             Requested size: 68.29123pt x 65.04256pt.
+Package pdftex.def Info: ./figure/headcontourfront.png used on input line 268.
+(pdftex.def)             Requested size: 57.85071pt x 65.04256pt.
 
-<./figure/headcontourside.png, id=201, 439.6425pt x 371.3875pt>
+Overfull \hbox (0.93678pt too wide) in paragraph at lines 268--268
+[][] 
+ []
+
+<./figure/headcontourside.png, id=197, 319.1925pt x 371.3875pt>
 File: ./figure/headcontourside.png Graphic file (type png)
 
 <use ./figure/headcontourside.png>
-Package pdftex.def Info: ./figure/headcontourside.png used on input line 268.
-(pdftex.def)             Requested size: 76.99225pt x 65.04256pt.
+Package pdftex.def Info: ./figure/headcontourside.png used on input line 271.
+(pdftex.def)             Requested size: 55.89848pt x 65.04256pt.
 
-Overfull \hbox (1.10703pt too wide) in paragraph at lines 268--268
-[][] 
- []
+<./figure/head_cross_section.png, id=198, 182.18062pt x 218.31563pt>
+File: ./figure/head_cross_section.png Graphic file (type png)
 
-<./figure/head.png, id=202, 401.5pt x 330.23375pt>
-File: ./figure/head.png Graphic file (type png)
- <use ./figure/head.png>
-Package pdftex.def Info: ./figure/head.png used on input line 271.
-(pdftex.def)             Requested size: 79.07942pt x 65.04256pt.
+<use ./figure/head_cross_section.png>
+Package pdftex.def Info: ./figure/head_cross_section.png used on input line 274
+.
+(pdftex.def)             Requested size: 54.27654pt x 65.04256pt.
 
-Overfull \hbox (3.1942pt too wide) in paragraph at lines 271--271
-[][] 
- []
+<./figure/head_final.png, id=199, 186.6975pt x 219.82124pt>
+File: ./figure/head_final.png Graphic file (type png)
 
-<./figure/legcontourfront.png, id=218, 160.6pt x 468.75125pt>
+<use ./figure/head_final.png>
+Package pdftex.def Info: ./figure/head_final.png used on input line 277.
+(pdftex.def)             Requested size: 55.24051pt x 65.04256pt.
+
+<./figure/legcontourfront.png, id=224, 160.6pt x 441.65pt>
 File: ./figure/legcontourfront.png Graphic file (type png)
 
 <use ./figure/legcontourfront.png>
-Package pdftex.def Info: ./figure/legcontourfront.png used on input line 281.
-(pdftex.def)             Requested size: 47.0433pt x 137.31255pt.
+Package pdftex.def Info: ./figure/legcontourfront.png used on input line 287.
+(pdftex.def)             Requested size: 49.93251pt x 137.31255pt.
 
-<./figure/legcontourside.png, id=219, 200.75pt x 442.65375pt>
+<./figure/legcontourside.png, id=225, 141.52875pt x 400.49625pt>
 File: ./figure/legcontourside.png Graphic file (type png)
 
 <use ./figure/legcontourside.png>
-Package pdftex.def Info: ./figure/legcontourside.png used on input line 284.
-(pdftex.def)             Requested size: 62.27473pt x 137.31255pt.
+Package pdftex.def Info: ./figure/legcontourside.png used on input line 290.
+(pdftex.def)             Requested size: 48.52513pt x 137.31255pt.
 
-Overfull \hbox (5.36081pt too wide) in paragraph at lines 284--284
-[][] 
- []
-
-<./figure/legfront.png, id=220, 168.63pt x 460.72125pt>
+<./figure/legfront.png, id=226, 168.63pt x 441.65pt>
 File: ./figure/legfront.png Graphic file (type png)
 
 <use ./figure/legfront.png>
-Package pdftex.def Info: ./figure/legfront.png used on input line 287.
-(pdftex.def)             Requested size: 50.25745pt x 137.31255pt.
+Package pdftex.def Info: ./figure/legfront.png used on input line 293.
+(pdftex.def)             Requested size: 52.42914pt x 137.31255pt.
 
-<./figure/legside.png, id=221, 182.6825pt x 396.48125pt>
+<./figure/legside.png, id=227, 182.6825pt x 363.3575pt>
 File: ./figure/legside.png Graphic file (type png)
 
 <use ./figure/legside.png>
-Package pdftex.def Info: ./figure/legside.png used on input line 290.
-(pdftex.def)             Requested size: 63.26804pt x 137.31255pt.
+Package pdftex.def Info: ./figure/legside.png used on input line 296.
+(pdftex.def)             Requested size: 69.03539pt x 137.31255pt.
 
-Overfull \hbox (6.35411pt too wide) in paragraph at lines 290--290
+Overfull \hbox (12.12146pt too wide) in paragraph at lines 296--296
 [][] 
  []
 
-<./figure/foot2.png, id=222, 243.91125pt x 260.975pt>
-File: ./figure/foot2.png Graphic file (type png)
- <use ./figure/foot2.png>
-Package pdftex.def Info: ./figure/foot2.png used on input line 298.
-(pdftex.def)             Requested size: 67.54288pt x 72.26999pt.
+<./figure/neck_contour.png, id=228, 232.87pt x 140.525pt>
+File: ./figure/neck_contour.png Graphic file (type png)
 
-<./figure/foot1.png, id=223, 217.81375pt x 272.01625pt>
-File: ./figure/foot1.png Graphic file (type png)
+<use ./figure/neck_contour.png>
+Package pdftex.def Info: ./figure/neck_contour.png used on input line 300.
+(pdftex.def)             Requested size: 83.83313pt x 50.58878pt.
 
-<use ./figure/foot1.png>
-Package pdftex.def Info: ./figure/foot1.png used on input line 301.
-(pdftex.def)             Requested size: 57.86992pt x 72.26999pt.
+Overfull \hbox (7.9479pt too wide) in paragraph at lines 300--300
+ [][] 
+ []
 
-<./figure/foot_scale_cross-section.png, id=224, 223.83624pt x 251.94125pt>
-File: ./figure/foot_scale_cross-section.png Graphic file (type png)
+<./figure/neck_cross_section.png, id=229, 232.87pt x 140.525pt>
+File: ./figure/neck_cross_section.png Graphic file (type png)
 
-<use ./figure/foot_scale_cross-section.png>
-Package pdftex.def Info: ./figure/foot_scale_cross-section.png used on input li
-ne 304.
-(pdftex.def)             Requested size: 64.20726pt x 72.26999pt.
+<use ./figure/neck_cross_section.png>
+Package pdftex.def Info: ./figure/neck_cross_section.png used on input line 304
+.
+(pdftex.def)             Requested size: 83.83313pt x 50.58878pt.
 
-<./figure/neck.png, id=225, 255.95625pt x 128.48pt>
-File: ./figure/neck.png Graphic file (type png)
- <use ./figure/neck.png>
-Package pdftex.def Info: ./figure/neck.png used on input line 308.
-(pdftex.def)             Requested size: 143.97502pt x 72.26999pt.
+Overfull \hbox (7.9479pt too wide) in paragraph at lines 304--304
+ [][] 
+ []
 
-<./figure/torso.png, id=226, 276.03125pt x 251.94125pt>
-File: ./figure/torso.png Graphic file (type png)
+<./figure/neck_mesh.png, id=230, 232.87pt x 140.525pt>
+File: ./figure/neck_mesh.png Graphic file (type png)
 
-<use ./figure/torso.png>
-Package pdftex.def Info: ./figure/torso.png used on input line 311.
-(pdftex.def)             Requested size: 79.17935pt x 72.26999pt.
+<use ./figure/neck_mesh.png>
+Package pdftex.def Info: ./figure/neck_mesh.png used on input line 308.
+(pdftex.def)             Requested size: 83.83313pt x 50.58878pt.
 
-Overfull \hbox (8.03786pt too wide) in paragraph at lines 311--311
-[][] 
+Overfull \hbox (7.9479pt too wide) in paragraph at lines 308--308
+ [][] 
  []
 
 
-Underfull \hbox (badness 1184) in paragraph at lines 240--318
+Underfull \hbox (badness 1184) in paragraph at lines 243--336
 \OT1/ptm/m/n/10 lo-cal shape cre-ation from four dis-con-nected sil-hou-ette
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 240--318
+Underfull \hbox (badness 10000) in paragraph at lines 243--336
 
  []
 
-[6 <./figure/detail_mode_UI.png> <./figure/2opens_a.jpg> <./figure/2opens_b.jpg
->] <./figure/1open1close.jpeg, id=247, 666.49pt x 447.6725pt>
+[6 <./figure/detail_UI.jpg> <./figure/2opens_a.jpg> <./figure/2opens_b.jpg>]
+<./figure/1open1close.jpeg, id=240, 666.49pt x 447.6725pt>
 File: ./figure/1open1close.jpeg Graphic file (type jpg)
 
 <use ./figure/1open1close.jpeg>
-Package pdftex.def Info: ./figure/1open1close.jpeg used on input line 327.
+Package pdftex.def Info: ./figure/1open1close.jpeg used on input line 345.
 (pdftex.def)             Requested size: 165.99443pt x 111.49432pt.
 
-Underfull \hbox (badness 1132) in paragraph at lines 319--333
+Underfull \hbox (badness 1132) in paragraph at lines 337--351
 \OT1/ptm/m/n/10 closed sil-hou-ette con-tours in two dif-fer-ent view plans
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 319--333
+Underfull \hbox (badness 10000) in paragraph at lines 337--351
 
  []
 
-[7 <./figure/headcontourfront.png> <./figure/headcontourside.png> <./figure/hea
-d.png> <./figure/legcontourfront.png> <./figure/legcontourside.png> <./figure/l
-egfront.png> <./figure/legside.png> <./figure/foot2.png> <./figure/foot1.png> <
-./figure/foot_scale_cross-section.png> <./figure/neck.png (PNG copy)> <./figure
-/torso.png>] <./figure/referencebum.png, id=268, 724.7075pt x 538.01pt>
-File: ./figure/referencebum.png Graphic file (type png)
 
-<use ./figure/referencebum.png>
-Package pdftex.def Info: ./figure/referencebum.png used on input line 353.
-(pdftex.def)             Requested size: 97.34473pt x 72.26999pt.
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-<./figure/buttcheck.png, id=269, 296.10625pt x 344.28625pt>
-File: ./figure/buttcheck.png Graphic file (type png)
+ [7 <./figure/headcontourfront.png> <./figure/headcontourside.png> <./figure/he
+ad_cross_section.png> <./figure/head_final.png> <./figure/legcontourfront.png> 
+<./figure/legcontourside.png> <./figure/legfront.png> <./figure/legside.png> <.
+/figure/neck_contour.png> <./figure/neck_cross_section.png> <./figure/neck_mesh
+.png>]
+<./figure/shoulder_armor_front.png, id=263, 128.98187pt x 156.08313pt>
+File: ./figure/shoulder_armor_front.png Graphic file (type png)
 
-<use ./figure/buttcheck.png>
-Package pdftex.def Info: ./figure/buttcheck.png used on input line 356.
-(pdftex.def)             Requested size: 62.15703pt x 72.26999pt.
+<use ./figure/shoulder_armor_front.png>
+Package pdftex.def Info: ./figure/shoulder_armor_front.png used on input line 3
+72.
+(pdftex.def)             Requested size: 41.80446pt x 50.58878pt.
 
-<./figure/2open1close.jpeg, id=273, 707.64375pt x 447.6725pt>
+<./figure/shoulder_armor_top.png, id=264, 128.98187pt x 156.08313pt>
+File: ./figure/shoulder_armor_top.png Graphic file (type png)
+
+<use ./figure/shoulder_armor_top.png>
+Package pdftex.def Info: ./figure/shoulder_armor_top.png used on input line 376
+.
+(pdftex.def)             Requested size: 41.80446pt x 50.58878pt.
+
+<./figure/shoulder_armor_side.png, id=265, 128.98187pt x 156.08313pt>
+File: ./figure/shoulder_armor_side.png Graphic file (type png)
+
+<use ./figure/shoulder_armor_side.png>
+Package pdftex.def Info: ./figure/shoulder_armor_side.png used on input line 38
+0.
+(pdftex.def)             Requested size: 41.80446pt x 50.58878pt.
+
+<./figure/shoulder_armor_persp.png, id=266, 128.98187pt x 156.08313pt>
+File: ./figure/shoulder_armor_persp.png Graphic file (type png)
+
+<use ./figure/shoulder_armor_persp.png>
+Package pdftex.def Info: ./figure/shoulder_armor_persp.png used on input line 3
+84.
+(pdftex.def)             Requested size: 41.80446pt x 50.58878pt.
+
+<./figure/2open1close.jpeg, id=270, 707.64375pt x 447.6725pt>
 File: ./figure/2open1close.jpeg Graphic file (type jpg)
 
 <use ./figure/2open1close.jpeg>
-Package pdftex.def Info: ./figure/2open1close.jpeg used on input line 366.
+Package pdftex.def Info: ./figure/2open1close.jpeg used on input line 394.
 (pdftex.def)             Requested size: 165.99443pt x 105.01178pt.
- [8 <./figure/1open1close.jpeg> <./figure/referencebum.png> <./figure/buttcheck
-.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 376--378
+
+Underfull \hbox (badness 10000) in paragraph at lines 404--406
 
  []
 
 
-LaTeX Warning: Reference `ssec:num2' on page 9 undefined on input line 387.
+LaTeX Warning: Reference `ssec:num2' on page 8 undefined on input line 415.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 384--388
+Underfull \hbox (badness 10000) in paragraph at lines 412--416
 
  []
 
-
-Underfull \hbox (badness 4060) in paragraph at lines 394--398
+[8 <./figure/1open1close.jpeg> <./figure/shoulder_armor_front.png> <./figure/sh
+oulder_armor_top.png> <./figure/shoulder_armor_side.png> <./figure/shoulder_arm
+or_persp.png> <./figure/2open1close.jpeg>]
+Underfull \hbox (badness 4060) in paragraph at lines 422--426
 \OT1/ptm/m/n/10 from these equa-tions,. We de-note these sculpt-ing
  []
 
 
-Underfull \hbox (badness 1158) in paragraph at lines 394--398
+Underfull \hbox (badness 1158) in paragraph at lines 422--426
 \OT1/ptm/m/n/10 the same method, we can ob-tain the sculpt-ing forces
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 394--398
+Underfull \hbox (badness 10000) in paragraph at lines 422--426
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 402--405
+Underfull \hbox (badness 10000) in paragraph at lines 430--433
 
  []
 
-
-Underfull \vbox (badness 1824) has occurred while \output is active []
-
- [9 <./figure/2open1close.jpeg>]
-<./figure/palmwithfingers.png, id=298, 477.785pt x 389.455pt>
+<./figure/palmwithfingers.png, id=290, 477.785pt x 389.455pt>
 File: ./figure/palmwithfingers.png Graphic file (type png)
 
 <use ./figure/palmwithfingers.png>
-Package pdftex.def Info: ./figure/palmwithfingers.png used on input line 418.
+Package pdftex.def Info: ./figure/palmwithfingers.png used on input line 446.
 (pdftex.def)             Requested size: 88.65858pt x 72.26999pt.
 
-<./figure/palm.png, id=299, 260.975pt x 221.82875pt>
+<./figure/palm.png, id=291, 260.975pt x 221.82875pt>
 File: ./figure/palm.png Graphic file (type png)
  <use ./figure/palm.png>
-Package pdftex.def Info: ./figure/palm.png used on input line 421.
+Package pdftex.def Info: ./figure/palm.png used on input line 449.
 (pdftex.def)             Requested size: 85.02293pt x 72.26999pt.
 
-<./figure/uppertorso.png, id=309, 503.8825pt x 346.29375pt>
+<./figure/uppertorso.png, id=301, 356.33125pt x 429.605pt>
 File: ./figure/uppertorso.png Graphic file (type png)
 
 <use ./figure/uppertorso.png>
-Package pdftex.def Info: ./figure/uppertorso.png used on input line 431.
-(pdftex.def)             Requested size: 93.33212pt x 64.14352pt.
+Package pdftex.def Info: ./figure/uppertorso.png used on input line 459.
+(pdftex.def)             Requested size: 53.2027pt x 64.14352pt.
 
-<./figure/hip.png, id=310, 422.57875pt x 361.35pt>
+<./figure/hip.png, id=302, 422.57875pt x 361.35pt>
 File: ./figure/hip.png Graphic file (type png)
  <use ./figure/hip.png>
-Package pdftex.def Info: ./figure/hip.png used on input line 434.
+Package pdftex.def Info: ./figure/hip.png used on input line 462.
 (pdftex.def)             Requested size: 75.00986pt x 64.14352pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 440--441
+Underfull \hbox (badness 10000) in paragraph at lines 468--469
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 444--446
+Underfull \vbox (badness 2285) has occurred while \output is active []
 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 450--451
+ [9 <./figure/palmwithfingers.png> <./figure/palm.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 472--474
 
  []
 
@@ -945,47 +952,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 450--451
 \tf@brf=\write3
 \openout3 = `cvmpaper_for_review.brf'.
 
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
- [10 <./figure/palmwithfingers.png> <./figure/palm.png> <./figure/uppertorso.pn
-g> <./figure/hip.png>]
-
-LaTeX Warning: Command \^ invalid in math mode on input line 99.
-
-./cvmpaper_for_review.bbl:99: Please use \mathaccent for accents in math mode.
-\add@accent ...@spacefactor \spacefactor }\accent 
-                                                  #1 #2\egroup \spacefactor ...
-l.99 
-     
-? 
-./cvmpaper_for_review.bbl:99: Missing { inserted.
-<to be read again> 
-                   \egroup 
-l.99 
-     
-? 
-./cvmpaper_for_review.bbl:99: You can't use `\spacefactor' in math mode.
-\add@accent ...}\accent #1 #2\egroup \spacefactor 
-                                                  \accent@spacefactor 
-l.99 
-     
-? 
-./cvmpaper_for_review.bbl:99: Missing } inserted.
-<inserted text> 
-                }
-l.99 
-     
-? 
-Missing character: There is no è in font cmex9!
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 471.
- [11
-
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 471.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 499.
+ [10 <./figure/uppertorso.png> <./figure/hip.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 499.
  (./cvmpaper_for_review.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 471.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 471.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 499.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 499.
 Package rerunfilecheck Info: File `cvmpaper_for_review.brf' has not changed.
 (rerunfilecheck)             Checksum: 4AC12B99897D3D17A0A07EDC7751C430;1220.
 
@@ -995,14 +968,14 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 471.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 499.
  ) 
 Here is how much of TeX's memory you used:
- 8589 strings out of 492995
- 132240 string characters out of 6132703
- 245871 words of memory out of 5000000
- 11907 multiletter control sequences out of 15000+600000
- 29394 words of font info for 72 fonts, out of 8000000 for 9000
+ 8571 strings out of 492995
+ 132545 string characters out of 6132703
+ 246778 words of memory out of 5000000
+ 11898 multiletter control sequences out of 15000+600000
+ 25603 words of font info for 62 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,16n,41p,1757b,552s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
@@ -1011,23 +984,21 @@ xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texl
 ive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texli
 ve/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texliv
 e/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/
-2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/20
-17/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2017
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2017/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2017/texmf
--dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2017/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2017/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2017/texmf-dist/
-fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2017/texmf-d
-ist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2017/tex
-mf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/texmf-dist
-/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/typ
-e1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/tim
-es/utmri8a.pfb>
-Output written on cvmpaper_for_review.pdf (11 pages, 3057379 bytes).
+2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/20
+17/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2017/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2017/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2017/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2017/texmf-
+dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2017/te
+xmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/201
+7/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/texmf
+-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/font
+s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/ur
+w/times/utmri8a.pfb>
+Output written on cvmpaper_for_review.pdf (10 pages, 2596457 bytes).
 PDF statistics:
- 433 PDF objects out of 1000 (max. 8388607)
- 345 compressed objects within 4 object streams
- 78 named destinations out of 1000 (max. 500000)
+ 420 PDF objects out of 1000 (max. 8388607)
+ 330 compressed objects within 4 object streams
+ 76 named destinations out of 1000 (max. 500000)
  181 words of extra memory for PDF output out of 10000 (max. 10000000)
 
