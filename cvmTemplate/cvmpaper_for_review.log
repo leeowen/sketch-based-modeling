@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  25 SEP 2018 13:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  26 SEP 2018 14:58
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -906,18 +906,23 @@ Underfull \hbox (badness 10000) in paragraph at lines 430--433
 
  []
 
-<./figure/palmwithfingers.png, id=290, 477.785pt x 389.455pt>
-File: ./figure/palmwithfingers.png Graphic file (type png)
+<./figure/mouth_contour.png, id=290, 153.57375pt x 115.93312pt>
+File: ./figure/mouth_contour.png Graphic file (type png)
 
-<use ./figure/palmwithfingers.png>
-Package pdftex.def Info: ./figure/palmwithfingers.png used on input line 446.
-(pdftex.def)             Requested size: 88.65858pt x 72.26999pt.
+<use ./figure/mouth_contour.png>
+Package pdftex.def Info: ./figure/mouth_contour.png used on input line 446.
+(pdftex.def)             Requested size: 95.73495pt x 72.26999pt.
 
-<./figure/palm.png, id=291, 260.975pt x 221.82875pt>
-File: ./figure/palm.png Graphic file (type png)
- <use ./figure/palm.png>
-Package pdftex.def Info: ./figure/palm.png used on input line 449.
-(pdftex.def)             Requested size: 85.02293pt x 72.26999pt.
+<./figure/mouth_mesh.png, id=291, 177.66376pt x 114.4275pt>
+File: ./figure/mouth_mesh.png Graphic file (type png)
+
+<use ./figure/mouth_mesh.png>
+Package pdftex.def Info: ./figure/mouth_mesh.png used on input line 449.
+(pdftex.def)             Requested size: 112.2134pt x 72.26999pt.
+
+Overfull \hbox (5.50294pt too wide) in paragraph at lines 449--449
+[][] 
+ []
 
 <./figure/uppertorso.png, id=301, 356.33125pt x 429.605pt>
 File: ./figure/uppertorso.png Graphic file (type png)
@@ -943,7 +948,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 468--469
 
 Underfull \vbox (badness 2285) has occurred while \output is active []
 
- [9 <./figure/palmwithfingers.png> <./figure/palm.png>]
+ [9 <./figure/mouth_contour.png> <./figure/mouth_mesh.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 472--474
 
  []
@@ -972,7 +977,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 499.
  ) 
 Here is how much of TeX's memory you used:
  8571 strings out of 492995
- 132545 string characters out of 6132703
+ 132564 string characters out of 6132703
  246778 words of memory out of 5000000
  11898 multiletter control sequences out of 15000+600000
  25603 words of font info for 62 fonts, out of 8000000 for 9000
@@ -995,7 +1000,7 @@ xmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/201
 -dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/font
 s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/ur
 w/times/utmri8a.pfb>
-Output written on cvmpaper_for_review.pdf (10 pages, 2596457 bytes).
+Output written on cvmpaper_for_review.pdf (10 pages, 2491929 bytes).
 PDF statistics:
  420 PDF objects out of 1000 (max. 8388607)
  330 compressed objects within 4 object streams
