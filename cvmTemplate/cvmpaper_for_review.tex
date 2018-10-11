@@ -98,7 +98,7 @@ The modeling process using our developed system is demonstrated in Figure \ref{f
         \caption{}\label{fig:primitives_after_deformation}
     \end{subfigure}
     \begin{subfigure}[t]{0.32\linewidth}
-        \includegraphics[height=2.3in]{./figure/primitives_after_deformation_and_lattice_with_breast.jpg}
+        \includegraphics[height=2.3in]{./figure/primitives_after_deformation_and_lattice.jpg}
         \caption{}\label{fig:blending_body_parts}
     \end{subfigure}
     \begin{subfigure}[t]{0.32\linewidth}
@@ -442,13 +442,31 @@ Solving all the finite difference equations, we obtain all the unknown constants
 With the same method, we obtain all the curves of the generator at the positions $j=1,2,3,\ldots, J-2, J-1, J$. They are used to create the sweeping surface shown in Figure \ref{fig:2open1close}(b).\\
 \begin{figure}[!h]
 \centering
- \begin{subfigure}{0.45\linewidth}
- \includegraphics[height=1in]{./figure/mouth_contour.png}\caption{}\label{fig:mouth_contour}
- \end{subfigure}
- \begin{subfigure}{0.45\linewidth}
- \includegraphics[height=1in]{./figure/mouth_mesh.png}\caption{}\label{fig:mouthmesh}
-  \end{subfigure}
- \caption{mouth model creation from two open and one closed silhouette contours in three different view planes}
+  % Fixed length
+ \subcaptionbox{front\label{mouth_contour_front}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_front.png}}}\hspace{1em}%
+  \subcaptionbox{side\label{mouth_contour_side}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_side.png}}}\hspace{1em}%
+  \subcaptionbox{perspective\label{mouth_persp}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour.png}}}  
+%\begin{subfigure}{0.32\linewidth}
+%\centering
+%\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_front.png}}\caption{front}\label{mouth_contour_front}
+%\end{subfigure}
+%\begin{subfigure}{0.33\linewidth}
+%\centering
+%\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_top.png}}\caption{top}\label{mouth_contour_top}
+%\end{subfigure}
+%\begin{subfigure}{0.32\linewidth}
+%\centering
+%\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_side.png}}\caption{side}\label{mouth_contour_side}
+%\end{subfigure}
+%\begin{subfigure}{0.32\linewidth}
+%\centering
+%\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour.png}}\caption{perspective}\label{mouth_persp}
+%\end{subfigure}
+%\begin{subfigure}{0.45\linewidth}
+%\centering
+%\fbox{\includegraphics[height=0.5in]{./figure/mouth_mesh.png}}\caption{mesh}\label{mouth_mesh}
+%\end{subfigure}
+  \caption{mouth model creation from two open and one closed silhouette contours in three different view planes}
  \label{fig:mouth}
 \end{figure}  \\
 With the above method, we draw a closed palm contour and two open curves shown in Figure \ref{fig:mouth}\subref{fig:mouth_contour}. They divide the palm into four regions. One surface is created each of the four regions. Figure \ref{fig:mouth}\subref{fig:mouthmesh} depicts the palm model consisting of the four surfaces. \\
@@ -465,13 +483,24 @@ The above method can be also extended to deal with the situations where the two 
  \label{fig:shoulder_and_hip}
 \end{figure}  
 \subsubsection{Algorithm for two closed curves}
-This algorithm is to create smooth transition surfaces between two disconnected primitives. Users can interactively draw two closed curves on two disconnect primitives or use two planes to intersect the two primitives to obtain two boundary curves of the transition surface. In order to obtain smooth transition between the two primitives and the transition surface, the tangents at the two boundary curves are obtained from the two primitives. With the two boundary curves and the tangents at the two boundary curves as the boundary conditions, the ODE-based surface blending method introduced in \cite{you2014blending} is used to create the smooth transition surface which smoothly connects two primitives together. Figure 17 gives such an example.\\
+This algorithm is to create smooth transition surfaces between two disconnected primitives. Users can interactively draw two closed curves on two disconnect primitives or use two planes to intersect the two primitives to obtain two boundary curves of the transition surface. In order to obtain smooth transition between the two primitives and the transition surface, the tangents at the two boundary curves are obtained from the two primitives. With the two boundary curves and the tangents at the two boundary curves as the boundary conditions, the ODE-based surface blending method introduced in \cite{you2014blending} is used to create the smooth transition surface which smoothly connects two primitives together. Figure \ref{fig:blend} gives such an example.\\
+\begin{figure}[!h]
+\centering
+ \subcaptionbox{detached primitives\label{detach}}{\includegraphics[width=0.4\linewidth]{./figure/detach.png}}
+  \subcaptionbox{add transition surfaces\label{attached}}{\includegraphics[width=0.4\linewidth]{./figure/attached.png}}
+ \caption{Creation of smooth transition surfaces between primitives}
+ \label{fig:blend}
+\end{figure}  
 
-Figure 17: Creation of smooth transition surfaces between primitives
 
 By adding local shapes and smooth transition surfaces, the base mesh shown in Figure \ref{fig:system_overview}\subref{fig:primitives_after_deformation} is changed into that depicted in Figure \ref{fig:system_overview}\subref{fig:blending_body_parts}. \\
 %------------------------------------------------------------------------
+\section{Comparison}\label{comparison}
+%------------------------------------------------------------------------
 \section{Conclusions and Future work}\label{conclusions_and_future_work}
+I did the experiment of deforming a toy rubber tyre. The original and deformed shapes are attached on this email. The original inner circle has a diameter of 3 cm. After the deformation, the two opposite points are moved 0.3 cm each to make the length of the major axis of the ellipse 3.6 cm.  After you complete the three tasks, you can use the ODE algorithm to calculate the deformed shape and check whether the calculated deformed shape is close to the attached deformed inner ellipse.
+ 
+The height of the toy rubber tyre which I used is too big. If the ODE deformation can give a good approximation, it can be improved by looking for a rubber ring with a small height to do the experiment. At the present time, could you please focus on the three tasks which I talked to you today morning.
 %For now in the modelling stage of our system, all our control curves are creating smooth surfaces with C2 continuity, and the result template mesh looks pleasing as it is. In our future work, we will investigate the potentials of creases in more detailed character sculpting.
 %-------------------------------------------------------------------------
 \section*{Acknowledgement}
