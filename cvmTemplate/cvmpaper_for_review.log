@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  9 OCT 2018 14:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  16 OCT 2018 21:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -407,6 +407,63 @@ File: hpdftex.def 2017/03/14 v6.85a Hyperref driver for pdfTeX
 (./cvmpaper_for_review.aux
 
 LaTeX Warning: Label `algorithm_of_primitive_deformer' multiply defined.
+
+
+LaTeX Warning: Label `fig:2open1close' multiply defined.
+
+
+LaTeX Warning: Label `ODEwithforce' multiply defined.
+
+
+LaTeX Warning: Label `odefdmwithforce' multiply defined.
+
+
+LaTeX Warning: Label `2endsdelta' multiply defined.
+
+
+LaTeX Warning: Label `forceinterpolate' multiply defined.
+
+
+LaTeX Warning: Label `tangentinterpolate' multiply defined.
+
+
+LaTeX Warning: Label `mouth_contour_front' multiply defined.
+
+
+LaTeX Warning: Label `sub@mouth_contour_front' multiply defined.
+
+
+LaTeX Warning: Label `mouth_contour_side' multiply defined.
+
+
+LaTeX Warning: Label `sub@mouth_contour_side' multiply defined.
+
+
+LaTeX Warning: Label `mouth_persp' multiply defined.
+
+
+LaTeX Warning: Label `sub@mouth_persp' multiply defined.
+
+
+LaTeX Warning: Label `fig:mouth' multiply defined.
+
+
+LaTeX Warning: Label `fig:4opens2closedalgorithm' multiply defined.
+
+
+LaTeX Warning: Label `vest' multiply defined.
+
+
+LaTeX Warning: Label `sub@vest' multiply defined.
+
+
+LaTeX Warning: Label `eye' multiply defined.
+
+
+LaTeX Warning: Label `sub@eye' multiply defined.
+
+
+LaTeX Warning: Label `fig:4opens2closed' multiply defined.
 
 )
 \openout1 = `cvmpaper_for_review.aux'.
@@ -904,7 +961,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 430--433
 
  []
 
-<./figure/mouth_contour_front.png, id=290, 279.54437pt x 184.69pt>
+<./figure/mouth_contour_front.png, id=291, 279.54437pt x 184.69pt>
 File: ./figure/mouth_contour_front.png Graphic file (type png)
 
 <use ./figure/mouth_contour_front.png>
@@ -912,7 +969,7 @@ Package pdftex.def Info: ./figure/mouth_contour_front.png used on input line 44
 6.
 (pdftex.def)             Requested size: 54.6922pt x 36.135pt.
 
-<./figure/mouth_contour_side.png, id=291, 164.615pt x 126.4725pt>
+<./figure/mouth_contour_side.png, id=292, 164.615pt x 126.4725pt>
 File: ./figure/mouth_contour_side.png Graphic file (type png)
 
 <use ./figure/mouth_contour_side.png>
@@ -920,7 +977,7 @@ Package pdftex.def Info: ./figure/mouth_contour_side.png used on input line 447
 .
 (pdftex.def)             Requested size: 47.03381pt x 36.135pt.
 
-<./figure/mouth_contour.png, id=292, 197.23688pt x 138.01563pt>
+<./figure/mouth_contour.png, id=293, 197.23688pt x 138.01563pt>
 File: ./figure/mouth_contour.png Graphic file (type png)
 
 <use ./figure/mouth_contour.png>
@@ -943,60 +1000,235 @@ e 472.
 LaTeX Warning: Reference `sub@fig:mouthmesh' on page 9 undefined on input line 
 472.
 
+<./figure/4open2close.jpg, id=296, 595.22375pt x 447.6725pt>
+File: ./figure/4open2close.jpg Graphic file (type jpg)
+
+<use ./figure/4open2close.jpg>
+Package pdftex.def Info: ./figure/4open2close.jpg used on input line 475.
+(pdftex.def)             Requested size: 165.99443pt x 124.84195pt.
+
+
+Package caption Warning: \label without proper reference on input line 556.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:4opens2closedalgorithm' on page 9 undefined on in
+put line 479.
+
+
+LaTeX Warning: Hyper reference `fig:vest' on page 9 undefined on input line 479
+.
+
+
+LaTeX Warning: Reference `sub@fig:vest' on page 9 undefined on input line 479.
+
+
+LaTeX Warning: Hyper reference `fig:eye' on page 9 undefined on input line 479.
+
+
+
+LaTeX Warning: Reference `sub@fig:eye' on page 9 undefined on input line 479.
+
 <./figure/uppertorso.png, id=300, 356.33125pt x 429.605pt>
 File: ./figure/uppertorso.png Graphic file (type png)
 
 <use ./figure/uppertorso.png>
-Package pdftex.def Info: ./figure/uppertorso.png used on input line 477.
+Package pdftex.def Info: ./figure/uppertorso.png used on input line 482.
 (pdftex.def)             Requested size: 53.2027pt x 64.14352pt.
 
-<./figure/hip.png, id=301, 422.57875pt x 361.35pt>
-File: ./figure/hip.png Graphic file (type png)
- <use ./figure/hip.png>
-Package pdftex.def Info: ./figure/hip.png used on input line 480.
-(pdftex.def)             Requested size: 75.00986pt x 64.14352pt.
+<./figure/eye.png, id=301, 709.65125pt x 578.16pt>
+File: ./figure/eye.png Graphic file (type png)
+ <use ./figure/eye.png>
+Package pdftex.def Info: ./figure/eye.png used on input line 483.
+(pdftex.def)             Requested size: 78.7224pt x 64.14352pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<./figure/detach.png, id=304, 215.80624pt x 302.12875pt>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: Citation `zhang2016geometric' on page 9 undefined on input line 
+490.
+
+File: ./figure/4open2close.jpg Graphic file (type jpg)
+<use ./figure/4open2close.jpg>
+Package pdftex.def Info: ./figure/4open2close.jpg used on input line 493.
+(pdftex.def)             Requested size: 165.99443pt x 124.84195pt.
+
+
+LaTeX Warning: Reference `fig:4-sidedopensalgorithm' on page 9 undefined on inp
+ut line 497.
+
+
+LaTeX Warning: Reference `4opens2closedalgorithm' on page 9 undefined on input 
+line 497.
+
+File: ./figure/2open1close.jpeg Graphic file (type jpg)
+<use ./figure/2open1close.jpeg>
+Package pdftex.def Info: ./figure/2open1close.jpeg used on input line 501.
+(pdftex.def)             Requested size: 165.99443pt x 105.01178pt.
+
+Underfull \vbox (badness 3826) has occurred while \output is active []
+
+ [9 <./figure/mouth_contour_front.png> <./figure/mouth_contour_side.png> <./fig
+ure/mouth_contour.png>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 511--513
+
+ []
+
+
+LaTeX Warning: Reference `ssec:num2' on page 10 undefined on input line 522.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 519--523
+
+ []
+
+[10 <./figure/4open2close.jpg> <./figure/uppertorso.png> <./figure/eye.png>]
+Underfull \hbox (badness 4060) in paragraph at lines 529--533
+\OT1/ptm/m/n/10 from these equa-tions,. We de-note these sculpt-ing
+ []
+
+
+Underfull \hbox (badness 1158) in paragraph at lines 529--533
+\OT1/ptm/m/n/10 the same method, we can ob-tain the sculpt-ing forces
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 529--533
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 537--540
+
+ []
+
+File: ./figure/mouth_contour_front.png Graphic file (type png)
+<use ./figure/mouth_contour_front.png>
+Package pdftex.def Info: ./figure/mouth_contour_front.png used on input line 55
+3.
+(pdftex.def)             Requested size: 54.6922pt x 36.135pt.
+File: ./figure/mouth_contour_side.png Graphic file (type png)
+ <use ./figure/mouth_contour_side.png>
+Package pdftex.def Info: ./figure/mouth_contour_side.png used on input line 554
+.
+(pdftex.def)             Requested size: 47.03381pt x 36.135pt.
+File: ./figure/mouth_contour.png Graphic file (type png)
+
+<use ./figure/mouth_contour.png>
+Package pdftex.def Info: ./figure/mouth_contour.png used on input line 555.
+(pdftex.def)             Requested size: 51.6385pt x 36.135pt.
+
+
+LaTeX Warning: Hyper reference `fig:mouth_contour' on page 11 undefined on inpu
+t line 559.
+
+
+LaTeX Warning: Reference `sub@fig:mouth_contour' on page 11 undefined on input 
+line 559.
+
+
+LaTeX Warning: Hyper reference `fig:mouthmesh' on page 11 undefined on input li
+ne 559.
+
+
+LaTeX Warning: Reference `sub@fig:mouthmesh' on page 11 undefined on input line
+ 559.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 546--560
+
+ []
+
+
+Package caption Warning: \label without proper reference on input line 556.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:4opens2closedalgorithm' on page 11 undefined on i
+nput line 561.
+
+
+LaTeX Warning: Hyper reference `fig:vest' on page 11 undefined on input line 56
+1.
+
+
+LaTeX Warning: Reference `sub@fig:vest' on page 11 undefined on input line 561.
+
+
+
+LaTeX Warning: Hyper reference `fig:eye' on page 11 undefined on input line 561
+.
+
+
+LaTeX Warning: Reference `sub@fig:eye' on page 11 undefined on input line 561.
+
+File: ./figure/uppertorso.png Graphic file (type png)
+<use ./figure/uppertorso.png>
+Package pdftex.def Info: ./figure/uppertorso.png used on input line 564.
+(pdftex.def)             Requested size: 53.2027pt x 64.14352pt.
+File: ./figure/eye.png Graphic file (type png)
+ <use ./figure/eye.png>
+Package pdftex.def Info: ./figure/eye.png used on input line 565.
+(pdftex.def)             Requested size: 78.7224pt x 64.14352pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<./figure/detach.png, id=340, 215.80624pt x 302.12875pt>
 File: ./figure/detach.png Graphic file (type png)
 
 <use ./figure/detach.png>
-Package pdftex.def Info: ./figure/detach.png used on input line 489.
+Package pdftex.def Info: ./figure/detach.png used on input line 574.
 (pdftex.def)             Requested size: 94.85292pt x 132.79414pt.
 
-<./figure/attached.png, id=305, 232.87pt x 327.2225pt>
+<./figure/attached.png, id=341, 232.87pt x 327.2225pt>
 File: ./figure/attached.png Graphic file (type png)
 
 <use ./figure/attached.png>
-Package pdftex.def Info: ./figure/attached.png used on input line 490.
+Package pdftex.def Info: ./figure/attached.png used on input line 575.
 (pdftex.def)             Requested size: 94.85292pt x 133.28331pt.
- [9 <./figure/mouth_contour_front.png> <./figure/mouth_contour_side.png> <./fig
-ure/mouth_contour.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 496--498
+
+Underfull \hbox (badness 10000) in paragraph at lines 571--581
 
  []
+
+[11]
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 584.
+
+ (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/omsptm.fd
+File: omsptm.fd 
+)
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 584.
 
 (./cvmpaper_for_review.bbl (./cvmpaper_for_review.brf)
 \tf@brf=\write3
 \openout3 = `cvmpaper_for_review.brf'.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 75.
- [10 <./figure/uppertorso.png> <./figure/hip.png> <./figure/detach.png> <./figu
-re/attached.png>])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 528.
-
-[11
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 65.
+ [12 <./figure/detach.png> <./figure/attached.png>])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 616.
+ [13
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 528.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 616.
  (./cvmpaper_for_review.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 528.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 528.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 616.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 616.
 Package rerunfilecheck Info: File `cvmpaper_for_review.brf' has not changed.
-(rerunfilecheck)             Checksum: 4AC12B99897D3D17A0A07EDC7751C430;1220.
+(rerunfilecheck)             Checksum: AAD966DF590C0468E0C75955AFA37F8A;1285.
 
 
 LaTeX Warning: There were undefined references.
@@ -1004,13 +1236,13 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 528.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 616.
  ) 
 Here is how much of TeX's memory you used:
- 8618 strings out of 492995
- 133321 string characters out of 6132703
- 247237 words of memory out of 5000000
- 11932 multiletter control sequences out of 15000+600000
+ 8660 strings out of 492995
+ 134054 string characters out of 6132703
+ 247068 words of memory out of 5000000
+ 11958 multiletter control sequences out of 15000+600000
  29394 words of font info for 72 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,16n,46p,1757b,552s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1031,10 +1263,10 @@ xmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/201
 -dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/font
 s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/ur
 w/times/utmri8a.pfb>
-Output written on cvmpaper_for_review.pdf (11 pages, 2698191 bytes).
+Output written on cvmpaper_for_review.pdf (13 pages, 3002551 bytes).
 PDF statistics:
- 432 PDF objects out of 1000 (max. 8388607)
- 335 compressed objects within 4 object streams
- 79 named destinations out of 1000 (max. 500000)
- 196 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 461 PDF objects out of 1000 (max. 8388607)
+ 361 compressed objects within 4 object streams
+ 91 named destinations out of 1000 (max. 500000)
+ 201 words of extra memory for PDF output out of 10000 (max. 10000000)
 
