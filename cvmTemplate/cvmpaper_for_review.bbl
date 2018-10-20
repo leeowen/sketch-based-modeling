@@ -57,6 +57,12 @@ Y.~Kho and M.~Garland.
 \newblock In {\em Proceedings of the 2005 symposium on Interactive 3D graphics
   and games}, pages 147--154. ACM, 2005.
 
+\bibitem{kraevoy2009modeling}
+V.~Kraevoy, A.~Sheffer, and M.~van~de Panne.
+\newblock Modeling from contour drawings.
+\newblock In {\em Proceedings of the 6th Eurographics Symposium on Sketch-Based
+  interfaces and Modeling}, pages 37--44. ACM, 2009.
+
 \bibitem{lipman2004differential}
 Y.~Lipman, O.~Sorkine, D.~Cohen-Or, D.~Levin, C.~Rossi, and H.-P. Seidel.
 \newblock Differential coordinates for interactive mesh editing.
@@ -72,6 +78,11 @@ A.~Nealen, T.~Igarashi, O.~Sorkine, and M.~Alexa.
 A.~Nealen, O.~Sorkine, M.~Alexa, and D.~Cohen-Or.
 \newblock A sketch-based interface for detail-preserving mesh editing.
 \newblock In {\em ACM SIGGRAPH 2007 courses}, page~42. ACM, 2007.
+
+\bibitem{olsen2009sketch}
+L.~Olsen, F.~F. Samavati, M.~C. Sousa, and J.~A. Jorge.
+\newblock Sketch-based modeling: A survey.
+\newblock {\em Computers \& Graphics}, 33(1):85--103, 2009.
 
 \bibitem{shtof2013geosemantic}
 A.~Shtof, A.~Agathos, Y.~Gingold, A.~Shamir, and D.~Cohen-Or.
@@ -96,6 +107,18 @@ L.~You, H.~Ugail, B.~Tang, X.~Jin, X.~You, and J.~J. Zhang.
 \newblock Blending using ode swept surfaces with shape control and c1
   continuity.
 \newblock {\em The Visual Computer}, 30(6-8):625--636, 2014.
+
+\bibitem{you2007boundary}
+L.~You, X.~Yang, M.~Pachulski, and J.~J. Zhang.
+\newblock Boundary constrained swept surfaces for modelling and animation.
+\newblock In {\em Computer Graphics Forum}, volume~26, pages 313--322. Wiley
+  Online Library, 2007.
+
+\bibitem{zhang2016geometric}
+X.~Zhang, Y.~Wang, M.~Gugala, and J.-D. M{\"u}ller.
+\newblock Geometric continuity constraints for adjacent nurbs patches in shape
+  optimisation.
+\newblock {\em ECCOMAS-2016}, 2016.
 
 \bibitem{SBM:SBM07:023-030}
 J.~Zimmermann, A.~Nealen, and M.~Alexa.

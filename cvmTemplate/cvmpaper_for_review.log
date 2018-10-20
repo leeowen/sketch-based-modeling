@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  16 OCT 2018 21:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.10.26)  20 OCT 2018 16:38
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -281,6 +281,16 @@ Package floatrow Info: Modified rotfloat package code loaded on input line 473.
 \LTright=\skip63
 \flrow@types=\toks22
 )
+(/usr/local/texlive/2017/texmf-dist/tex/latex/yhmath/yhmath.sty
+Package: yhmath 
+LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 12.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/yhex/m/n on input line 12.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/yhex/m/n on input line 12.
+LaTeX Font Info:    Redeclaring math accent \widetilde on input line 13.
+LaTeX Font Info:    Redeclaring math accent \widehat on input line 14.
+)
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2017/03/14 v6.85a Hypertext links for LaTeX
 
@@ -408,81 +418,24 @@ File: hpdftex.def 2017/03/14 v6.85a Hyperref driver for pdfTeX
 
 LaTeX Warning: Label `algorithm_of_primitive_deformer' multiply defined.
 
-
-LaTeX Warning: Label `fig:2open1close' multiply defined.
-
-
-LaTeX Warning: Label `ODEwithforce' multiply defined.
-
-
-LaTeX Warning: Label `odefdmwithforce' multiply defined.
-
-
-LaTeX Warning: Label `2endsdelta' multiply defined.
-
-
-LaTeX Warning: Label `forceinterpolate' multiply defined.
-
-
-LaTeX Warning: Label `tangentinterpolate' multiply defined.
-
-
-LaTeX Warning: Label `mouth_contour_front' multiply defined.
-
-
-LaTeX Warning: Label `sub@mouth_contour_front' multiply defined.
-
-
-LaTeX Warning: Label `mouth_contour_side' multiply defined.
-
-
-LaTeX Warning: Label `sub@mouth_contour_side' multiply defined.
-
-
-LaTeX Warning: Label `mouth_persp' multiply defined.
-
-
-LaTeX Warning: Label `sub@mouth_persp' multiply defined.
-
-
-LaTeX Warning: Label `fig:mouth' multiply defined.
-
-
-LaTeX Warning: Label `fig:4opens2closedalgorithm' multiply defined.
-
-
-LaTeX Warning: Label `vest' multiply defined.
-
-
-LaTeX Warning: Label `sub@vest' multiply defined.
-
-
-LaTeX Warning: Label `eye' multiply defined.
-
-
-LaTeX Warning: Label `sub@eye' multiply defined.
-
-
-LaTeX Warning: Label `fig:4opens2closed' multiply defined.
-
 )
 \openout1 = `cvmpaper_for_review.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 28.
-LaTeX Font Info:    ... okay on input line 28.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 28.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 29.
  (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
@@ -533,7 +486,7 @@ Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 \AtBeginShipoutBox=\box60
 Package atbegshi Info: Package `everyshi' patched.
-Package hyperref Info: Link coloring ON on input line 28.
+Package hyperref Info: Link coloring ON on input line 29.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -543,709 +496,647 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count140
 )
-LaTeX Info: Redefining \ref on input line 28.
-LaTeX Info: Redefining \pageref on input line 28.
-LaTeX Info: Redefining \nameref on input line 28.
+LaTeX Info: Redefining \ref on input line 29.
+LaTeX Info: Redefining \pageref on input line 29.
+LaTeX Info: Redefining \nameref on input line 29.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 51.
-LaTeX Font Info:    Try loading font information for U+msa on input line 51.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 52.
+LaTeX Font Info:    Try loading font information for OMX+yhex on input line 52.
+
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/yhmath/OMXyhex.fd
+File: OMXyhex.fd 
+File: OMXyhex.fd 2013/07/03 v1.1 YH's humble contribution to TeX maths (NP)
+)
+LaTeX Font Info:    External font `yhcmex10' loaded for size
+(Font)              <12> on input line 52.
+LaTeX Font Info:    External font `yhcmex10' loaded for size
+(Font)              <8> on input line 52.
+LaTeX Font Info:    External font `yhcmex10' loaded for size
+(Font)              <6> on input line 52.
+LaTeX Font Info:    Try loading font information for U+msa on input line 52.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 51.
+LaTeX Font Info:    Try loading font information for U+msb on input line 52.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 53.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 54.
+LaTeX Font Info:    External font `yhcmex10' loaded for size
+(Font)              <10> on input line 67.
+LaTeX Font Info:    External font `yhcmex10' loaded for size
+(Font)              <7> on input line 67.
+LaTeX Font Info:    External font `yhcmex10' loaded for size
+(Font)              <5> on input line 67.
 
-Underfull \hbox (badness 1365) in paragraph at lines 61--62
+Underfull \hbox (badness 1365) in paragraph at lines 67--68
 []\OT1/ptm/m/n/10 We de-velop an ef-fi-cient sketch-guided and ODE-
- []
-
-
-Underfull \hbox (badness 1629) in paragraph at lines 68--70
-[]\OT1/ptm/m/n/10 Over the past two decades, sketch-based-modelling
  []
 
 [1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
-<./figure/female_warrior_original_sketch.jpg, id=49, 236.3229pt x 570.6921pt>
+Underfull \hbox (badness 1629) in paragraph at lines 81--83
+[]\OT1/ptm/m/n/10 Over the past two decades, sketch-based-modelling
+ []
+
+[2]
+<./figure/female_warrior_original_sketch.jpg, id=71, 236.3229pt x 570.6921pt>
 File: ./figure/female_warrior_original_sketch.jpg Graphic file (type jpg)
 
 <use ./figure/female_warrior_original_sketch.jpg>
 Package pdftex.def Info: ./figure/female_warrior_original_sketch.jpg used on in
-put line 84.
+put line 97.
 (pdftex.def)             Requested size: 68.83118pt x 166.2212pt.
 
-<./figure/female_warrior_extract_contour.jpg, id=50, 334.24875pt x 788.9475pt>
+<./figure/female_warrior_extract_contour.jpg, id=72, 334.24875pt x 788.9475pt>
 File: ./figure/female_warrior_extract_contour.jpg Graphic file (type jpg)
 
 <use ./figure/female_warrior_extract_contour.jpg>
 Package pdftex.def Info: ./figure/female_warrior_extract_contour.jpg used on in
-put line 88.
+put line 101.
 (pdftex.def)             Requested size: 70.41872pt x 166.2212pt.
 
-<./figure/primitives_before_deformation.jpg, id=51, 305.14pt x 722.7pt>
+<./figure/primitives_before_deformation.jpg, id=73, 305.14pt x 722.7pt>
 File: ./figure/primitives_before_deformation.jpg Graphic file (type jpg)
 
 <use ./figure/primitives_before_deformation.jpg>
 Package pdftex.def Info: ./figure/primitives_before_deformation.jpg used on inp
-ut line 92.
+ut line 105.
 (pdftex.def)             Requested size: 70.18071pt x 166.2212pt.
 
-<./figure/primitives_after_deformation_without_blending.jpg, id=52, 280.04625pt
+<./figure/primitives_after_deformation_without_blending.jpg, id=74, 280.04625pt
  x 722.7pt>
 File: ./figure/primitives_after_deformation_without_blending.jpg Graphic file (
 type jpg)
  <use ./figure/primitives_after_deformation_without_blending.jpg>
 Package pdftex.def Info: ./figure/primitives_after_deformation_without_blending
-.jpg used on input line 97.
+.jpg used on input line 110.
 (pdftex.def)             Requested size: 64.40927pt x 166.2212pt.
 
-<./figure/primitives_after_deformation_and_lattice.jpg, id=53, 243.91125pt x 68
+<./figure/primitives_after_deformation_and_lattice.jpg, id=75, 243.91125pt x 68
 7.56876pt>
 File: ./figure/primitives_after_deformation_and_lattice.jpg Graphic file (type 
 jpg)
  <use ./figure/primitives_after_deformation_and_lattice.jpg>
 Package pdftex.def Info: ./figure/primitives_after_deformation_and_lattice.jpg 
-used on input line 101.
+used on input line 114.
 (pdftex.def)             Requested size: 58.96417pt x 166.2212pt.
 
-<./figure/final_shot.jpg, id=54, 259.97125pt x 688.5725pt>
+<./figure/final_shot.jpg, id=76, 259.97125pt x 688.5725pt>
 File: ./figure/final_shot.jpg Graphic file (type jpg)
 
 <use ./figure/final_shot.jpg>
-Package pdftex.def Info: ./figure/final_shot.jpg used on input line 105.
+Package pdftex.def Info: ./figure/final_shot.jpg used on input line 118.
 (pdftex.def)             Requested size: 62.75536pt x 166.2212pt.
 Missing character: There is no © in font ptmr7t!
 Missing character: There is no © in font ptmr7t!
 
-Underfull \hbox (badness 1546) in paragraph at lines 77--115
+Underfull \hbox (badness 1546) in paragraph at lines 90--128
 \OT1/ptm/m/n/10 The mod-el-ing pro-cess us-ing our de-vel-oped sys-tem is
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[2] <./figure/deformer_UI.jpg, id=87, 983.17313pt x 745.78625pt>
+[3] <./figure/deformer_UI.jpg, id=106, 983.17313pt x 745.78625pt>
 File: ./figure/deformer_UI.jpg Graphic file (type jpg)
 
 <use ./figure/deformer_UI.jpg>
-Package pdftex.def Info: ./figure/deformer_UI.jpg used on input line 123.
+Package pdftex.def Info: ./figure/deformer_UI.jpg used on input line 136.
 (pdftex.def)             Requested size: 237.13594pt x 179.87997pt.
 
-Underfull \vbox (badness 8038) has occurred while \output is active []
-
-
-<./figure/torso_primitive.jpg, id=89, 455.7025pt x 436.63126pt>
+<./figure/torso_primitive.jpg, id=108, 455.7025pt x 436.63126pt>
 File: ./figure/torso_primitive.jpg Graphic file (type jpg)
 
 <use ./figure/torso_primitive.jpg>
-Package pdftex.def Info: ./figure/torso_primitive.jpg used on input line 133.
+Package pdftex.def Info: ./figure/torso_primitive.jpg used on input line 146.
 (pdftex.def)             Requested size: 60.33508pt x 57.81621pt.
 
-<./figure/torso_after_deformed.jpg, id=90, 455.7025pt x 436.63126pt>
+<./figure/torso_after_deformed.jpg, id=109, 455.7025pt x 436.63126pt>
 File: ./figure/torso_after_deformed.jpg Graphic file (type jpg)
 
 <use ./figure/torso_after_deformed.jpg>
 Package pdftex.def Info: ./figure/torso_after_deformed.jpg used on input line 1
-37.
+50.
 (pdftex.def)             Requested size: 60.33508pt x 57.81621pt.
 
-Underfull \hbox (badness 1028) in paragraph at lines 128--144
+Underfull \hbox (badness 1028) in paragraph at lines 141--157
 \OT1/ptm/m/n/10 the al-go-rithm of our pro-posed prim-i-tive de-former and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 128--144
+Underfull \hbox (badness 10000) in paragraph at lines 141--157
 \OT1/ptm/m/n/10 con-sid-ers lo-cally stretch-ing for solid ob-jects plus
  []
 
 
-Underfull \hbox (badness 4024) in paragraph at lines 128--144
+Underfull \hbox (badness 4024) in paragraph at lines 141--157
 \OT1/ptm/m/n/10 bend-ing for two-manifold sur-faces called thin-shells.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 128--144
+Underfull \hbox (badness 10000) in paragraph at lines 141--157
 
  []
 
-[3 <./figure/female_warrior_original_sketch.jpg> <./figure/female_warrior_extra
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[4 <./figure/female_warrior_original_sketch.jpg> <./figure/female_warrior_extra
 ct_contour.jpg> <./figure/primitives_before_deformation.jpg> <./figure/primitiv
 es_after_deformation_without_blending.jpg> <./figure/primitives_after_deformati
 on_and_lattice.jpg> <./figure/final_shot.jpg> <./figure/deformer_UI.jpg>]
-Underfull \hbox (badness 10000) in paragraph at lines 146--149
+Underfull \hbox (badness 10000) in paragraph at lines 159--162
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 154--157
+Underfull \hbox (badness 10000) in paragraph at lines 167--170
 
  []
 
 
-LaTeX Warning: Reference `fig:leg' on page 4 undefined on input line 169.
+LaTeX Warning: Reference `fig:leg' on page 5 undefined on input line 182.
 
 
-LaTeX Warning: Hyper reference `fig:leg_cylinder' on page 4 undefined on input 
-line 169.
+LaTeX Warning: Hyper reference `fig:leg_cylinder' on page 5 undefined on input 
+line 182.
 
 
-LaTeX Warning: Reference `sub@fig:leg_cylinder' on page 4 undefined on input li
-ne 169.
+LaTeX Warning: Reference `sub@fig:leg_cylinder' on page 5 undefined on input li
+ne 182.
 
-<./figure/FDM.png, id=113, 326.1786pt x 73.7154pt>
+<./figure/FDM.png, id=132, 326.1786pt x 73.7154pt>
 File: ./figure/FDM.png Graphic file (type png)
  <use ./figure/FDM.png>
-Package pdftex.def Info: ./figure/FDM.png used on input line 177.
+Package pdftex.def Info: ./figure/FDM.png used on input line 190.
 (pdftex.def)             Requested size: 189.70947pt x 42.87418pt.
 
-<./figure/fdmnode_a.png, id=128, 349.7868pt x 331.9602pt>
+<./figure/fdmnode_a.png, id=147, 349.7868pt x 331.9602pt>
 File: ./figure/fdmnode_a.png Graphic file (type png)
 
 <use ./figure/fdmnode_a.png>
-Package pdftex.def Info: ./figure/fdmnode_a.png used on input line 203.
+Package pdftex.def Info: ./figure/fdmnode_a.png used on input line 216.
 (pdftex.def)             Requested size: 96.03874pt x 91.14497pt.
 
-<./figure/fdmnode_b.png, id=129, 312.6882pt x 291.9708pt>
+<./figure/fdmnode_b.png, id=148, 312.6882pt x 291.9708pt>
 File: ./figure/fdmnode_b.png Graphic file (type png)
 
 <use ./figure/fdmnode_b.png>
-Package pdftex.def Info: ./figure/fdmnode_b.png used on input line 208.
+Package pdftex.def Info: ./figure/fdmnode_b.png used on input line 221.
 (pdftex.def)             Requested size: 96.03874pt x 89.6769pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 197--226
+Underfull \hbox (badness 10000) in paragraph at lines 210--239
 
  []
 
-[4 <./figure/torso_primitive.jpg> <./figure/torso_after_deformed.jpg> <./figure
-/FDM.png>] <./figure/detail_UI.jpg, id=169, 1010.77625pt x 766.865pt>
+[5 <./figure/torso_primitive.jpg> <./figure/torso_after_deformed.jpg> <./figure
+/FDM.png>] <./figure/detail_UI.jpg, id=189, 1010.77625pt x 766.865pt>
 File: ./figure/detail_UI.jpg Graphic file (type jpg)
 
 <use ./figure/detail_UI.jpg>
-Package pdftex.def Info: ./figure/detail_UI.jpg used on input line 233.
+Package pdftex.def Info: ./figure/detail_UI.jpg used on input line 246.
 (pdftex.def)             Requested size: 237.13594pt x 179.90906pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[5 <./figure/fdmnode_a.png> <./figure/fdmnode_b.png>]
-<./figure/2opens_a.jpg, id=188, 466.74374pt x 344.28625pt>
+[6 <./figure/fdmnode_a.png> <./figure/fdmnode_b.png>]
+<./figure/2opens_a.jpg, id=207, 466.74374pt x 344.28625pt>
 File: ./figure/2opens_a.jpg Graphic file (type jpg)
 
 <use ./figure/2opens_a.jpg>
-Package pdftex.def Info: ./figure/2opens_a.jpg used on input line 248.
+Package pdftex.def Info: ./figure/2opens_a.jpg used on input line 261.
 (pdftex.def)             Requested size: 106.71045pt x 78.71136pt.
 
-<./figure/2opens_b.jpg, id=189, 467.7475pt x 319.1925pt>
+<./figure/2opens_b.jpg, id=208, 467.7475pt x 319.1925pt>
 File: ./figure/2opens_b.jpg Graphic file (type jpg)
 
 <use ./figure/2opens_b.jpg>
-Package pdftex.def Info: ./figure/2opens_b.jpg used on input line 253.
+Package pdftex.def Info: ./figure/2opens_b.jpg used on input line 266.
 (pdftex.def)             Requested size: 96.03874pt x 65.53716pt.
 
-<./figure/headcontourfront.png, id=196, 339.2675pt x 381.425pt>
+<./figure/headcontourfront.png, id=215, 339.2675pt x 381.425pt>
 File: ./figure/headcontourfront.png Graphic file (type png)
 
 <use ./figure/headcontourfront.png>
-Package pdftex.def Info: ./figure/headcontourfront.png used on input line 268.
+Package pdftex.def Info: ./figure/headcontourfront.png used on input line 281.
 (pdftex.def)             Requested size: 57.85071pt x 65.04256pt.
 
-Overfull \hbox (0.93678pt too wide) in paragraph at lines 268--268
+Overfull \hbox (0.93678pt too wide) in paragraph at lines 281--281
 [][] 
  []
 
-<./figure/headcontourside.png, id=197, 319.1925pt x 371.3875pt>
+<./figure/headcontourside.png, id=216, 319.1925pt x 371.3875pt>
 File: ./figure/headcontourside.png Graphic file (type png)
 
 <use ./figure/headcontourside.png>
-Package pdftex.def Info: ./figure/headcontourside.png used on input line 271.
+Package pdftex.def Info: ./figure/headcontourside.png used on input line 284.
 (pdftex.def)             Requested size: 55.89848pt x 65.04256pt.
 
-<./figure/head_cross_section.png, id=198, 182.18062pt x 218.31563pt>
+<./figure/head_cross_section.png, id=217, 182.18062pt x 218.31563pt>
 File: ./figure/head_cross_section.png Graphic file (type png)
 
 <use ./figure/head_cross_section.png>
-Package pdftex.def Info: ./figure/head_cross_section.png used on input line 274
+Package pdftex.def Info: ./figure/head_cross_section.png used on input line 287
 .
 (pdftex.def)             Requested size: 54.27654pt x 65.04256pt.
 
-<./figure/head_final.png, id=199, 186.6975pt x 219.82124pt>
+<./figure/head_final.png, id=218, 186.6975pt x 219.82124pt>
 File: ./figure/head_final.png Graphic file (type png)
 
 <use ./figure/head_final.png>
-Package pdftex.def Info: ./figure/head_final.png used on input line 277.
+Package pdftex.def Info: ./figure/head_final.png used on input line 290.
 (pdftex.def)             Requested size: 55.24051pt x 65.04256pt.
 
-<./figure/legcontourfront.png, id=224, 160.6pt x 441.65pt>
+<./figure/legcontourfront.png, id=243, 160.6pt x 441.65pt>
 File: ./figure/legcontourfront.png Graphic file (type png)
 
 <use ./figure/legcontourfront.png>
-Package pdftex.def Info: ./figure/legcontourfront.png used on input line 287.
+Package pdftex.def Info: ./figure/legcontourfront.png used on input line 300.
 (pdftex.def)             Requested size: 49.93251pt x 137.31255pt.
 
-<./figure/legcontourside.png, id=225, 141.52875pt x 400.49625pt>
+<./figure/legcontourside.png, id=244, 141.52875pt x 400.49625pt>
 File: ./figure/legcontourside.png Graphic file (type png)
 
 <use ./figure/legcontourside.png>
-Package pdftex.def Info: ./figure/legcontourside.png used on input line 290.
+Package pdftex.def Info: ./figure/legcontourside.png used on input line 303.
 (pdftex.def)             Requested size: 48.52513pt x 137.31255pt.
 
-<./figure/legfront.png, id=226, 168.63pt x 441.65pt>
+<./figure/legfront.png, id=245, 168.63pt x 441.65pt>
 File: ./figure/legfront.png Graphic file (type png)
 
 <use ./figure/legfront.png>
-Package pdftex.def Info: ./figure/legfront.png used on input line 293.
+Package pdftex.def Info: ./figure/legfront.png used on input line 306.
 (pdftex.def)             Requested size: 52.42914pt x 137.31255pt.
 
-<./figure/legside.png, id=227, 182.6825pt x 363.3575pt>
+<./figure/legside.png, id=246, 182.6825pt x 363.3575pt>
 File: ./figure/legside.png Graphic file (type png)
 
 <use ./figure/legside.png>
-Package pdftex.def Info: ./figure/legside.png used on input line 296.
+Package pdftex.def Info: ./figure/legside.png used on input line 309.
 (pdftex.def)             Requested size: 69.03539pt x 137.31255pt.
 
-Overfull \hbox (12.12146pt too wide) in paragraph at lines 296--296
+Overfull \hbox (12.12146pt too wide) in paragraph at lines 309--309
 [][] 
  []
 
-<./figure/neck_contour.png, id=228, 232.87pt x 140.525pt>
+<./figure/neck_contour.png, id=247, 232.87pt x 140.525pt>
 File: ./figure/neck_contour.png Graphic file (type png)
 
 <use ./figure/neck_contour.png>
-Package pdftex.def Info: ./figure/neck_contour.png used on input line 300.
+Package pdftex.def Info: ./figure/neck_contour.png used on input line 313.
 (pdftex.def)             Requested size: 83.83313pt x 50.58878pt.
 
-Overfull \hbox (7.9479pt too wide) in paragraph at lines 300--300
+Overfull \hbox (7.9479pt too wide) in paragraph at lines 313--313
  [][] 
  []
 
-<./figure/neck_cross_section.png, id=229, 232.87pt x 140.525pt>
+<./figure/neck_cross_section.png, id=248, 232.87pt x 140.525pt>
 File: ./figure/neck_cross_section.png Graphic file (type png)
 
 <use ./figure/neck_cross_section.png>
-Package pdftex.def Info: ./figure/neck_cross_section.png used on input line 304
+Package pdftex.def Info: ./figure/neck_cross_section.png used on input line 317
 .
 (pdftex.def)             Requested size: 83.83313pt x 50.58878pt.
 
-Overfull \hbox (7.9479pt too wide) in paragraph at lines 304--304
+Overfull \hbox (7.9479pt too wide) in paragraph at lines 317--317
  [][] 
  []
 
-<./figure/neck_mesh.png, id=230, 232.87pt x 140.525pt>
+<./figure/neck_mesh.png, id=249, 232.87pt x 140.525pt>
 File: ./figure/neck_mesh.png Graphic file (type png)
 
 <use ./figure/neck_mesh.png>
-Package pdftex.def Info: ./figure/neck_mesh.png used on input line 308.
+Package pdftex.def Info: ./figure/neck_mesh.png used on input line 321.
 (pdftex.def)             Requested size: 83.83313pt x 50.58878pt.
 
-Overfull \hbox (7.9479pt too wide) in paragraph at lines 308--308
+Overfull \hbox (7.9479pt too wide) in paragraph at lines 321--321
  [][] 
  []
 
 
-Underfull \hbox (badness 1184) in paragraph at lines 243--336
+Underfull \hbox (badness 1184) in paragraph at lines 256--349
 \OT1/ptm/m/n/10 lo-cal shape cre-ation from four dis-con-nected sil-hou-ette
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 243--336
+Underfull \hbox (badness 10000) in paragraph at lines 256--349
 
  []
 
-[6 <./figure/detail_UI.jpg> <./figure/2opens_a.jpg> <./figure/2opens_b.jpg>]
-<./figure/1open1close.jpeg, id=240, 666.49pt x 447.6725pt>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[7 <./figure/detail_UI.jpg> <./figure/2opens_a.jpg> <./figure/2opens_b.jpg>]
+<./figure/1open1close.jpeg, id=261, 666.49pt x 447.6725pt>
 File: ./figure/1open1close.jpeg Graphic file (type jpg)
 
 <use ./figure/1open1close.jpeg>
-Package pdftex.def Info: ./figure/1open1close.jpeg used on input line 345.
+Package pdftex.def Info: ./figure/1open1close.jpeg used on input line 358.
 (pdftex.def)             Requested size: 165.99443pt x 111.49432pt.
 
-Underfull \hbox (badness 1132) in paragraph at lines 337--351
+Underfull \hbox (badness 1132) in paragraph at lines 350--364
 \OT1/ptm/m/n/10 closed sil-hou-ette con-tours in two dif-fer-ent view plans
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 337--351
+Underfull \hbox (badness 10000) in paragraph at lines 350--364
 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [7 <./figure/headcontourfront.png> <./figure/headcontourside.png> <./figure/he
+ [8 <./figure/headcontourfront.png> <./figure/headcontourside.png> <./figure/he
 ad_cross_section.png> <./figure/head_final.png> <./figure/legcontourfront.png> 
 <./figure/legcontourside.png> <./figure/legfront.png> <./figure/legside.png> <.
 /figure/neck_contour.png> <./figure/neck_cross_section.png> <./figure/neck_mesh
 .png>]
-<./figure/shoulder_armor_front.png, id=263, 128.98187pt x 156.08313pt>
+<./figure/shoulder_armor_front.png, id=283, 128.98187pt x 156.08313pt>
 File: ./figure/shoulder_armor_front.png Graphic file (type png)
 
 <use ./figure/shoulder_armor_front.png>
 Package pdftex.def Info: ./figure/shoulder_armor_front.png used on input line 3
-72.
+85.
 (pdftex.def)             Requested size: 41.80446pt x 50.58878pt.
 
-<./figure/shoulder_armor_top.png, id=264, 128.98187pt x 156.08313pt>
+<./figure/shoulder_armor_top.png, id=284, 128.98187pt x 156.08313pt>
 File: ./figure/shoulder_armor_top.png Graphic file (type png)
 
 <use ./figure/shoulder_armor_top.png>
-Package pdftex.def Info: ./figure/shoulder_armor_top.png used on input line 376
+Package pdftex.def Info: ./figure/shoulder_armor_top.png used on input line 389
 .
 (pdftex.def)             Requested size: 41.80446pt x 50.58878pt.
 
-<./figure/shoulder_armor_side.png, id=265, 128.98187pt x 156.08313pt>
+<./figure/shoulder_armor_side.png, id=285, 128.98187pt x 156.08313pt>
 File: ./figure/shoulder_armor_side.png Graphic file (type png)
 
 <use ./figure/shoulder_armor_side.png>
-Package pdftex.def Info: ./figure/shoulder_armor_side.png used on input line 38
-0.
+Package pdftex.def Info: ./figure/shoulder_armor_side.png used on input line 39
+3.
 (pdftex.def)             Requested size: 41.80446pt x 50.58878pt.
 
-<./figure/shoulder_armor_persp.png, id=266, 128.98187pt x 156.08313pt>
+<./figure/shoulder_armor_persp.png, id=286, 128.98187pt x 156.08313pt>
 File: ./figure/shoulder_armor_persp.png Graphic file (type png)
 
 <use ./figure/shoulder_armor_persp.png>
 Package pdftex.def Info: ./figure/shoulder_armor_persp.png used on input line 3
-84.
+97.
 (pdftex.def)             Requested size: 41.80446pt x 50.58878pt.
 
-<./figure/2open1close.jpeg, id=270, 707.64375pt x 447.6725pt>
-File: ./figure/2open1close.jpeg Graphic file (type jpg)
+<./figure/2open1close.jpg, id=290, 595.22375pt x 447.6725pt>
+File: ./figure/2open1close.jpg Graphic file (type jpg)
 
-<use ./figure/2open1close.jpeg>
-Package pdftex.def Info: ./figure/2open1close.jpeg used on input line 394.
-(pdftex.def)             Requested size: 165.99443pt x 105.01178pt.
+<use ./figure/2open1close.jpg>
+Package pdftex.def Info: ./figure/2open1close.jpg used on input line 408.
+(pdftex.def)             Requested size: 165.99443pt x 124.84195pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 404--406
-
- []
+Underfull \vbox (badness 1152) has occurred while \output is active []
 
 
-LaTeX Warning: Reference `ssec:num2' on page 8 undefined on input line 415.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 412--416
+Underfull \hbox (badness 10000) in paragraph at lines 418--420
 
  []
 
-[8 <./figure/1open1close.jpeg> <./figure/shoulder_armor_front.png> <./figure/sh
+
+Underfull \hbox (badness 10000) in paragraph at lines 426--430
+
+ []
+
+[9 <./figure/1open1close.jpeg> <./figure/shoulder_armor_front.png> <./figure/sh
 oulder_armor_top.png> <./figure/shoulder_armor_side.png> <./figure/shoulder_arm
-or_persp.png> <./figure/2open1close.jpeg>]
-Underfull \hbox (badness 4060) in paragraph at lines 422--426
+or_persp.png> <./figure/2open1close.jpg>]
+Underfull \hbox (badness 4060) in paragraph at lines 438--442
 \OT1/ptm/m/n/10 from these equa-tions,. We de-note these sculpt-ing
  []
 
 
-Underfull \hbox (badness 1158) in paragraph at lines 422--426
+Underfull \hbox (badness 1158) in paragraph at lines 438--442
 \OT1/ptm/m/n/10 the same method, we can ob-tain the sculpt-ing forces
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 422--426
+Underfull \hbox (badness 10000) in paragraph at lines 438--442
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 430--433
+Underfull \hbox (badness 10000) in paragraph at lines 446--449
 
  []
 
-<./figure/mouth_contour_front.png, id=291, 279.54437pt x 184.69pt>
+<./figure/mouth_contour_front.png, id=311, 279.54437pt x 184.69pt>
 File: ./figure/mouth_contour_front.png Graphic file (type png)
 
 <use ./figure/mouth_contour_front.png>
-Package pdftex.def Info: ./figure/mouth_contour_front.png used on input line 44
-6.
+Package pdftex.def Info: ./figure/mouth_contour_front.png used on input line 46
+2.
 (pdftex.def)             Requested size: 54.6922pt x 36.135pt.
 
-<./figure/mouth_contour_side.png, id=292, 164.615pt x 126.4725pt>
+<./figure/mouth_contour_side.png, id=312, 164.615pt x 126.4725pt>
 File: ./figure/mouth_contour_side.png Graphic file (type png)
 
 <use ./figure/mouth_contour_side.png>
-Package pdftex.def Info: ./figure/mouth_contour_side.png used on input line 447
+Package pdftex.def Info: ./figure/mouth_contour_side.png used on input line 463
 .
 (pdftex.def)             Requested size: 47.03381pt x 36.135pt.
 
-<./figure/mouth_contour.png, id=293, 197.23688pt x 138.01563pt>
+<./figure/mouth_contour.png, id=313, 197.23688pt x 138.01563pt>
 File: ./figure/mouth_contour.png Graphic file (type png)
 
 <use ./figure/mouth_contour.png>
-Package pdftex.def Info: ./figure/mouth_contour.png used on input line 448.
+Package pdftex.def Info: ./figure/mouth_contour.png used on input line 464.
 (pdftex.def)             Requested size: 51.6385pt x 36.135pt.
 
-
-LaTeX Warning: Hyper reference `fig:mouth_contour' on page 9 undefined on input
- line 472.
-
-
-LaTeX Warning: Reference `sub@fig:mouth_contour' on page 9 undefined on input l
-ine 472.
-
-
-LaTeX Warning: Hyper reference `fig:mouthmesh' on page 9 undefined on input lin
-e 472.
-
-
-LaTeX Warning: Reference `sub@fig:mouthmesh' on page 9 undefined on input line 
-472.
-
-<./figure/4open2close.jpg, id=296, 595.22375pt x 447.6725pt>
+<./figure/4open2close.jpg, id=320, 595.22375pt x 447.6725pt>
 File: ./figure/4open2close.jpg Graphic file (type jpg)
 
 <use ./figure/4open2close.jpg>
-Package pdftex.def Info: ./figure/4open2close.jpg used on input line 475.
+Package pdftex.def Info: ./figure/4open2close.jpg used on input line 471.
 (pdftex.def)             Requested size: 165.99443pt x 124.84195pt.
 
-
-Package caption Warning: \label without proper reference on input line 556.
-See the caption package documentation for explanation.
-
-
-LaTeX Warning: Reference `fig:4opens2closedalgorithm' on page 9 undefined on in
-put line 479.
-
-
-LaTeX Warning: Hyper reference `fig:vest' on page 9 undefined on input line 479
-.
-
-
-LaTeX Warning: Reference `sub@fig:vest' on page 9 undefined on input line 479.
-
-
-LaTeX Warning: Hyper reference `fig:eye' on page 9 undefined on input line 479.
-
-
-
-LaTeX Warning: Reference `sub@fig:eye' on page 9 undefined on input line 479.
-
-<./figure/uppertorso.png, id=300, 356.33125pt x 429.605pt>
+<./figure/uppertorso.png, id=326, 356.33125pt x 429.605pt>
 File: ./figure/uppertorso.png Graphic file (type png)
 
 <use ./figure/uppertorso.png>
-Package pdftex.def Info: ./figure/uppertorso.png used on input line 482.
+Package pdftex.def Info: ./figure/uppertorso.png used on input line 478.
 (pdftex.def)             Requested size: 53.2027pt x 64.14352pt.
 
-<./figure/eye.png, id=301, 709.65125pt x 578.16pt>
+<./figure/eye.png, id=327, 804.00375pt x 634.37pt>
 File: ./figure/eye.png Graphic file (type png)
  <use ./figure/eye.png>
-Package pdftex.def Info: ./figure/eye.png used on input line 483.
-(pdftex.def)             Requested size: 78.7224pt x 64.14352pt.
+Package pdftex.def Info: ./figure/eye.png used on input line 479.
+(pdftex.def)             Requested size: 81.28838pt x 64.14352pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-LaTeX Warning: Citation `zhang2016geometric' on page 9 undefined on input line 
-490.
-
-File: ./figure/4open2close.jpg Graphic file (type jpg)
-<use ./figure/4open2close.jpg>
-Package pdftex.def Info: ./figure/4open2close.jpg used on input line 493.
-(pdftex.def)             Requested size: 165.99443pt x 124.84195pt.
-
-
-LaTeX Warning: Reference `fig:4-sidedopensalgorithm' on page 9 undefined on inp
-ut line 497.
-
-
-LaTeX Warning: Reference `4opens2closedalgorithm' on page 9 undefined on input 
-line 497.
-
-File: ./figure/2open1close.jpeg Graphic file (type jpg)
-<use ./figure/2open1close.jpeg>
-Package pdftex.def Info: ./figure/2open1close.jpeg used on input line 501.
-(pdftex.def)             Requested size: 165.99443pt x 105.01178pt.
-
-Underfull \vbox (badness 3826) has occurred while \output is active []
-
- [9 <./figure/mouth_contour_front.png> <./figure/mouth_contour_side.png> <./fig
+[10 <./figure/mouth_contour_front.png> <./figure/mouth_contour_side.png> <./fig
 ure/mouth_contour.png>]
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
+LaTeX Warning: Reference `fig:4-sidedopensalgorithm' on page 11 undefined on in
+put line 485.
+
+<./figure/patch.jpg, id=341, 595.22375pt x 447.6725pt>
+File: ./figure/patch.jpg Graphic file (type jpg)
+
+<use ./figure/patch.jpg>
+Package pdftex.def Info: ./figure/patch.jpg used on input line 488.
+(pdftex.def)             Requested size: 165.99443pt x 124.84195pt.
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 511--513
-
- []
-
-
-LaTeX Warning: Reference `ssec:num2' on page 10 undefined on input line 522.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 519--523
-
- []
-
-[10 <./figure/4open2close.jpg> <./figure/uppertorso.png> <./figure/eye.png>]
-Underfull \hbox (badness 4060) in paragraph at lines 529--533
-\OT1/ptm/m/n/10 from these equa-tions,. We de-note these sculpt-ing
- []
-
-
-Underfull \hbox (badness 1158) in paragraph at lines 529--533
-\OT1/ptm/m/n/10 the same method, we can ob-tain the sculpt-ing forces
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 529--533
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 537--540
-
- []
-
-File: ./figure/mouth_contour_front.png Graphic file (type png)
-<use ./figure/mouth_contour_front.png>
-Package pdftex.def Info: ./figure/mouth_contour_front.png used on input line 55
-3.
-(pdftex.def)             Requested size: 54.6922pt x 36.135pt.
-File: ./figure/mouth_contour_side.png Graphic file (type png)
- <use ./figure/mouth_contour_side.png>
-Package pdftex.def Info: ./figure/mouth_contour_side.png used on input line 554
-.
-(pdftex.def)             Requested size: 47.03381pt x 36.135pt.
-File: ./figure/mouth_contour.png Graphic file (type png)
-
-<use ./figure/mouth_contour.png>
-Package pdftex.def Info: ./figure/mouth_contour.png used on input line 555.
-(pdftex.def)             Requested size: 51.6385pt x 36.135pt.
-
-
-LaTeX Warning: Hyper reference `fig:mouth_contour' on page 11 undefined on inpu
-t line 559.
-
-
-LaTeX Warning: Reference `sub@fig:mouth_contour' on page 11 undefined on input 
-line 559.
-
-
-LaTeX Warning: Hyper reference `fig:mouthmesh' on page 11 undefined on input li
-ne 559.
-
-
-LaTeX Warning: Reference `sub@fig:mouthmesh' on page 11 undefined on input line
- 559.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 546--560
-
- []
-
-
-Package caption Warning: \label without proper reference on input line 556.
+Package caption Warning: \label without proper reference on input line 489.
 See the caption package documentation for explanation.
 
 
-LaTeX Warning: Reference `fig:4opens2closedalgorithm' on page 11 undefined on i
-nput line 561.
+LaTeX Warning: Reference `fig:4sidedopensalgorithm' on page 11 undefined on inp
+ut line 492.
 
 
-LaTeX Warning: Hyper reference `fig:vest' on page 11 undefined on input line 56
-1.
+Underfull \hbox (badness 10000) in paragraph at lines 498--500
+
+ []
+
+[11 <./figure/4open2close.jpg> <./figure/uppertorso.png> <./figure/eye.png> <./
+figure/patch.jpg>]
+Underfull \hbox (badness 10000) in paragraph at lines 503--505
+
+ []
+
+<./figure/arm_armor_curve.png, id=365, 371.3875pt x 722.7pt>
+File: ./figure/arm_armor_curve.png Graphic file (type png)
+
+<use ./figure/arm_armor_curve.png>
+Package pdftex.def Info: ./figure/arm_armor_curve.png used on input line 517.
+(pdftex.def)             Requested size: 65.91748pt x 128.27728pt.
+
+<./figure/arm_armor.png, id=366, 386.44376pt x 722.7pt>
+File: ./figure/arm_armor.png Graphic file (type png)
+
+<use ./figure/arm_armor.png>
+Package pdftex.def Info: ./figure/arm_armor.png used on input line 518.
+(pdftex.def)             Requested size: 68.58981pt x 128.27728pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 511--527
+\OT1/ptm/m/n/10 Also, we need to cal-cu-late the sculpt-ing forces
+ []
 
 
-LaTeX Warning: Reference `sub@fig:vest' on page 11 undefined on input line 561.
+Underfull \hbox (badness 3009) in paragraph at lines 511--527
+\OT1/ptm/m/n/10 for all the nodes on the curve $[]$ and $[]$, de-not-
+ []
 
 
-
-LaTeX Warning: Hyper reference `fig:eye' on page 11 undefined on input line 561
-.
-
-
-LaTeX Warning: Reference `sub@fig:eye' on page 11 undefined on input line 561.
-
-File: ./figure/uppertorso.png Graphic file (type png)
-<use ./figure/uppertorso.png>
-Package pdftex.def Info: ./figure/uppertorso.png used on input line 564.
-(pdftex.def)             Requested size: 53.2027pt x 64.14352pt.
-File: ./figure/eye.png Graphic file (type png)
- <use ./figure/eye.png>
-Package pdftex.def Info: ./figure/eye.png used on input line 565.
-(pdftex.def)             Requested size: 78.7224pt x 64.14352pt.
+Underfull \hbox (badness 2486) in paragraph at lines 511--527
+\OT1/ptm/m/n/10 ing as $[]$$\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 i \OT1/cmr/m/n/10
+ = 2\OML/cmm/m/it/10 ; \OT1/cmr/m/n/10 3\OML/cmm/m/it/10 ; [] ; N \OMS/cmsy/m/n
+/10 ^^@ \OT1/cmr/m/n/10 2\OML/cmm/m/it/10 ; N \OMS/cmsy/m/n/10 ^^@ \OT1/cmr/m/n
+/10 1)$ \OT1/ptm/m/n/10 and
+ []
 
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
+Underfull \hbox (badness 10000) in paragraph at lines 511--527
 
-<./figure/detach.png, id=340, 215.80624pt x 302.12875pt>
+ []
+
+<./figure/detach.png, id=369, 215.80624pt x 302.12875pt>
 File: ./figure/detach.png Graphic file (type png)
 
 <use ./figure/detach.png>
-Package pdftex.def Info: ./figure/detach.png used on input line 574.
+Package pdftex.def Info: ./figure/detach.png used on input line 532.
 (pdftex.def)             Requested size: 94.85292pt x 132.79414pt.
 
-<./figure/attached.png, id=341, 232.87pt x 327.2225pt>
+<./figure/attached.png, id=370, 232.87pt x 327.2225pt>
 File: ./figure/attached.png Graphic file (type png)
 
 <use ./figure/attached.png>
-Package pdftex.def Info: ./figure/attached.png used on input line 575.
+Package pdftex.def Info: ./figure/attached.png used on input line 533.
 (pdftex.def)             Requested size: 94.85292pt x 133.28331pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 571--581
+Underfull \hbox (badness 10000) in paragraph at lines 529--539
 
  []
 
-[11]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 584.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 542.
 
- (/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/omsptm.fd
+(/usr/local/texlive/2017/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 584.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 542.
+
+<./figure/facesketch.jpg, id=381, 51.7935pt x 60.9477pt>
+File: ./figure/facesketch.jpg Graphic file (type jpg)
+
+<use ./figure/facesketch.jpg>
+Package pdftex.def Info: ./figure/facesketch.jpg used on input line 549.
+(pdftex.def)             Requested size: 67.55913pt x 79.49744pt.
+
+<./figure/face_traditional.png, id=382, 311.1625pt x 360.34625pt>
+File: ./figure/face_traditional.png Graphic file (type png)
+
+<use ./figure/face_traditional.png>
+Package pdftex.def Info: ./figure/face_traditional.png used on input line 552.
+(pdftex.def)             Requested size: 68.64587pt x 79.49744pt.
+
+<./figure/face_skm.png, id=383, 454.69875pt x 568.1225pt>
+File: ./figure/face_skm.png Graphic file (type png)
+
+<use ./figure/face_skm.png>
+Package pdftex.def Info: ./figure/face_skm.png used on input line 555.
+(pdftex.def)             Requested size: 63.6227pt x 79.49744pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (./cvmpaper_for_review.bbl (./cvmpaper_for_review.brf)
 \tf@brf=\write3
 \openout3 = `cvmpaper_for_review.brf'.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 65.
- [12 <./figure/detach.png> <./figure/attached.png>])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 616.
- [13
-
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 616.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 14.
+LaTeX Font Info:    External font `yhcmex10' loaded for size
+(Font)              <9> on input line 14.
+ [12 <./figure/arm_armor_curve.png> <./figure/arm_armor.png> <./figure/detach.p
+ng> <./figure/attached.png>])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 579.
+ [13 <./figure/facesketch.jpg> <./figure/face_traditional.png> <./figure/face_s
+km.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 579.
  (./cvmpaper_for_review.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 616.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 616.
-Package rerunfilecheck Info: File `cvmpaper_for_review.brf' has not changed.
-(rerunfilecheck)             Checksum: AAD966DF590C0468E0C75955AFA37F8A;1285.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 579.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 579.
 
+
+Package rerunfilecheck Warning: File `cvmpaper_for_review.brf' has changed.
+(rerunfilecheck)                Rerun to get bibliographical references right.
+
+Package rerunfilecheck Info: Checksums for `cvmpaper_for_review.brf':
+(rerunfilecheck)             Before: DC1BB0CA9D797658BD465FF8D90EBAD6;1791
+(rerunfilecheck)             After:  91DBA267A8B773632BC28FCF1B9EC02F;1800.
 
 LaTeX Warning: There were undefined references.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 616.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 579.
  ) 
 Here is how much of TeX's memory you used:
- 8660 strings out of 492995
- 134054 string characters out of 6132703
- 247068 words of memory out of 5000000
- 11958 multiletter control sequences out of 15000+600000
- 29394 words of font info for 72 fonts, out of 8000000 for 9000
+ 8736 strings out of 492995
+ 135892 string characters out of 6132703
+ 247531 words of memory out of 5000000
+ 12019 multiletter control sequences out of 15000+600000
+ 28835 words of font info for 68 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,16n,46p,1757b,552s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,17n,46p,1757b,552s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/te
 xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texl
@@ -1262,11 +1153,12 @@ xmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/201
 7/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2017/texmf
 -dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/font
 s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/ur
-w/times/utmri8a.pfb>
-Output written on cvmpaper_for_review.pdf (13 pages, 3002551 bytes).
+w/times/utmri8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/yhma
+th/yhcmex.pfb>
+Output written on cvmpaper_for_review.pdf (13 pages, 3315089 bytes).
 PDF statistics:
- 461 PDF objects out of 1000 (max. 8388607)
- 361 compressed objects within 4 object streams
- 91 named destinations out of 1000 (max. 500000)
- 201 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 511 PDF objects out of 1000 (max. 8388607)
+ 400 compressed objects within 4 object streams
+ 93 named destinations out of 1000 (max. 500000)
+ 231 words of extra memory for PDF output out of 10000 (max. 10000000)
 

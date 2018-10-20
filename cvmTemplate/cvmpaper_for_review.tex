@@ -9,6 +9,7 @@
 \usepackage{subcaption}
 \usepackage{multicol}
 \usepackage{floatrow} 
+\usepackage{yhmath}
 %\usepackage[polish]{babel}
 % Include other packages here, before hyperref.
 
@@ -51,31 +52,49 @@ First line of institution2 address\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-This paper proposes a new sketch-guided and ODE-driven character modelling technique. Our system consists of two main components: primitive deformer and detail generator. With such a technique, we first draw 2D silhouette contours of a character model. Then, we select proper primitives and align them with the corresponding silhouette contours. After that, we develop a sketch-guided and ODE-driven primitive deformer. It uses ODE-based deformations to deform the primitives to exactly match the generated 2D silhouette contours in one view plane and obtain a base mesh of a character model consisting of deformed primitives. In order to add various 3D details, we develop a local shape generator which uses sketches in different view planes to define a local shape and employs ODE-driven deformations to create a local surface passing through all the sketches.\\
-The experimental results demonstrate that our proposed approach can create 3D character models with 3D details from 2D sketches easily, quickly and precisely.
+How to efficiently create detailed 3D models from 2D sketches is an important problem. This paper will propose a new sketch-based and ordinary differential equation (ODE) driven modelling technique to tackle this problem. It consists of two main components: primitive deformer and shape generator. With such a technique, we first draw 2D silhouette contours of a 3D model. Then, we select proper primitives and align them with the corresponding silhouette contours. After that, we develop a sketch-guided and ODE-driven primitive deformer. It uses ODE-based deformations to deform the primitives to exactly match the generated 2D silhouette contours in one view plane and obtain a base mesh of a 3D model consisting of deformed primitives smoothly connected together with ODE-based blending surfaces. In order to add various 3D details, we develop a shape generator which uses 2D sketches in different view planes to define a local shape and employs ODE-driven deformations to create a local surface passing through all the sketches. The experimental results demonstrate that our proposed approach can create detailed 3D models from 2D sketches easily and quickly.
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
+Main-stream modelling approaches such as polygon and NURBS can create detailed 3D models. However, they require good knowledge and skills to use them, involve heavy manual operations, and take a lot of time to complete modelling tasks. In order to address these problems, various sketch-based modelling approaches have been developed in the past three decades \cite{olsen2009sketch}. \\
+Although template based modelling \cite{kraevoy2009modeling} has been proposed to create new 3D models by deforming template models to match 2D sketches, most of sketch-based modelling approaches create new 3D models directly from 2D sketches. Among them, many modelling approaches such as Teddy \cite{igarashi1999teddy} and its descendants \cite{nealen2007fibermesh} follow a "sketch-rotate-sketch" workflow which requires users to sketch from a large number of different views. In spite of the limitation of creating rough shapes, the following limitations of these approaches have been reported in \cite{gingold2009structured}: 1) users cannot match their input strokes to a guide image due to the view changes, 2) how to find a good view for a stroke is often difficult and time consuming. \\
+In order to overcome the limitations caused by the "sketch-rotate-sketch" workflow, a new approach was proposed in \cite{gingold2009structured}. With this approach, geometric primitives are first placed on a 2D image. After that, various annotations including same-lengths and angles, alignment, mirror symmetry, and connection curves are proposed to communicate higher level semantic information, and create 3D models through applying the annotations to the geometric primitives. Since all manual operations are in a fixed view, this approach can create very rough models only.\\
+This paper will take the easiness and efficiency advantages of primitives in representing rough 3D models. It will use primitives to quickly obtain an initial 3D mesh. Then, these primitives are deformed into required shapes by fitting their silhouette contours to 2D sketches. Next, they are smoothly connected together to create a rough 3D model.  
+Ordinary differential equations are widely used to describe various physical laws in scientific calculations and engineering applications. For example, a fourth-order ordinary differential equation is used to describe lateral bending of elastic beams in structural engineering. Therefore, ODE-driven modelling is physics-based and able to generate more realistic appearances and deformations \cite{you2007boundary}. In order to generate such physically realistic surfaces, we introduce ODE-based modelling to develop a primitive deformer and shape generator which deforms primitives or creates local shapes to match user's drawn sketches.\\   
+By integrating sketch-based modelling, primitive deformer, and shape generator, this paper will propose an easy and efficient modelling approach to quickly create detailed 3D models from 2D sketches and primitives. The main contributions made by our proposed approach are summarized below.
 \begin{itemize}
   \item[$\bullet$] We develop an efficient sketch-guided and ODE-driven primitive deformer to create a base mesh. It can deform primitives to exactly match the generated silhouette contours. Compared to the existing methods, it automates shape manipulation, avoids tedious manual operations, can deform primitives to match the generated silhouette contours quickly, and is powerful in achieving different shapes of a same primitive.
-  \item[$\bullet$] We develop a detail generator to add 3D details to the base mesh. Our proposed sketch-guided and ODE-driven local shape creator can create a new local shape to match user's drawn sketches in different views quickly. The image-based detail generator can automatically generate fine details from 2D images. 
-  \item[$\bullet$] Our character modelling system provide editing operations, support users to manipulate the control curves the draw in the creation stage and adding more control curves after the surface has been created. With our developed system, 3D character models with 3D details can be created easily and efficiently.
+  \item[$\bullet$] We develop a shape generator to add 3D details to the base mesh. Our proposed sketch-guided and ODE-driven shape generator can create a new local shape to match user's drawn sketches in different views quickly. 
+  \item[$\bullet$] We develop a modelling system consisting of primitive deformer and shape generator. With our developed system, detailed 3D models can be created easily and efficiently.
 \end{itemize}
-The rest of the paper is organised as follows. The previous related work is briefly reviewed in Section \ref{related_work}. The system overview of our proposed approach is presented in Section \ref{system_overview}. Primitive deformer is examined in Section \ref{primitive_deformer}, and Detail generator is investigated in Section \ref{detail_generator}. Finally, the conclusions and future work are discussed in Section \ref{conclusions_and_future_work}. 
+The rest of the paper is organized as follows. The related work is briefly reviewed in Section \ref{related_work}. The system overview of our proposed approach is presented in Section  \ref{system_overview}. The primitive deformer is examined in Section \ref{primitive_deformer}, and the shape generator is investigated in Section \ref{detail_generator}. Finally, the conclusions and future work are discussed in Section \ref{conclusions_and_future_work}. 
 \section{Related Work}\label{related_work}
-\subsection{Inflation Technology}
-Over the past two decades, sketch-based-modelling (SBM) has been widely studied in the computer graphic research community. Several research based systems have been proposed to generate organic models. The surface inflation technique extrudes the polygonal mesh from the skeleton outwards do a good job in modelling stuffed toys. One trend is to inflate freeform surfaces to create simple stuffed animals and other rotund objects in a sketch-based modelling fashion, such as \cite{igarashi1999teddy, Karpenko:2006:SFS:1141911.1141928, nealen2007fibermesh}. The Teddy system \cite{igarashi1999teddy} is the pioneer, it takes closed curves as inputs and find their cordial axes as spline, then wrap the splines with the polygonal mesh. Later, FiberMesh\cite{nealen2007fibermesh} enriched the editing operations for the inflating base mesh. FiberMesh also presents two types of the control curves: smooth and sharp. A smooth curve constrains the surface to be smooth across it, while a sharp curve only places positional constraints with C0 continuity. Sharp control curves appears when operations like cutting, extrusion and tunnel take place. Sharp control curves also serves the creation of creases on surface. However, FiberMesh \cite{nealen2007fibermesh} doesn't allow users to specify the ROI.Based on the study from William\cite{williams1997stochastic}, the SmoothSketch system addressed the problem of T-junction and cusp, which Teddy fails to solve.
+The work proposed in this paper is related to sketch-based modelling, primitive-based systems, and ODE-based geometric processing. In what follow, we briefly review the existing work in these fields. 
+\subsection{Sketch-based modelling}
+Over the past three decades, sketch-based-modelling (SBM) has been widely studied in the computer graphic research community \cite{olsen2009sketch}. They can be broadly divided into direct mesh generation and template-based mesh creation. \\
+For direct mesh generation, several systems have been proposed to generate organic models. The surface inflation technique extrudes the polygonal mesh from the skeleton outwards and does a good job in modelling stuffed toys. One trend is to inflate freeform surfaces to create simple stuffed animals and other rotund objects in a sketch-based modelling fashion, such as \cite{igarashi1999teddy,nealen2007fibermesh,Karpenko:2006:SFS:1141911.1141928}. The Teddy system \cite{igarashi1999teddy} presents the pioneer work. It takes closed curves as inputs, finds their cordial axes as spline, then wraps the splines with the polygonal mesh. Later, FiberMesh \cite{nealen2007fibermesh} enriches the editing operations for the inflating base mesh. FiberMesh also presents two types of the control curves: smooth and sharp. A smooth curve constrains the surface to be smooth across it, while a sharp curve only places positional constraints with C0 continuity. Sharp control curves appear when operations like cutting, extrusion and tunnel take place. They also serve the creation of creases on surface. Based on the study from William\cite{williams1997stochastic}, the SmoothSketch system addresses the problem of T-junction and cusp, which Teddy fails to solve.\\
+For template-based mesh creation, an elegant technique for sketch-based modeling has been proposed in \cite{kraevoy2009modeling} to find precise correspondences and determine mesh deformation. By combining skeleton-based deformation and mesh editing, an efficient approach is proposed in \cite{kazmi2015efficient} to quickly deform a 3D template model to fit user's drawn sketches. \\
+Among various approaches of direct mesh generation from user's drawn sketches, a variety of sketch-based modelling tools are based on a ?sketch-rotate-sketch? workflow. Such a workflow requires users to draw sketches from many views, causing the difficulties in matching input strokes to a guide image and finding a good view \cite{gingold2009structured}.\\ 
 %-------------------------------------------------------------------------
-\subsection{Primitive Technology}
-Unlike the inflating systems, primitives-based systems deconstruct the modelling task as a process of creating a certain set of geometry primitives and further editing on the primitives. The idea of assembling simple geometry primitives to form 3D models is very common in CSG(constructive solid geometry) modelling, related researches including \cite{shtof2013geosemantic,chen20133}. Shtof et.al \cite{shtof2013geosemantic} introduces a snapping method which helps determining the position and core parameters of several simple geometry primitives. In \cite{chen20133}, the authors provides tools for generating a cylinder from only 3 strokes: the first two strokes define the 2D profile and the last stroke defines the axis along which the profile curve will sweep. Copies of the profile are not only perpendicularly aligned to the axis, but also resized to snap to the input outlines. However their work is only for man-made objects which simple sweeping surface can meet the quality requirements of the shapes. Structured Annotations for 2D-to-3D Modelling \cite{gingold2009structured}, on the other hand, focus on organic modelling. It is a system using two sets of the primitives, one is generalized cylinders, created by the input of a single open sketch stroke representing the spline, and then modified by using simple gestures such as tilt, scale local radius, rotate symmetrical plane, and change cap size; the other primitive is ellipsoid, generated according to the drawn closed ellipse sketch stroke. As the system's name indicates, there are a set pf annotation tools to further editing the surface shape using the annotations such as same-lengths, same angles, alignment and mirror symmetry. 
-
-\subsection{Mesh editing}
-A universal disadvantage of above systems is features provided are limited it was not suited to modelling complex and production ready models. This is partly due to their limitations in mesh editing operations, so several sketch-based editing methods have been development to help to improve the performance of sketch-based modelling system. One group of sketch-based editing methods \cite{draper2003gestural, kho2005sketching} treats individual sketch curve as the reference for deformations like bending. Take the \cite{kho2005sketching} for example, user will draw a first curve as a reference curve to both set the ROI (region of interest) and be a controlling 'skeleton', and a new sketch curve indicating the desired deformation of the reference curve. Then mapping the reference curve to the second curve, the ROI will be deformed. These methods are very useful for simple keyframe animation, but for more small-scaled shape's editing task, studies like \cite{lipman2004differential,nealen2007sketch,SBM:SBM07:023-030} are more suitable. These studies take mesh's contours (depend on the viewplan at the time of editing operation is happening) as reference curves, and the newly sketched curves indicating the new positions that the ROI of mesh should be reconstructed to. As they aiming at maintaining the local geometrical details, Laplacian coordinates and correspondingly laplacian surface editing technology are implemented to preserving the features. 
-
+\subsection{Primitive-based systems }
+Unlike the inflating systems, primitives-based systems deconstruct the modelling task as a process of creating a certain set of geometry primitives and further editing on the primitives. The idea of assembling simple geometry primitives to form 3D models is very common in CSG (constructive solid geometry) modelling, the relevant researches including  \cite{shtof2013geosemantic,chen20133}. Shtof et al. \cite{shtof2013geosemantic} introduces a snapping method which helps determining the position and core parameters of several simple geometry primitives. In \cite{chen20133}, the authors provide the tools for generating a cylinder from only 3 strokes: the first two strokes define the 2D profile and the last stroke defines the axis along which the profile curve will sweep. Copies of the profile are not only perpendicularly aligned to the axis, but also resized to snap to the input outlines. However their work is only for man-made objects which simple sweeping surface can meet the quality requirements of the shapes. Structured Annotations for 2D-to-3D Modelling \cite{gingold2009structured}, on the other hand, focus on organic modelling. It is a system using two sets of the primitives. One is generalized cylinders, created by the input of a single open sketch stroke representing the spline, and then modified by using simple gestures such as tilting cross sections, scaling local radius, rotating symmetrical plane, and changing cap size. And the other is ellipsoid, generated according to the drawn closed ellipse sketch stroke. As the system?s name indicates, there are a set pf annotation tools to further editing the surface shape using the annotations such as same lengths, same angles, alignment and mirror symmetry.\\
+Using geometric primitives to align 2D sketches provides an easy and efficient approach to generate rough base models. However, manipulating the generated rough base models in one image plane only is difficult to create detailed 3D models. 
+\subsection{ODE-based geometric processing}
+Ordinary differential equations have been widely applied in scientific calculations and engineering analyses to describe the underlying physics. For example, fourth-order ordinary differential equations have been used to describe the lateral bending deformations of elastic beams.  Introducing ODEs into geometric processing can create physically realistic appearances and deformations of 3D models. ODE-based sweeping surfaces were proposed in \cite{you2007boundary}, ODE-based surface deformations were investigated in \cite{you2010shape,chaudhry2013shape}, and ODE-based surface blending was examined in \cite{you2014blending}. \\
+Although there have been some research studies on ODE-based geometric surface creation and deformations, how to use ODE-based modelling to deform geometric primitives and create new shapes from user?s drawn sketches has not been investigated. \\
+The work given in this paper falls within the category of direct mesh generation from sketches. It integrates quick creation of primitive-based base meshes and efficient and realistic ODE-driven primitive deformations and shape generation from sketches in three orthotropic views to create detailed 3D models.   
+%\subsection{Mesh editing}
+%A universal disadvantage of above systems is features provided are limited it was not suited to modelling complex and production ready models. This is partly due to their limitations in mesh editing operations, so several sketch-based editing methods have been development to help to improve the performance of sketch-based modelling system. One group of sketch-based editing methods \cite{draper2003gestural, kho2005sketching} treats individual sketch curve as the reference for deformations like bending. Take the \cite{kho2005sketching} for example, user will draw a first curve as a reference curve to both set the ROI (region of interest) and be a controlling 'skeleton', and a new sketch curve indicating the desired deformation of the reference curve. Then mapping the reference curve to the second curve, the ROI will be deformed. These methods are very useful for simple keyframe animation, but for more small-scaled shape's editing task, studies like \cite{lipman2004differential,nealen2007sketch,SBM:SBM07:023-030} are more suitable. These studies take mesh's contours (depend on the viewplan at the time of editing operation is happening) as reference curves, and the newly sketched curves indicating the new positions that the ROI of mesh should be reconstructed to. As they aiming at maintaining the local geometrical details, Laplacian coordinates and correspondingly laplacian surface editing technology are implemented to preserving the features. 
 \section{System Overview}\label{system_overview}
-Based on our proposed approach, we have developed a modelling system which is composed of two main components: primitive deformer and detail generator. The primitive deformer is used to deform primitives to exactly match user's generated 2D silhouette contours and create a rough base mesh. The detail generator consists of local shape creator and image-based detail generator. The local shape creator creates a new local shape from four different algorithms. They are local shape creation from: 1) two open silhouette contours in two different view planes, 2) one open and one closed silhouette contour in two different view planes, 3) two open and one closed silhouette contours in three different view planes, and 4) two closed curves. The image-based detail generator generates fine 3D details from 2D images automatically through the SFS algorithm. \\
-The modeling process using our developed system is demonstrated in Figure \ref{fig:system_overview} where a 3D female warrior model is created. \\
+Our proposed approach is composed of two main components: ODE-driven primitive deformer and shape generator. The ODE-driven primitive deformer is used to deform primitives to exactly match user?s generated 2D silhouette contours and blend the deformed primitives together to create a base mesh. The ODE-driven shape generator creates new local shapes from three different algorithms. They are local shape creation from: 1) two open silhouette contours in two different view planes, 2) one open and one closed silhouette contour in two different view planes, and 3) two open and one closed silhouette contours in three different view planes. \\
+Taking the creation of a 3D female warrior model as an example, the modeling process using our proposed approach is demonstrated in Figure 1. \\
+First, 2D character silhouette contours are generated. Users can draw their own silhouette contours directly or input their selected sketches. If the selected sketches are input, a further process may be required to extract the 2D silhouette contours from the input sketches. For the example demonstrated in Figure 1, a 2D female warrior sketch shown in Figure 1(a) is input. Then, users can extract 2D silhouette contours from the input sketch as shown in Figure 1(b). After that, proper primitives are selected and placed to align with the corresponding silhouette contours through purely geometric transformations as shown in Figure 1(c). Since the silhouette contours of the primitives do not match the generated 2D silhouette contours of the 2D female warrior, the primitive deformer developed from sketch-guided and ODE driven deformations described in Section 4 is applied to deform the primitives to exactly match the corresponding 2D silhouette contours as depicted in Figure 1(d). Then, these deformed primitives are smoothly connected together with ODE-based surface blending to create a rough 3D base mesh shown in Figure 1(e).
+Once a 3D base mesh model is obtained, the shape generator described in Section 5 is employed to add 3D details to the 3D base mesh. These details include the detailed facial shape, two breasts, and thin sheets. The final detailed 3D female warrior model is shown in Figure 1(f).
+In the following two sections, we will introduce in detail the primitive deformer and the shape generator, respectively. Some examples will be presented to demonstrate their applications.\\
+
+%Based on our proposed approach, we have developed a modelling system which is composed of two main components: primitive deformer and detail generator. The primitive deformer is used to deform primitives to exactly match user's generated 2D silhouette contours and create a rough base mesh. The detail generator consists of local shape creator and image-based detail generator. The local shape creator creates a new local shape from four different algorithms. They are local shape creation from: 1) two open silhouette contours in two different view planes, 2) one open and one closed silhouette contour in two different view planes, 3) two open and one closed silhouette contours in three different view planes, and 4) two closed curves. The image-based detail generator generates fine 3D details from 2D images automatically through the SFS algorithm. \\
+%The modeling process using our developed system is demonstrated in Figure \ref{fig:system_overview} where a 3D female warrior model is created. \\
  \begin{figure}[h]
 \begin{center}
 %\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
@@ -364,7 +383,7 @@ Solving the above equation, we obtain the nodes 0 and $2N+2$ by
 The finite difference equations for nodes 4, 5, \ldots, $N-3$, $N-2$ and $N+4$, $N+5$, \ldots, $2N-3$, $2N-2$ are the same as Equation \eqref{odefdm}. \\
 The finite difference equations for the nodes 2, 3, $N-1$ , $N$ , $N+2$ , $N+3$ , $2N-1$ and $2N$ can be obtained by introducing the above equation and $\mathbf{d_1=c_{1j}}$ , $\mathbf{d_2=c_{2j}}$ and $\mathbf{d_3=c_{3j}}$ into Equation \eqref{odefdm}. \\%The obtained finite difference equations for these nodes are given in Appendix C.
 Solving the finite difference equations for all the inner nodes 2, 3, \ldots , $2N-1$ and $2N$, we obtain all the unknown constants $d_2$ , $d_3$ , \ldots , $d_{2N-1}$ and $d_{2N}$. They together with the three known points $c_{1j}$ , $c_{2j}$ and $c_{3j}$ are used to create the generator.\\
-Using the same treatment, we can obtain the generator at the other positions. From these obtained generators, a local detail 3D model is created and depicted in (b) of Figure \ref{fig:shoulder_armor}.\\
+Using the same treatment, we can obtain the generator at the other positions. From these obtained generators, a local detail 3D model is created and depicted in Figure \ref{fig:shoulder_armor}\subref{shoulder_armor_top}.\\
 \begin{figure}[!htb]
 \centering
 \begin{subfigure}{0.24\linewidth}
@@ -386,12 +405,13 @@ Using the same treatment, we can obtain the generator at the other positions. Fr
 \caption{creation of one open and one closed silhouette contours in four different view planes}
 \label{fig:shoulder_armor}
 \end{figure}
+
 \subsubsection{Algorithm for two open and one closed silhouette contours in three different view planes}\label{algorithm_2_opens_1_close}
 By introducing depth information, users can have more power to control the shape of the 3D model to be created as demonstrated by the algorithms given in Subsections \ref{algorithm_2_opens} and \ref{algorithm_1_open_1_closed}. Users can further control the shape of 3D models by using one or more silhouette contours in other view planes. In this subsection, we discuss construct a 3D detail model from two open and one closed silhouette contours in three orthotropic view planes.\\
 As shown in Figure \ref{fig:2open1close}, the task of creating a local 3D detail model passing through two open and one closed silhouette contours can be transformed into constructing 4 sweeping surfaces encircled by the curves $\mathbf{c_1c_6c_5}$, $\mathbf{c_2c_7c_6}$, $\mathbf{c_3c_8c_7}$, and $\mathbf{c_4c_5c_8}$ respectively.\\
 \begin{figure}[h]
 	\begin{center}
-	\includegraphics[width=0.7\columnwidth]{./figure/2open1close.jpeg}
+	\includegraphics[width=0.7\columnwidth]{./figure/2open1close.jpg}
 	\end{center}
 	\caption{Finite difference nodes for Algorithm for two open and one closed silhouette contours}
 	\label{fig:2open1close}
@@ -411,18 +431,20 @@ Accordingly, the finite difference equation for the above ordinary differential 
 \label{odefdmwithforce}
 \end{equation}
 The reconstruction algorithm for the curve $\mathbf{c_6}$ is exactly same as that of the curve $\mathbf{c_5}$. Here we take the reconstruction of the curve $\mathbf{c_5}$ to demonstrate the algorithm.\\
-Similar to the previous treatment, we uniformly divide the domain of the parametric variable $u$ for the curve $\mathbf{c_5(u)}$ into $2N$ equal intervals. The vector-valued first derivatives of the curves $\mathbf{c_5(u)}$ at the node 1 and $2N+1$ can be determined from the curve $\mathbf{c_5(u)}$ and indicated by $\mathbf{\mathbf{T_{5,0}}}$ and $\mathbf{T_{5,1}}$.\\
-When writing the finite difference equations for the inner nodes 2, and $2N$, the node 0 beyond the boundary node 1 and the node $2N+2$ beyond the boundary node $2N+1$ will be involved. We can use the method given in Subsection \ref{ssec:num2} to determine the nodes 0 and 2N+2 from the vector-valued first derivatives $\mathbf{\mathbf{T_{5,0}}}$ and $\mathbf{T_{5,1}}$ through\\
+Similar to the previous treatment, we uniformly divide the domain of the parametric variable $u$ for the curve $\mathbf{c_5(u)}$ into $N-1$ equal intervals. The vector-valued first derivatives of the curves $\mathbf{c_5(u)}$ at the node 1 and $N$ can be determined from the curve $\mathbf{c_5(u)}$ and indicated by $\mathbf{\mathbf{T_{5,0}}}$ and $\mathbf{T_{5,1}}$.\\
+When writing the finite difference equations for the inner nodes 2, and $N-1$, the node 0 beyond the boundary node 1 and the node $N+1$ beyond the boundary node $N$ will be involved. We determine the nodes 0 and N+1 from the vector-valued first derivatives $\mathbf{\mathbf{T_{5,0}}}$ and $\mathbf{T_{5,1}}$ through\\
 \begin{equation}
 \begin{split}
+\mathbf{T_{5,0}}=\frac{\mathbf{d_2-d_0}}{2\triangle u} \\
+\mathbf{T_{5,1}}=\frac{\mathbf{d_{N+2}-d_{N}}}{2\triangle u} \\
 \mathbf{d_0}=\mathbf{d_2}-2\mathbf{T_{5,0}}\triangle u \\
-\mathbf{d_{2N+2}}=\mathbf{d_{2N}}+2\mathbf{T_{5,1}}\triangle u
+\mathbf{d_{N+1}}=\mathbf{d_{N-1}}+2\mathbf{T_{5,1}}\triangle u
 \end{split}
 \label{2endsdelta}
 \end{equation}\\
-For each of the inner nodes 2, 3, \ldots, $2N-1$, $2N$, we can write a finite difference equation. Since the coordinate values for all the nodes on the curve $\mathbf{c_6}$ are known, we can calculate the sculpting force $\mathbf{f_i}$$(i=2,3,\ldots,2N-1,2N)$ from these equations,. We denote these sculpting forces as $\mathbf{f_{5,i}=f_i}$$(i=2,3,\ldots,2N-1,2N)$. With the same method, we can obtain the sculpting forces $\mathbf{f_{5,i}=f_i}$$(i=2,3,\ldots,2N-1,2N)$ acting on the curve $c_6$.\\
+For each of the inner nodes 2, 3, \ldots, $N-2$, $N-1$, we can write a finite difference equation. Since the coordinate values for all the nodes on the curve $\mathbf{c_6}$ are known, we can calculate the sculpting force $\mathbf{f_i}$$(i=2,3,\ldots,N-2,N-1)$ from these equations,. We denote these sculpting forces as $\mathbf{f_{5,i}=f_i}$$(i=2,3,\ldots,N-2,N-1)$. With the same method, we can obtain the sculpting forces $\mathbf{f_{5,i}=f_i}$$(i=2,3,\ldots,N-2,N-1)$ acting on the curve $c_6$.\\
 The curves $\mathbf{c_5}$ and $\mathbf{c_6}$ can be regarded as generators. The generation of the sweeping surface defined by the three curves $\mathbf{c_1}$, $\mathbf{c_6}$ and $\mathbf{c_5}$ is to sweep the generator from the curve $\mathbf{c_5}$ to the curve $\mathbf{c_6}$ along the curve $\mathbf{c_1}$ and the point $\mathbf{p}$. In order to determine the shape of the generator at different positions along the curve $\mathbf{c_1}$, we uniformly divide the curve $\mathbf{c_1}$ into $J$ equal intervals and obtain the nodes $j=1,2,3,\ldots,J-2,J-1,J$ where $j=1$ and $j=J$ are the intersecting points between the curves $\mathbf{c_5}$ and $\mathbf{c_1}$ and between $\mathbf{c_6}$ and $\mathbf{c_1}$. Then we determine the shape of the generator between the node $j(j=2,3,\ldots,J-2,J-1,J)$ and the point $\mathbf{p}$.\\
-With the same treatment, we divide the domain of the parametric variable $u$ for the generator between the node $j$ and the point $\mathbf{p}$ into $2N$ equal intervals (the node $j$ on the curve $\mathbf{c_1}$ is the node 0 on the generator between the node $j$ and the point $\mathbf{p}$). When sweeping the curve $\mathbf{c_5}$ along the curve $\mathbf{c_1}$ to the curve $\mathbf{c_6}$, the sculpting force  acting at the node  of the curve is gradually changed to the sculpting force $\mathbf{f_i}$ acting at the node $i$ of the curve $\mathbf{c_6}$ . Here we use a linear interpolation to describe the gradual change and obtain the sculpting force $\mathbf{fi}$ below acting at the node $i$ of the generator between the node $j$ and the point $\mathbf{p}$\\
+With the same treatment, we divide the domain of the parametric variable $u$ for the generator between the node $j$ and the point $\mathbf{p}$ into $N-1$ equal intervals (the node $j$ on the curve $\mathbf{c_1}$ is the node 0 on the generator between the node $j$ and the point $\mathbf{p}$). When sweeping the curve $\mathbf{c_5}$ along the curve $\mathbf{c_1}$ to the curve $\mathbf{c_6}$, the sculpting force $\mathbf{f_{5,i}}$ acting at the node $i$ of the curve is gradually changed to the sculpting force $\mathbf{f_{6,i}}$ acting at the node $i$ of the curve $\mathbf{c_6}$ . Here we use a linear interpolation to describe the gradual change and obtain the sculpting force $\mathbf{f_i}$ below acting at the node $i$ of the generator between the node $j$ and the point $\mathbf{p}$\\
 \begin{equation}
 \centering
 \mathbf{f_i}=\mathbf{f_{5,i}}+\frac{L_j}{L}(\mathbf{f_{6,i}}-\mathbf{f_{5,i}})
@@ -437,142 +459,84 @@ When sweeping the curve $\mathbf{c_5}$ along the curve $\mathbf{c_1}$ to the cur
 \end{split}
 \label{tangentinterpolate}
 \end{equation}
-Having known the sculpting forces at all the inner nodes 2, 3, \ldots, $2N-1$, $2N$, and the coordinate values at the boundary nodes 1 and $2N+1$ and the nodes 0 and $2N+2$ beyond the boundary nodes, we can write the finite difference equations for all the inner nodes where the finite difference equations for the nodes 4, 5,\ldots, $2N-3$, $2N-2$ are the same as Equation \eqref{ODEwithforce} with the sculpting force $\mathbf{f_i}$ being calculated by Equation \eqref{forceinterpolate}\\%, and the finite difference equations for the nodes 2, 3, 2N-1, and 2N are given in Appendix D.
-Solving all the finite difference equations, we obtain all the unknown constants $\mathbf{d_2}$, $\mathbf{d_3}$ , \ldots, $\mathbf{d_{2N-1}}$ and $\mathbf{d_{2N}}$ . They together with the two known points  $\mathbf{d_1}$ and  $\mathbf{p}$ are used to create the generator.\\
-With the same method, we obtain all the curves of the generator at the positions $j=1,2,3,\ldots, J-2, J-1, J$. They are used to create the sweeping surface shown in Figure \ref{fig:2open1close}(b).\\
+Having known the sculpting forces at all the inner nodes 2, 3, \ldots, $N-2$, $N-1$, and the coordinate values at the boundary nodes 1 and $N$ and the nodes 0 and $N+1$ beyond the boundary nodes, we can write the finite difference equations for all the inner nodes where the finite difference equations for the nodes 4, 5,\ldots, $N-4$, $N-3$ are the same as Equation \eqref{ODEwithforce} with the sculpting force $\mathbf{f_i}$ being calculated by Equation \eqref{forceinterpolate}\\%, and the finite difference equations for the nodes 2, 3, 2N-1, and 2N are given in Appendix D.
+Solving all the finite difference equations, we obtain all the unknown constants $\mathbf{d_2}$, $\mathbf{d_3}$ , \ldots, $\mathbf{d_{N-2}}$ and $\mathbf{d_{N-1}}$ . They together with the two known points  $\mathbf{d_1}$ and  $\mathbf{p}$ are used to create the generator.\\
+With the same method, we obtain all the curves of the generator at the positions $j=1,2,3,\ldots, J-2, J-1, J$. They are used to create the sweeping surface shown in Figure \ref{fig:2open1close}.\\
 \begin{figure}[!h]
 \centering
   % Fixed length
- \subcaptionbox{front\label{mouth_contour_front}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_front.png}}}\hspace{1em}%
-  \subcaptionbox{side\label{mouth_contour_side}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_side.png}}}\hspace{1em}%
-  \subcaptionbox{perspective\label{mouth_persp}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour.png}}}  
-%\begin{subfigure}{0.32\linewidth}
-%\centering
-%\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_front.png}}\caption{front}\label{mouth_contour_front}
-%\end{subfigure}
-%\begin{subfigure}{0.33\linewidth}
-%\centering
-%\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_top.png}}\caption{top}\label{mouth_contour_top}
-%\end{subfigure}
-%\begin{subfigure}{0.32\linewidth}
-%\centering
-%\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_side.png}}\caption{side}\label{mouth_contour_side}
-%\end{subfigure}
-%\begin{subfigure}{0.32\linewidth}
-%\centering
-%\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour.png}}\caption{perspective}\label{mouth_persp}
-%\end{subfigure}
-%\begin{subfigure}{0.45\linewidth}
-%\centering
-%\fbox{\includegraphics[height=0.5in]{./figure/mouth_mesh.png}}\caption{mesh}\label{mouth_mesh}
-%\end{subfigure}
+ \subcaptionbox{front\label{fig:mouth_contour_front}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_front.png}}}\hspace{1em}%
+  \subcaptionbox{side\label{fig:mouth_contour_side}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_side.png}}}\hspace{1em}%
+  \subcaptionbox{perspective\label{fig:mouth_persp}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour.png}}}  
   \caption{mouth model creation from two open and one closed silhouette contours in three different view planes}
  \label{fig:mouth}
 \end{figure}  \\
-With the above method, we draw a closed lip contour and two open curves shown in Figure \ref{fig:mouth}\subref{fig:mouth_contour}. They divide the palm into four regions. One surface is created each of the four regions. Figure \ref{fig:mouth}\subref{fig:mouthmesh} depicts the palm model consisting of the four surfaces. \\
+With the above method, we draw a closed lip contour and two open curves shown in Figure \ref{fig:mouth}\subref{fig:mouth_contour_front} and \ref{fig:mouth}\subref{fig:mouth_contour_front}. The two open curves divide the mouth into four regions. One surface is created for each of the four regions. Figure \ref{fig:mouth}\subref{fig:mouth_persp} depicts the mouth model consisting of the four surfaces. \\
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.7\columnwidth]{./figure/4open2close.jpg}
-\label{fig:4opens2closedalgorithm}
 \caption{Finite difference nodes for Algorithm for four open and two closed silhouette contours}
+\label{fig:4opens2closesdescribe}
 \end{figure} \\
-The above method can be also extended to deal with the situations where the two open curves do not intersect. For such situations, the intersecting point of the two open curves becomes the upper closed curve as indicated in Figures \ref{fig:4opens2closedalgorithm}, and a sweeping surface is encircled by four curves. With this extension, we created a 3D vest model and an eye socket model depicted it in Figures \ref{fig:4opens2closed}\subref{fig:vest} and Figures \ref{fig:4opens2closed}\subref{fig:eye}, respectively. \\
+The above method can be also extended to deal with the situations where the two open curves do not intersect. For such situations, the intersecting point of the two open curves becomes the upper closed curve as indicated in Figure \ref{fig:4opens2closesdescribe}, and a sweeping surface is encircled by four curves. With this extension, we created a 3D vest model and an eye socket model depicted it in Figure \ref{fig:4opens2closed}\subref{fig:vest} and Figure \ref{fig:4opens2closed}\subref{fig:eye}, respectively. \\
 \begin{figure}[!h]
   % Fixed length
-\subcaptionbox{vest\label{vest}}{ \includegraphics[height=0.1\textheight]{./figure/uppertorso.png}}\hspace{3em}%
-\subcaptionbox{eye soket\label{eye}}{ \includegraphics[height=0.1\textheight]{./figure/eye.png}}
+\subcaptionbox{vest\label{fig:vest}}{ \includegraphics[height=0.1\textheight]{./figure/uppertorso.png}}\hspace{3em}%
+\subcaptionbox{eye socket\label{fig:eye}}{ \includegraphics[height=0.1\textheight]{./figure/eye.png}}
  \caption{vest and eye socket creation from four open and two closed silhouette contours}
  \label{fig:4opens2closed}
 \end{figure}  
-
-\subsubsection{Algorithm for 4-sided open curves}
-%Spline patch is a very commonly used modelling technology to create a spline surface and gained its popularity in Computer Aided Design/Manufacturing for its power to achieve shape accuracy. Usually the shape of a neighbourhood near the patches' borders is determined by the control points and can be influenced by its adjacent patches if users have set the geometric continuity of the borders. In the realm of spline patches, the problem of influencing the patch's shape near the border without change much of the rest of the patches is called mesh optimisation. A typical way of solving that problem is to formulate a geometric constraints matrix as the coefficient matrix of a homogeneous linear equation and the solution to that equation is the displacements of the control points that we are looking for\cite{zhang2016geometric}. makes the look of patch more well-defined. 
-We introduce a new physic-based ODE-driven algorithm for making patch surfaces by asking them providing a virtual border a little bit far away beyond the actual border. This virtual border can be a curve from the adjacent patch, like that in the typical mesh optimisation problems where C1 continuity is required on the joint border.Taken the virtual border's positional information into the constraint matrix formation, solve this linear equation and the solution to that equation is the position of every vertex. Our algorithm enables users to refine the border areas with or without the existence of adjacent patches. In addition, compared to the typical way of solving the border continuity optimisation\cite{zhang2016geometric}, our method is computational cheaper because though both required forming a constraint matrix as a coefficient matrix of a linear equation, instead of getting the displacements of the control points and then computing the spline surface out of the modified control points, our method get the vertex positions of the final parametric surface straight away.
+\subsubsection{Algorithm for patch surfaces}
+%Spline patch is a very commonly used modelling technology to create a spline surface and gained its popularity in Computer Aided Design/Manufacturing for its power to achieve shape accuracy. Usually the shape of a neighbourhood near the patches' borders is determined by the control points and can be influenced by its adjacent patches if users have set the geometric continuity of the borders. In the realm of spline patches, the problem of influencing the patch's shape near the border without change much of the rest of the patches is called mesh optimisation. A typical way of solving that problem is to formulate a geometric constraints matrix as the coefficient matrix of a homogeneous linear equation and the solution to that equation is the displacements of the control points that we are looking for\cite{zhang2016geometric}.  
+We introduce a new physic-based ODE-driven algorithm for making patch surfaces. When a patch is surrounded by other surfaces with shared borders, in order to maintain the C1 continuity(the left and right tangent are equal) between these surfaces, our method will extract a curve from the adjacent surfaces as a virtual border. One can see from the Figure \ref{fig:4-sidedopensalgorithm}, a virtual border $\mathbf{c_5c_6}$ is a little bit far away beyond the actual border $\mathbf{c_3c_4}$. Taken the virtual border's coordinate values into the constraint matrix formation, solve this linear equation and the solution to that equation is the position of every vertex. We will explain how to form this constraint matrix more detailed later in this subsection. This virtual border can also be provided by users if there is no adjacent surfaces around but still user want to have more control over the surface shape near the border. Unlike in the typical mesh optimisation problems where C1 continuity is required on the joint border, our algorithm enables users to refine the border areas with or without the existence of adjacent patches. In addition, compared to the typical way of solving the border continuity optimisation\cite{zhang2016geometric}, our method is computational cheaper because though both required forming a constraint matrix as a coefficient matrix of a linear equation, instead of getting the displacements of the control points and then computing the spline surface out of the modified control points, our method get the vertex positions of the final parametric surface straight away.
 \begin{figure}[!h]
 \centering
-\includegraphics[width=0.7\columnwidth]{./figure/4open2close.jpg}
-\label{fig:4-sidedopensalgorithm}
-\caption{Finite difference nodes for Algorithm for four-sided open silhouette contours with arbitrary number of curves in either direction}
+\includegraphics[width=0.7\columnwidth]{./figure/patch.jpg}
+\label{fig:4sidedopensalgorithm}
+\caption{Finite difference nodes for Algorithm for patch surfaces}
 \end{figure} \\
-As demonstrated in Figure \ref{fig:4-sidedopensalgorithm}, the sweeping surface passing through all the curves can be seen as a tweak of the closed surface in Figure \ref{4opens2closedalgorithm}. The 
-encircled by the curves $\mathbf{c_1c_6c_5}$, $\mathbf{c_2c_7c_6}$, $\mathbf{c_3c_8c_7}$, and $\mathbf{c_4c_5c_8}$ respectively.\\
-\begin{figure}[h]
-	\begin{center}
-	\includegraphics[width=0.7\columnwidth]{./figure/2open1close.jpeg}
-	\end{center}
-	\caption{Finite difference nodes for Algorithm for two open and one closed silhouette contours}
-	\label{fig:2open1close}
-\end{figure}\\
-Since the construction algorithm for the 4 sweeping surfaces is the same, we take the sweeping surface defined by the three curves $\mathbf{c_1}$, $\mathbf{c_6}$ and $\mathbf{c_5}$ to demonstrate the construction algorithm. This algorithm will require reconstruction of the curves $\mathbf{c_5}$ and $\mathbf{c_6}$ to get additional information called sculpting forces for generating the sweeping surface.\\
-In order to reconstruct the curves $\mathbf{c_5}$ and $\mathbf{c_6}$ accurately, we modify the vector-valued ordinary differential equation \eqref{ODE} by introducing a sculpting force $\mathbf{f}$ and obtain
+As demonstrated in Figure \ref{fig:4sidedopensalgorithm}, a curve network is constituted of $\mathbf{c_1c_2}$, $\mathbf{c_3c_4}$ in the u direction, and $\mathbf{c_7}$, $\mathbf{c_8}$, $\mathbf{c_9}$ on the v direction. Above $\mathbf{c_3c_4}$ there is a virtual curve $\mathbf{c_5c_6}$ which helps to define the shape near the patch border $\mathbf{c_3c_4}$. The sweeping surface is composed of surface encircled by the curves $\mathbf{c_7c_1c_8c_5}$, and $\mathbf{c_8c_2c_9c_4}$ respectively.\\
+Since the construction algorithm for the 2 sweeping surfaces is the same, we'll take the sweeping surface defined by the four curves $\mathbf{c_1}$, $\mathbf{c_8}$, $\mathbf{c_5}$ and $\mathbf{c_7}$ to demonstrate the construction algorithm. We uniformly divide the domain of the parametric variable $u$ for the curve $\mathbf{c_7(u)}$ into $N-1$ equal intervals. But since there is a virtual border $\mathbf{c_5}$ above $\mathbf{c_3}$, the end point of $\mathbf{c_5}$ extend $\mathbf{c_7}$ and contributes a nodes $N+1$ to $\mathbf{c_7}$. Same applies to $\mathbf{c_8}$. On the v direction, we uniformly divided parametric variable $v$ domain into $j-1$ equal intervals. We will calculate sculpting forces from the positional information of curves $\mathbf{c_7}$ and $\mathbf{c_8}$, the algorithm to get the sculpting force is given in Subsections \ref{algorithm_2_opens_1_close}. \\
+The vector-valued first derivatives of the curves $\mathbf{c_7(u)}$ at the node 1 can be determined from the curve $\mathbf{c_7(u)}$ and indicated by $\mathbf{\mathbf{T_{5,0}}}$, as that described in Subsection \ref{algorithm_2_opens_1_close} and \ref{algorithm_1_open_1_closed}. Since we want to make sure the two tangents of border curve $\mathbf{c_3}$ from both sides equal to each other, for every parametrc $u$, the vector-valued first derivatives at node $N$ should conform with the constraint listed below.
 \begin{equation}
-k_b\frac{\partial^4d}{\partial u^4}-k_s\frac{\partial^2 d}{\partial u^2}=f
-\label{ODEwithforce}
-\end{equation}
-Accordingly, the finite difference equation for the above ordinary differential equation becomes\\
+\frac{\mathbf{Node_{N+1}-Node_{N}}}{\wideparen{Node_{N+1}Node_{N}}}=\frac{\mathbf{Node_{N}-Node_{N-1}}}{\wideparen{Node_{N}Node_{N-1}}}
+\label{C1 tangent constraints}
+\end{equation}\\ 
+So that the vector-valued first derivatives $\mathbf{T_{5,1}}$ can be determined by the position of point $P_7$ and $P_4$ as described in Equation \eqref{T_51}.\\
 \begin{equation}
-\begin{split}
-(6k_b+2k_sh^2)d_i+k_bd_{i-2}+k_bd_{i+2} \\
--(4k_b+k_sh^2)d_{i-1}-(4k_b+k_sh^2)d_{i+1}=\triangle u^4f_i
-\end{split}
-\label{odefdmwithforce}
-\end{equation}
-The reconstruction algorithm for the curve $\mathbf{c_6}$ is exactly same as that of the curve $\mathbf{c_5}$. Here we take the reconstruction of the curve $\mathbf{c_5}$ to demonstrate the algorithm.\\
-Similar to the previous treatment, we uniformly divide the domain of the parametric variable $u$ for the curve $\mathbf{c_5(u)}$ into $2N$ equal intervals. The vector-valued first derivatives of the curves $\mathbf{c_5(u)}$ at the node 1 and $2N+1$ can be determined from the curve $\mathbf{c_5(u)}$ and indicated by $\mathbf{\mathbf{T_{5,0}}}$ and $\mathbf{T_{5,1}}$.\\
-When writing the finite difference equations for the inner nodes 2, and $2N$, the node 0 beyond the boundary node 1 and the node $2N+2$ beyond the boundary node $2N+1$ will be involved. We can use the method given in Subsection \ref{ssec:num2} to determine the nodes 0 and 2N+2 from the vector-valued first derivatives $\mathbf{\mathbf{T_{5,0}}}$ and $\mathbf{T_{5,1}}$ through\\
+\mathbf{T_{5,1}}=\frac{\mathbf{P_7-P_4}}{\wideparen{P_7P_4}} \approx \frac{\mathbf{P_7-P_4}}{|P_7P_4|}
+\label{T_51}
+\end{equation}\\
+When writing the finite difference equations for the inner nodes 2, and $N-1$, the node 0 beyond the boundary node 1 and the node $N+1$ beyond the boundary node $N$ will be involved. We can use the method given in Subsection \ref{algorithm_2_opens_1_close} to determine the vector-valued first derivatives $\mathbf{T_{5,0}}$. Hence, we can write equations for nodes 0 and $N+1$ Equation \eqref{2endsdelta_and tangent}\\
 \begin{equation}
 \begin{split}
 \mathbf{d_0}=\mathbf{d_2}-2\mathbf{T_{5,0}}\triangle u \\
-\mathbf{d_{2N+2}}=\mathbf{d_{2N}}+2\mathbf{T_{5,1}}\triangle u
+\mathbf{d_{N}}=\mathbf{d_{N-1}}+\mathbf{T_{5,1}}\triangle u
 \end{split}
-\label{2endsdelta}
+\label{2endsdelta_and tangent}
 \end{equation}\\
-For each of the inner nodes 2, 3, \ldots, $2N-1$, $2N$, we can write a finite difference equation. Since the coordinate values for all the nodes on the curve $\mathbf{c_6}$ are known, we can calculate the sculpting force $\mathbf{f_i}$$(i=2,3,\ldots,2N-1,2N)$ from these equations,. We denote these sculpting forces as $\mathbf{f_{5,i}=f_i}$$(i=2,3,\ldots,2N-1,2N)$. With the same method, we can obtain the sculpting forces $\mathbf{f_{5,i}=f_i}$$(i=2,3,\ldots,2N-1,2N)$ acting on the curve $c_6$.\\
-The curves $\mathbf{c_5}$ and $\mathbf{c_6}$ can be regarded as generators. The generation of the sweeping surface defined by the three curves $\mathbf{c_1}$, $\mathbf{c_6}$ and $\mathbf{c_5}$ is to sweep the generator from the curve $\mathbf{c_5}$ to the curve $\mathbf{c_6}$ along the curve $\mathbf{c_1}$ and the point $\mathbf{p}$. In order to determine the shape of the generator at different positions along the curve $\mathbf{c_1}$, we uniformly divide the curve $\mathbf{c_1}$ into $J$ equal intervals and obtain the nodes $j=1,2,3,\ldots,J-2,J-1,J$ where $j=1$ and $j=J$ are the intersecting points between the curves $\mathbf{c_5}$ and $\mathbf{c_1}$ and between $\mathbf{c_6}$ and $\mathbf{c_1}$. Then we determine the shape of the generator between the node $j(j=2,3,\ldots,J-2,J-1,J)$ and the point $\mathbf{p}$.\\
-With the same treatment, we divide the domain of the parametric variable $u$ for the generator between the node $j$ and the point $\mathbf{p}$ into $2N$ equal intervals (the node $j$ on the curve $\mathbf{c_1}$ is the node 0 on the generator between the node $j$ and the point $\mathbf{p}$). When sweeping the curve $\mathbf{c_5}$ along the curve $\mathbf{c_1}$ to the curve $\mathbf{c_6}$, the sculpting force  acting at the node  of the curve is gradually changed to the sculpting force $\mathbf{f_i}$ acting at the node $i$ of the curve $\mathbf{c_6}$ . Here we use a linear interpolation to describe the gradual change and obtain the sculpting force $\mathbf{fi}$ below acting at the node $i$ of the generator between the node $j$ and the point $\mathbf{p}$\\
-\begin{equation}
-\centering
-\mathbf{f_i}=\mathbf{f_{5,i}}+\frac{L_j}{L}(\mathbf{f_{6,i}}-\mathbf{f_{5,i}})
-\label{forceinterpolate}
-\end{equation}
-where $L_j$ is the length from the point $\mathbf{p_1}$ to the node j and $L$ is the length from the point $\mathbf{p_1}$ to the point $\mathbf{p_2}$.
-When sweeping the curve $\mathbf{c_5}$ along the curve $\mathbf{c_1}$ to the curve $\mathbf{c_6}$, the vector-valued first derivatives of the curve $\mathbf{c_5}$ at the points $\mathbf{p}$ and $\mathbf{p_1}$ are also gradually changed to the vector-valued first derivatives of the curve $\mathbf{c_6}$ at the points $\mathbf{p}$ and $\mathbf{p_2}$ . The same linear interpolation is used to describe such a gradual change and determine the vector-valued first derivatives $\mathbf{T_0}$ and $\mathbf{T_1}$ of the generator at the node $j$ and the point $\mathbf{p}$.\\
-\begin{equation}
-\begin{split}
-\mathbf{T_0}=\mathbf{T_{5,0}}+\frac{L_j}{L}(\mathbf{T_{6,0}}-\mathbf{T_{5,0}}) \\
-\mathbf{T_1}=\mathbf{T_{5,1}}+\frac{L_j}{L}(\mathbf{T_{6,1}}-\mathbf{T_{5,1}})
-\end{split}
-\label{tangentinterpolate}
-\end{equation}
-Having known the sculpting forces at all the inner nodes 2, 3, \ldots, $2N-1$, $2N$, and the coordinate values at the boundary nodes 1 and $2N+1$ and the nodes 0 and $2N+2$ beyond the boundary nodes, we can write the finite difference equations for all the inner nodes where the finite difference equations for the nodes 4, 5,\ldots, $2N-3$, $2N-2$ are the same as Equation \eqref{ODEwithforce} with the sculpting force $\mathbf{f_i}$ being calculated by Equation \eqref{forceinterpolate}\\%, and the finite difference equations for the nodes 2, 3, 2N-1, and 2N are given in Appendix D.
-Solving all the finite difference equations, we obtain all the unknown constants $\mathbf{d_2}$, $\mathbf{d_3}$ , \ldots, $\mathbf{d_{2N-1}}$ and $\mathbf{d_{2N}}$ . They together with the two known points  $\mathbf{d_1}$ and  $\mathbf{p}$ are used to create the generator.\\
-With the same method, we obtain all the curves of the generator at the positions $j=1,2,3,\ldots, J-2, J-1, J$. They are used to create the sweeping surface shown in Figure \ref{fig:2open1close}(b).\\
+Also, we need to calculate the sculpting forces for all the nodes on the curve $\mathbf{c_7}$ and  $\mathbf{c_8}$, denoting as $\mathbf{f_{7,i}=f_i}$$(i=2,3,\ldots,N-2,N-1)$ and $\mathbf{f_{8,i}=f_i}$$(i=2,3,\ldots,N-2,N-1)$. Then we can calculate the sculpting force for each inner nodes 2, 3, \ldots, $N-2$, $N-1$, denoting as $\mathbf{f_i}$$(i=2,3,\ldots,N-2,N-1)$ from these equations by linear interpolating  $\mathbf{f_{7,i}}$ and  $\mathbf{f_{8,i}}$ with the same treatment as described in section \ref{algorithm_2_opens_1_close}. Now, for each of the inner nodes 2, 3, \ldots, $N-2$, $N-1$, we can write a finite difference equation just as that in Subsection \ref{algorithm_2_opens_1_close}. \\
+An example of the above method is given in Figure \ref{fig:arm_armor}, where the curves in red are virtual curves and the curves in blue are the actual curves forming a patch surface.
 \begin{figure}[!h]
 \centering
   % Fixed length
- \subcaptionbox{front\label{mouth_contour_front}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_front.png}}}\hspace{1em}%
-  \subcaptionbox{side\label{mouth_contour_side}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour_side.png}}}\hspace{1em}%
-  \subcaptionbox{perspective\label{mouth_persp}}{\fbox{\includegraphics[height=0.5in]{./figure/mouth_contour.png}}}  
-  \caption{mouth model creation from two open and one closed silhouette contours in three different view planes}
- \label{fig:mouth}
-\end{figure}  \\
-With the above method, we draw a closed lip contour and two open curves shown in Figure \ref{fig:mouth}\subref{fig:mouth_contour}. They divide the palm into four regions. One surface is created each of the four regions. Figure \ref{fig:mouth}\subref{fig:mouthmesh} depicts the palm model consisting of the four surfaces. \\
-
-The above method can be also extended to deal with the situations where the two open curves do not intersect. For such situations, the intersecting point of the two open curves becomes the upper closed curve as indicated in Figures \ref{fig:4opens2closedalgorithm}, and a sweeping surface is encircled by four curves. With this extension, we created a 3D vest model and an eye socket model depicted it in Figures \ref{fig:4opens2closed}\subref{fig:vest} and Figures \ref{fig:4opens2closed}\subref{fig:eye}, respectively. \\
-\begin{figure}[!h]
-  % Fixed length
-\subcaptionbox{vest\label{vest}}{ \includegraphics[height=0.1\textheight]{./figure/uppertorso.png}}\hspace{3em}%
-\subcaptionbox{eye socket\label{eye}}{ \includegraphics[height=0.1\textheight]{./figure/eye.png}}
- \caption{vest and eye socket creation from four open and two closed silhouette contours}
- \label{fig:4opens2closed}
-\end{figure}  
+\subcaptionbox{contours\label{fig:arm_armor_contour}}{ \includegraphics[height=0.2\textheight]{./figure/arm_armor_curve.png}}\hspace{4em}%
+\subcaptionbox{mesh\label{fig:arm_armor_mesh}}{ \includegraphics[height=0.2\textheight]{./figure/arm_armor.png}}
+\caption{}
+\label{fig:arm_armor}
+\end{figure} \\
+%The curves $\mathbf{c_5}$ and $\mathbf{c_6}$ can be regarded as generators. The generation of the sweeping surface defined by the three curves $\mathbf{c_1}$, $\mathbf{c_6}$ and $\mathbf{c_5}$ is to sweep the generator from the curve $\mathbf{c_5}$ to the curve $\mathbf{c_6}$ along the curve $\mathbf{c_1}$ and the point $\mathbf{p}$. In order to determine the shape of the generator at different positions along the curve $\mathbf{c_1}$, we uniformly divide the curve $\mathbf{c_1}$ into $J$ equal intervals and obtain the nodes $j=1,2,3,\ldots,J-2,J-1,J$ where $j=1$ and $j=J$ are the intersecting points between the curves $\mathbf{c_5}$ and $\mathbf{c_1}$ and between $\mathbf{c_6}$ and $\mathbf{c_1}$. Then we determine the shape of the generator between the node $j(j=2,3,\ldots,J-2,J-1,J)$ and the point $\mathbf{p}$.\\
+%With the same treatment, we divide the domain of the parametric variable $u$ for the generator between the node $j$ and the point $\mathbf{p}$ into $2N$ equal intervals (the node $j$ on the curve $\mathbf{c_1}$ is the node 0 on the generator between the node $j$ and the point $\mathbf{p}$). When sweeping the curve $\mathbf{c_5}$ along the curve $\mathbf{c_1}$ to the curve $\mathbf{c_6}$, the sculpting force  acting at the node  of the curve is gradually changed to the sculpting force $\mathbf{f_i}$ acting at the node $i$ of the curve $\mathbf{c_6}$ . Here we use a linear interpolation to describe the gradual change and obtain the sculpting force $\mathbf{fi}$ below acting at the node $i$ of the generator between the node $j$ and the point $\mathbf{p}$\\
+%where $L_j$ is the length from the point $\mathbf{p_1}$ to the node j and $L$ is the length from the point $\mathbf{p_1}$ to the point $\mathbf{p_2}$.
+%When sweeping the curve $\mathbf{c_5}$ along the curve $\mathbf{c_1}$ to the curve $\mathbf{c_6}$, the vector-valued first derivatives of the curve $\mathbf{c_5}$ at the points $\mathbf{p}$ and $\mathbf{p_1}$ are also gradually changed to the vector-valued first derivatives of the curve $\mathbf{c_6}$ at the points $\mathbf{p}$ and $\mathbf{p_2}$ . The same linear interpolation is used to describe such a gradual change and determine the vector-valued first derivatives $\mathbf{T_0}$ and $\mathbf{T_1}$ of the generator at the node $j$ and the point $\mathbf{p}$.\\
+%Having known the sculpting forces at all the inner nodes 2, 3, \ldots, $2N-1$, $2N$, and the coordinate values at the boundary nodes 1 and $2N+1$ and the nodes 0 and $2N+2$ beyond the boundary nodes, we can write the finite difference equations for all the inner nodes where the finite difference equations for the nodes 4, 5,\ldots, $2N-3$, $2N-2$ are the same as Equation \eqref{ODEwithforce} with the sculpting force $\mathbf{f_i}$ being calculated by Equation \eqref{forceinterpolate}\\%, and the finite difference equations for the nodes 2, 3, 2N-1, and 2N are given in Appendix D.
 
 \subsubsection{Algorithm for two closed curves}
 This algorithm is to create smooth transition surfaces between two disconnected primitives. Users can interactively draw two closed curves on two disconnect primitives or use two planes to intersect the two primitives to obtain two boundary curves of the transition surface. In order to obtain smooth transition between the two primitives and the transition surface, the tangents at the two boundary curves are obtained from the two primitives. With the two boundary curves and the tangents at the two boundary curves as the boundary conditions, the ODE-based surface blending method introduced in \cite{you2014blending} is used to create the smooth transition surface which smoothly connects two primitives together. Figure \ref{fig:blend} gives such an example.\\
 \begin{figure}[!h]
 \centering
- \subcaptionbox{detached primitives\label{detach}}{\includegraphics[width=0.4\linewidth]{./figure/detach.png}}
-  \subcaptionbox{add transition surface\label{attached}}{\includegraphics[width=0.4\linewidth]{./figure/attached.png}}
+ \subcaptionbox{detached primitives\label{fig:detach}}{\includegraphics[width=0.4\linewidth]{./figure/detach.png}}
+  \subcaptionbox{add transition surface\label{fig:attached}}{\includegraphics[width=0.4\linewidth]{./figure/attached.png}}
  \caption{Creation of smooth transition surface between primitives}
  \label{fig:blend}
 \end{figure}  
@@ -580,37 +544,42 @@ By adding local shapes and smooth transition surface, the base mesh shown in Fig
 %------------------------------------------------------------------------
 \section{Conclusions and Future work}\label{conclusions_and_future_work}
 Compared to traditional polygon modelling technology, our method has these advantages:
- \begin{itemize}
-  \item quicker
-  \item easier for beginner
-  \item more precise in term of detail creation 
-\end{itemize}
- 
-I did the experiment of deforming a toy rubber tyre. The original and deformed shapes are attached on this email. The original inner circle has a diameter of 3 cm. After the deformation, the two opposite points are moved 0.3 cm each to make the length of the major axis of the ellipse 3.6 cm.  After you complete the three tasks, you can use the ODE algorithm to calculate the deformed shape and check whether the calculated deformed shape is close to the attached deformed inner ellipse.
- 
-The height of the toy rubber tyre which I used is too big. If the ODE deformation can give a good approximation, it can be improved by looking for a rubber ring with a small height to do the experiment. At the present time, could you please focus on the three tasks which I talked to you today morning.
+\begin{itemize}
+\item quicker in modelling complicated part of character models
+\item easier for beginner
+\item more precise in term of detail creation more precise in term of detail creation, for example the face. Figure \ref{fig:face}\subref{fig:face_sketch} is the reference sketch, the Figure \ref{fig:face}\subref{fig:face_traditional} shows the work from an amateur modeller did the traditional face modelling in Autodesk Maya 2018, and the Figure \ref{fig:face}\subref{fig:face_skm} shows the work from the same person, but did the modelling with our system.
+\end{itemize} 
+\begin{figure}[!h]
+\centering
+\begin{subfigure}{0.32\linewidth}
+\includegraphics[height=1.1in]{./figure/facesketch.jpg}\caption{}\label{fig:face_sketch}
+\end{subfigure}
+\begin{subfigure}{0.32\linewidth}
+\includegraphics[height=1.1in]{./figure/face_traditional.png}\caption{}\label{fig:face_traditional}
+\end{subfigure}
+\begin{subfigure}{0.32\linewidth}
+\includegraphics[height=1.1in]{./figure/face_skm.png}\caption{}\label{fig:face_skm}
+\end{subfigure}
+\caption{a. sketch of a face as a reference image; b. modelling in traditional polygon 3D software package; c. modelling in our sketch-based-modelling system}
+\label{fig:face}
+\end{figure}
+
+%I did the experiment of deforming a toy rubber tyre. The original and deformed shapes are attached on this email. The original inner circle has a diameter of 3 cm. After the deformation, the two opposite points are moved 0.3 cm each to make the length of the major axis of the ellipse 3.6 cm.  After you complete the three tasks, you can use the ODE algorithm to calculate the deformed shape and check whether the calculated deformed shape is close to the attached deformed inner ellipse.
+%The height of the toy rubber tyre which I used is too big. If the ODE deformation can give a good approximation, it can be improved by looking for a rubber ring with a small height to do the experiment. At the present time, could you please focus on the three tasks which I talked to you today morning.
 %For now in the modelling stage of our system, all our control curves are creating smooth surfaces with C2 continuity, and the result template mesh looks pleasing as it is. In our future work, we will investigate the potentials of creases in more detailed character sculpting.
 %-------------------------------------------------------------------------
 \section*{Acknowledgement}
 %This research is supported the PDE-GIR project which has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie grant agreement No 778035.\\
 This work is supported by the funding to be detailed after the anonymous review.
 %\subsection{References}
-
 %List and number all bibliographical references in 9-point Times, single-spaced, at the end of your paper. When referenced in the text, enclose the citation number in square brackets, for example~\cite{Authors12}.  Where appropriate, include the name(s) of editors of referenced books.
-
-
 %-------------------------------------------------------------------------
 %\subsection{Illustrations, graphs, and photographs}
-
 %All graphics should be centered.  Please ensure that any point you wish to make is resolvable in a printed copy of the paper.  Resize fonts in figures to match the font in the body text, and choose line widths which render effectively in print.  Many readers (and reviewers), even of an electronic copy, will choose to print your paper in order to read it.  You cannot insist that they do otherwise, and therefore must not assume that they can zoom in to see tiny details on a graphic.
-
 %When placing figures in \LaTeX, it's almost always best to use \verb+\includegraphics+, and to specify the  figure width as a multiple of the line width as in the example below
 %-------------------------------------------------------------------------
-
 {\small
 \bibliographystyle{cvm}
 \bibliography{cvmbib}
 }
-
-
 \end{document}

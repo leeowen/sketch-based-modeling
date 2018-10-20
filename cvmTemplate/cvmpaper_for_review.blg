@@ -6,45 +6,46 @@ Database file #1: cvmbib.bib
 Warning--can't use both volume and number fields in gingold2009structured
 Warning--can't use both volume and number fields in shtof2013geosemantic
 Warning--can't use both volume and number fields in terzopoulos1987elastically
-You've used 18 entries,
+Warning--can't use both volume and number fields in you2007boundary
+You've used 22 entries,
             2120 wiz_defined-function locations,
-            625 strings with 7203 characters,
-and the built_in function-call counts, 7914 in all, are:
-= -- 792
-> -- 402
-< -- 13
-+ -- 158
-- -- 138
-* -- 588
-:= -- 1247
-add.period$ -- 63
-call.type$ -- 18
-change.case$ -- 122
+            645 strings with 7904 characters,
+and the built_in function-call counts, 9603 in all, are:
+= -- 963
+> -- 489
+< -- 16
++ -- 192
+- -- 168
+* -- 711
+:= -- 1514
+add.period$ -- 77
+call.type$ -- 22
+change.case$ -- 149
 chr.to.int$ -- 0
-cite$ -- 21
-duplicate$ -- 304
-empty$ -- 586
-format.name$ -- 138
-if$ -- 1703
+cite$ -- 26
+duplicate$ -- 369
+empty$ -- 708
+format.name$ -- 168
+if$ -- 2066
 int.to.chr$ -- 0
-int.to.str$ -- 18
-missing$ -- 18
-newline$ -- 93
-num.names$ -- 38
-pop$ -- 131
+int.to.str$ -- 22
+missing$ -- 22
+newline$ -- 113
+num.names$ -- 46
+pop$ -- 160
 preamble$ -- 1
-purify$ -- 104
+purify$ -- 127
 quote$ -- 0
-skip$ -- 224
+skip$ -- 272
 stack$ -- 0
-substring$ -- 491
-swap$ -- 109
-text.length$ -- 13
+substring$ -- 589
+swap$ -- 133
+text.length$ -- 16
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 72
-warning$ -- 3
-while$ -- 74
-width$ -- 20
-write$ -- 212
-(There were 3 warnings)
+type$ -- 88
+warning$ -- 4
+while$ -- 90
+width$ -- 24
+write$ -- 258
+(There were 4 warnings)
