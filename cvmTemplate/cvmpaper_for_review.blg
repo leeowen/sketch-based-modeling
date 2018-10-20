@@ -7,45 +7,45 @@ Warning--can't use both volume and number fields in gingold2009structured
 Warning--can't use both volume and number fields in shtof2013geosemantic
 Warning--can't use both volume and number fields in terzopoulos1987elastically
 Warning--can't use both volume and number fields in you2007boundary
-You've used 22 entries,
+You've used 19 entries,
             2120 wiz_defined-function locations,
-            645 strings with 7904 characters,
-and the built_in function-call counts, 9603 in all, are:
-= -- 963
-> -- 489
-< -- 16
-+ -- 192
-- -- 168
-* -- 711
-:= -- 1514
-add.period$ -- 77
-call.type$ -- 22
-change.case$ -- 149
+            626 strings with 7340 characters,
+and the built_in function-call counts, 8168 in all, are:
+= -- 815
+> -- 437
+< -- 11
++ -- 171
+- -- 152
+* -- 645
+:= -- 1317
+add.period$ -- 64
+call.type$ -- 19
+change.case$ -- 133
 chr.to.int$ -- 0
-cite$ -- 26
-duplicate$ -- 369
-empty$ -- 708
-format.name$ -- 168
-if$ -- 2066
+cite$ -- 23
+duplicate$ -- 289
+empty$ -- 579
+format.name$ -- 152
+if$ -- 1714
 int.to.chr$ -- 0
-int.to.str$ -- 22
-missing$ -- 22
-newline$ -- 113
-num.names$ -- 46
-pop$ -- 160
+int.to.str$ -- 19
+missing$ -- 19
+newline$ -- 98
+num.names$ -- 38
+pop$ -- 125
 preamble$ -- 1
-purify$ -- 127
+purify$ -- 114
 quote$ -- 0
-skip$ -- 272
+skip$ -- 209
 stack$ -- 0
-substring$ -- 589
-swap$ -- 133
-text.length$ -- 16
+substring$ -- 522
+swap$ -- 92
+text.length$ -- 11
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 88
+type$ -- 76
 warning$ -- 4
-while$ -- 90
-width$ -- 24
-write$ -- 258
+while$ -- 77
+width$ -- 21
+write$ -- 221
 (There were 4 warnings)

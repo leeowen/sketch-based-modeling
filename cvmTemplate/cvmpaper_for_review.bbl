@@ -28,11 +28,6 @@ M.~P. Do~Carmo, G.~Fischer, U.~Pinkall, and H.~Reckziegel.
 \newblock Differential geometry.
 \newblock In {\em Mathematical Models}, pages 155--180. Springer, 2017.
 
-\bibitem{draper2003gestural}
-G.~Draper and P.~K. Egbert.
-\newblock A gestural interface to free-form deformation.
-\newblock In {\em graphics interface}, volume 2003, pages 113--120, 2003.
-
 \bibitem{gingold2009structured}
 Y.~Gingold, T.~Igarashi, and D.~Zorin.
 \newblock Structured annotations for 2d-to-3d modeling.
@@ -51,11 +46,11 @@ O.~A. Karpenko and J.~F. Hughes.
 \newblock Smoothsketch: 3d free-form shapes from complex sketches.
 \newblock {\em ACM Trans. Graph.}, 25(3):589--598, July 2006.
 
-\bibitem{kho2005sketching}
-Y.~Kho and M.~Garland.
-\newblock Sketching mesh deformations.
-\newblock In {\em Proceedings of the 2005 symposium on Interactive 3D graphics
-  and games}, pages 147--154. ACM, 2005.
+\bibitem{kazmi2015efficient}
+I.~K. Kazmi, L.~You, X.~Yang, X.~Jin, and J.~J. Zhang.
+\newblock Efficient sketch-based creation of detailed character models through
+  data-driven mesh deformations.
+\newblock {\em Computer Animation and Virtual Worlds}, 26(3-4):469--481, 2015.
 
 \bibitem{kraevoy2009modeling}
 V.~Kraevoy, A.~Sheffer, and M.~van~de Panne.
@@ -63,21 +58,10 @@ V.~Kraevoy, A.~Sheffer, and M.~van~de Panne.
 \newblock In {\em Proceedings of the 6th Eurographics Symposium on Sketch-Based
   interfaces and Modeling}, pages 37--44. ACM, 2009.
 
-\bibitem{lipman2004differential}
-Y.~Lipman, O.~Sorkine, D.~Cohen-Or, D.~Levin, C.~Rossi, and H.-P. Seidel.
-\newblock Differential coordinates for interactive mesh editing.
-\newblock In {\em Shape Modeling Applications, 2004. Proceedings}, pages
-  181--190. IEEE, 2004.
-
 \bibitem{nealen2007fibermesh}
 A.~Nealen, T.~Igarashi, O.~Sorkine, and M.~Alexa.
 \newblock Fibermesh: designing freeform surfaces with 3d curves.
 \newblock {\em ACM transactions on graphics (TOG)}, 26(3):41, 2007.
-
-\bibitem{nealen2007sketch}
-A.~Nealen, O.~Sorkine, M.~Alexa, and D.~Cohen-Or.
-\newblock A sketch-based interface for detail-preserving mesh editing.
-\newblock In {\em ACM SIGGRAPH 2007 courses}, page~42. ACM, 2007.
 
 \bibitem{olsen2009sketch}
 L.~Olsen, F.~F. Samavati, M.~C. Sousa, and J.~A. Jorge.
@@ -114,16 +98,15 @@ L.~You, X.~Yang, M.~Pachulski, and J.~J. Zhang.
 \newblock In {\em Computer Graphics Forum}, volume~26, pages 313--322. Wiley
   Online Library, 2007.
 
+\bibitem{you2010shape}
+L.~You, X.~Yang, X.~Y. You, X.~Jin, and J.~J. Zhang.
+\newblock Shape manipulation using physically based wire deformations.
+\newblock {\em Computer Animation and Virtual Worlds}, 21(3-4):297--309, 2010.
+
 \bibitem{zhang2016geometric}
 X.~Zhang, Y.~Wang, M.~Gugala, and J.-D. M{\"u}ller.
 \newblock Geometric continuity constraints for adjacent nurbs patches in shape
   optimisation.
 \newblock {\em ECCOMAS-2016}, 2016.
-
-\bibitem{SBM:SBM07:023-030}
-J.~Zimmermann, A.~Nealen, and M.~Alexa.
-\newblock {SilSketch: Automated Sketch-Based Editing of Surface Meshes}.
-\newblock In M.~van~de Panne and E.~Saund, editors, {\em EUROGRAPHICS Workshop
-  on Sketch-Based Interfaces and Modeling}. The Eurographics Association, 2007.
 
 \end{thebibliography}
