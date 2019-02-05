@@ -1,0 +1,9 @@
+xform -query -worldSpace -translation
+
+
+The command used to output the point coordinate. Select the point and operation 
+xform -query -worldSpace -translation
+
+in Script Editor
+
+Then we can get the coordinate values of the points.

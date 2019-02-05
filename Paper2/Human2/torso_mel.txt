@@ -1,0 +1,88 @@
+file -f  -typ "mayaBinary" -o "D:/Human1/You_Skin.mb";addRecentFile("D:/Human1/You_Skin.mb", "mayaBinary");
+polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -tx 1 -ch 1;
+setAttr "pCube1.scaleY" 46;
+setAttr "pCube1.scaleX" 46;
+setAttr "pCube1.scaleZ" 46;
+setAttr "pCube1.translateY" 128;
+select -r skin:skin_patch pCube1 ;
+polyBoolOp -op 3 -ch 1 skin:skin_patch pCube1;
+select -r polySurface1.f[0] ;
+hilite polySurface1.f[0] ;
+select -r polySurface1.f[0] ;
+polyChipOff -ch 1 -kft 0 -dup 0 -pvx 0.00158405304 -pvy 151 -pvz 3.084245205 -tx 0 -ty 0 -tz 0 -rx 0 -ry 0 -rz 0 -sx 1 -sy 1 -sz 1 -ran 0 -off 0 -ltz 0 -ws 0 -ltx 0 -lty 0 -lrx 0 -lry 0 -lrz 0 -lsx 1 -lsy 1 -lsz 1 -ldx 1 -ldy 0 -ldz 0 -w 0 -gx 0 -gy -1 -gz 0 -att 0 -mx 0 -my 0 -mz 0 polySurface1.f[0];
+polyPerformAction polySeparate o 0;
+polySeparate -ch 1 polySurfaceShape1;
+hilite -r polySurface2 ;
+hilite -r polySurface3 ;
+select -r polySurface3.vtx[0:173] ;
+
+for ($item in `ls -sl`)
+{
+print ($item + "\n");
+float $cv_crds[] = `xform -query -worldSpace -translation $item`;
+for ($count = 0; $count < size($cv_crds); $count=$count+3){
+print ("  " + $cv_crds[$count] + "  " + $cv_crds[$count+1] + "  " + $cv_crds[$count+2] + "\n");
+}
+};
+
+
+selectMode 1 ;
+
+128,123,116,106,96,86,76,72
+
+
+
+
+
+file -f  -typ "mayaBinary" -o "D:/Human1/You1.mb";addRecentFile("D:/Human1/You1.mb", "mayaBinary");
+polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -tx 1 -ch 1;
+setAttr "pCube2.scaleY" 46;
+setAttr "pCube2.scaleX" 46;
+setAttr "pCube2.scaleZ" 46;
+setAttr "pCube2.translateY" 30;
+select -r polySurface1 pCube2 ;
+polyBoolOp -op 3 -ch 1 polySurface1 pCube2;
+select -r polySurface2.f[0] ;
+hilite polySurface2.f[0] ;
+ rface2.f[0] ;
+polyChipOff -ch 1 -kft 0 -dup 0 -pvx 0.00158405304 -pvy 141.9743958 -pvz 4.842088699 -tx 0 -ty 0 -tz 0 -rx 0 -ry 0 -rz 0 -sx 1 -sy 1 -sz 1 -ran 0 -off 0 -ltz 0 -ws 0 -ltx 0 -lty 0 -lrx 0 -lry 0 -lrz 0 -lsx 1 -lsy 1 -lsz 1 -ldx 1 -ldy 0 -ldz 0 -w 0 -gx 0 -gy -1 -gz 0 -att 0 -mx 0 -my 0 -mz 0 polySurface2.f[0];
+polyPerformAction polySeparate o 0;
+polySeparate -ch 1 polySurfaceShape2;
+hilite -r polySurface4 ;
+hilite -r polySurface3 ;
+select -r polySurface3.vtx[0:168] ;
+
+for ($item in `ls -sl`)
+{
+print ($item + "\n");
+float $cv_crds[] = `xform -query -worldSpace -translation $item`;
+for ($count = 0; $count < size($cv_crds); $count=$count+3){
+print ("  " + $cv_crds[$count] + "  " + $cv_crds[$count+1] + "  " + $cv_crds[$count+2] + "\n");
+}
+};
+
+
+
+
+
+polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -tx 1 -ch 1;
+setAttr "pCube2.scaleY" 46;
+setAttr "pCube2.scaleX" 46;
+setAttr "pCube2.scaleZ" 46;
+setAttr "pCube2.translateY" 30;
+select -r polySurface1 pCube2 ;
+select -r polySurface1 ;
+polyBoolOp -op 3 -ch 1 polySurface1 pCube2;
+select -r polySurface2.f[0] ;
+hilite polySurface2.f[0] ;
+selectMode 1 ;
+select -r polySurface2.f[0] ;
+polyChipOff -ch 1 -kft 0 -dup 0 -pvx 0.00158405304 -pvy 141.9743958 -pvz 4.842088699 -tx 0 -ty 0 -tz 0 -rx 0 -ry 0 -rz 0 -sx 1 -sy 1 -sz 1 -ran 0 -off 0 -ltz 0 -ws 0 -ltx 0 -lty 0 -lrx 0 -lry 0 -lrz 0 -lsx 1 -lsy 1 -lsz 1 -ldx 1 -ldy 0 -ldz 0 -w 0 -gx 0 -gy -1 -gz 0 -att 0 -mx 0 -my 0 -mz 0 polySurface2.f[0];
+polyPerformAction polySeparate o 0;
+polySeparate -ch 1 polySurfaceShape2;
+hilite -r polySurface4 ;
+hilite -r polySurface3 ;
+select -r polySurface3.vtx[0:168] ;
+
+
+

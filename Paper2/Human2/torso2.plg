@@ -1,0 +1,54 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: torso2 - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\LYOUST~1.005\LOCALS~1\Temp\RSPCDEE.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/torso2.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\lyou\D_Drive\doc\pde\Human2\torso2.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\LYOUST~1.005\LOCALS~1\Temp\RSPCDEE.tmp" 
+Creating temporary file "C:\DOCUME~1\LYOUST~1.005\LOCALS~1\Temp\RSPCDEF.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/torso2.pdb" /debug /machine:I386 /out:"Debug/torso2.exe" /pdbtype:sept 
+.\Debug\torso2.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\LYOUST~1.005\LOCALS~1\Temp\RSPCDEF.tmp"
+<h3>Output Window</h3>
+Compiling...
+torso2.cpp
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'zm1' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(347) : see declaration of 'zm1'
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'ym1' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(346) : see declaration of 'ym1'
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'xm1' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(345) : see declaration of 'xm1'
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'zm0' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(344) : see declaration of 'zm0'
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'ym0' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(343) : see declaration of 'ym0'
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'xm0' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(342) : see declaration of 'xm0'
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'bip' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(341) : see declaration of 'bip'
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'aip' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(340) : see declaration of 'aip'
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'zcentrep' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(339) : see declaration of 'zcentrep'
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'ycentrep' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(338) : see declaration of 'ycentrep'
+c:\lyou\d_drive\doc\pde\human2\torso2.cpp(454) : error C2362: initialization of 'xcentrep' is skipped by 'goto L11'
+        c:\lyou\d_drive\doc\pde\human2\torso2.cpp(337) : see declaration of 'xcentrep'
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+torso2.exe - 11 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

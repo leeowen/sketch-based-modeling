@@ -1,0 +1,155 @@
+﻿Build started 09/12/2017 17:26:53.
+     1>Project "D:\Research\pde\InProgress\Human2\Term_determination\fdm_goodx.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating ".\Debug\fdm_goodx.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _VC80_UPGRADE=0x0600 /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /Gy- /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug\\" /Fd".\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt fdm_goodx.cpp
+         fdm_goodx.cpp
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(117): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(118): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(119): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(120): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(121): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(122): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(126): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(130): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(72): warning C4101: 'tz1' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(72): warning C4101: 'nxyz' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'nx3' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'u03' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'u01' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'di6' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'csx' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'x00' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(67): warning C4101: 'nxi' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(66): warning C4101: 'anz' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(66): warning C4101: 'aa' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'nx1' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'u14' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'dy' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'csz' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'csy' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'h11' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'h01' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'y00' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'y0' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(67): warning C4101: 'nyi' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(67): warning C4101: 'aac' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(65): warning C4101: 'y2' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(65): warning C4101: 'x2' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'ny4' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'u15' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'ccx' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'h0' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'cx' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'ay' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(66): warning C4101: 'anx' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(72): warning C4101: 'nz4' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'di4' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'ccy' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'cy0' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'w1' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'h1' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'h02' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'bz' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'dz' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(65): warning C4101: 'z3' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(73): warning C4101: 'anglem' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'az' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'ax' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(67): warning C4101: 'vv0' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(65): warning C4101: 'y3' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(72): warning C4101: 'nz3' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'ny3' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'nx2' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'u12' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'ai4' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'ai1' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'fmin' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(64): warning C4101: 'iuu' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'nz1' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'un' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'u04' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'ai0' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'h12' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'bx' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(67): warning C4101: 'nzi' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(66): warning C4101: 'bb' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(65): warning C4101: 'z2' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(64): warning C4101: 'iu' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'u13' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'ai5' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'dy0' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'ny1' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(65): warning C4101: 'y4' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(136): warning C4101: 'k' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(72): warning C4101: 'ty1' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(72): warning C4101: 'tx1' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(72): warning C4101: 'txi' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'cx0' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(66): warning C4101: 'any' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(65): warning C4101: 'x4' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(64): warning C4101: 'iv' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(72): warning C4101: 'tzi' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'ny2' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'ai3' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'cy' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'bss' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'all' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(67): warning C4101: 'vv1' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(64): warning C4101: 'l' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(72): warning C4101: 'tyi' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'ai2' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'cz' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(67): warning C4101: 'bbc' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'u11' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'u02' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'di2' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(70): warning C4101: 'ccz' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'cz0' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(69): warning C4101: 'w2' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'by' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'x0' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(66): warning C4101: 'xi' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(65): warning C4101: 'z4' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'nz2' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'nx4' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(71): warning C4101: 'u05' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'dx' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'dx0' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'bs' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(68): warning C4101: 'al' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(66): warning C4101: 'ff' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(65): warning C4101: 'x3' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(64): warning C4101: 'jj' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(64): warning C4101: 'm' : unreferenced local variable
+     1>d:\research\pde\inprogress\human2\term_determination\fdm_goodx.cpp(1723): warning C4101: 's3v' : unreferenced local variable
+       ManifestResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo".\Debug\fdm_goodx.exe.embed.manifest.res" .\Debug\fdm_goodx_manifest.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug\fdm_goodx.exe" /INCREMENTAL /NOLOGO odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:".\Debug\fdm_goodx.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\Research\pde\InProgress\Human2\Term_determination\Debug\fdm_goodx.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\Debug\fdm_goodx.lib" /MACHINE:X86 .\Debug\fdm_goodx.exe.embed.manifest.res
+         .\Debug\fdm_goodx.obj
+     1>LINK : warning LNK4076: invalid incremental status file '.\Debug\fdm_goodx.ilk' (which will be deleted); linking nonincrementally
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:".\Debug\fdm_goodx.exe.embed.manifest" /manifest .\Debug\fdm_goodx.exe.intermediate.manifest
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo".\Debug\fdm_goodx.exe.embed.manifest.res" .\Debug\fdm_goodx_manifest.rc 
+       LinkEmbedManifest:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug\fdm_goodx.exe" /INCREMENTAL /NOLOGO odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:".\Debug\fdm_goodx.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\Research\pde\InProgress\Human2\Term_determination\Debug\fdm_goodx.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\Debug\fdm_goodx.lib" /MACHINE:X86 .\Debug\fdm_goodx.exe.embed.manifest.res
+         .\Debug\fdm_goodx.obj
+         fdm_goodx.vcxproj -> D:\Research\pde\InProgress\Human2\Term_determination\.\Debug\fdm_goodx.exe
+       FinalizeBuildStatus:
+         Deleting file ".\Debug\fdm_goodx.unsuccessfulbuild".
+         Touching ".\Debug\fdm_goodx.lastbuildstate".
+     1>Done Building Project "D:\Research\pde\InProgress\Human2\Term_determination\fdm_goodx.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.81

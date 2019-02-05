@@ -1,0 +1,9 @@
+string $curveName = `
+curve -d 3
+-p   1.925227e+000 1.540000e+001 7.147418e-001
+-p   1.817989e+000 1.540000e+001 8.238811e-001
+....
+-p   2.063154e+000 1.540000e+001 -1.041681e+000
+`;
+fitBspline -ch 1 -tol 0.01 $curveName;
+delete $curveName;

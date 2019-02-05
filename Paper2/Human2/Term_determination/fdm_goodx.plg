@@ -1,0 +1,143 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: fdm_goodx - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\LYOUST~1.005\LOCALS~1\Temp\RSPCDE7.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/fdm_goodx.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\LYOUST~1.005\LOCALS~1\Temp\RSPCDE7.tmp" 
+Creating temporary file "C:\DOCUME~1\LYOUST~1.005\LOCALS~1\Temp\RSPCDE8.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/fdm_goodx.pdb" /debug /machine:I386 /out:"Debug/fdm_goodx.exe" /pdbtype:sept 
+.\Debug\fdm_goodx.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\LYOUST~1.005\LOCALS~1\Temp\RSPCDE8.tmp"
+<h3>Output Window</h3>
+Compiling...
+fdm_goodx.cpp
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'ny1' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'u04' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'ai5' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'cz0' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'dz' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(66) : warning C4101: 'xi' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(66) : warning C4101: 'bb' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(64) : warning C4101: 'iv' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(72) : warning C4101: 'tx1' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(72) : warning C4101: 'nxyz' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'ny2' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'u11' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'u05' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'di6' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'bs' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(65) : warning C4101: 'z2' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(72) : warning C4101: 'tzi' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'ny3' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'u12' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'ax' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(67) : warning C4101: 'bbc' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(65) : warning C4101: 'z3' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(64) : warning C4101: 'iuu' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'ny4' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'u13' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'ay' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'all' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(65) : warning C4101: 'z4' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'nz1' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'u14' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'w1' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'az' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(67) : warning C4101: 'nxi' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(66) : warning C4101: 'ff' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'nz2' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'u15' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'w2' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(72) : warning C4101: 'ty1' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(72) : warning C4101: 'nz3' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'h01' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'h0' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'bx' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'al' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(72) : warning C4101: 'nz4' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'h1' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'h02' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'by' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'bss' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'x0' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(66) : warning C4101: 'anx' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'cx0' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'bz' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'dx0' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(67) : warning C4101: 'nyi' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(66) : warning C4101: 'any' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(64) : warning C4101: 'jj' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(72) : warning C4101: 'txi' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'un' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(67) : warning C4101: 'vv0' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(66) : warning C4101: 'anz' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(65) : warning C4101: 'x2' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(72) : warning C4101: 'tz1' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'h11' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'cx' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(67) : warning C4101: 'vv1' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(65) : warning C4101: 'x3' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(136) : warning C4101: 'k' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'ccx' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'ai0' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'h12' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'cy' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'y0' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(66) : warning C4101: 'aa' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(65) : warning C4101: 'x4' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'nx1' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'ccy' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'csx' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'ai1' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'cy0' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'cz' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'dy0' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(67) : warning C4101: 'nzi' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(64) : warning C4101: 'l' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'nx2' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'u01' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'di2' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'ccz' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'csy' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'ai2' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'fmin' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'y00' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'x00' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(67) : warning C4101: 'aac' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(65) : warning C4101: 'y2' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(64) : warning C4101: 'm' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(73) : warning C4101: 'anglem' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(72) : warning C4101: 'tyi' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'nx3' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'u02' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'csz' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'ai3' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'dx' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(65) : warning C4101: 'y3' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(71) : warning C4101: 'nx4' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'u03' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(70) : warning C4101: 'di4' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(69) : warning C4101: 'ai4' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(68) : warning C4101: 'dy' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(65) : warning C4101: 'y4' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(64) : warning C4101: 'iu' : unreferenced local variable
+C:\lyou\D_Drive\doc\pde\Human2\Term_determination\fdm_goodx.cpp(1723) : warning C4101: 's3v' : unreferenced local variable
+Linking...
+
+
+
+<h3>Results</h3>
+fdm_goodx.exe - 0 error(s), 111 warning(s)
+</pre>
+</body>
+</html>

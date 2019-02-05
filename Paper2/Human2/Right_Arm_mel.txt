@@ -1,0 +1,58 @@
+file -f -options "v=0"  -typ "mayaBinary" -o "D:/Human1/Left_Arm3.mb";addRecentFile("D:/Human1/Left_Arm3.mb", "mayaBinary");
+polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -tx 1 -ch 1;
+setAttr "pCube1.translateY" 50;
+move -r 52.307548 10.012638 -51.607425 ;
+scale -r 35.301441 35.301441 35.301441 ;
+move -r 3.00513 40.597851 -35.49242 pCube1.scalePivot pCube1.rotatePivot ;
+move -r 3.078113 22.721431 -19.612849 ;
+move -r 2.837701 76.904688 8.181267 ;
+move -r 5.77411 -24.924788 -0.346683 pCube1.scalePivot pCube1.rotatePivot ;
+move -r -8.196354 2.964382 -2.534491 ;
+move -r -34.375061 -13.270967 14.753163 ;
+move -r -11.157187 2.336805 40.348046 ;
+move -r -3.650569 -1.127509 8.798864 ;
+move -r 12.992664 3.336645 -11.926667 ;
+scale -r 0.0363408 1 1 ;
+move -r -1.244115 -0.926076 10.207345 ;
+rotate -r -os 0.0456117 13.76905 0.908288 ;
+move -r -0.125856 1.510507 -0.132328 ;
+move -r -11.797061 -0.411956 -1.082306 ;
+rotate -r -os 1.203286 -3.270453 -0.264812 ;
+move -r 2.191152 -0.411956 0.23997 ;
+rotate -r -ws -0.898227 0.908122 10.336115 ;
+rotate -r -os 0 1.121377 0 ;
+rotate -r -ws -0.35328 0.318876 3.848217 ;
+rotate -r -os 2.03597 -1.152539 -0.6429 ;
+move -r -0.277356 -0.411956 0.00662706 ;
+rotate -r -ws 0.31059 -0.247407 -3.212154 ;
+rotate -r -ws -0.443897 0.407947 4.875154 ;
+
+
+
+for ($item in `ls -sl`)
+{
+print ($item + "\n");
+float $cv_crds[] = `xform -query -worldSpace -translation $item`;
+for ($count = 0; $count < size($cv_crds); $count=$count+3){
+print ("  " + $cv_crds[$count] + "  " + $cv_crds[$count+1] + "  " + $cv_crds[$count+2] + "\n");
+}
+};
+
+
+Right_Arm1.mb
+x=22
+y=154.476
+z=-4.031
+anglex=0
+angley=0
+anglez=0
+scalex=1.283
+scaley=35
+scaley=35
+-22.5,-29.5,-36.5,-43.5,-50.5,-57.5,-64.5,-71.5,-78.5,-82.5
+
+
+polyBoolOp -op 3 -ch 1 skin:skin_patch pCube1;
+polyChipOff -ch 1 -kft 0 -dup 0 -pvx 0.00158405304 -pvy 151 -pvz 3.084245205 -tx 0 -ty 0 -tz 0 -rx 0 -ry 0 -rz 0 -sx 1 -sy 1 -sz 1 -ran 0 -off 0 -ltz 0 -ws 0 -ltx 0 -lty 0 -lrx 0 -lry 0 -lrz 0 -lsx 1 -lsy 1 -lsz 1 -ldx 1 -ldy 0 -ldz 0 -w 0 -gx 0 -gy -1 -gz 0 -att 0 -mx 0 -my 0 -mz 0 polySurface1.f[0];
+polyPerformAction polySeparate o 0;
+polySeparate -ch 1 polySurfaceShape1;
