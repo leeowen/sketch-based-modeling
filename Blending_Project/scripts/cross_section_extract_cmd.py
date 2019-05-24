@@ -27,26 +27,66 @@ class CrossSectionExtractCmd(om.MPxCommand):
     def creator():
         return CrossSectionExtractCmd()
         
+        
     @staticmethod
     def syntaxCreator():
         syntax=om.MSyntax()
         syntax.addFlag('-mu','-myUparameter',om.MSyntax.kDouble)
-        syntax.addFlag('-mmn','-myMeshName',om.MSyntax.kDouble)
-        syntax.addFlag('-mbn','-myBoneName',om.MSyntax.kDouble)
+        syntax.addFlag('-mmn','-myMeshName',om.MSyntax.kString)
+        syntax.addFlag('-mbn','-myBoneName',om.MSyntax.kString)
         return syntax
+        
         
     def doIt(self,args):
         self.parseArguments(args)
-        print("cross section extract at u=",self.u)
+                
+        #DO THE WORK
+        self.redoIt()
 
 
     def parseArguments(self, args):
         argData=om.MArgDatabase(self.syntax(),args)
         if argData.isFlagSet('-mu'):
             self.u = argData.flagArgumentDouble( '-mu', 0 )
-        elif argData.isFlagSet('-mmn'):
-            self.mesh_name = argData.flagArgumentDouble( '-mmn', 0 )
+        if argData.isFlagSet('-mmn'):
+            self.mesh_name = argData.flagArgumentString( '-mmn', 0 )
+        if argData.isFlagSet('-mbn'):
+            self.bone_name = argData.flagArgumentString( '-mbn', 0 )  
+                                      
+        
+    def redoIt(self):      
+        # WHEN NO MESH IS SPECIFIED IN THE COMMAND, GET THE FIRST SELECTED MESH FROM THE SELECTION LIST:
+        if (self.mesh_name == "") or (self.bone_name == ""):
+            sList = om.MGlobal.getActiveSelectionList()
+                      
+            iter=om.MItSelectionList (sList, om.MFn.kMesh)
+            i=0
             
+            while( not iter.isDone()): 
+                # RETRIEVE THE MESH
+                meshDagPath = iter.getDagPath()
+                i+=1
+                iter.next()
+          
+            if i==0: 
+                raise ValueError("No mesh or mesh transform specified!")
+            elif i>1:
+                raise ValueError("Multiple meshes or mesh transforms specified!")
+            iter.reset()
+            iter=om.MItSelectionList (sList, om.MFn.kJoint)
+            i=0
+            while not iter.isDone(): 
+                #RETRIEVE THE JOINT
+                meshDagPath = iter.getDagPath()
+                i+=1
+                iter.next()
+                
+            if i==0: 
+                raise ValueError("No bone or bone transform specified!")
+            elif i>1:
+                raise ValueError("Multiple bones or bone transforms specified!")
+            
+                               
 
 def initializePlugin(plugin):
     pluginFn = om.MFnPlugin(plugin)
