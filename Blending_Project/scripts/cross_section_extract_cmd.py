@@ -20,7 +20,9 @@ class CrossSectionExtractCmd(om.MPxCommand):
     def __init__(self):
         om.MPxCommand.__init__(self)
         self.mesh_name=''
-        self.bone_name=''    
+        self.mesh_dagPath = om.MDagPath()
+        self.bone_name=''  
+        self.bone_dagPath = om.MDagPath()  
         self.u_parameter=0.0    #default value
         
     @staticmethod
@@ -38,7 +40,14 @@ class CrossSectionExtractCmd(om.MPxCommand):
         
         
     def doIt(self,args):
+        """
+        The doIt method should collect whatever information is required to do the task, and store it in local class data. 
+        It should finally call redoIt to make the command happen. 
+        """
         self.parseArguments(args)
+        
+        # PREP THE DATA
+        
                 
         #DO THE WORK
         self.redoIt()
@@ -52,9 +61,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
             self.mesh_name = argData.flagArgumentString( '-mmn', 0 )
         if argData.isFlagSet('-mbn'):
             self.bone_name = argData.flagArgumentString( '-mbn', 0 )  
-                                      
-        
-    def redoIt(self):      
+            
         # WHEN NO MESH IS SPECIFIED IN THE COMMAND, GET THE FIRST SELECTED MESH FROM THE SELECTION LIST:
         if (self.mesh_name == "") or (self.bone_name == ""):
             sList = om.MGlobal.getActiveSelectionList()
@@ -64,7 +71,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
             
             while( not iter.isDone()): 
                 # RETRIEVE THE MESH
-                meshDagPath = iter.getDagPath()
+                self.mesh_dagPath = iter.getDagPath()
                 i+=1
                 iter.next()
           
@@ -77,7 +84,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
             i=0
             while not iter.isDone(): 
                 #RETRIEVE THE JOINT
-                meshDagPath = iter.getDagPath()
+                self.bone_dagPath = iter.getDagPath()
                 i+=1
                 iter.next()
                 
@@ -85,7 +92,38 @@ class CrossSectionExtractCmd(om.MPxCommand):
                 raise ValueError("No bone or bone transform specified!")
             elif i>1:
                 raise ValueError("Multiple bones or bone transforms specified!")
-            
+
+         
+        # get dagpath from mesh's and joint's names 
+        else:   
+            print self.bone_dagPath
+            try:
+                selectionList = om.MGlobal.getSelectionListByName(self.mesh_name)
+            except:
+                raise
+            else:
+                self.mesh_dagPath = selectionList.getDagPath( 0 )
+            try:
+                selectionList = om.MGlobal.getSelectionListByName(self.bone_name)
+            except:
+                raise
+            else:
+                self.bone_dagPath = selectionList.getDagPath( 0 )
+
+                                      
+        
+    def redoIt(self): 
+        """
+        The redoIt method should do the actual work, using only the local class data. 
+        """
+        pass    
+        
+        
+    def undoIt(self):
+        """
+        The undoIt method should undo the actual work, again using only the local class data.
+        """
+        pass                 
                                
 
 def initializePlugin(plugin):
