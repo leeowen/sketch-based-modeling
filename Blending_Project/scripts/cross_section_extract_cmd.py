@@ -5,6 +5,22 @@
 # Autodesk Maya Command template API 2.0
 # Copyright (C) 2019 Xiaosong Yang
 #-------------------------------------------------
+# DESCRIPTION:
+#
+#   Produces the MEL "crossSectionExtract" command.
+#
+#   To use the command, select the joint and mesh that you want data for and
+#   then type the command, being sure to use the -mu/-myUParameter flag to specify
+#   the location on the bone where a ray will cast out and later intersect with the mesh 
+#   to form the cross-section curve.
+# 
+#   For example:
+#    
+#     crossSectionExtract -mu 0.1 -mmn "Source_male_meshShape" -mbn "Source_LeftUpLeg"
+#
+#   The output is the cross section curve extracted from a mesh named "Source_male_meshShape", 
+#   paralled with a bone named "Source_LeftUpLeg" at the location u=0.1.
+#------------------------------------------------- 
 import maya.api.OpenMaya as om
 
 def maya_useNewAPI():
@@ -31,7 +47,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         
         
     @staticmethod
-    def syntaxCreator():
+    def newSyntax():
         syntax=om.MSyntax()
         syntax.addFlag('-mu','-myUparameter',om.MSyntax.kDouble)
         syntax.addFlag('-mmn','-myMeshName',om.MSyntax.kString)
@@ -47,7 +63,16 @@ class CrossSectionExtractCmd(om.MPxCommand):
         self.parseArguments(args)
         
         # PREP THE DATA
-        
+        boneFn=om.MFnDagNode(self.bone_dagPath)
+        next_bone_obj=om.MObject()
+        selList=om.MSelectionList()
+        selList.add(self.bone_dagPath)
+        selList.getDependNode(0,next_bone_obj)
+        if boneFn.hasChild():
+            next_bone_obj=boneFn.child(0)
+        elif boneFn.hasParent():
+            next_bone_obj=boneFn.parent(0)
+        print next_bone_obj
                 
         #DO THE WORK
         self.redoIt()
@@ -129,7 +154,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
 def initializePlugin(plugin):
     pluginFn = om.MFnPlugin(plugin)
     try:
-        pluginFn.registerCommand(CrossSectionExtractCmd.kPluginName, CrossSectionExtractCmd.creator, CrossSectionExtractCmd.syntaxCreator)
+        pluginFn.registerCommand(CrossSectionExtractCmd.kPluginName, CrossSectionExtractCmd.creator, CrossSectionExtractCmd.newSyntax)
     except:
         raise
         
