@@ -22,6 +22,9 @@
 #   paralled with a bone named "Source_LeftUpLeg" at the location u=0.1.
 #------------------------------------------------- 
 import maya.api.OpenMaya as om
+import maya.cmds as cmds
+import numpy, sympy
+
 
 def maya_useNewAPI():
     pass
@@ -38,7 +41,9 @@ class CrossSectionExtractCmd(om.MPxCommand):
         self.mesh_name=''
         self.mesh_dagPath = om.MDagPath()
         self.bone_name=''  
+        self.nextBone_name=''
         self.bone_dagPath = om.MDagPath()  
+        self.nextBone_dagPath = om.MDagPath() 
         self.u_parameter=0.0    #default value
         
     @staticmethod
@@ -64,15 +69,21 @@ class CrossSectionExtractCmd(om.MPxCommand):
         
         # PREP THE DATA
         boneFn=om.MFnDagNode(self.bone_dagPath)
-        next_bone_obj=om.MObject()
-        selList=om.MSelectionList()
-        selList.add(self.bone_dagPath)
-        selList.getDependNode(0,next_bone_obj)
-        if boneFn.hasChild():
+        if boneFn.childCount()>0:
             next_bone_obj=boneFn.child(0)
-        elif boneFn.hasParent():
+        elif boneFn.parentCount():
             next_bone_obj=boneFn.parent(0)
-        print next_bone_obj
+            
+        nextBoneFn=om.MFnDagNode(next_bone_obj)
+        self.nextBone_name=nextBoneFn.fullPathName().split('|')
+        self.nextBone_name=self.nextBone_name[-1]
+        #self.nextBone_dagPath = om.MDagPath().getPath()
+                
+        bonePos=cmds.xform(self.bone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+        nextBonePos=cmds.xform(self.nextBone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+        p1,p2=sympy.Point(bonePos[0],bonePos[1],bonePos[2]),sympy.Point(nextBonePos[0],nextBonePos[1],nextBonePos[2])
+        boneLine=sympy.Line(p1,p2)
+        boneLine.arbitrary_point(parameter='t')
                 
         #DO THE WORK
         self.redoIt()
