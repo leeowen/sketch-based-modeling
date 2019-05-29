@@ -23,7 +23,7 @@
 #------------------------------------------------- 
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
-import numpy, sympy
+import numpy
 
 
 def maya_useNewAPI():
@@ -59,7 +59,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         syntax.addFlag('-mbn','-myBoneName',om.MSyntax.kString)
         return syntax
         
-        
+                
     def doIt(self,args):
         """
         The doIt method should collect whatever information is required to do the task, and store it in local class data. 
@@ -79,20 +79,24 @@ class CrossSectionExtractCmd(om.MPxCommand):
         self.nextBone_name=self.nextBone_name[-1]
         #self.nextBone_dagPath = om.MDagPath().getPath()
                 
-        bonePos=cmds.xform(self.bone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
-        nextBonePos=cmds.xform(self.nextBone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
-        p1,p2=sympy.Point(bonePos[0],bonePos[1],bonePos[2]),sympy.Point(nextBonePos[0],nextBonePos[1],nextBonePos[2])
-        boneLine=sympy.Line(p1,p2)
-        boneLine.arbitrary_point(parameter='t')
+        bone_position=cmds.xform(self.bone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+        nextBone_position=cmds.xform(self.nextBone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+        ray_center=linear_interpolate_3D(bone_position,nextBone_position,self.u_parameter)
+        
+        # get the line local frame
+        xAxis=(bone_position-nextBone_position).normalize()
+        yAxis=
+        zAxis=xAxis^yAxis
                 
         #DO THE WORK
         self.redoIt()
-
+        
+                
 
     def parseArguments(self, args):
         argData=om.MArgDatabase(self.syntax(),args)
         if argData.isFlagSet('-mu'):
-            self.u = argData.flagArgumentDouble( '-mu', 0 )
+            self.u_parameter = argData.flagArgumentDouble( '-mu', 0 )
         if argData.isFlagSet('-mmn'):
             self.mesh_name = argData.flagArgumentString( '-mmn', 0 )
         if argData.isFlagSet('-mbn'):
@@ -176,6 +180,13 @@ def uninitializePlugin(plugin):
         pluginFn.deregisterCommand(CrossSectionExtractCmd.kPluginName)
     except:
         raise
+        
+        
+def linear_interpolate_3D(p1,p2,t):
+    p1=om.MVector(p1[0],p1[1],p1[2])
+    p2=om.MVector(p2[0],p2[1],p2[2])
+    p=t*p2+(1.0-t)*p1
+    return p
 
 
 
