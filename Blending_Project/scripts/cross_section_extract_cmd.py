@@ -1,9 +1,9 @@
 # cross_section_cmd.py
-# Author: Xiaosong Yang, Ouwen Li
+# Author: Ouwen Li
 # Email: leeowen988@gmail.com
 # Version: 2.0
 # Autodesk Maya Command template API 2.0
-# Copyright (C) 2019 Xiaosong Yang
+# Copyright (C) 2019 Ouwen Li
 #-------------------------------------------------
 # DESCRIPTION:
 #
@@ -24,7 +24,7 @@
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 import numpy
-
+import collections
 
 def maya_useNewAPI():
     pass
@@ -34,6 +34,9 @@ def maya_useNewAPI():
 ## Command class implementation
 ##
 ##############################################################################
+
+Local_Frame_Tuple=collections.namedtuple("LocalFrame",['xAxis','yAxis','zAxis'])
+
 class CrossSectionExtractCmd(om.MPxCommand):
     kPluginName='crossSectionExtract'
     def __init__(self):
@@ -45,6 +48,8 @@ class CrossSectionExtractCmd(om.MPxCommand):
         self.bone_dagPath = om.MDagPath()  
         self.nextBone_dagPath = om.MDagPath() 
         self.u_parameter=0.0    #default value
+        self.ray_center=om.MVector()
+        self.local_frame=None
         
     @staticmethod
     def creator():
@@ -80,17 +85,23 @@ class CrossSectionExtractCmd(om.MPxCommand):
         #self.nextBone_dagPath = om.MDagPath().getPath()
                 
         bone_position=cmds.xform(self.bone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+        bone_position=om.MVector(bone_position[0],bone_position[1],bone_position[2])
         nextBone_position=cmds.xform(self.nextBone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
-        ray_center=linear_interpolate_3D(bone_position,nextBone_position,self.u_parameter)
+        nextBone_position=om.MVector(nextBone_position[0],nextBone_position[1],nextBone_position[2])
+        self.ray_center=linear_interpolate_3D(bone_position,nextBone_position,self.u_parameter)        
         
-        # get the line local frame
+        # GET THE LOCAL FRAME ON THE CHOOSEN BONE
         xAxis=(bone_position-nextBone_position).normalize()
-        yAxis=
+        yAxis=line_normal(self.ray_center,bone_position,nextBone_position)# this is not a real normal! just an intermiediate vector                                                                            
         zAxis=xAxis^yAxis
+        zAxis.normalize()
+        yAxis=xAxis^zAxis
+        print xAxis*yAxis,yAxis*zAxis,zAxis*xAxis
+        self.local_frame=Local_Frame_Tuple(xAxis,yAxis,zAxis)
                 
         #DO THE WORK
         self.redoIt()
-        
+            
                 
 
     def parseArguments(self, args):
@@ -189,5 +200,18 @@ def linear_interpolate_3D(p1,p2,t):
     return p
 
 
-
+def line_normal(p0,p1,p2):
+    x0=p0[0]
+    y0=p0[1]
+    x1=p1[0]
+    x2=p2[0]
+    y1=p1[1]
+    y2=p2[1]
+    z=p0[2]
+    slop=-(x1-x2)/(y1-y2)
+    xp=x0-1.0
+    yp=xp*slop+y0-slop*x0
+    n=om.MVector(xp,yp,0)
+    n.normalize()
+    return n
         
