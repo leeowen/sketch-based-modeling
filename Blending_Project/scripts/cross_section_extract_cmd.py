@@ -100,12 +100,8 @@ class CrossSectionExtractCmd(om.MPxCommand):
             ray=yAxis.rotateBy(om.MQuaternion(angle,xAxis))
             raySource=om.MFloatPoint(ray_center)
             rayDirection=om.MFloatVector(ray)
-            try:
-                hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kObject,1000.0,False,[],[],False,om.MMeshIsectAccelParams(),0.001)
-            except:
-                raise
-            else:
-                output+=str(hitPoint.x)+","+str(hitPoint.y)+","+str(hitPoint.z)+"\n"
+            hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kObject,1000.0,False,[],[],False,om.MMeshIsectAccelParams(),0.001)
+            output+=str(hitPoint.x)+","+str(hitPoint.y)+","+str(hitPoint.z)+"\n"
                 
         print output
                 
