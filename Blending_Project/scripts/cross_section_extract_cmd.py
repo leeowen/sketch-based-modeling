@@ -1,10 +1,5 @@
 # cross_section_cmd.py
-# Author: Ouwen Li
-# Email: leeowen988@gmail.com
-# Version: 2.0
-# Autodesk Maya Command template API 2.0
-# Copyright (C) 2019 Ouwen Li
-#-------------------------------------------------
+#
 # DESCRIPTION:
 #
 #   Produces the MEL "crossSectionExtract" command.
@@ -23,7 +18,7 @@
 #------------------------------------------------- 
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
-import numpy
+import numpy, math
 import collections
 
 def maya_useNewAPI():
@@ -48,8 +43,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         self.bone_dagPath = om.MDagPath()  
         self.nextBone_dagPath = om.MDagPath() 
         self.u_parameter=0.0    #default value
-        self.ray_center=om.MVector()
-        self.local_frame=None
+
         
     @staticmethod
     def creator():
@@ -72,7 +66,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         """
         self.parseArguments(args)
         
-        # PREP THE DATA
+        # GET BONE DATA
         boneFn=om.MFnDagNode(self.bone_dagPath)
         if boneFn.childCount()>0:
             next_bone_obj=boneFn.child(0)
@@ -82,26 +76,38 @@ class CrossSectionExtractCmd(om.MPxCommand):
         nextBoneFn=om.MFnDagNode(next_bone_obj)
         self.nextBone_name=nextBoneFn.fullPathName().split('|')
         self.nextBone_name=self.nextBone_name[-1]
-        #self.nextBone_dagPath = om.MDagPath().getPath()
-                
+        self.nextBone_dagPath = nextBoneFn.getPath()
         bone_position=cmds.xform(self.bone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
         bone_position=om.MVector(bone_position[0],bone_position[1],bone_position[2])
         nextBone_position=cmds.xform(self.nextBone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
         nextBone_position=om.MVector(nextBone_position[0],nextBone_position[1],nextBone_position[2])
-        self.ray_center=linear_interpolate_3D(bone_position,nextBone_position,self.u_parameter)        
+        ray_center=linear_interpolate_3D(bone_position,nextBone_position,self.u_parameter)        
         
         # GET THE LOCAL FRAME ON THE CHOOSEN BONE
         xAxis=(bone_position-nextBone_position).normalize()
-        yAxis=line_normal(self.ray_center,bone_position,nextBone_position)# this is not a real normal! just an intermiediate vector                                                                            
+        yAxis=line_normal(ray_center,bone_position,nextBone_position)# this is not a real normal! just an intermiediate vector                                                                            
         zAxis=xAxis^yAxis
         zAxis.normalize()
         yAxis=xAxis^zAxis
-        print xAxis*yAxis,yAxis*zAxis,zAxis*xAxis
-        self.local_frame=Local_Frame_Tuple(xAxis,yAxis,zAxis)
+        local_frame=Local_Frame_Tuple(xAxis,yAxis,zAxis)
+        
+        #EXTRACT CROSS SECTION CURVES
+        vdiv=50 #the number of v division
+        meshFn=om.MFnMesh(self.mesh_dagPath)
+        output=""
+        for i in range(0,vdiv):
+            angle=2*math.pi*float(i)/float(vdiv)
+            ray=yAxis.rotateBy(om.MQuaternion(angle,xAxis))
+            raySource=om.MFloatPoint(ray_center)
+            rayDirection=om.MFloatVector(ray)
+            try:
+                hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kObject,1000.0,False,[],[],False,om.MMeshIsectAccelParams(),0.001)
+            except:
+                raise
+            else:
+                output+=str(hitPoint.x)+","+str(hitPoint.y)+","+str(hitPoint.z)+"\n"
                 
-        #DO THE WORK
-        self.redoIt()
-            
+        print output
                 
 
     def parseArguments(self, args):
@@ -161,21 +167,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
             else:
                 self.bone_dagPath = selectionList.getDagPath( 0 )
 
-                                      
-        
-    def redoIt(self): 
-        """
-        The redoIt method should do the actual work, using only the local class data. 
-        """
-        pass    
-        
-        
-    def undoIt(self):
-        """
-        The undoIt method should undo the actual work, again using only the local class data.
-        """
-        pass                 
-                               
+                                            
 
 def initializePlugin(plugin):
     pluginFn = om.MFnPlugin(plugin)
