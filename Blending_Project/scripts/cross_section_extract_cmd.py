@@ -11,7 +11,7 @@
 # 
 #   For example:
 #    
-#     crossSectionExtract -mu 0.1 -mmn "Source_male_meshShape" -mbn "Source_LeftUpLeg"
+#     crossSectionExtract -mu 0.1 -mmn "source_male_mesh" -mbn "Source_LeftUpLeg"
 #
 #   The output is the cross section curve extracted from a mesh named "Source_male_meshShape", 
 #   paralled with a bone named "Source_LeftUpLeg" at the location u=0.1.
@@ -89,23 +89,23 @@ class CrossSectionExtractCmd(om.MPxCommand):
         zAxis=xAxis^yAxis
         zAxis.normalize()
         yAxis=xAxis^zAxis
+        yAxis.normalize()
         local_frame=Local_Frame_Tuple(xAxis,yAxis,zAxis)
         
         #EXTRACT CROSS SECTION CURVES
         vdiv=50 #the number of v division
         meshFn=om.MFnMesh(self.mesh_dagPath)
-        output=""
+        raySource=om.MFloatPoint(ray_center)
+        #output=""
         for i in range(0,vdiv):
             angle=2*math.pi*float(i)/float(vdiv)
             ray=yAxis.rotateBy(om.MQuaternion(angle,xAxis))
-            raySource=om.MFloatPoint(ray_center)
             rayDirection=om.MFloatVector(ray)
-            hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kObject,1000.0,False,[],[],False,om.MMeshIsectAccelParams(),0.001)
+
+            hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kWorld,9999,False,idsSorted=False,tolerance=0.001)  
             output+=str(hitPoint.x)+","+str(hitPoint.y)+","+str(hitPoint.z)+"\n"
-                
-        print ray_center
-        # curve -d 2  -p 0 0 0 -p -5 0 10 -p -10 0 5;
-        # fitBspline -ch 1 -tol 0.01;
+      
+        #print output
                 
 
     def parseArguments(self, args):
@@ -127,6 +127,9 @@ class CrossSectionExtractCmd(om.MPxCommand):
             while( not iter.isDone()): 
                 # RETRIEVE THE MESH
                 self.mesh_dagPath = iter.getDagPath()
+                meshFn=om.MFnMesh(self.mesh_dagPath)
+                name=meshFn.fullPathName().split('|')
+                self.mesh_name=name[-1]
                 i+=1
                 iter.next()
           
@@ -140,6 +143,9 @@ class CrossSectionExtractCmd(om.MPxCommand):
             while not iter.isDone(): 
                 #RETRIEVE THE JOINT
                 self.bone_dagPath = iter.getDagPath()
+                boneFn=om.MFnDagNode(self.bone_dagPath)
+                name=boneFn.fullPathName().split('|')
+                self.bone_name=name[-1]
                 i+=1
                 iter.next()
                 
