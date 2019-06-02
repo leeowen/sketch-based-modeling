@@ -103,7 +103,9 @@ class CrossSectionExtractCmd(om.MPxCommand):
             hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kObject,1000.0,False,[],[],False,om.MMeshIsectAccelParams(),0.001)
             output+=str(hitPoint.x)+","+str(hitPoint.y)+","+str(hitPoint.z)+"\n"
                 
-        print output
+        print ray_center
+        # curve -d 2  -p 0 0 0 -p -5 0 10 -p -10 0 5;
+        # fitBspline -ch 1 -tol 0.01;
                 
 
     def parseArguments(self, args):
@@ -149,7 +151,6 @@ class CrossSectionExtractCmd(om.MPxCommand):
          
         # get dagpath from mesh's and joint's names 
         else:   
-            print self.bone_dagPath
             try:
                 selectionList = om.MGlobal.getSelectionListByName(self.mesh_name)
             except:
