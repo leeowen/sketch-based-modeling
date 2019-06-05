@@ -96,18 +96,34 @@ class CrossSectionExtractCmd(om.MPxCommand):
         vdiv=50 #the number of v division
         meshFn=om.MFnMesh(self.mesh_dagPath)
         raySource=om.MFloatPoint(ray_center)
-        #output=""
+        output="curve -degree 2 "
         for i in range(0,vdiv):
             angle=2*math.pi*float(i)/float(vdiv)
             ray=yAxis.rotateBy(om.MQuaternion(angle,xAxis))
             rayDirection=om.MFloatVector(ray)
 
-            hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kWorld,9999,False,idsSorted=False,tolerance=0.001)  
-            output+=str(hitPoint.x)+","+str(hitPoint.y)+","+str(hitPoint.z)+"\n"
+            try:
+                hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kWorld,9999,False,idsSorted=False,tolerance=0.001)  
+            except:
+                raise
+            else:
+                x=hitPoint[0]
+                y=hitPoint[1]
+                z=hitPoint[2]
+                output=output+"-p "+str(x)+" "+str(y)+" "+str(z)+" "
       
+        output+="-worldSpace "
         #print output
-                
+        
+        # This MDagModifier object will allow us to undo and redo the creation of DAG nodes in our command.
+        self.dagMod=om.MDagModifier()  
+        cs_name=bone_name+"_crossSection_"+str(int(u_parameter*100))
 
+        dagModifier.commandToExecute(output)     
+        dagModifier.commandToExecute("fitBspline -ch 1 -tol 0.01")
+              
+  
+   
     def parseArguments(self, args):
         argData=om.MArgDatabase(self.syntax(),args)
         if argData.isFlagSet('-mu'):

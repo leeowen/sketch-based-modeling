@@ -25,6 +25,14 @@ def maya_useNewAPI():
     pass
 
 
+def get_name(node):
+"""Get the long name from the MObject where appropriate"""
+    if node.hasFn(om.MFn.kDagNode):
+        return om.MFnDagNode(node).fullPathName()
+    else:
+        return om.MFnDependencyNode(node).name()
+        
+        
 def linear_interpolate_3D(p1,p2,t):
     p1=om.MVector(p1[0],p1[1],p1[2])
     p2=om.MVector(p2[0],p2[1],p2[2])
@@ -126,8 +134,8 @@ local_frame=Local_Frame_Tuple(xAxis,yAxis,zAxis)
 vdiv=50 #the number of v division
 meshFn=om.MFnMesh(mesh_dagPath)
 raySource=om.MFloatPoint(ray_center)
-print raySource
-output=""
+#print raySource
+output="curve -degree 2 "
 for i in range(0,vdiv):
     angle=2*math.pi*float(i)/float(vdiv)
     ray=yAxis.rotateBy(om.MQuaternion(angle,xAxis))
@@ -138,11 +146,18 @@ for i in range(0,vdiv):
     except:
         raise
     else:
-        output+=str(hitPoint.x)+","+str(hitPoint.y)+","+str(hitPoint.z)+"\n"
-    print output
-               
-
-     
+        x=hitPoint[0]
+        y=hitPoint[1]
+        z=hitPoint[2]
+        output=output+"-p "+str(x)+" "+str(y)+" "+str(z)+" "
         
+output+="-worldSpace "
+print output              
 
-        
+cs_name=bone_name+"_crossSection_"+str(int(u_parameter*100))
+
+dagModifier.commandToExecute(output)     
+dagModifier.commandToExecute("fitBspline -ch 1 -tol 0.01")
+
+dagModifier.doIt()
+dagModifier.undoIt()
