@@ -66,6 +66,7 @@ nextBone_name=''
 bone_dagPath = om.MDagPath()  
 nextBone_dagPath = om.MDagPath() 
 u_parameter=0.5    #default value
+dagModifier=om.MDagModifier()
 
 sList = om.MGlobal.getActiveSelectionList()
 iter=om.MItSelectionList (sList, om.MFn.kMesh)

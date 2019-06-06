@@ -58,31 +58,24 @@ class CrossSectionExtractCmd(om.MPxCommand):
         syntax.addFlag('-mbn','-myBoneName',om.MSyntax.kString)
         return syntax
         
-                
-    def doIt(self,args):
-        """
-        The doIt method should collect whatever information is required to do the task, and store it in local class data. 
-        It should finally call redoIt to make the command happen. 
-        """
-        self.parseArguments(args)
+    
+    def isUndoable(self):
+        ''' This function indicates whether or not the command is undoable. If the
+        command is undoable, each executed instance of that command is added to the
+        undo queue. '''
         
-        # GET BONE DATA
-        boneFn=om.MFnDagNode(self.bone_dagPath)
-        if boneFn.childCount()>0:
-            next_bone_obj=boneFn.child(0)
-        elif boneFn.parentCount():
-            next_bone_obj=boneFn.parent(0)
+        # We must return True to specify that this command is undoable.
+        return True
+        
             
-        nextBoneFn=om.MFnDagNode(next_bone_obj)
-        self.nextBone_name=nextBoneFn.fullPathName().split('|')
-        self.nextBone_name=self.nextBone_name[-1]
-        self.nextBone_dagPath = nextBoneFn.getPath()
+    def redoIt(self):   
         bone_position=cmds.xform(self.bone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
         bone_position=om.MVector(bone_position[0],bone_position[1],bone_position[2])
         nextBone_position=cmds.xform(self.nextBone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
         nextBone_position=om.MVector(nextBone_position[0],nextBone_position[1],nextBone_position[2])
         ray_center=linear_interpolate_3D(bone_position,nextBone_position,self.u_parameter)        
         
+
         # GET THE LOCAL FRAME ON THE CHOOSEN BONE
         xAxis=(bone_position-nextBone_position).normalize()
         yAxis=line_normal(ray_center,bone_position,nextBone_position)# this is not a real normal! just an intermiediate vector                                                                            
@@ -93,37 +86,48 @@ class CrossSectionExtractCmd(om.MPxCommand):
         local_frame=Local_Frame_Tuple(xAxis,yAxis,zAxis)
         
         #EXTRACT CROSS SECTION CURVES
-        vdiv=50 #the number of v division
+        vdiv=20 #the number of v division
         meshFn=om.MFnMesh(self.mesh_dagPath)
         raySource=om.MFloatPoint(ray_center)
-        output="curve -degree 2 "
+        #print raySource
+        eps=om.MPointArray()
+        eps.clear()
         for i in range(0,vdiv):
             angle=2*math.pi*float(i)/float(vdiv)
             ray=yAxis.rotateBy(om.MQuaternion(angle,xAxis))
             rayDirection=om.MFloatVector(ray)
-
+        
             try:
-                hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kWorld,9999,False,idsSorted=False,tolerance=0.001)  
+                hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kWorld,9999,False,idsSorted=False,tolerance=0.001)    
             except:
                 raise
             else:
-                x=hitPoint[0]
-                y=hitPoint[1]
-                z=hitPoint[2]
-                output=output+"-p "+str(x)+" "+str(y)+" "+str(z)+" "
-      
-        output+="-worldSpace "
-        #print output
+                eps.append(hitPoint)
+                
+        curveFn=om.MFnNurbsCurve()
+        self.cross_section_obj=curveFn.createWithEditPoints(eps,2,om.MFnNurbsCurve.kClosed, False, False, True)
+                 
+        transform_name=self.bone_name+"_cross_section"
+        curve_name="u_at_"+str(int(self.u_parameter*100))+"_percentage"
         
-        # This MDagModifier object will allow us to undo and redo the creation of DAG nodes in our command.
-        self.dagMod=om.MDagModifier()  
-        cs_name=bone_name+"_crossSection_"+str(int(u_parameter*100))
-
-        dagModifier.commandToExecute(output)     
-        dagModifier.commandToExecute("fitBspline -ch 1 -tol 0.01")
+        dgFn=om.MFnDependencyNode(self.cross_section_obj)
+        dgFn.setName(transform_name+'_'+curve_name)
               
-  
-   
+
+    def undoIt(self):
+        dagFn=om.MFnDagNode(self.cross_section_obj)
+        child_curve=dagFn.child(0)
+
+        dgModifier=om.MDGModifier()
+        
+        # always delete the child before deleting parent node
+        dgModifier.deleteNode(child_curve)
+        
+        dgModifier.deleteNode(self.cross_section_obj)
+
+        dgModifier.doIt()
+        
+           
     def parseArguments(self, args):
         argData=om.MArgDatabase(self.syntax(),args)
         if argData.isFlagSet('-mu'):
@@ -186,7 +190,28 @@ class CrossSectionExtractCmd(om.MPxCommand):
             else:
                 self.bone_dagPath = selectionList.getDagPath( 0 )
 
-                                            
+
+    def doIt(self,args):
+        """
+        The doIt method should collect whatever information is required to do the task, and store it in local class data. 
+        It should finally call redoIt to make the command happen. 
+        """
+        self.parseArguments(args)
+        
+        # GET BONE DATA
+        boneFn=om.MFnDagNode(self.bone_dagPath)
+        if boneFn.childCount()>0:
+            next_bone_obj=boneFn.child(0)
+        elif boneFn.parentCount():
+            next_bone_obj=boneFn.parent(0)
+            
+        nextBoneFn=om.MFnDagNode(next_bone_obj)
+        self.nextBone_name=nextBoneFn.fullPathName().split('|')
+        self.nextBone_name=self.nextBone_name[-1]
+        self.nextBone_dagPath = nextBoneFn.getPath()
+        
+        self.redoIt()                                            
+
 
 def initializePlugin(plugin):
     pluginFn = om.MFnPlugin(plugin)
