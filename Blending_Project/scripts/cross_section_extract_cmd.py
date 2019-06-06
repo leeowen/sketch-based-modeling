@@ -117,17 +117,12 @@ class CrossSectionExtractCmd(om.MPxCommand):
     def undoIt(self):
         dagFn=om.MFnDagNode(self.cross_section_obj)
         child_curve=dagFn.child(0)
-
-        dgModifier=om.MDGModifier()
-        
         # always delete the child before deleting parent node
+        dgModifier=om.MDGModifier()
         dgModifier.deleteNode(child_curve)
-        
         dgModifier.deleteNode(self.cross_section_obj)
-
-        dgModifier.doIt()
         
-           
+       
     def parseArguments(self, args):
         argData=om.MArgDatabase(self.syntax(),args)
         if argData.isFlagSet('-mu'):

@@ -1,4 +1,4 @@
-# cross_section_cmd.py
+# .py
 #
 # DESCRIPTION:
 #
@@ -26,13 +26,13 @@ def maya_useNewAPI():
 
 
 def get_name(node):
-"""Get the long name from the MObject where appropriate"""
+    """Get the long name from the MObject where appropriate"""
     if node.hasFn(om.MFn.kDagNode):
         return om.MFnDagNode(node).fullPathName()
     else:
         return om.MFnDependencyNode(node).name()
-        
-        
+                  
+            
 def linear_interpolate_3D(p1,p2,t):
     p1=om.MVector(p1[0],p1[1],p1[2])
     p2=om.MVector(p2[0],p2[1],p2[2])
@@ -66,7 +66,6 @@ nextBone_name=''
 bone_dagPath = om.MDagPath()  
 nextBone_dagPath = om.MDagPath() 
 u_parameter=0.5    #default value
-dagModifier=om.MDagModifier()
 
 sList = om.MGlobal.getActiveSelectionList()
 iter=om.MItSelectionList (sList, om.MFn.kMesh)
@@ -132,11 +131,12 @@ yAxis.normalize()
 local_frame=Local_Frame_Tuple(xAxis,yAxis,zAxis)
        
 #EXTRACT CROSS SECTION CURVES
-vdiv=50 #the number of v division
+vdiv=20 #the number of v division
 meshFn=om.MFnMesh(mesh_dagPath)
 raySource=om.MFloatPoint(ray_center)
 #print raySource
-output="curve -degree 2 "
+eps=om.MPointArray()
+eps.clear()
 for i in range(0,vdiv):
     angle=2*math.pi*float(i)/float(vdiv)
     ray=yAxis.rotateBy(om.MQuaternion(angle,xAxis))
@@ -147,18 +147,28 @@ for i in range(0,vdiv):
     except:
         raise
     else:
-        x=hitPoint[0]
-        y=hitPoint[1]
-        z=hitPoint[2]
-        output=output+"-p "+str(x)+" "+str(y)+" "+str(z)+" "
+        eps.append(hitPoint)
         
-output+="-worldSpace "
-print output              
+curveFn=om.MFnNurbsCurve()
+curveTransformObj=curveFn.createWithEditPoints(eps,2,om.MFnNurbsCurve.kClosed, False, False, True)
+         
+transform_name=bone_name+"_cross_section"
+curve_name="u_at_"+str(int(u_parameter*100))+"_percentage"
 
-cs_name=bone_name+"_crossSection_"+str(int(u_parameter*100))
+dgFn=om.MFnDependencyNode(curveTransformObj)
+dgFn.setName(transform_name+'_'+curve_name)
 
-dagModifier.commandToExecute(output)     
-dagModifier.commandToExecute("fitBspline -ch 1 -tol 0.01")
 
-dagModifier.doIt()
-dagModifier.undoIt()
+nodeFn = om.MFnDependencyNode(curveTransformObj)
+
+attrFn=om.MFnNumericAttribute()
+uAttr=attrFn.create("uParameter","u",om.MFnData.kFloat)
+attrFn.setReadable( True )
+attrFn.setStorable( True )
+attrFn.setWritable( False )
+attrFn.setDefault(u_parameter)
+
+nodeFn.addAttribute(uAttr)
+
+attrFn=om.MFnMatrixAttibute()
+m
