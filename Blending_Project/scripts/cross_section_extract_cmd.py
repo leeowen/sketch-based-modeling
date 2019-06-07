@@ -68,7 +68,8 @@ class CrossSectionExtractCmd(om.MPxCommand):
         return True
         
             
-    def redoIt(self):   
+    def redoIt(self):  
+        # To avoid issues like freezeTransform, recommend rotate pivot to attain the position
         bone_position=cmds.xform(self.bone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
         bone_position=om.MVector(bone_position[0],bone_position[1],bone_position[2])
         nextBone_position=cmds.xform(self.nextBone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
@@ -117,45 +118,21 @@ class CrossSectionExtractCmd(om.MPxCommand):
         attrFn=om.MFnNumericAttribute()
         uAttr=attrFn.create("uParameter","u",om.MFnNumericData.kFloat,self.u_parameter)
         attrFn.readable=True 
-        attrFn.storable=True 
+        attrFn.storable=True # fairly consistent, won't change in compute() or get updated by upstream node, etc
         attrFn.writable=False 
-        
         dgFn.addAttribute(uAttr)
         
-        attrFn=om.MFnNumericAttribute()
-        oAttr=attrFn.createPoint("origin","o")
+        attrFn=om.MFnMatrixAttribute()
+        oAttr=attrFn.create("objectToWorld","otw",om.MFnMatrixAttribute.kFloat)
         attrFn.readable=True
         attrFn.storable=True 
         attrFn.writable=False
+        dgFn.addAttribute(oAttr)
         
-        attrFn=om.MFnNumericAttribute()
-        xAttr=attrFn.createPoint("xAis","x")
-        attrFn.readable=True
-        attrFn.storable=True 
-        attrFn.writable=False
-        
-        attrFn=om.MFnNumericAttribute()
-        yAttr=attrFn.createPoint("yAis","y")
-        attrFn.readable=True
-        attrFn.storable=True 
-        attrFn.writable=False
-        
-        attrFn=om.MFnNumericAttribute()
-        zAttr=attrFn.createPoint("zAis","z")
-        attrFn.readable=True
-        attrFn.storable=True 
-        attrFn.writable=False
-        
-        attrFn=om.MFnCompoundAttribute()
-        cAttr=attrFn.create("localFrame","lf")
-        attrFn.readable=True
-        attrFn.storable=True 
-        attrFn.writable=False
-        attrFn.addChild(oAttr)
-        attrFn.addChild(xAttr)
-        attrFn.addChild(yAttr)
-        attrFn.addChild(zAttr)
-        
+        oPlug=om.MPlug(self.cross_section_obj,oAttr)
+        matrix_obj=oPlug.asMObject()
+        matrixDataFn=om.MFnMatrixData(matrix_obj)
+        matrixDataFn.
               
 
     def undoIt(self):
