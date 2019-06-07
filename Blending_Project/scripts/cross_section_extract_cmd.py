@@ -112,6 +112,50 @@ class CrossSectionExtractCmd(om.MPxCommand):
         
         dgFn=om.MFnDependencyNode(self.cross_section_obj)
         dgFn.setName(transform_name+'_'+curve_name)
+
+        # add custom attribute to node
+        attrFn=om.MFnNumericAttribute()
+        uAttr=attrFn.create("uParameter","u",om.MFnNumericData.kFloat,self.u_parameter)
+        attrFn.readable=True 
+        attrFn.storable=True 
+        attrFn.writable=False 
+        
+        dgFn.addAttribute(uAttr)
+        
+        attrFn=om.MFnNumericAttribute()
+        oAttr=attrFn.createPoint("origin","o")
+        attrFn.readable=True
+        attrFn.storable=True 
+        attrFn.writable=False
+        
+        attrFn=om.MFnNumericAttribute()
+        xAttr=attrFn.createPoint("xAis","x")
+        attrFn.readable=True
+        attrFn.storable=True 
+        attrFn.writable=False
+        
+        attrFn=om.MFnNumericAttribute()
+        yAttr=attrFn.createPoint("yAis","y")
+        attrFn.readable=True
+        attrFn.storable=True 
+        attrFn.writable=False
+        
+        attrFn=om.MFnNumericAttribute()
+        zAttr=attrFn.createPoint("zAis","z")
+        attrFn.readable=True
+        attrFn.storable=True 
+        attrFn.writable=False
+        
+        attrFn=om.MFnCompoundAttribute()
+        cAttr=attrFn.create("localFrame","lf")
+        attrFn.readable=True
+        attrFn.storable=True 
+        attrFn.writable=False
+        attrFn.addChild(oAttr)
+        attrFn.addChild(xAttr)
+        attrFn.addChild(yAttr)
+        attrFn.addChild(zAttr)
+        
               
 
     def undoIt(self):

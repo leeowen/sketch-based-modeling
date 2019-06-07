@@ -11,6 +11,7 @@ dirPath+='scripts/'
 cmds.loadPlugin(dirPath+"cross_section_extract_cmd.py")
 cmds.crossSectionExtract(mu=0.5,mmn="source_male_mesh",mbn="Source_LeftUpLeg")
 cmds.flushUndo()
+cmds.unloadPlugin(dirPath+"cross_section_extract_cmd.py")
 cmds.crossSectionExtract(mu=0.5)
 cmds.scriptEditorInfo(clearHistory=True)
 

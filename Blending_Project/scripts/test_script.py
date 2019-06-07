@@ -159,16 +159,7 @@ dgFn=om.MFnDependencyNode(curveTransformObj)
 dgFn.setName(transform_name+'_'+curve_name)
 
 
-nodeFn = om.MFnDependencyNode(curveTransformObj)
 
-attrFn=om.MFnNumericAttribute()
-uAttr=attrFn.create("uParameter","u",om.MFnData.kFloat)
-attrFn.setReadable( True )
-attrFn.setStorable( True )
-attrFn.setWritable( False )
-attrFn.setDefault(u_parameter)
-
-nodeFn.addAttribute(uAttr)
 
 attrFn=om.MFnMatrixAttibute()
-m
+
