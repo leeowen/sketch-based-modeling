@@ -3,7 +3,7 @@ import sys
 
 sys.path.append('/usr/lib64/python2.7/site-packages')
 sys.path.append('./.local/lib/python2.7/site-packages')
-import numpy, sympy
+import numpy
 
 
 dirPath=cmds.workspace(q=True, rootDirectory=True )
