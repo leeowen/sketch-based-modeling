@@ -120,21 +120,48 @@ class CrossSectionExtractCmd(om.MPxCommand):
         attrFn.readable=True 
         attrFn.storable=True # fairly consistent, won't change in compute() or get updated by upstream node, etc
         attrFn.writable=False 
-        dgFn.addAttribute(uAttr)
+        
+        dgFn.addAttribute(uAttr)        
         
         attrFn=om.MFnMatrixAttribute()
-        oAttr=attrFn.create("objectToWorld","otw",om.MFnMatrixAttribute.kFloat)
+        lAttr=attrFn.create("objectToWorld","o2w")
         attrFn.readable=True
         attrFn.storable=True 
         attrFn.writable=False
-        dgFn.addAttribute(oAttr)
         
-        oPlug=om.MPlug(self.cross_section_obj,oAttr)
-        matrix_obj=oPlug.asMObject()
-        matrixDataFn=om.MFnMatrixData(matrix_obj)
-        matrixDataFn.
-              
-
+        dgFn.addAttribute(lAttr) 
+        
+        mat=om.MMatrix()
+        mat.setElement(0,0,xAxis[0])
+        mat.setElement(0,1,xAxis[1])
+        mat.setElement(0,2,xAxis[2])
+        mat.setElement(0,3,0)
+        mat.setElement(1,0,yAxis[0])
+        mat.setElement(1,1,yAxis[1])
+        mat.setElement(1,2,yAxis[2])
+        mat.setElement(1,3,0)
+        mat.setElement(2,0,zAxis[0])
+        mat.setElement(2,1,zAxis[1])
+        mat.setElement(2,2,zAxis[2])
+        mat.setElement(2,3,0)
+        mat.setElement(3,0,ray_center[0])
+        mat.setElement(3,1,ray_center[1])
+        mat.setElement(3,2,ray_center[2])
+        mat.setElement(3,3,1)
+                
+        objectToWorld=mat
+        try:
+            mPlug=dgFn.findPlug('objectToWorld',False)
+        except:
+            om.MGlobal.displayError( 'Could not find the attribute.' )
+            raise
+        else:
+            sourceValueAsMObject = om.MFnMatrixData().create(mat)
+            mPlug.setMObject( sourceValueAsMObject )
+            
+        
+            
+>>>>>>> ff702d0c3d0139a4ece74d47aafc922ba7343602
     def undoIt(self):
         dagFn=om.MFnDagNode(self.cross_section_obj)
         child_curve=dagFn.child(0)
