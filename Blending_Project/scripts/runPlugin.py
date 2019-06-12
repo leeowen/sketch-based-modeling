@@ -3,15 +3,14 @@ import sys
 
 sys.path.append('/usr/lib64/python2.7/site-packages')
 sys.path.append('./.local/lib/python2.7/site-packages')
-import numpy
+import numpy, sympy
 
 
 dirPath=cmds.workspace(q=True, rootDirectory=True )
 dirPath+='scripts/'
 cmds.loadPlugin(dirPath+"cross_section_extract_cmd.py")
-cmds.crossSectionExtract(mu=0.5,mmn="source_male_mesh",mbn="Source_LeftUpLeg")
+cmds.crossSectionExtract(mu=0.8,mmn="source_male_mesh",mbn="Source_LeftUpLeg")
 cmds.flushUndo()
-cmds.unloadPlugin(dirPath+"cross_section_extract_cmd.py")
 cmds.crossSectionExtract(mu=0.5)
 cmds.scriptEditorInfo(clearHistory=True)
 
