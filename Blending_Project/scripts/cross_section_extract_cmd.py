@@ -168,7 +168,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         yAxis.normalize()
         local_frame=Local_Frame_Tuple(xAxis,yAxis,zAxis)
         
-        transform_name=self.bone_name+"_cross_section"+"u_at_"+str(int(self.u_parameter*100))+"_percentage"
+        transform_name=self.bone_name+"_cross_section"+"_u_at_"+str(int(self.u_parameter*100))+"_percentage"
         dirPath=cmds.workspace(q=True, rootDirectory=True )
         file_name=dirPath+transform_name
         f=open(file_name,"w+")
@@ -179,7 +179,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         output+="center: "+str(ray_center[0])+" "+str(ray_center[1])+" "+str(ray_center[2])+"\n"
         
         #EXTRACT CROSS SECTION CURVES
-        vdiv=20 #the number of v division
+        vdiv=100 #the number of v division
         meshFn=om.MFnMesh(self.mesh_dagPath)
         raySource=om.MFloatPoint(ray_center)
         #print raySource
