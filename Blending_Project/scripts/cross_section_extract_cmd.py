@@ -11,12 +11,10 @@
 # 
 #   For example:
 #    
-#     crossSectionExtract -mu 0.1 -mmn "source_male_mesh" -mbn "Source_LeftUpLeg"
+#     crossSectionExtract -mu 0.1 -md 40 -mmn "source_male_mesh" -mbn "Source_LeftUpLeg"
 #
 #   The output is the cross section curve extracted from a mesh named "Source_male_meshShape", 
 #   paralled with a bone named "Source_LeftUpLeg" at the location u=0.1.
-#   It also create a .txt file containing the local coordinate of the cross-section curve, 
-#   the u parameter on the bone, and the cross-section curve's points' location in world space.
 #------------------------------------------------- 
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
@@ -44,6 +42,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         self.bone_dagPath = om.MDagPath()  
         self.nextBone_dagPath = om.MDagPath() 
         self.u_parameter=0.0    #default value
+        self.division=20
 
         
     @staticmethod
@@ -57,6 +56,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         syntax.addFlag('-mu','-myUparameter',om.MSyntax.kDouble)
         syntax.addFlag('-mmn','-myMeshName',om.MSyntax.kString)
         syntax.addFlag('-mbn','-myBoneName',om.MSyntax.kString)
+        syntax.addFlag('-md','-myDivision',om.MSyntax.kLong)
         return syntax
         
     
@@ -68,8 +68,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         # We must return True to specify that this command is undoable.
         return False
 
-                      
-       
+                             
     def parseArguments(self, args):
         argData=om.MArgDatabase(self.syntax(),args)
         if argData.isFlagSet('-mu'):
@@ -78,7 +77,9 @@ class CrossSectionExtractCmd(om.MPxCommand):
             self.mesh_name = argData.flagArgumentString( '-mmn', 0 )
         if argData.isFlagSet('-mbn'):
             self.bone_name = argData.flagArgumentString( '-mbn', 0 )  
-            
+        if argData.isFlagSet('-md'):
+            self.division = argData.flagArgumentInt( '-md', 0 )  
+                
         # WHEN NO MESH IS SPECIFIED IN THE COMMAND, GET THE FIRST SELECTED MESH FROM THE SELECTION LIST:
         if (self.mesh_name == "") or (self.bone_name == ""):
             sList = om.MGlobal.getActiveSelectionList()
@@ -170,8 +171,6 @@ class CrossSectionExtractCmd(om.MPxCommand):
         
         transform_name=self.bone_name+"_cross_section"+"_u_at_"+str(int(self.u_parameter*100))+"_percentage"
         dirPath=cmds.workspace(q=True, rootDirectory=True )
-        file_name=dirPath+transform_name
-        f=open(file_name,"w+")
         output="u parameter: "+str(self.u_parameter)+"\n"
         output+="xAxis: "+str(xAxis[0])+" "+str(xAxis[1])+" "+str(xAxis[2])+"\n"
         output+="yAxis: "+str(yAxis[0])+" "+str(yAxis[1])+" "+str(yAxis[2])+"\n"
@@ -179,14 +178,12 @@ class CrossSectionExtractCmd(om.MPxCommand):
         output+="center: "+str(ray_center[0])+" "+str(ray_center[1])+" "+str(ray_center[2])+"\n"
         
         #EXTRACT CROSS SECTION CURVES
-        vdiv=100 #the number of v division
         meshFn=om.MFnMesh(self.mesh_dagPath)
         raySource=om.MFloatPoint(ray_center)
-        #print raySource
         eps=om.MPointArray()
         eps.clear()
-        for i in range(0,vdiv):
-            angle=2*math.pi*float(i)/float(vdiv)
+        for i in range(0,self.division):
+            angle=2*math.pi*float(i)/float(self.division)
             ray=yAxis.rotateBy(om.MQuaternion(angle,xAxis))
             rayDirection=om.MFloatVector(ray)
         
@@ -198,8 +195,6 @@ class CrossSectionExtractCmd(om.MPxCommand):
                 eps.append(hitPoint)
                 output+=str(hitPoint[0])+" "+str(hitPoint[1])+" "+str(hitPoint[2])+"\n"
                 
-        f.write(output)
-        f.close()
         curveFn=om.MFnNurbsCurve()
         self.cross_section_obj=curveFn.createWithEditPoints(eps,2,om.MFnNurbsCurve.kClosed, False, False, True)
         
@@ -243,6 +238,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         sourceValueAsMObject = om.MFnMatrixData().create(mat)
         mPlug.setMObject( sourceValueAsMObject )
         
+        om.MPxCommand.setResult(om.MFnDependencyNode(self.cross_section_obj).name())
 
 
 def initializePlugin(plugin):
