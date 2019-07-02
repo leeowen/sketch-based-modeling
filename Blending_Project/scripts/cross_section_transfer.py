@@ -78,6 +78,34 @@ def getQuaternionMatrix(v0,v1):
     
     return rotMatrix
        
+def decomposeTransformationMatrix(mat):
+    translateVec=om.MVector((mat.getElement(3,0),mat.getElement(3,1),mat.getElement(3,2)))
+
+    sx=om.MVector((mat.getElement(0,0),mat.getElement(0,1),mat.getElement(0,2))).length()
+    sx=om.MVector((mat.getElement(1,0),mat.getElement(1,1),mat.getElement(1,2))).length()
+    sx=om.MVector((mat.getElement(2,0),mat.getElement(2,1),mat.getElement(2,2))).length()
+    scaleVec=om.MVector(sx,sy,sz)
+
+    rotationMat=om.MMatrix()
+    rotationMat.setElement(0,0,mat.getElement(0,0)/sx)
+    rotationMat.setElement(1,0,mat.getElement(1,0)/sx)
+    rotationMat.setElement(2,0,mat.getElement(2,0)/sx)
+    rotationMat.setElement(3,0,0)
+    rotationMat.setElement(0,1,mat.getElement(0,1)/sy)
+    rotationMat.setElement(1,1,mat.getElement(1,1)/sy)
+    rotationMat.setElement(2,1,mat.getElement(2,1)/sy)
+    rotationMat.setElement(3,1,0)
+    rotationMat.setElement(0,2,mat.getElement(0,2)/sz)
+    rotationMat.setElement(1,2,mat.getElement(1,2)/sz)
+    rotationMat.setElement(2,2,mat.getElement(2,2)/sz)
+    rotationMat.setElement(3,2,0)
+    rotationMat.setElement(0,3,0)
+    rotationMat.setElement(1,3,0)
+    rotationMat.setElement(2,3,0)
+    rotationMat.setElement(3,3,1)
+    
+    return translateVec,scaleVec,rotationMat
+    
 
 selection=om.MSelectionList()
 selection.add("Target_Belly")#belly joint is the root joint
@@ -144,7 +172,9 @@ while not dagIter.isDone():
         translateMat.setElement(1,3,p0[1])
         translateMat.setElement(2,3,p0[2])
         
-        transferMat=quarternionMat*translateMat # The matrices are post-multiplied in Maya
+        # The transform order is rotate-->translate
+        # The transform matrix M is after the point/vector P (P' = P x M)" 
+        transferMat=quarternionMat*translateMat   
         
         # Networked plugs contain the actual connection data between two nodes, 
         # and maybe some other flags as required, such as whether the plug is locked. 
@@ -154,6 +184,7 @@ while not dagIter.isDone():
         mPlug=dagFn.findPlug('transferMatrix',False)
         sourceValueAsMObject = om.MFnMatrixData().create(transferMat)
         mPlug.setMObject( sourceValueAsMObject )   
+    
     # If it is not root joint, a.k.a not Belly joint
     else:
         # Require the parent's transfer Matrix attribute 
@@ -164,7 +195,7 @@ while not dagIter.isDone():
         fatherPlug=fatherFn.findPlug('transferMatrix',False)
         fatherMatObj=fatherPlug.asMObject()
         fatherMat=om.MFnMatrixData(fatherMatObj).matrix()
-        print fatherMat
+
         # Find father joint's location to construct quaternion matrix and negative translate matrix      
         p1=cmds.xform(curJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
         p0=cmds.xform(fatherJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)        
@@ -212,12 +243,29 @@ while not dagIter.isDone():
 
 
 selection.clear()
-originName='Source_RightForeArm_cross_section_u_at_100_percentage'
+originName='Source_Belly_cross_section_u_at_70_percentage'
 selection.add(originName)
 originDag=selection.getDagPath(0)
-duplicateName=cmds.duplicate(originName)
-duplicateObj=om.MObject(duplicateName)
-duplicateDag=om.MDagPath()
-transFn=om.MFnTransform(duplicateDag)
-translateVector=om.MVector((2,2,2))
-transFn.setTranslation(translateVector,om.MSpace.kWorld)
+originFn=om.MFnDagNode(originDag)
+origPlug=om.MPlug()
+origPlug=originFn.findPlug("objToWorld",False)
+origMatObj=origPlug.asMObject()
+origMat=om.MFnMatrixData(origMatObj).matrix()
+worldToLocalMat=origMat.inverse()
+dagModifier=om.MDagModifier()
+instanceObj=dagModifier.createNode( 'transform' )
+name=originName.split("Source")
+duplicateName="ideal"+name[1]
+dagModifier.renameNode(instanceObj,duplicateName)
+print worldToLocalMat.getElement(0,1)
+translationVec,scaleVec,rotationMat=decomposeTransformationMatrix(worldToLocalMat)
+#duplicateMatrix=om.MTransformationMatrix(worldToLocalMat)
+#translation=duplicateMatrix.translation(om.MSpace.kWorld)
+
+#div=40
+#eps=om.MPointsArray()
+#for i in range (div):
+#    u=1.0/div*i
+#    pt=origFn.getPointAtParam(u,pm.MSpace.kWorld)
+#    eps.append()
+
