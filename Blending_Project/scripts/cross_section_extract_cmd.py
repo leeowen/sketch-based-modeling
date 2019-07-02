@@ -206,15 +206,19 @@ class CrossSectionExtractCmd(om.MPxCommand):
         uAttr=attrFn.create("uParameter","u",om.MFnNumericData.kFloat,self.u_parameter)
         attrFn.readable=True 
         attrFn.storable=True # fairly consistent, won't change in compute() or get updated by upstream node, etc
-        attrFn.writable=False 
-        dgFn.addAttribute(uAttr)
-                
+        attrFn.writable=True 
+        attrFn.keyable=True
+        attrFn.hidden=False
+        dgFn.addAttribute( uAttr)
+                        
         mttrFn=om.MFnMatrixAttribute()
         mAttr=mttrFn.create("objToWorld","otw")
         mttrFn.readable=True
         mttrFn.storable=True
-        mttrFn.writable=False 
-        dgFn.addAttribute(mAttr)
+        mttrFn.writable=True 
+        mttrFn.keyable=True
+        mttrFn.hidden=False
+        dgFn.addAttribute( mAttr)
         
         mat=om.MMatrix()
         mat.setElement(0,0,xAxis[0])
