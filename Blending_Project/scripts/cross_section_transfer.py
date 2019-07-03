@@ -24,59 +24,7 @@ import sys
 
 def maya_useNewAPI():
     pass
-    
-def getTranslateMatrix(p):
-    tMat=om.MMatrix()
-    tMat.setElement(0,0,1)
-    tMat.setElement(0,1,0)
-    tMat.setElement(0,2,0)
-    tMat.setElement(0,3,p[0])
-    tMat.setElement(1,0,0)
-    tMat.setElement(1,1,1)
-    tMat.setElement(1,2,0)
-    tMat.setElement(1,3,p[1])
-    tMat.setElement(2,0,0)
-    tMat.setElement(2,1,0)
-    tMat.setElement(2,2,1)
-    tMat.setElement(2,3,p[2])
-    tMat.setElement(3,0,0)
-    tMat.setElement(3,1,0)
-    tMat.setElement(3,2,0)
-    tMat.setElement(3,3,1)
-    return tMat
-    
-def getQuaternionMatrix(v0,v1):
-    v0=v0.normalize()
-    v1=v1.normalize()
-    rotationAxis=v0^v1 # to determine a ratation axis
-    theta=math.acos(v0*v1) # to find rotation angle
-    # to build a quaternion
-    s=math.sin(theta/2.0)
-    qx=rotationAxis.x*s
-    qy=rotationAxis.y*s
-    qz=rotationAxis.z*s
-    qw=math.cos(theta/2.0)
-    # the transformation matrix is the quaternion as a 3 by 3
-    # note that Matrix in maya is column-major
-    rotMatrix=om.MMatrix()   
-    rotMatrix.setElement(0,0,1-2*qy*qy-2*qz*qz)
-    rotMatrix.setElement(1,0,2*qx*qy-2*qz*qw)
-    rotMatrix.setElement(2,0,2*qx*qz+2*qy*qw)
-    rotMatrix.setElement(3,0,0)
-    rotMatrix.setElement(0,1,2*qx*qy+2*qz*qw)
-    rotMatrix.setElement(1,1,1-2*qx*qx-2*qz*qz)
-    rotMatrix.setElement(2,1,2*qy*qz-2*qx*qw)
-    rotMatrix.setElement(3,1,0)
-    rotMatrix.setElement(0,2,2*qx*qz-2*qy*qw)
-    rotMatrix.setElement(1,2,2*qy*qz+2*qx*qw)
-    rotMatrix.setElement(2,2,1-2*qx*qx-2*qy*qy)
-    rotMatrix.setElement(3,2,0)
-    rotMatrix.setElement(0,3,0)
-    rotMatrix.setElement(1,3,0)
-    rotMatrix.setElement(2,3,0)
-    rotMatrix.setElement(3,3,1)
-    
-    return rotMatrix
+      
        
 def decomposeTransformationMatrix(mat):
     translateVec=om.MVector((mat.getElement(3,0),mat.getElement(3,1),mat.getElement(3,2)))
@@ -112,15 +60,6 @@ selection.add("Target_Belly")#belly joint is the root joint
 rootJointObj=om.MObject()
 rootJointDag=om.MDagPath()
 
-"""
-MayaVersion=cmds.about(version=True)
-if MayaVersion=="2017":
-    selection.getDependNode(0,rootJointObj)
-    selection.getDagPath(0,rootJointDag)
-elif MayaVersion=="2018":
-    rootJointObj=selection.getDependNode(0)
-    rootJointDag=selection.getDagPath(0)
-"""
 rootJointObj=selection.getDependNode(0)
 rootJointDag=selection.getDagPath(0)
     
@@ -139,19 +78,16 @@ while not dagIter.isDone():
     fatherCount=dagFn.parentCount()
     childCount=dagFn.childCount()
     transferMat=om.MMatrix().setToIdentity()
-    translateMat=om.MMatrix().setToIdentity()
-    quarternionMat=om.MMatrix().setToIdentity()
-    translateBackMat=om.MMatrix().setToIdentity()
-    
-    # Add transfer matrix attribute to the joint, if it doesn't exist
-    if not dagFn.hasAttribute("transferMatrix"):
+   
+    # Add translate vector attribute to the joint, if it doesn't exist
+    if not dagFn.hasAttribute("transferMat"):
         mttrFn=om.MFnMatrixAttribute()
-        mAttr=mttrFn.create("transferMatrix","tfm",om.MFnMatrixAttribute.kDouble)
+        mAttr=mttrFn.create("transferMat,"tfm",om.MFnMatrixAttribute.kDouble)
         mttrFn.readable=True
         mttrFn.storable=True # fairly consistent, won't change in compute()
         mttrFn.writable=False 
         dagFn.addAttribute(mAttr)
-    
+           
     # The root joint, a.k.a belly joint
     if "Belly" in curJointName:
         # Get joint position
@@ -165,14 +101,12 @@ while not dagIter.isDone():
             if "Chest" in childJointName: 
                 p1=cmds.xform(childJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
                 newUp=om.MVector(p1[0]-p0[0],p1[1]-p0[1],p1[2]-p0[2])
-                quaternionMat=getQuaternionMatrix(om.MVector((0,1,0)),newUp)
+                quaternion=om.MQuaternion(om.MVector.yAxis,newUp)
             
         # Transfer Matrix should indicate the translation
-        translateMat.setElement(0,3,p0[0])
-        translateMat.setElement(1,3,p0[1])
-        translateMat.setElement(2,3,p0[2])
+        translateVec=om.MVector((p0[0],p0[1],p0[2]))
         
-        # The transform order is rotate-->translate
+        # The transform order is rotate(object space)-->translate
         # The transform matrix M is after the point/vector P (P' = P x M)" 
         transferMat=quarternionMat*translateMat   
         
@@ -211,7 +145,7 @@ while not dagIter.isDone():
             childJointName=childFn.name()
             p2=cmds.xform(childJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
             newUp=om.MVector(p2[0]-p1[0],p2[1]-p1[1],p2[2]-p1[2])
-            quaternionMat=getQuaternionMatrix(oldUp,newUp)
+            quaternionMat=oldUp.rotateTo(newUp)
             
         # If has no child joint,i.e. an end joint, then no rotaion or translate Matrix is needed,
         # However, Hip joint is an exception
@@ -219,7 +153,7 @@ while not dagIter.isDone():
             if "Hip" in curJointName:
                 p2=cmds.xform(fatherJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
                 newUp=om.MVector(p2[0]-p1[0],p2[1]-p1[1],p2[2]-p1[2])
-                quaternionMat=getQuaternionMatrix(oldUp,newUp)
+                quaternion=om.MQuaternion(oldUp,newUp)
             else:
                 quarternionMat.setToIdentity()
                 
@@ -232,7 +166,7 @@ while not dagIter.isDone():
                 if "Head" in childJointName: 
                     p2=cmds.xform(childJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
                     newUp=om.MVector(p1[0]-p0[0],p1[1]-p0[1],p1[2]-p0[2])
-                    quaternionMat=getQuaternionMatrix(om.MVector((0,1,0)),newUp)                                        
+                    quaternion=om.MQuaternion(om.MVector((0,1,0)),newUp)                                        
         
         translateMat=getTranslateMatrix(p1)        
         transferMat=fatherMat*translateBackMat*quaternionMat*translateMat    

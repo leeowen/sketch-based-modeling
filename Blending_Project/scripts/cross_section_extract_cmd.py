@@ -13,8 +13,9 @@
 #    
 #     crossSectionExtract -mu 0.1 -md 40 -mmn "source_male_mesh" -mbn "Source_LeftUpLeg"
 #
-#   The output is the cross section curve extracted from a mesh named "Source_male_meshShape", 
-#   paralled with a bone named "Source_LeftUpLeg" at the location u=0.1.
+#   The output is the cross section curve extracted from mesh "Source_male_meshShape", 
+#   paralled with a bone named "Source_LeftUpLeg" at the location u=0.1. 
+#   There are two copies of the extracted cross-section curves, one is in world space, the other is in object space.
 #------------------------------------------------- 
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
