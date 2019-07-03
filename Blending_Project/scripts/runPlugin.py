@@ -5,6 +5,7 @@ dirPath+='scripts/'
 cmds.loadPlugin(dirPath+"cross_section_extract_cmd.py")
 
 grp=cmds.group( em=True, name='source_cross_section_group' )
+grp_meta=cmds.group( em=True, name='source_meta_cross_section_group' )
 
 head=[0.9,0.62,0.22]
 for i in head:
@@ -25,7 +26,8 @@ for i in chest:
 belly=[0.7,0.3,0.18]
 for i in belly:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Belly",md=100)
-    cmds.parent( tmp, grp )
+    cmds.parent( tmp[0], grp )
+    cmds.parent(tmp[1],grp_meta)
 
 hip=[0.75,0.5,0.25,0.0]
 for i in hip:

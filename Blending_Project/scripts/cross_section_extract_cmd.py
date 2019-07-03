@@ -29,7 +29,7 @@ def maya_useNewAPI():
 ##
 ##############################################################################
 
-Local_Frame_Tuple=collections.namedtuple("LocalFrame",['xAxis','yAxis','zAxis'])
+Local_Frame_Tuple=collections.namedtuple("LocalFrame",['upAxis','xAxis','zAxis'])
 
 class CrossSectionExtractCmd(om.MPxCommand):
     kPluginName='crossSectionExtract'
@@ -142,11 +142,14 @@ class CrossSectionExtractCmd(om.MPxCommand):
         self.parseArguments(args)
         
         # GET BONE DATA
+        flag=1
         boneFn=om.MFnDagNode(self.bone_dagPath)
         if boneFn.childCount()>0:
             next_bone_obj=boneFn.child(0)
+            flag=-1
         elif boneFn.parentCount():
             next_bone_obj=boneFn.parent(0)
+            flag=1
             
         nextBoneFn=om.MFnDagNode(next_bone_obj)
         self.nextBone_name=nextBoneFn.fullPathName().split('|')
@@ -161,73 +164,26 @@ class CrossSectionExtractCmd(om.MPxCommand):
         ray_center=linear_interpolate_3D(bone_position,nextBone_position,self.u_parameter)                
 
         # GET THE LOCAL FRAME ON THE CHOOSEN BONE
-        xAxis=(bone_position-nextBone_position).normalize()
-        yAxis=line_normal(ray_center,bone_position,nextBone_position)# this is not a real normal! just an intermiediate vector                                                                            
-        zAxis=xAxis^yAxis
+        upAxis=(bone_position-nextBone_position).normalize()
+        upAxis=flag*upAxis
+        xAxis=line_normal(ray_center,bone_position,nextBone_position)# this is not a real normal! just an intermiediate vector                                                                            
+        zAxis=upAxis^xAxis
         zAxis.normalize()
-        yAxis=xAxis^zAxis
-        yAxis.normalize()
-        local_frame=Local_Frame_Tuple(xAxis,yAxis,zAxis)
+        xAxis=upAxis^zAxis
+        xAxis.normalize()
+        local_frame=Local_Frame_Tuple(upAxis,xAxis,zAxis)
         
         transform_name=self.bone_name+"_cross_section"+"_u_at_"+str(int(self.u_parameter*100))+"_percentage"
         dirPath=cmds.workspace(q=True, rootDirectory=True )
-        output="u parameter: "+str(self.u_parameter)+"\n"
-        output+="xAxis: "+str(xAxis[0])+" "+str(xAxis[1])+" "+str(xAxis[2])+"\n"
-        output+="yAxis: "+str(yAxis[0])+" "+str(yAxis[1])+" "+str(yAxis[2])+"\n"
-        output+="zAxis: "+str(zAxis[0])+" "+str(zAxis[1])+" "+str(zAxis[2])+"\n"
-        output+="center: "+str(ray_center[0])+" "+str(ray_center[1])+" "+str(ray_center[2])+"\n"
-        
-        #EXTRACT CROSS SECTION CURVES
-        meshFn=om.MFnMesh(self.mesh_dagPath)
-        raySource=om.MFloatPoint(ray_center)
-        eps=om.MPointArray()
-        eps.clear()
-        for i in range(0,self.division):
-            angle=2*math.pi*float(i)/float(self.division)
-            ray=yAxis.rotateBy(om.MQuaternion(angle,xAxis))
-            rayDirection=om.MFloatVector(ray)
-        
-            try:
-                hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kWorld,9999,False,idsSorted=False,tolerance=0.001)    
-            except:
-                raise
-            else:
-                eps.append(hitPoint)
-                output+=str(hitPoint[0])+" "+str(hitPoint[1])+" "+str(hitPoint[2])+"\n"
-                
-        curveFn=om.MFnNurbsCurve()
-        self.cross_section_obj=curveFn.createWithEditPoints(eps,2,om.MFnNurbsCurve.kClosed, False, False, True)
-        
-        dgFn=om.MFnDependencyNode(self.cross_section_obj)
-        dgFn.setName(transform_name)
-
-        # add custom attribute to node
-        attrFn=om.MFnNumericAttribute()
-        uAttr=attrFn.create("uParameter","u",om.MFnNumericData.kFloat,self.u_parameter)
-        attrFn.readable=True 
-        attrFn.storable=True # fairly consistent, won't change in compute() or get updated by upstream node, etc
-        attrFn.writable=True 
-        attrFn.keyable=True
-        attrFn.hidden=False
-        dgFn.addAttribute( uAttr)
-                        
-        mttrFn=om.MFnMatrixAttribute()
-        mAttr=mttrFn.create("objToWorld","otw")
-        mttrFn.readable=True
-        mttrFn.storable=True
-        mttrFn.writable=True 
-        mttrFn.keyable=True
-        mttrFn.hidden=False
-        dgFn.addAttribute( mAttr)
         
         mat=om.MMatrix()
         mat.setElement(0,0,xAxis[0])
         mat.setElement(0,1,xAxis[1])
         mat.setElement(0,2,xAxis[2])
         mat.setElement(0,3,0)
-        mat.setElement(1,0,yAxis[0])
-        mat.setElement(1,1,yAxis[1])
-        mat.setElement(1,2,yAxis[2])
+        mat.setElement(1,0,upAxis[0])
+        mat.setElement(1,1,upAxis[1])
+        mat.setElement(1,2,upAxis[2])
         mat.setElement(1,3,0)
         mat.setElement(2,0,zAxis[0])
         mat.setElement(2,1,zAxis[1])
@@ -238,13 +194,67 @@ class CrossSectionExtractCmd(om.MPxCommand):
         mat.setElement(3,2,ray_center[2])
         mat.setElement(3,3,1)
         
-        mPlug=dgFn.findPlug('objToWorld',False)
+        
+        #EXTRACT CROSS SECTION CURVES
+        meshFn=om.MFnMesh(self.mesh_dagPath)
+        raySource=om.MFloatPoint(ray_center)
+        eps=om.MPointArray()
+        eps.clear()
+        epsLocal=om.MPointArray()
+        epsLocal.clear()
+        for i in range(0,self.division):
+            angle=2*math.pi*float(i)/float(self.division)
+            ray=xAxis.rotateBy(om.MQuaternion(angle,upAxis))
+            rayDirection=om.MFloatVector(ray)
+        
+            try:
+                hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kWorld,9999,False,idsSorted=False,tolerance=0.001)    
+            except:
+                raise
+            else:
+                eps.append(hitPoint)
+                matInverse=mat.inverse()
+                hitPointLocal=om.MVector(hitPoint[0],hitPoint[1],hitPoint[2])*matInverse
+                hitPointLocal-=ray_center
+                epsLocal.append(hitPointLocal)
+                
+        curveFn=om.MFnNurbsCurve()
+        self.cross_section_obj=curveFn.createWithEditPoints(eps,2,om.MFnNurbsCurve.kClosed, False, False, True)
+        self.cross_section_obj_meta=curveFn.createWithEditPoints(epsLocal,2,om.MFnNurbsCurve.kClosed, False, False, True)
+        
+        dgFn=om.MFnDependencyNode(self.cross_section_obj)
+        dgFn.setName(transform_name)
+        
+        dgFn_meta=om.MFnDependencyNode(self.cross_section_obj_meta)
+        dgFn_meta.setName(transform_name+"_meta")
+
+        # add custom attribute to node
+        attrFn=om.MFnNumericAttribute()
+        uAttr=attrFn.create("uParameter","u",om.MFnNumericData.kFloat,self.u_parameter)
+        attrFn.readable=True 
+        attrFn.storable=True # fairly consistent, won't change in compute() or get updated by upstream node, etc
+        attrFn.writable=True 
+        attrFn.keyable=True
+        attrFn.hidden=False
+        dgFn_meta.addAttribute( uAttr)
+                        
+        mttrFn=om.MFnMatrixAttribute()
+        mAttr=mttrFn.create("objToWorld","otw")
+        mttrFn.readable=True
+        mttrFn.storable=True
+        mttrFn.writable=True 
+        mttrFn.keyable=True
+        mttrFn.hidden=False
+        dgFn_meta.addAttribute( mAttr)
+              
+        mPlug=dgFn_meta.findPlug('objToWorld',False)
         sourceValueAsMObject = om.MFnMatrixData().create(mat)
         mPlug.setMObject( sourceValueAsMObject )
+               
+        om.MPxCommand.setResult([om.MFnDependencyNode(self.cross_section_obj).name(),
+                                om.MFnDependencyNode(self.cross_section_obj_meta).name()])
         
-        om.MPxCommand.setResult(om.MFnDependencyNode(self.cross_section_obj).name())
-
-
+        
 def initializePlugin(plugin):
     pluginFn = om.MFnPlugin(plugin)
     try:
