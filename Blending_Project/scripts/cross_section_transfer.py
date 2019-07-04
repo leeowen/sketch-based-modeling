@@ -24,36 +24,78 @@ import sys
 
 def maya_useNewAPI():
     pass
-      
-       
-def decomposeTransformationMatrix(mat):
-    translateVec=om.MVector((mat.getElement(3,0),mat.getElement(3,1),mat.getElement(3,2)))
+   
+def recursion(jointObj,transformFn,u):
+    jointFn=om.MFnDagNode(jointObj)
+    jointName=jointFn.name()
+    if 'Belly' in jointName or 'Hip' in jointName:
+        qPlug=jointFn.findPlug('quaternionVec',False)
+        """
+        tPlug=jointFn.findPlug('translateVec',False)
+        translateVec=om.MVector()
+        translateVec.x=tPlug.child(0).asDouble()
+        translateVec.y=tPlug.child(1).asDouble()            
+        translateVec.z=tPlug.child(2).asDouble()
+        """
+        quaternionVec=om.MQuaternion()
+        quarternionVec.x=qPlug.child(0).asDouble()
+        quarternionVec.y=qPlug.child(1).asDouble()
+        quarternionVec.z=qPlug.child(2).asDouble()
+        quarternionVec.w=qPlug.child(3).asDouble()                        
+        
+        transformFn.rotateBy(quaternionVec,om.MSpace.kObject)
+        #transformFn.translateBy(translateVec,om.MSpace.kWorld)
+        return 
+    else:
+        if jointFn.hasParent():
+            fatherJointObj=jointFn.parent(0)
+            recursion(fatherJointObj,transformFn)
+            
+            qPlug=jointFn.findPlug('quaternionVec',False)
+            quaternionVec=om.MQuaternion()
+            quarternionVec.x=qPlug.child(0).asDouble()
+            quarternionVec.y=qPlug.child(1).asDouble()
+            quarternionVec.z=qPlug.child(2).asDouble()
+            quarternionVec.w=qPlug.child(3).asDouble()   
+            
+            transformFn.rotateBy(quaternionVec,om.MSpace.kObject)
+        else:
+            pass
+            
 
-    sx=om.MVector((mat.getElement(0,0),mat.getElement(0,1),mat.getElement(0,2))).length()
-    sx=om.MVector((mat.getElement(1,0),mat.getElement(1,1),mat.getElement(1,2))).length()
-    sx=om.MVector((mat.getElement(2,0),mat.getElement(2,1),mat.getElement(2,2))).length()
-    scaleVec=om.MVector(sx,sy,sz)
+def linear_interpolate_3D(p1,p2,t):
+    p1=om.MVector(p1[0],p1[1],p1[2])
+    p2=om.MVector(p2[0],p2[1],p2[2])
+    p=t*p2+(1.0-t)*p1
+    return p
 
-    rotationMat=om.MMatrix()
-    rotationMat.setElement(0,0,mat.getElement(0,0)/sx)
-    rotationMat.setElement(1,0,mat.getElement(1,0)/sx)
-    rotationMat.setElement(2,0,mat.getElement(2,0)/sx)
-    rotationMat.setElement(3,0,0)
-    rotationMat.setElement(0,1,mat.getElement(0,1)/sy)
-    rotationMat.setElement(1,1,mat.getElement(1,1)/sy)
-    rotationMat.setElement(2,1,mat.getElement(2,1)/sy)
-    rotationMat.setElement(3,1,0)
-    rotationMat.setElement(0,2,mat.getElement(0,2)/sz)
-    rotationMat.setElement(1,2,mat.getElement(1,2)/sz)
-    rotationMat.setElement(2,2,mat.getElement(2,2)/sz)
-    rotationMat.setElement(3,2,0)
-    rotationMat.setElement(0,3,0)
-    rotationMat.setElement(1,3,0)
-    rotationMat.setElement(2,3,0)
-    rotationMat.setElement(3,3,1)
+
+def getPositionAtU(jointObj,u):
+    pos=om.MVector()
+    jointFn=om.MFnDagNode(jointObj)
+    # GET BONE DATA
+    flag=1
+    jointFn=om.MFnDagNode(jointObj)
+    if jointFn.childCount()>0:
+        next_bone_obj=jointFn.child(0)
+        flag=-1
+    elif jointFn.parentCount():
+        next_bone_obj=jointFn.parent(0)
+        flag=1
+        
+    nextjointFn=om.MFnDagNode(next_bone_obj)
+    self.nextBone_name=nextjointFn.fullPathName().split('|')
+    self.nextBone_name=self.nextBone_name[-1]
+    self.nextBone_dagPath = nextBoneFn.getPath()
     
-    return translateVec,scaleVec,rotationMat
-    
+    # To avoid issues like freezeTransform, recommend rotate pivot to attain the position
+    bone_position=cmds.xform(self.bone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+    bone_position=om.MVector(bone_position[0],bone_position[1],bone_position[2])
+    nextBone_position=cmds.xform(self.nextBone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+    nextBone_position=om.MVector(nextBone_position[0],nextBone_position[1],nextBone_position[2])
+    pos=linear_interpolate_3D(bone_position,nextBone_position,self.u_parameter)
+    return pos
+            
 
 selection=om.MSelectionList()
 selection.add("Target_Belly")#belly joint is the root joint
@@ -65,8 +107,6 @@ rootJointDag=selection.getDagPath(0)
     
 dagIter=om.MItDag()
 dagIter.reset(rootJointDag,om.MItDag.kDepthFirst,om.MFn.kJoint)
-transferMat=om.MMatrix()
-
 
 while not dagIter.isDone():
     # Obtain the current item.
@@ -77,22 +117,48 @@ while not dagIter.isDone():
     curJointName=dagFn.name()
     fatherCount=dagFn.parentCount()
     childCount=dagFn.childCount()
-    transferMat=om.MMatrix().setToIdentity()
+    quaternion=om.MQuaternion()
    
     # Add translate vector attribute to the joint, if it doesn't exist
-    if not dagFn.hasAttribute("transferMat"):
-        mttrFn=om.MFnMatrixAttribute()
-        mAttr=mttrFn.create("transferMat,"tfm",om.MFnMatrixAttribute.kDouble)
-        mttrFn.readable=True
-        mttrFn.storable=True # fairly consistent, won't change in compute()
-        mttrFn.writable=False 
-        dagFn.addAttribute(mAttr)
+    if not dagFn.hasAttribute("translateVec"):
+        """
+        # Make the translation vec an atrribute 
+        nAttrFn = om.MFnUnitAttribute()
+        cAttrFn = om.MFnCompoundAttribute()
+        translateAttr = cAttrFn.create('translateVec', 'tsl')
+        translateAttrX =nAttrFn.create('translateVecX', 'tlX', om.MFnNumericData.kDistance)
+        translateAttrY =nAttrFn.create('translateVecY', 'tlY', om.MFnNumericData.kDistance)
+        translateAttrZ =nAttrFn.create('translateVecZ', 'tlZ', om.MFnNumericData.kDistance)
+        cAttrFn.setArray(True)
+        cAttrFn.addChild(translateAttrX)
+        cAttrFn.addChild(translateAttrY)
+        cAttrFn.addChild(translateAttrZ)
+        cAttrFn.setKeyable(True)
+        dgFn.addAttribute(translateAttr)
+        """
+        
+    if not dagFn.hasAttribute("quaternionVec"):
+        uAttrFn = om.MFnNumericAttribute()
+        qAttrFn = om.MFnCoumpoundAttribute()
+        qAttr=qAttrFn.create('quaternionVec','qn')
+        qAttrX=uAttrFn.create('quaternionVecX','qnx', om.MFnNumericData.kDouble)
+        qAttrY=uAttrFn.create('quaternionVecY','qny', om.MFnNumericData.kDouble)
+        qAttrZ=uAttrFn.create('quaternionVecZ','qnz', om.MFnNumericData.kDouble)
+        qAttrW=uAttrFn.create('quaternionVecW','qnw', om.MFnNumericData.kDouble)
+        qAttrFn.setArray(True)
+        qAttrFn.addChild(qAttrX)
+        qAttrFn.addChild(qAttrY)
+        qAttrFn.addChild(qAttrZ)
+        qAttrFn.addChild(qAttrW) 
+        qAttrFn.writable=True  
+        dgFn.addAttribute(qAttr)     
            
     # The root joint, a.k.a belly joint
     if "Belly" in curJointName:
         # Get joint position
         # To avoid issues like freezeTransform, recommend rotate pivot to attain the position
         p0=cmds.xform(curJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+        #translateVec=om.MVector((p0[0],p0[1],p0[2]))
         
         for i in range(childCount):
             childJointObj=dagFn.child(i)
@@ -101,23 +167,7 @@ while not dagIter.isDone():
             if "Chest" in childJointName: 
                 p1=cmds.xform(childJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
                 newUp=om.MVector(p1[0]-p0[0],p1[1]-p0[1],p1[2]-p0[2])
-                quaternion=om.MQuaternion(om.MVector.yAxis,newUp)
-            
-        # Transfer Matrix should indicate the translation
-        translateVec=om.MVector((p0[0],p0[1],p0[2]))
-        
-        # The transform order is rotate(object space)-->translate
-        # The transform matrix M is after the point/vector P (P' = P x M)" 
-        transferMat=quarternionMat*translateMat   
-        
-        # Networked plugs contain the actual connection data between two nodes, 
-        # and maybe some other flags as required, such as whether the plug is locked. 
-        # Maya is free to create and destroy them as it needs to, and no notifications are sent when that happens. 
-        # Non-networked plugs can be thought of as named references to a plug. They belong to you and have the lifespan you dictate.
-        # In C++ terms a non-networked plug is like a copy of an object and a networked plug is like a pointer to it. 
-        mPlug=dagFn.findPlug('transferMatrix',False)
-        sourceValueAsMObject = om.MFnMatrixData().create(transferMat)
-        mPlug.setMObject( sourceValueAsMObject )   
+                quaternion=om.MVector.rotateTo(yAxis,newUp)              
     
     # If it is not root joint, a.k.a not Belly joint
     else:
@@ -126,17 +176,17 @@ while not dagIter.isDone():
         fatherFn=om.MFnDagNode(fatherJointObj)
         fatherJointName=fatherFn.name()
 
-        fatherPlug=fatherFn.findPlug('transferMatrix',False)
-        fatherMatObj=fatherPlug.asMObject()
-        fatherMat=om.MFnMatrixData(fatherMatObj).matrix()
-
         # Find father joint's location to construct quaternion matrix and negative translate matrix      
         p1=cmds.xform(curJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
         p0=cmds.xform(fatherJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)        
-        mPlug=dagFn.findPlug('transferMatrix',False)
-        translateBackVec=om.MVector((-p0[0],-p0[1],-p0[2]))
-        translateBackMatrix=getTranslateMatrix(translateBackVec)
+        """
+        mPlug=dagFn.findPlug('translateVec',False)
+        translateVec.x=p0[0]
+        translateVec.y=p0[1]
+        translateVec.z=p0[2]
+        """
         oldUp=om.MVector((p1[0]-p0[0],p1[1]-p0[1],p1[2]-p0[2]))
+        
         
         # Find child joint's location to construct quaternion matrix and translate matrix
         if childCount==1:
@@ -145,7 +195,7 @@ while not dagIter.isDone():
             childJointName=childFn.name()
             p2=cmds.xform(childJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
             newUp=om.MVector(p2[0]-p1[0],p2[1]-p1[1],p2[2]-p1[2])
-            quaternionMat=oldUp.rotateTo(newUp)
+            quaternion=oldUp.rotateTo(newUp)
             
         # If has no child joint,i.e. an end joint, then no rotaion or translate Matrix is needed,
         # However, Hip joint is an exception
@@ -153,9 +203,9 @@ while not dagIter.isDone():
             if "Hip" in curJointName:
                 p2=cmds.xform(fatherJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
                 newUp=om.MVector(p2[0]-p1[0],p2[1]-p1[1],p2[2]-p1[2])
-                quaternion=om.MQuaternion(oldUp,newUp)
+                quaternion=oldUp.rotateTo(newUp)
             else:
-                quarternionMat.setToIdentity()
+                pass
                 
         # Have multiple children
         else:
@@ -166,13 +216,27 @@ while not dagIter.isDone():
                 if "Head" in childJointName: 
                     p2=cmds.xform(childJointName,absolute=True,query=True,worldSpace=True,rotatePivot=True)
                     newUp=om.MVector(p1[0]-p0[0],p1[1]-p0[1],p1[2]-p0[2])
-                    quaternion=om.MQuaternion(om.MVector((0,1,0)),newUp)                                        
-        
-        translateMat=getTranslateMatrix(p1)        
-        transferMat=fatherMat*translateBackMat*quaternionMat*translateMat    
-        sourceValueAsMObject = om.MFnMatrixData().create(transferMat)
-        mPlug.setMObject( sourceValueAsMObject )        
-        
+                    quaternion=oldUp.rotateTo(newUp)                                            
+    
+    # Networked plugs contain the actual connection data between two nodes, 
+    # and maybe some other flags as required, such as whether the plug is locked. 
+    # Maya is free to create and destroy them as it needs to, and no notifications are sent when that happens. 
+    # Non-networked plugs can be thought of as named references to a plug. They belong to you and have the lifespan you dictate.
+    # In C++ terms a non-networked plug is like a copy of an object and a networked plug is like a pointer to it.                        
+    """
+    cPlug=dgFn.findPlug('translateVec',False)
+    for i in range(3):
+        childPlug=cPlug.child(i)
+        value=om.MDistance(translateVec[i],om.MDistance.kInvalid)
+        childPlug.setMDistance(value)
+    """
+          
+    mPlug=dagFn.findPlug('quaternionVec',False)        
+    for i in range(4):
+        childPlug=mPlug.child(i)
+        value=quaternion[i]
+        childPlug.setDouble(value)
+    
     dagIter.next()
 
 
@@ -181,25 +245,31 @@ originName='Source_Belly_cross_section_u_at_70_percentage'
 selection.add(originName)
 originDag=selection.getDagPath(0)
 originFn=om.MFnDagNode(originDag)
+"""
 origPlug=om.MPlug()
 origPlug=originFn.findPlug("objToWorld",False)
 origMatObj=origPlug.asMObject()
 origMat=om.MFnMatrixData(origMatObj).matrix()
 worldToLocalMat=origMat.inverse()
 dagModifier=om.MDagModifier()
-instanceObj=dagModifier.createNode( 'transform' )
-name=originName.split("Source")
-duplicateName="ideal"+name[1]
-dagModifier.renameNode(instanceObj,duplicateName)
-print worldToLocalMat.getElement(0,1)
-translationVec,scaleVec,rotationMat=decomposeTransformationMatrix(worldToLocalMat)
-#duplicateMatrix=om.MTransformationMatrix(worldToLocalMat)
-#translation=duplicateMatrix.translation(om.MSpace.kWorld)
+"""
+metaName=originName+'_meta'
+selection.add(metaName)
+metaDag=selection.getDagPath(1)
+metaFn=om.MFnDagNode(metaDag)
 
-#div=40
-#eps=om.MPointsArray()
-#for i in range (div):
-#    u=1.0/div*i
-#    pt=origFn.getPointAtParam(u,pm.MSpace.kWorld)
-#    eps.append()
+metaTransformFn=om.MFnTransform(metaDag)
+# The transform order is rotate(object space)-->translate
 
+# Find the corresponding joint
+jointName=metaName.split('_cross_section_')
+selection.add(jointName)
+jointObj=selection.getDependNode(2)
+transformFn=om.MFnTransform(metaDag)
+u=metaName.split('_')
+u=int(u[6])
+recursion(jointObj,transformFn,u)
+positionAtU=getPositionAtU(jointObj,u)
+transformFn.translateTo(positionAtU)
+
+            
