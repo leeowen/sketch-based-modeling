@@ -21,20 +21,20 @@ for i in neck:
 
 chest=[0.96,0.86,0.66,0.22]
 for i in chest:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Chest",md=100)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Chest",md=80)
     cmds.parent( tmp[0], grp )
     cmds.parent(tmp[1],grp_meta)
 #cmds.crossSectionExtract(mu=0.42,mmn="source_male_mesh",mbn="Source_Chest")
 #cmds.crossSectionExtract(mu=0.3,mmn="source_male_mesh",mbn="Source_Chest")
 belly=[0.7,0.3,0.18]
 for i in belly:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Belly",md=100)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Belly",md=80)
     cmds.parent( tmp[0], grp )
     cmds.parent(tmp[1],grp_meta)
 
 hip=[0.75,0.5,0.25,0.0]
 for i in hip:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Hip",md=100)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Hip",md=80)
     cmds.parent( tmp[0], grp )
     cmds.parent(tmp[1],grp_meta)
 
