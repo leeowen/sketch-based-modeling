@@ -220,7 +220,8 @@ rootJointDag=selection.getDagPath(0)
 processJoint(rootJointDag)    
 
 selection.clear()
-originName='Source_Belly_cross_section_u_at_70_percentage'
+“”“
+originName='Source_Belly_cross_section_u_at_30_percentage'
 selection.add(originName)
 originDag=selection.getDagPath(0)
 originFn=om.MFnDagNode(originDag)
@@ -229,21 +230,24 @@ metaName=originName+'_meta'
 selection.add(metaName)
 metaDag=selection.getDagPath(1)
 metaFn=om.MFnDagNode(metaDag)
-
-metaTransformFn=om.MFnTransform(metaDag)
-# The transform order is rotate(object space)-->translate
-
-# Find the corresponding joint
-strList=metaName.split('_')
-jointName="Target_"+strList[1]
-selection.add(jointName)
-jointObj=selection.getDependNode(2)
-transformFn=om.MFnTransform(metaDag)
-u=int(strList[6])
-u=u/100.0
-recursion(jointObj,transformFn,u)
-positionAtU=getPositionAtU(jointObj,u)
-
-transformFn.translateBy(positionAtU,om.MSpace.kWorld)
+”“”
+strList=cmds.select("source_meta_cross_section_group", hierarchy=True)
+print strList
+for originCrv in strList:
+    originFn=om.MFnDagNode(originCrv)
+    metaName=originFn.name()    
+    # Find the corresponding joint
+    strList=metaName.split('_')
+    jointName="Target_"+strList[1]
+    
+    selection.add(jointName)
+    jointObj=selection.getDependNode(2)
+    transformFn=om.MFnTransform(metaDag)
+    u=int(strList[6])
+    u=u/100.0
+    recursion(jointObj,transformFn,u)
+    positionAtU=getPositionAtU(jointObj,u)
+    
+    transformFn.translateBy(positionAtU,om.MSpace.kWorld)
 
             
