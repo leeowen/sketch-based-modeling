@@ -6,7 +6,7 @@
 #
 #   To use the command, select the joint and mesh that you want data for and
 #   then type the command, being sure to use the -mu/-myUParameter flag to specify
-#   the location on the bone where a ray will cast out and later intersect with the mesh 
+#   the location on the Joint where a ray will cast out and later intersect with the mesh 
 #   to form the cross-section curve.
 # 
 #   For example:
@@ -14,12 +14,12 @@
 #     crossSectionExtract -mu 0.1 -md 40 -mmn "source_male_mesh" -mbn "Source_LeftUpLeg"
 #
 #   The output is the cross section curve extracted from mesh "Source_male_meshShape", 
-#   paralled with a bone named "Source_LeftUpLeg" at the location u=0.1. 
+#   paralled with a Joint named "Source_LeftUpLeg" at the location u=0.1. 
 #   There are two copies of the extracted cross-section curves, one is in world space, the other is in object space.
 #------------------------------------------------- 
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
-import math,collections
+import math
 
 def maya_useNewAPI():
     pass
@@ -29,19 +29,16 @@ def maya_useNewAPI():
 ## Command class implementation
 ##
 ##############################################################################
-
-Local_Frame_Tuple=collections.namedtuple("LocalFrame",['upAxis','xAxis','zAxis'])
-
 class CrossSectionExtractCmd(om.MPxCommand):
     kPluginName='crossSectionExtract'
     def __init__(self):
         om.MPxCommand.__init__(self)
         self.mesh_name=''
         self.mesh_dagPath = om.MDagPath()
-        self.bone_name=''  
-        self.nextBone_name=''
-        self.bone_dagPath = om.MDagPath()  
-        self.nextBone_dagPath = om.MDagPath() 
+        self.Joint_name=''  
+        self.nextJoint_name=''
+        self.Joint_dagPath = om.MDagPath()  
+        self.nextJoint_dagPath = om.MDagPath() 
         self.u_parameter=0.0    #default value
         self.division=20
 
@@ -56,7 +53,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         syntax=om.MSyntax()
         syntax.addFlag('-mu','-myUparameter',om.MSyntax.kDouble)
         syntax.addFlag('-mmn','-myMeshName',om.MSyntax.kString)
-        syntax.addFlag('-mbn','-myBoneName',om.MSyntax.kString)
+        syntax.addFlag('-mbn','-myJointName',om.MSyntax.kString)
         syntax.addFlag('-md','-myDivision',om.MSyntax.kLong)
         return syntax
         
@@ -77,12 +74,12 @@ class CrossSectionExtractCmd(om.MPxCommand):
         if argData.isFlagSet('-mmn'):
             self.mesh_name = argData.flagArgumentString( '-mmn', 0 )
         if argData.isFlagSet('-mbn'):
-            self.bone_name = argData.flagArgumentString( '-mbn', 0 )  
+            self.Joint_name = argData.flagArgumentString( '-mbn', 0 )  
         if argData.isFlagSet('-md'):
             self.division = argData.flagArgumentInt( '-md', 0 )  
                 
         # WHEN NO MESH IS SPECIFIED IN THE COMMAND, GET THE FIRST SELECTED MESH FROM THE SELECTION LIST:
-        if (self.mesh_name == "") or (self.bone_name == ""):
+        if (self.mesh_name == "") or (self.Joint_name == ""):
             sList = om.MGlobal.getActiveSelectionList()
                       
             iter=om.MItSelectionList (sList, om.MFn.kMesh)
@@ -106,17 +103,17 @@ class CrossSectionExtractCmd(om.MPxCommand):
             i=0
             while not iter.isDone(): 
                 #RETRIEVE THE JOINT
-                self.bone_dagPath = iter.getDagPath()
-                boneFn=om.MFnDagNode(self.bone_dagPath)
-                name=boneFn.fullPathName().split('|')
-                self.bone_name=name[-1]
+                self.Joint_dagPath = iter.getDagPath()
+                jointFn=om.MFnDagNode(self.Joint_dagPath)
+                name=jointFn.fullPathName().split('|')
+                self.Joint_name=name[-1]
                 i+=1
                 iter.next()
                 
             if i==0: 
-                raise ValueError("No bone or bone transform specified!")
+                raise ValueError("No Joint or Joint transform specified!")
             elif i>1:
-                raise ValueError("Multiple bones or bone transforms specified!")
+                raise ValueError("Multiple Joints or Joint transforms specified!")
 
          
         # get dagpath from mesh's and joint's names 
@@ -128,11 +125,11 @@ class CrossSectionExtractCmd(om.MPxCommand):
             else:
                 self.mesh_dagPath = selectionList.getDagPath( 0 )
             try:
-                selectionList = om.MGlobal.getSelectionListByName(self.bone_name)
+                selectionList = om.MGlobal.getSelectionListByName(self.Joint_name)
             except:
                 raise
             else:
-                self.bone_dagPath = selectionList.getDagPath( 0 )
+                self.Joint_dagPath = selectionList.getDagPath( 0 )
 
 
     def doIt(self,args):
@@ -142,60 +139,53 @@ class CrossSectionExtractCmd(om.MPxCommand):
         """
         self.parseArguments(args)
         
-        # GET BONE DATA
-        flag=1
-        boneFn=om.MFnDagNode(self.bone_dagPath)
-        if boneFn.childCount()>0:
-            next_bone_obj=boneFn.child(0)
-            flag=-1
-        elif boneFn.parentCount():
-            next_bone_obj=boneFn.parent(0)
-            flag=1
+        # GET Joint DATA
+        jointFn=om.MFnDagNode(self.Joint_dagPath)
+        if jointFn.childCount()==1:
+            next_joint_obj=jointFn.child(0)
+        elif jointFn.childCount()>1:# Belly, Neck
+            for i in range(jointFn.childCount()):
+                tmpObj=jointFn.child(i)
+                tmpFn=om.MFnDagNode(tmpObj)
+                tmpName=tmpFn.name()
+                if ("Chest" in tmpName) or ("Head" in tmpName):
+                    next_joint_obj=jointFn.child(i)
+        elif jointFn.childCount()==0 and jointFn.parentCount()==1:# Hip Hand Toe Top
+            next_joint_obj=jointFn.parent(0)
             
-        nextBoneFn=om.MFnDagNode(next_bone_obj)
-        self.nextBone_name=nextBoneFn.fullPathName().split('|')
-        self.nextBone_name=self.nextBone_name[-1]
-        self.nextBone_dagPath = nextBoneFn.getPath()
-        
+        nextJointFn=om.MFnDagNode(next_joint_obj)
+        self.nextJoint_dagPath = nextJointFn.getPath()
+        self.nextJoint_name=nextJointFn.name()
+        flag=0
+        flagDic={"Head":-1, "Neck":-1, "Chest":-1, "Belly":-1, "Hip":-1, "Thigh":1, "Leg":1, "ForeArm":1, "LeftArm":1, "RightArm":1, "Hand":1, "Toe":1, "Top":1}
+        for keyName in flagDic:
+            if keyName in self.nextJoint_name:
+                flag=flagDic[keyName]
+                       
         # To avoid issues like freezeTransform, recommend rotate pivot to attain the position
-        bone_position=cmds.xform(self.bone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
-        bone_position=om.MVector(bone_position[0],bone_position[1],bone_position[2])
-        nextBone_position=cmds.xform(self.nextBone_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
-        nextBone_position=om.MVector(nextBone_position[0],nextBone_position[1],nextBone_position[2])
-        ray_center=linear_interpolate_3D(bone_position,nextBone_position,self.u_parameter)                
+        joint_position=cmds.xform(self.Joint_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+        joint_position=om.MVector(joint_position[0],joint_position[1],joint_position[2])
+        nextjoint_position=cmds.xform(self.nextJoint_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+        nextjoint_position=om.MVector(nextjoint_position[0],nextjoint_position[1],nextjoint_position[2])
+        ray_center=linear_interpolate_3D(joint_position,nextjoint_position,self.u_parameter)                
 
-        # GET THE LOCAL FRAME ON THE CHOOSEN BONE
-        upAxis=(bone_position-nextBone_position).normalize()
-        upAxis=flag*upAxis
-        xAxis=line_normal(ray_center,bone_position,nextBone_position)# this is not a real normal! just an intermiediate vector                                                                            
-        zAxis=upAxis^xAxis
-        zAxis.normalize()
-        xAxis=upAxis^zAxis
-        xAxis.normalize()
-        local_frame=Local_Frame_Tuple(upAxis,xAxis,zAxis)
+        # GET THE LOCAL FRAME ON THE CHOOSEN JOINT
+        VAxis=(joint_position-nextjoint_position).normalize()
+        VAxis=flag*VAxis                                                                          
+        UAxis=om.MVector.kXaxisVector # this is not a real normal! just an intermiediate vector 
+        if abs(VAxis*UAxis)>0.99:
+            UAxix=om.MVector.kZaxisVector
+        WAxis=UAxis^VAxis
+        WAxis.normalize()
+        UAxis=VAxis^WAxis
+        UAxis.normalize()
+        # Find the quaternion that form the coordinate transformation of 
+        # joint's local framework: how the new coordinate get back into world coordinate
+        Quaternion=getQuaternion(UAxis,VAxis,WAxis)
         
-        transform_name=self.bone_name+"_cross_section"+"_u_at_"+str(int(self.u_parameter*100))+"_percentage"
+        transform_name=self.Joint_name+"_cross_section"+"_u_at_"+str(int(self.u_parameter*100))+"_percentage"
         dirPath=cmds.workspace(q=True, rootDirectory=True )
-        
-        mat=om.MMatrix()
-        mat.setElement(0,0,xAxis[0])
-        mat.setElement(0,1,xAxis[1])
-        mat.setElement(0,2,xAxis[2])
-        mat.setElement(0,3,0)
-        mat.setElement(1,0,upAxis[0])
-        mat.setElement(1,1,upAxis[1])
-        mat.setElement(1,2,upAxis[2])
-        mat.setElement(1,3,0)
-        mat.setElement(2,0,zAxis[0])
-        mat.setElement(2,1,zAxis[1])
-        mat.setElement(2,2,zAxis[2])
-        mat.setElement(2,3,0)
-        mat.setElement(3,0,ray_center[0])
-        mat.setElement(3,1,ray_center[1])
-        mat.setElement(3,2,ray_center[2])
-        mat.setElement(3,3,1)
-        
-        
+               
         #EXTRACT CROSS SECTION CURVES
         meshFn=om.MFnMesh(self.mesh_dagPath)
         raySource=om.MFloatPoint(ray_center)
@@ -205,7 +195,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         epsLocal.clear()
         for i in range(0,self.division):
             angle=2*math.pi*float(i)/float(self.division)
-            ray=xAxis.rotateBy(om.MQuaternion(angle,upAxis))
+            ray=UAxis.rotateBy(om.MQuaternion(angle,VAxis))
             rayDirection=om.MFloatVector(ray)
         
             try:
@@ -214,9 +204,11 @@ class CrossSectionExtractCmd(om.MPxCommand):
                 raise
             else:
                 eps.append(hitPoint)
-                matInverse=mat.inverse()
-                hitPointLocal=om.MVector(hitPoint[0],hitPoint[1],hitPoint[2])*matInverse
+                hitPointLocal=om.MVector(hitPoint[0],hitPoint[1],hitPoint[2])
                 hitPointLocal-=ray_center
+                # This is the quaternion that transform a point from world coordinate into local coordinate 
+                # Hence, we need to inverse the quaternion we get above
+                hitPointLocal=hitPointLocal.rotateBy(quaternion.inverse())
                 epsLocal.append(hitPointLocal)
                 
         curveFn=om.MFnNurbsCurve()
@@ -228,7 +220,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         
         dgFn_meta=om.MFnDependencyNode(self.cross_section_obj_meta)
         dgFn_meta.setName(transform_name+"_meta")
-
+        """
         # add custom attribute to node
         attrFn=om.MFnNumericAttribute()
         uAttr=attrFn.create("uParameter","u",om.MFnNumericData.kFloat,self.u_parameter)
@@ -251,6 +243,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         mPlug=dgFn_meta.findPlug('objToWorld',False)
         sourceValueAsMObject = om.MFnMatrixData().create(mat)
         mPlug.setMObject( sourceValueAsMObject )
+        """
                
         om.MPxCommand.setResult([om.MFnDependencyNode(self.cross_section_obj).name(),
                                 om.MFnDependencyNode(self.cross_section_obj_meta).name()])
@@ -277,20 +270,18 @@ def linear_interpolate_3D(p1,p2,t):
     p2=om.MVector(p2[0],p2[1],p2[2])
     p=t*p2+(1.0-t)*p1
     return p
+    
 
-
-def line_normal(p0,p1,p2):
-    x0=p0[0]
-    y0=p0[1]
-    x1=p1[0]
-    x2=p2[0]
-    y1=p1[1]
-    y2=p2[1]
-    z=p0[2]
-    slop=-(x1-x2)/(y1-y2)
-    xp=x0-1.0
-    yp=xp*slop+y0-slop*x0
-    n=om.MVector(xp,yp,0)
-    n.normalize()
-    return n
+def getQuaternion(UAxis,VAxis,WAxis):
+    q=om.MQuaternion()
+    qy=om.MVector.kYaxisVector.rotateTo(VAxis)
+    q=qy
+    xRotated=om.MVector.kXaxisVector.rotateBy(q)
+    angle=math.acos(xRotated*UAxis)
+    qx=om.MQuaternion(angle,VAxis)
+    if not UAxis.isEquivalent(xRotated.rotateBy(qx),1.0e-5):
+        angle=2*math.pi-angle
+        qx=om.MQuaternion(angle,VAxis)
         
+    q=q*qx
+    return q
