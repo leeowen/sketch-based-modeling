@@ -78,9 +78,3 @@ for i in foreArm:
     cmds.parent( tmp[0], grp )
     cmds.parent(tmp[1],grp_meta)
 
-grp=cmds.group( em=True, name='target_cross_section_group' )
-arm=[0.32,0.55,0.91,1]
-for i in arm:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="target_male_mesh",mbn="Target_RightArm",md=40) 
-    cmds.parent( tmp[0], grp )
-    cmds.parent(tmp[1],grp_meta)
