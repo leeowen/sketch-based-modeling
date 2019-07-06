@@ -35,7 +35,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         om.MPxCommand.__init__(self)
         self.mesh_name=''
         self.mesh_dagPath = om.MDagPath()
-        self.Joint_name=''  
+        self.joint_name=''  
         self.nextJoint_name=''
         self.Joint_dagPath = om.MDagPath()  
         self.nextJoint_dagPath = om.MDagPath() 
@@ -74,12 +74,12 @@ class CrossSectionExtractCmd(om.MPxCommand):
         if argData.isFlagSet('-mmn'):
             self.mesh_name = argData.flagArgumentString( '-mmn', 0 )
         if argData.isFlagSet('-mbn'):
-            self.Joint_name = argData.flagArgumentString( '-mbn', 0 )  
+            self.joint_name = argData.flagArgumentString( '-mbn', 0 )  
         if argData.isFlagSet('-md'):
             self.division = argData.flagArgumentInt( '-md', 0 )  
                 
         # WHEN NO MESH IS SPECIFIED IN THE COMMAND, GET THE FIRST SELECTED MESH FROM THE SELECTION LIST:
-        if (self.mesh_name == "") or (self.Joint_name == ""):
+        if (self.mesh_name == "") or (self.joint_name == ""):
             sList = om.MGlobal.getActiveSelectionList()
                       
             iter=om.MItSelectionList (sList, om.MFn.kMesh)
@@ -105,8 +105,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
                 #RETRIEVE THE JOINT
                 self.Joint_dagPath = iter.getDagPath()
                 jointFn=om.MFnDagNode(self.Joint_dagPath)
-                name=jointFn.fullPathName().split('|')
-                self.Joint_name=name[-1]
+                name=jointFn.name()
                 i+=1
                 iter.next()
                 
@@ -125,7 +124,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
             else:
                 self.mesh_dagPath = selectionList.getDagPath( 0 )
             try:
-                selectionList = om.MGlobal.getSelectionListByName(self.Joint_name)
+                selectionList = om.MGlobal.getSelectionListByName(self.joint_name)
             except:
                 raise
             else:
@@ -156,22 +155,18 @@ class CrossSectionExtractCmd(om.MPxCommand):
         nextJointFn=om.MFnDagNode(next_joint_obj)
         self.nextJoint_dagPath = nextJointFn.getPath()
         self.nextJoint_name=nextJointFn.name()
-        flag=0
-        flagDic={"Head":-1, "Neck":-1, "Chest":-1, "Belly":-1, "Hip":-1, "Thigh":1, "Leg":1, "ForeArm":1, "LeftArm":1, "RightArm":1, "Hand":1, "Toe":1, "Top":1}
-        for keyName in flagDic:
-            if keyName in self.nextJoint_name:
-                flag=flagDic[keyName]
                        
         # To avoid issues like freezeTransform, recommend rotate pivot to attain the position
-        joint_position=cmds.xform(self.Joint_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
+        joint_position=cmds.xform(self.joint_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
         joint_position=om.MVector(joint_position[0],joint_position[1],joint_position[2])
         nextjoint_position=cmds.xform(self.nextJoint_name,absolute=True,query=True,worldSpace=True,rotatePivot=True)
         nextjoint_position=om.MVector(nextjoint_position[0],nextjoint_position[1],nextjoint_position[2])
         ray_center=linear_interpolate_3D(joint_position,nextjoint_position,self.u_parameter)                
-
-        # GET THE LOCAL FRAME ON THE CHOOSEN JOINT
+       
+       # GET THE LOCAL FRAME ON THE CHOOSEN JOINT
         VAxis=(joint_position-nextjoint_position).normalize()
-        VAxis=flag*VAxis                                                                          
+        if VAxis.y<0:
+            VAxis=-VAxis                                                                          
         UAxis=om.MVector.kXaxisVector # this is not a real normal! just an intermiediate vector 
         if abs(VAxis*UAxis)>0.99:
             UAxix=om.MVector.kZaxisVector
@@ -179,11 +174,12 @@ class CrossSectionExtractCmd(om.MPxCommand):
         WAxis.normalize()
         UAxis=VAxis^WAxis
         UAxis.normalize()
+
         # Find the quaternion that form the coordinate transformation of 
         # joint's local framework: how the new coordinate get back into world coordinate
-        Quaternion=getQuaternion(UAxis,VAxis,WAxis)
+        quaternion=getQuaternion(UAxis,VAxis,WAxis)
         
-        transform_name=self.Joint_name+"_cross_section"+"_u_at_"+str(int(self.u_parameter*100))+"_percentage"
+        transform_name=self.joint_name+"_cross_section"+"_u_at_"+str(int(self.u_parameter*100))+"_percentage"
         dirPath=cmds.workspace(q=True, rootDirectory=True )
                
         #EXTRACT CROSS SECTION CURVES
@@ -193,11 +189,12 @@ class CrossSectionExtractCmd(om.MPxCommand):
         eps.clear()
         epsLocal=om.MPointArray()
         epsLocal.clear()
+            
         for i in range(0,self.division):
             angle=2*math.pi*float(i)/float(self.division)
             ray=UAxis.rotateBy(om.MQuaternion(angle,VAxis))
             rayDirection=om.MFloatVector(ray)
-        
+            
             try:
                 hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kWorld,9999,False,idsSorted=False,tolerance=0.001)    
             except:
