@@ -205,34 +205,16 @@ selection=om.MSelectionList()
 selection.add("Target_Belly")#belly joint is the root joint
 rootJointObj=om.MObject()
 rootJointDag=om.MDagPath()
-"""
-apiVersion=cmds.about(apiVersion=True)
-if apiVersion==201740:
-    rootJointObj=om.MObject()
-    selection.getDependNode(0,rootJointObj)
-    rootJointDag=om.MDagPath()
-    selection.getDagPath(0,rootJointDag)
-else:
-    """
+
 rootJointObj=selection.getDependNode(0)
 rootJointDag=selection.getDagPath(0)
 
 processJoint(rootJointDag)    
 
 selection.clear()
-“”“
-originName='Source_Belly_cross_section_u_at_30_percentage'
-selection.add(originName)
-originDag=selection.getDagPath(0)
-originFn=om.MFnDagNode(originDag)
-
-metaName=originName+'_meta'
-selection.add(metaName)
-metaDag=selection.getDagPath(1)
-metaFn=om.MFnDagNode(metaDag)
-”“”
 strList=cmds.select("source_meta_cross_section_group", hierarchy=True)
 print strList
+“”“
 for originCrv in strList:
     originFn=om.MFnDagNode(originCrv)
     metaName=originFn.name()    
@@ -249,5 +231,5 @@ for originCrv in strList:
     positionAtU=getPositionAtU(jointObj,u)
     
     transformFn.translateBy(positionAtU,om.MSpace.kWorld)
-
+”“”
             
