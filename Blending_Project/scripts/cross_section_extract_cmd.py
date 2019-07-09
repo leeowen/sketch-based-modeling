@@ -1,4 +1,4 @@
-# cross_section_cmd.py
+# cross_section_extract_cmd.py
 #
 # DESCRIPTION:
 #
