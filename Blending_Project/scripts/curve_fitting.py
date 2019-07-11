@@ -2,6 +2,7 @@ import maya.api.OpenMaya as om
 import maya.cmds as cmds
 from PySide2 import QtCore
 from PySide2 import QtWidgets
+from PySide2 import QtGui
 from shiboken2 import wrapInstance
 import maya.OpenMayaUI as omui
 import math,sys
@@ -29,9 +30,9 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
         self.setMinimumWidth(800)
         self.setMinimumHeight(600)
         self.setObjectName("generalizedEllipseWin")
-        #self.setWindowFlags(QtCore.Qt.Tool)
+        self.setWindowFlags(QtCore.Qt.Tool)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        
+               
         self.create_widgets()   
         self.create_layout()
         self.create_connection()
@@ -63,8 +64,10 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
         self.setCentralWidget(widget_layout_central)
         main_layout=QtWidgets.QHBoxLayout(widget_layout_central)
                 
-        # create layout for canvas and J, Ea, Em
+        # create layout for canvas
         left_layout=QtWidgets.QVBoxLayout()
+        self.canvas=Canvas()
+        left_layout.addWidget(self.canvas)
         # create layout for J, Ea, Em
                
         # create layout for checkbox and buttons
@@ -121,6 +124,20 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
 
     def drawGeneralizedEllipse(self):
         print "draw generalized ellipse"
+
+
+class Canvas(QtWidgets.QWidget):
+    backgroundColor=QtGui.QColor(255,255,255)
+    def __init__(self):
+        super(Canvas,self).__init__()
+        #self.setGeometry(300,300,280,170)
+        
+    def paintEvent(self,event):
+        painter=QtGui.QPainter()
+        painter.setRenderHint(QtGui.QPainter.Antialiasing,True)
+        # Draw the background
+        painter.setBrush(Canvas.backgroundColor)
+        painter.drawRect(self.rect())
 
 
 if __name__=="__main__":
