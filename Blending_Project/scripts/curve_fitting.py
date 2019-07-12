@@ -1,8 +1,6 @@
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
-from PySide2 import QtCore
-from PySide2 import QtWidgets
-from PySide2 import QtGui
+from PySide2 import QtCore, QtGui, QtWidgets
 from shiboken2 import wrapInstance
 import maya.OpenMayaUI as omui
 import math,sys
@@ -29,6 +27,7 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
         self.setWindowTitle("Generalized Ellipse")
         self.setMinimumWidth(800)
         self.setMinimumHeight(600)
+        self.resize(800,600)
         self.setObjectName("generalizedEllipseWin")
         self.setWindowFlags(QtCore.Qt.Tool)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -36,6 +35,8 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
         self.create_widgets()   
         self.create_layout()
         self.create_connection()
+        
+        #self.canvas.installEventFilter()
             
         
     def create_widgets(self):
@@ -66,7 +67,7 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
                 
         # create layout for canvas
         left_layout=QtWidgets.QVBoxLayout()
-        self.canvas=Canvas()
+        self.canvas=Canvas(self)
         left_layout.addWidget(self.canvas)
         # create layout for J, Ea, Em
                
@@ -127,18 +128,29 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
 
 
 class Canvas(QtWidgets.QWidget):
-    backgroundColor=QtGui.QColor(255,255,255)
-    def __init__(self):
-        super(Canvas,self).__init__()
-        #self.setGeometry(300,300,280,170)
+    backgroundColor=QtGui.QColor(100,122,200)
+    def __init__(self,parent):
+        super(Canvas,self).__init__(parent)
+        self.show()
         
-    def paintEvent(self,event):
+    def paintevent(self,evt):
         painter=QtGui.QPainter()
+        painter.begin(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing,True)
         # Draw the background
         painter.setBrush(Canvas.backgroundColor)
         painter.drawRect(self.rect())
-
+        painter.end(self)
+    
+    """
+    def eventFilter(self,qObj,evt):
+        if evt.type==QtCore.QEvent.Paint:
+            self.paintEvent(evt)
+            return True
+            
+        return False
+    """
+            
 
 if __name__=="__main__":
     # Check to see if the UI already exists and if so, delete
@@ -146,8 +158,10 @@ if __name__=="__main__":
         cmds.deleteUI("generalizedEllipseWin",wnd=True)
         
     w=CurveFittingWindowUI()
-    w.show()    
-    
+    w.show()  
+    w.raise_() 
+
+
     
 #cmds.flushUndo()
 #cmds.scriptEditorInfo(clearHistory=True)
