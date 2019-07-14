@@ -19,7 +19,7 @@ def maya_main_window():
     return wrapInstance(long(main_window_ptr),QtWidgets.QWidget)
     
              
-class CurveFittingWindowUI(QtWidgets.QMainWindow):
+class CurveFittingWindowUI(QtWidgets.QWidget):
     
     def __init__(self,parent=maya_main_window()):
         super(CurveFittingWindowUI,self).__init__(parent)
@@ -27,23 +27,21 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
         self.setWindowTitle("Generalized Ellipse")
         self.setMinimumSize(900,650)
         self.setObjectName("generalizedEllipseWin")
-        self.setWindowFlags(QtCore.Qt.Tool)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-               
+        self.setWindowFlags(QtCore.Qt.WindowType.Dialog)
+                       
         self.create_widgets()   
         self.create_layout()
         self.create_connection()
-        
-        #self.canvas.installEventFilter()
-                    
+                   
             
     def create_widgets(self):
-        self.button_generate=QtWidgets.QPushButton('Generate')
-        self.button_generate.setObjectName('generate_button')
-        self.button_generate.setFixedWidth(100)
-        self.button_save=QtWidgets.QPushButton('Save')
-        self.button_save.setObjectName('save_button')
-        self.button_save.setFixedWidth(100)
+        self.generate_button=QtWidgets.QPushButton('Generate')
+        self.generate_button.setObjectName('generate_button')
+        self.generate_button.setMinimumWidth(100)
+        self.save_button=QtWidgets.QPushButton('Save')
+        self.save_button.setObjectName('save_button')
+        self.save_button.setMinimumWidth(100)
+        self.close_button=QtWidgets.QPushButton('Close')
         
         self.standardEllipse_checkBox=QtWidgets.QCheckBox('standard ellipse')
         self.standardEllipse_checkBox.setChecked(False)
@@ -61,20 +59,26 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
         self.J_spinBox.setMinimum(1)
         self.J_spinBox.setSingleStep(1)
         
-        self.Ea_LineEdit=QtWidgets.QLineEdit()
-        self.Ea_LineEdit.setFixedWidth(200)
+        self.Ea_lineEdit=QtWidgets.QLineEdit()
+        self.Ea_lineEdit.setFixedWidth(200)
 
-        self.Em_LineEdit=QtWidgets.QLineEdit()
-        self.Em_LineEdit.setFixedWidth(200)
+        self.Em_lineEdit=QtWidgets.QLineEdit()
+        self.Em_lineEdit.setFixedWidth(200)
         
         self.canvas=Canvas()       
-        #self.label_standardEllipse=QtWidgets.QLabel(':')
+        
+        self.segment_comboBox=QtWidgets.QComboBox()
+        self.segment_comboBox.addItem('single piece')
+        self.segment_comboBox.addItem('segment')
 
 
-    def create_layout(self):            
+    def create_layout(self):   
+        """     
         widget_layout_central=QtWidgets.QWidget()
         self.setCentralWidget(widget_layout_central)
         main_layout=QtWidgets.QHBoxLayout(widget_layout_central)
+        """
+        main_layout=QtWidgets.QHBoxLayout(self)
                 
         # create layout for canvas
         left_layout=QtWidgets.QVBoxLayout()
@@ -84,26 +88,37 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
               
         # create layout for parameters and operation buttons
         right_layout=QtWidgets.QVBoxLayout()
+        right_layout.addStretch()
+        right_layout.setContentsMargins(2,2,3,3)
+        
         right_layout.addWidget(self.standardEllipse_checkBox)
         right_layout.addWidget(self.generalizedEllipse_checkBox)
-        #right_layout.addWidget(self.J_spinBox)
-        # add a spacer
-        spacer=QtWidgets.QSpacerItem(0,100)
-        right_layout.addSpacerItem(spacer)
         
-
-        right_layout.addWidget(self.button_generate)
-        right_layout.addWidget(self.button_save)
+        right_layout.addWidget(self.segment_comboBox)
+        
+        form_layout=QtWidgets.QFormLayout()
+        form_layout.addRow('J:',self.J_spinBox)
+        form_layout.addRow('Ea:',self.Ea_lineEdit)
+        form_layout.addRow('Em:',self.Em_lineEdit)    
+                   
+        right_layout.addLayout(form_layout)
+        right_layout.addWidget(self.generate_button)
+        right_layout.addWidget(self.save_button)
+        right_layout.addWidget(self.close_button)
         
         main_layout.addLayout(left_layout)
         main_layout.addLayout(right_layout)
         
 
     def create_connection(self):
-        self.button_generate.clicked.connect(self.createEllipse)
+        self.generate_button.clicked.connect(self.createEllipse)
+        self.close_button.clicked.connect(self.closeFn)
         self.standardEllipse_checkBox.clicked.connect(self.drawMode_standardEllipse)
         self.generalizedEllipse_checkBox.clicked.connect(self.drawMode_generalizedEllipse)
         
+        
+    def closeFn(self):
+        self.close()
           
     def createEllipse(self):
         print "ellipse created"
@@ -139,11 +154,12 @@ class CurveFittingWindowUI(QtWidgets.QMainWindow):
         print "draw generalized ellipse"
 
 
-class Canvas(QtWidgets.QWidget):
+class Canvas(QtWidgets.QDialog):
     backgroundColor=QtCore.Qt.white
     def __init__(self,parent=None):
         super(Canvas,self).__init__(parent)
         self.setMinimumSize(600,600)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         
     def paintEvent(self,evt):
         painter=QtGui.QPainter(self)
