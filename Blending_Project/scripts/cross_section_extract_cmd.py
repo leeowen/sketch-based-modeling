@@ -13,13 +13,14 @@
 #    
 #     crossSectionExtract -mu 0.1 -md 40 -mmn "source_male_mesh" -mbn "Source_LeftUpLeg"
 #
-#   The output is the cross section curve extracted from mesh "Source_male_meshShape", 
-#   paralled with a Joint named "Source_LeftUpLeg" at the location u=0.1. 
-#   There are two copies of the extracted cross-section curves, one is in world space, the other is in object space.
+#   The output is made up by two parts. One is a cross section curve extracted from mesh "Source_male_meshShape", 
+#   paralled with a Joint named "Source_LeftUpLeg" at the location u=0.1, and it is in world space. 
+#   The other is a file contains the extracted cross section curve's points' position informations, which are in object space.
 #------------------------------------------------- 
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 import math
+import os.path
 
 def maya_useNewAPI():
     pass
@@ -210,14 +211,10 @@ class CrossSectionExtractCmd(om.MPxCommand):
                 
         curveFn=om.MFnNurbsCurve()
         self.cross_section_obj=curveFn.createWithEditPoints(eps,2,om.MFnNurbsCurve.kClosed, False, False, True)
-        self.cross_section_obj_meta=curveFn.createWithEditPoints(epsLocal,2,om.MFnNurbsCurve.kClosed, False, False, True)
-        
+       
         dgFn=om.MFnDependencyNode(self.cross_section_obj)
         dgFn.setName(transform_name)
-        
-        dgFn_meta=om.MFnDependencyNode(self.cross_section_obj_meta)
-        dgFn_meta.setName(transform_name+"_meta")
-        """
+                
         # add custom attribute to node
         attrFn=om.MFnNumericAttribute()
         uAttr=attrFn.create("uParameter","u",om.MFnNumericData.kFloat,self.u_parameter)
@@ -226,25 +223,20 @@ class CrossSectionExtractCmd(om.MPxCommand):
         attrFn.writable=True 
         attrFn.keyable=True
         attrFn.hidden=False
-        dgFn_meta.addAttribute( uAttr)
-                        
-        mttrFn=om.MFnMatrixAttribute()
-        mAttr=mttrFn.create("objToWorld","otw")
-        mttrFn.readable=True
-        mttrFn.storable=True
-        mttrFn.writable=True 
-        mttrFn.keyable=True
-        mttrFn.hidden=False
-        dgFn_meta.addAttribute( mAttr)
-              
-        mPlug=dgFn_meta.findPlug('objToWorld',False)
-        sourceValueAsMObject = om.MFnMatrixData().create(mat)
-        mPlug.setMObject( sourceValueAsMObject )
-        """
-               
-        om.MPxCommand.setResult([om.MFnDependencyNode(self.cross_section_obj).name(),
-                                om.MFnDependencyNode(self.cross_section_obj_meta).name()])
-        
+        dgFn.addAttribute( uAttr)
+                       
+        om.MPxCommand.setResult(om.MFnDependencyNode(self.cross_section_obj).name())
+                                #,om.MFnDependencyNode(self.cross_section_obj_meta).name()])
+        save_path=dirPath+'data/'
+        complete_name=os.path.join(save_path,transform_name+'.dat')
+        outFile=open(complete_name,'w+')# Here we used "w" letter in our argument, which indicates write and the plus sign that means it will create a file if it does not exist in library
+        for i in range(0,self.division):
+            x=epsLocal[i].x
+            y=epsLocal[i].y
+            z=epsLocal[i].z
+            outFile.write('{} {} {} \n'.format(x,y,z))
+            
+        outFile.close()
         
 def initializePlugin(plugin):
     pluginFn = om.MFnPlugin(plugin)
@@ -282,3 +274,5 @@ def getQuaternion(UAxis,VAxis,WAxis):
         
     q=q*qx
     return q
+
+
