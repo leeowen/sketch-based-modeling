@@ -36,20 +36,18 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             
     def create_widgets(self):
         self.generate_button=QtWidgets.QPushButton('Generate')
-        self.generate_button.setObjectName('generate_button')
-        self.save_button=QtWidgets.QPushButton('Save')
-        self.save_button.setObjectName('save_button')
+        self.saveAsDat_button=QtWidgets.QPushButton('Save as .dat')
+        self.saveAsImg_button=QtWidgets.QPushButton('Save as image')
         self.close_button=QtWidgets.QPushButton('Close')
         
         self.standardEllipse_checkBox=QtWidgets.QCheckBox('standard ellipse')
         self.standardEllipse_checkBox.setChecked(False)
-        self.standardEllipse_checkBox.setFixedWidth(200)
-        self.standardEllipse_checkBox.setObjectName('standardEllipse_checkBox')
-        
+       
         self.generalizedEllipse_checkBox=QtWidgets.QCheckBox('generalized ellipse')
         self.generalizedEllipse_checkBox.setChecked(False)
-        self.generalizedEllipse_checkBox.setFixedWidth(200)
-        self.generalizedEllipse_checkBox.setObjectName('generalizedEllipse_checkBox')
+        
+        self.originalEllipse_checkBox=QtWidgets.QCheckBox('original ellipse')
+        self.originalEllipse_checkBox.setChecked(False)
         
         self.J_spinBox=QtWidgets.QSpinBox()
         self.J_spinBox.setValue(10)
@@ -72,7 +70,9 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.file_label.setBuddy(self.filePath_lineEdit)
         sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self.filePath_lineEdit.setSizePolicy(sizePolicy)
-        self.file_button=QtWidgets.QPushButton('...')
+        self.file_button=QtWidgets.QPushButton()
+        self.file_button.setIcon(QtGui.QIcon(':fileOpen.png'))# ':' tells Qt that the following is resource file path
+        self.file_button.setToolTip("Select File")
         sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         self.file_button.setSizePolicy(sizePolicy)
         
@@ -112,6 +112,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         checkBox_layout=QtWidgets.QVBoxLayout()
         checkBox_layout.addWidget(self.standardEllipse_checkBox)
         checkBox_layout.addWidget(self.generalizedEllipse_checkBox)
+        checkBox_layout.addWidget(self.originalEllipse_checkBox)
         right_layout.addLayout(checkBox_layout)
         
         combo_layout=QtWidgets.QFormLayout()
@@ -127,7 +128,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
         button_layout=QtWidgets.QVBoxLayout()
         button_layout.addWidget(self.generate_button)
-        button_layout.addWidget(self.save_button)
+        button_layout.addWidget(self.saveAsDat_button)
+        button_layout.addWidget(self.saveAsImg_button)
         button_layout.addWidget(self.close_button)
         right_layout.addLayout(button_layout)
         
@@ -141,16 +143,35 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.close_button.clicked.connect(self.closeFn)
         self.standardEllipse_checkBox.toggled.connect(self.drawMode_standardEllipse)
         self.generalizedEllipse_checkBox.toggled.connect(self.drawMode_generalizedEllipse)
+        self.originalEllipse_checkBox.toggled.connect(self.drawMode_originalEllipse)
         
+    
+    def update_visibility_originalEllipse_mode(self,checked):
+        self.J_spinBox.setVisible(not checked)
+        self.Ea_lineEdit.setVisible(not checked)
+        self.Em_lineEdit.setVisible(not checked)
+        self.segment_comboBox.setVisible(not checked)
+        self.saveAsDat_button.setVisible(not checked)
+    
     def show_file_selected_dialog(self):
-        pass
+        FILE_FILTERS="data(*.dat);;All Files(*.*)"
+        selected_filter="data(*.dat)"# default filter, also store last selected filter and can be used as the default filter for next select
+        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName.getOpenFileName(self, 'Select File','',FILE_FILTERS,selected_filter)
+        # check if user has cancel the dialog by checking if file_path is none
+        if file_path:
+            self.file_lineEdit.setText(file_path)
         
     def closeFn(self):
         self.close()
           
     def createEllipse(self):
-        print "ellipse created"
-    
+        if self.generalizedEllipse_checkBox.isChecked():
+            self.draw_generalizedEllipse()
+        if self.originalEllipse_checkBox.isChecked():
+            self.draw_originalEllipse()
+        if self.standardEllipse_checkBox.isChecked():
+            self.draw_standardEllipse()
+                
         
     def drawMode_standardEllipse(self,checked):
         """
@@ -160,10 +181,11 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             value=checkBox.isChecked()
         """
         if checked==True:
-            self.canvas.draw_standardEllipse=True
+            pass
+            #self.calculate_standardEllipse()
         else:
             # erase standard ellipse
-            self.canvas.draw_standardEllipse=False
+            pass
                             
             
     def drawMode_generalizedEllipse(self,checked):
@@ -173,19 +195,33 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             checkBox=wrapInstance(long(ptr),QtWidgets.QCheckBox)
             value=checkBox.isChecked()
         """
-        if checked==True:
-            self.canvas.draw_generalizedEllipse=True
-        else:
-            # erase generalized ellipse
-            self.canvas.draw_generalizedEllipse=False
+
+        self.J_spinBox.setVisible(checked)
+        self.Ea_lineEdit.setVisible(checked)
+        self.Em_lineEdit.setVisible(checked)
+        self.segment_comboBox.setVisible(checked)
+        self.saveAsDat_button.setVisible(checked)           
+           
         
-                
-    def drawStandardEllipse(self):
-        print "draw standard ellipse"             
+    def drawMode_originalEllipse(self,checked):
+        self.canvas.draw_originalEllipse=checked
+        # verify if generalised ellipse is also required to be draw
+        # if yes, then no need to call update_visibiblity_originalEllipse_mode()
+        flag=not self.generalizedEllipse_checkBox.isChecked()
+        if checked and flag:
+            self.update_visibility_originalEllipse_mode(checked)
+            
+              
+    def draw_standardEllipse(self):
+        penColor=QtCore.Qt.Green   
+                  
 
-
-    def drawGeneralizedEllipse(self):
+    def draw_generalizedEllipse(self):
         print "draw generalized ellipse"
+        
+    
+    def draw_originalEllipse(self):
+        print "draw original ellipse"
 
 
 class Canvas(QtWidgets.QDialog):
@@ -194,9 +230,6 @@ class Canvas(QtWidgets.QDialog):
         super(Canvas,self).__init__(parent)
         self.setMinimumSize(600,600)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        
-        self.draw_standardEllipse=False
-        self.draw_generalizedEllipse=False
         
     def paintEvent(self,evt):
         painter=QtGui.QPainter(self)
