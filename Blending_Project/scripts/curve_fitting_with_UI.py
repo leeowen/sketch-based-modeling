@@ -154,23 +154,52 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.saveAsDat_button.setVisible(not checked)
     
     def show_file_selected_dialog(self):
+        dirPath=cmds.workspace(q=True, rootDirectory=True )
         FILE_FILTERS="data(*.dat);;All Files(*.*)"
         selected_filter="data(*.dat)"# default filter, also store last selected filter and can be used as the default filter for next select
-        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName.getOpenFileName(self, 'Select File','',FILE_FILTERS,selected_filter)
+        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName(self, 'Select File',dirPath+'/data',FILE_FILTERS,selected_filter)
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
-            self.file_lineEdit.setText(file_path)
+            self.filePath_lineEdit.setText(file_path)
+            self.readData(file_path)
+            
+            
+    def readData(self,file_path):
+        f=open(file_lineEdit,'r')
+        f1=f.readlines()
+        self.vertices=[]
+        i=0
+        for v in f1:
+            pos=v.split()
+            pos[0]=float(pos[0])
+            pos[1]=float(pos[1])
+            pos[2]=float(pos[2])
+            self.vertices.append(pos)
+            i+=1
+        
+        self.numVertices=i
+        f.close()
+        
         
     def closeFn(self):
         self.close()
+        
           
     def createEllipse(self):
         if self.generalizedEllipse_checkBox.isChecked():
-            self.draw_generalizedEllipse()
+            self.canvas.setGeneralizedEllipseFlag(True)
+        else:
+            self.canvas.setGeneralizedEllipseFlag(False)                
+            
         if self.originalEllipse_checkBox.isChecked():
-            self.draw_originalEllipse()
+            self.canvas.setOriginalizedEllipseFlag(True)
+        else:
+            self.canvas.setOriginalizedEllipseFlag(False)
+           
         if self.standardEllipse_checkBox.isChecked():
-            self.draw_standardEllipse()
+            self.canvas.setOriginalizedEllipseFlag(True)
+        else:
+            self.canvas.setOriginalizedEllipseFlag(False)
                 
         
     def drawMode_standardEllipse(self,checked):
@@ -212,16 +241,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.update_visibility_originalEllipse_mode(checked)
             
               
-    def draw_standardEllipse(self):
-        penColor=QtCore.Qt.Green   
-                  
-
-    def draw_generalizedEllipse(self):
-        print "draw generalized ellipse"
-        
-    
-    def draw_originalEllipse(self):
-        print "draw original ellipse"
 
 
 class Canvas(QtWidgets.QDialog):
@@ -237,6 +256,21 @@ class Canvas(QtWidgets.QDialog):
         # Draw the background
         painter.setBrush(Canvas.backgroundColor)
         painter.drawRect(self.rect())
+        #self.calculate_generalizedEllipse()
+        #self.calculate_originalEllipse()
+        #self.calculate_standardEllipse()
+        
+        
+    def calculate_standardEllipse(self):
+        penColor=QtCore.Qt.Blue   
+                  
+
+    def calculate_generalizedEllipse(self):
+        penColor=QtCore.Qt.Green
+        
+    
+    def calculate_originalEllipse(self):
+        penColor=QtCore.Qt.Red
            
 
 if __name__=="__main__":
