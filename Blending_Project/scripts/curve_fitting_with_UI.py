@@ -165,7 +165,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             
             
     def readData(self,file_path):
-        f=open(file_lineEdit,'r')
+        f=open(file_path,'r')
         f1=f.readlines()
         self.vertices=[]
         i=0
