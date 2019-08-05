@@ -33,7 +33,15 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.create_layout()
         self.create_connection()
                    
-            
+    
+    def sizeHint(self):
+        return QtCore.QSize(900,650)
+        
+        
+    def minimumSize(self):
+        return QtCore.Qsize(900,650)        
+        
+        
     def create_widgets(self):
         self.generate_button=QtWidgets.QPushButton('Generate')
         self.saveAsDat_button=QtWidgets.QPushButton('Save as .dat')
@@ -154,52 +162,24 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.saveAsDat_button.setVisible(not checked)
     
     def show_file_selected_dialog(self):
-        dirPath=cmds.workspace(q=True, rootDirectory=True )
         FILE_FILTERS="data(*.dat);;All Files(*.*)"
         selected_filter="data(*.dat)"# default filter, also store last selected filter and can be used as the default filter for next select
-        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName(self, 'Select File',dirPath+'/data',FILE_FILTERS,selected_filter)
+        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName(self, 'Select File','',FILE_FILTERS,selected_filter)
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
             self.filePath_lineEdit.setText(file_path)
-            self.readData(file_path)
-            
-            
-    def readData(self,file_path):
-        f=open(file_path,'r')
-        f1=f.readlines()
-        self.vertices=[]
-        i=0
-        for v in f1:
-            pos=v.split()
-            pos[0]=float(pos[0])
-            pos[1]=float(pos[1])
-            pos[2]=float(pos[2])
-            self.vertices.append(pos)
-            i+=1
-        
-        self.numVertices=i
-        f.close()
-        
+            self.canvas.readFile(file_path)
         
     def closeFn(self):
         self.close()
-        
           
     def createEllipse(self):
         if self.generalizedEllipse_checkBox.isChecked():
-            self.canvas.setGeneralizedEllipseFlag(True)
-        else:
-            self.canvas.setGeneralizedEllipseFlag(False)                
-            
+            self.draw_generalizedEllipse()
         if self.originalEllipse_checkBox.isChecked():
-            self.canvas.setOriginalizedEllipseFlag(True)
-        else:
-            self.canvas.setOriginalizedEllipseFlag(False)
-           
+            self.draw_originalEllipse()
         if self.standardEllipse_checkBox.isChecked():
-            self.canvas.setOriginalizedEllipseFlag(True)
-        else:
-            self.canvas.setOriginalizedEllipseFlag(False)
+            self.draw_standardEllipse()
                 
         
     def drawMode_standardEllipse(self,checked):
@@ -240,7 +220,19 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         if checked and flag:
             self.update_visibility_originalEllipse_mode(checked)
             
+        self.draw_originalEllipse()
+            
               
+    def draw_standardEllipse(self):
+        penColor=QtCore.Qt.Green   
+                  
+
+    def draw_generalizedEllipse(self):
+        print "draw generalized ellipse"
+        
+    
+    def draw_originalEllipse(self):
+        pass
 
 
 class Canvas(QtWidgets.QDialog):
@@ -250,27 +242,34 @@ class Canvas(QtWidgets.QDialog):
         self.setMinimumSize(600,600)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         
+        
+    def sizeHint(self):
+        return QtCore.QSize(600,600)
+        
+        
+    def minimumSize(self):
+        return QtCore.Qsize(600,600)
+        
+
+    def readFile(self,file_path):
+        f=open(file_path,'r')
+        content=f.readlines()
+        self.vertices=[]
+        self.numPt=0
+        for line in content:
+            p=line.split()
+            self.numPt+=1
+            self.vertices.append(om.MPoint(float(p[0]),float(p[1]),float(p[2])))
+        
+        f.close()
+
+    
     def paintEvent(self,evt):
         painter=QtGui.QPainter(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing,True)
         # Draw the background
         painter.setBrush(Canvas.backgroundColor)
         painter.drawRect(self.rect())
-        #self.calculate_generalizedEllipse()
-        #self.calculate_originalEllipse()
-        #self.calculate_standardEllipse()
-        
-        
-    def calculate_standardEllipse(self):
-        penColor=QtCore.Qt.Blue   
-                  
-
-    def calculate_generalizedEllipse(self):
-        penColor=QtCore.Qt.Green
-        
-    
-    def calculate_originalEllipse(self):
-        penColor=QtCore.Qt.Red
            
 
 if __name__=="__main__":
