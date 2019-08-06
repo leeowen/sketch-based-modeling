@@ -171,15 +171,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.canvas.readFile(file_path)
         
     def closeFn(self):
-        self.close()
-          
-    def createEllipse(self):
-        if self.generalizedEllipse_checkBox.isChecked():
-            self.draw_generalizedEllipse()
-        if self.originalEllipse_checkBox.isChecked():
-            self.draw_originalEllipse()
-        if self.standardEllipse_checkBox.isChecked():
-            self.draw_standardEllipse()
+        self.close() 
                 
         
     def drawMode_standardEllipse(self,checked):
@@ -214,33 +206,23 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
     def drawMode_originalEllipse(self,checked):
         self.canvas.draw_originalEllipse=checked
+        self.canvas.update()
         # verify if generalised ellipse is also required to be draw
         # if yes, then no need to call update_visibiblity_originalEllipse_mode()
         flag=not self.generalizedEllipse_checkBox.isChecked()
         if checked and flag:
             self.update_visibility_originalEllipse_mode(checked)
             
-        self.draw_originalEllipse()
-            
               
-    def draw_standardEllipse(self):
-        penColor=QtCore.Qt.Green   
-                  
-
-    def draw_generalizedEllipse(self):
-        print "draw generalized ellipse"
-        
-    
-    def draw_originalEllipse(self):
-        pass
-
-
 class Canvas(QtWidgets.QDialog):
     backgroundColor=QtCore.Qt.white
     def __init__(self,parent=None):
         super(Canvas,self).__init__(parent)
         self.setMinimumSize(600,600)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.draw_originalEllipse=False
+        self.draw_generalisedEllipse=False
+        self.draw_standardEllipse=False
         
         
     def sizeHint(self):
@@ -270,7 +252,27 @@ class Canvas(QtWidgets.QDialog):
         # Draw the background
         painter.setBrush(Canvas.backgroundColor)
         painter.drawRect(self.rect())
+        
+        if self.draw_originalEllipse==True:
+            self.draw_standardEllipse()
+
            
+    def draw_standardEllipse(self):
+        penColor=QtCore.Qt.green   
+        painter=QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing,True)
+        painter.setPen(penColor)
+        painter.drawLine(self.rect().topLeft(),self.rect().bottomRight())
+
+                  
+
+    def draw_generalizedEllipse(self):
+        print "draw generalized ellipse"
+        
+    
+    def draw_originalEllipse(self):
+        pass
+
 
 if __name__=="__main__":
     # Check to see if the UI already exists and if so, delete
