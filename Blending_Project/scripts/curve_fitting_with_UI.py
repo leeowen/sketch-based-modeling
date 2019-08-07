@@ -44,7 +44,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
         
     def create_widgets(self):
-        self.generate_button=QtWidgets.QPushButton('Generate')
         self.saveAsDat_button=QtWidgets.QPushButton('Save as .dat')
         self.saveAsImg_button=QtWidgets.QPushButton('Save as image')
         self.close_button=QtWidgets.QPushButton('Close')
@@ -91,12 +90,11 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('segment')
         
+
         self.J_spinBox.setVisible(False)
         self.Ea_lineEdit.setVisible(False)
         self.Em_lineEdit.setVisible(False)
         self.segment_comboBox.setVisible(False)
-        self.saveAsDat_button.setVisible(False)
-        self.generate_button.setVisible(False)
         self.saveAsDat_button.setVisible(False)
         self.saveAsImg_button.setVisible(False)
         
@@ -110,7 +108,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         main_layout=QtWidgets.QHBoxLayout(self)
                  
         center_layout=QtWidgets.QHBoxLayout()
-        center_layout.addWidget(self.canvas)
+        center_layout.addWidget(self.canvas)              
+        center_layout.setSizeConstraint(QtWidgets.QLayout.SetMinimumSize)        
               
         # create layout for different parameters and operation buttons
         right_layout=QtWidgets.QVBoxLayout()
@@ -142,38 +141,41 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         right_layout.addLayout(form_layout)
         
         button_layout=QtWidgets.QVBoxLayout()
-        button_layout.addWidget(self.generate_button)
         button_layout.addWidget(self.saveAsDat_button)
         button_layout.addWidget(self.saveAsImg_button)
         button_layout.addWidget(self.close_button)
         right_layout.addLayout(button_layout)
+
         
         center_layout.addLayout(right_layout)
         
         main_layout.addLayout(center_layout)
+
         
 
     def create_connection(self):
         self.file_button.clicked.connect(self.show_file_selected_dialog)
-        self.generate_button.clicked.connect(self.canvas.update)
         self.close_button.clicked.connect(self.closeFn)
         self.standardEllipse_checkBox.toggled.connect(self.drawMode_standardEllipse)
         self.generalizedEllipse_checkBox.toggled.connect(self.drawMode_generalizedEllipse)
         self.originalEllipse_checkBox.toggled.connect(self.drawMode_originalEllipse)
         
+        
+    def drawMode_standardEllipse(self,checked):
+        pass
+        
     
+
     def update_visibility_originalEllipse_mode(self,checked):
         self.J_spinBox.setVisible(not checked)
         self.Ea_lineEdit.setVisible(not checked)
         self.Em_lineEdit.setVisible(not checked)
         self.segment_comboBox.setVisible(not checked)
         self.saveAsDat_button.setVisible(not checked)
-        
-    
-    def update_visibility_generate_mode(self,checked):
-        self.generate_button.setVisible(checked)
-        self.saveAsDat_button.setVisible(checked)
-        self.saveAsImg_button.setVisible(checked)
+
+
+    def update_visibility_standardEllipse_mode(self,checked):
+        pass
         
     
     def show_file_selected_dialog(self):
@@ -184,24 +186,18 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         if file_path:
             self.filePath_lineEdit.setText(file_path)
             self.canvas.readFile(file_path)
+            
         
     def closeFn(self):
         self.close() 
                 
         
     def drawMode_standardEllipse(self,checked):
-        """
-        if cmds.control('standardEllipse'+'_checkBox',exists=True):
-            ptr=omui.MQtUtil.findControl('standardEllipse_checkBox')
-            checkBox=wrapInstance(long(ptr),QtWidgets.QCheckBox)
-            value=checkBox.isChecked()
-        """
-        if checked==True:
-            pass
-            #self.calculate_standardEllipse()
-        else:
-            # erase standard ellipse
-            pass
+        self.canvas.standardEllipse=checked
+        self.canvas.update()
+        
+        self.saveAsDat_button.setVisible(checked)
+        self.saveAsImg_button.setVisible(checked)
                             
             
     def drawMode_generalizedEllipse(self,checked):
@@ -211,22 +207,23 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             checkBox=wrapInstance(long(ptr),QtWidgets.QCheckBox)
             value=checkBox.isChecked()
         """
-
+        self.canvas.generalizedEllipse=checked
+        self.canvas.update()
+        
         self.J_spinBox.setVisible(checked)
         self.Ea_lineEdit.setVisible(checked)
         self.Em_lineEdit.setVisible(checked)
         self.segment_comboBox.setVisible(checked)
-        self.saveAsDat_button.setVisible(checked)           
+        self.saveAsDat_button.setVisible(checked)  
+        self.saveAsImg_button.setVisible(checked)         
            
         
     def drawMode_originalEllipse(self,checked):
-        self.canvas.draw_originalEllipse=checked
+        self.canvas.originalEllipse=checked
         self.canvas.update()
-        # verify if generalised ellipse is also required to be draw
-        # if yes, then no need to call update_visibiblity_originalEllipse_mode()
-        flag=not self.generalizedEllipse_checkBox.isChecked()
-        if checked and flag:
-            self.update_visibility_originalEllipse_mode(checked)
+
+        self.saveAsDat_button.setVisible(checked)
+        self.saveAsImg_button.setVisible(checked)
             
               
 class Canvas(QtWidgets.QDialog):
@@ -235,9 +232,10 @@ class Canvas(QtWidgets.QDialog):
         super(Canvas,self).__init__(parent)
         self.setMinimumSize(600,600)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.draw_originalEllipse=False
-        self.draw_generalisedEllipse=False
-        self.draw_standardEllipse=False
+        self.originalEllipse=False
+        self.generalisedEllipse=False
+        self.standardEllipse=False
+        self.vertices=[]
         
         
     def sizeHint(self):
@@ -251,7 +249,6 @@ class Canvas(QtWidgets.QDialog):
     def readFile(self,file_path):
         f=open(file_path,'r')
         content=f.readlines()
-        self.vertices=[]
         self.numPt=0
         for line in content:
             p=line.split()
@@ -268,18 +265,31 @@ class Canvas(QtWidgets.QDialog):
         painter.setBrush(Canvas.backgroundColor)
         painter.drawRect(self.rect())
         
-        if self.draw_originalEllipse==True:
-            self.draw_standardEllipse()
-
-           
-    def draw_standardEllipse(self):
-        penColor=QtCore.Qt.green   
-        painter=QtGui.QPainter(self)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing,True)
-        painter.setPen(penColor)
-        painter.drawLine(self.rect().topLeft(),self.rect().bottomRight())
-
-                  
+        if self.standardEllipse==True:
+            penColor=QtCore.Qt.green   
+            painter.setPen(penColor)
+            painter.drawLine(self.rect().topLeft(),self.rect().bottomRight())
+            try:
+                startPoint=QtCore.QPointF(self.vertices[0][0],self.vertices[0][2])
+            except IndexError:
+                error_dialog = QtWidgets.QErrorMessage()
+                error_dialog.showMessage('Please choose a data file first')
+            else:
+                painterPath=QtGui.QPainterPath(startPoint)
+                for i in range(self.numPt):
+                    tmp=self.vertices[(i+1)%self.numPt]-self.vertices[i-1]
+                    tmp/=sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
+                    arc=self.vertices[(i+1)%self.numPt]-self.vertices[i]
+                    arc=sqrt(arc[0]*arc[0]+arc[2]*arc[2])
+                    tmp=tmp*arc/3.0
+                    controlPt1=tmp+self.vertices[i]
+                    
+                    tmp=self.vertices[i]-self.vertices[(i+2)%self.numPt]
+                    tmp/=sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
+                    tmp=tmp*arc/3.0
+                    controlPt2=tmp+self.vertices[(i+1)%self.numPt]
+                    painterPath.cubicTo(controlPt1,controlPt2,self.vertices[(i+1)%self.numPt])
+                         
 
     def draw_generalizedEllipse(self):
         print "draw generalized ellipse"
