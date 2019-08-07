@@ -43,7 +43,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
         
     def create_widgets(self):
-        self.generate_button=QtWidgets.QPushButton('Generate')
         self.saveAsDat_button=QtWidgets.QPushButton('Save as .dat')
         self.saveAsImg_button=QtWidgets.QPushButton('Save as image')
         self.close_button=QtWidgets.QPushButton('Close')
@@ -90,6 +89,13 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('segment')
         
+        self.J_spinBox.setVisible(False)
+        self.Ea_lineEdit.setVisible(False)
+        self.Em_lineEdit.setVisible(False)
+        self.segment_comboBox.setVisible(False)
+        self.saveAsDat_button.setVisible(False)
+        self.saveAsImg_button.setVisible(False)
+        
 
     def create_layout(self):   
         """     
@@ -98,13 +104,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         main_layout=QtWidgets.QHBoxLayout(widget_layout_central)
         """
         main_layout=QtWidgets.QHBoxLayout(self)
-                
-        # create layout for canvas
-        left_layout=QtWidgets.QVBoxLayout()
-        
-        left_layout.addWidget(self.canvas)
-        left_layout.setSizeConstraint(QtWidgets.QLayout.SetMinimumSize)        
-              
+            
         # create layout for different parameters and operation buttons
         right_layout=QtWidgets.QVBoxLayout()
         #right_layout.addStretch()
@@ -135,31 +135,31 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         right_layout.addLayout(form_layout)
         
         button_layout=QtWidgets.QVBoxLayout()
-        button_layout.addWidget(self.generate_button)
         button_layout.addWidget(self.saveAsDat_button)
         button_layout.addWidget(self.saveAsImg_button)
         button_layout.addWidget(self.close_button)
         right_layout.addLayout(button_layout)
-        
-        main_layout.addLayout(left_layout)
-        main_layout.addLayout(right_layout)
+          
+        main_layout.addWidget(self.canvas)
+        main_layout.insertLayout(1,right_layout,5)
         
 
     def create_connection(self):
         self.file_button.clicked.connect(self.show_file_selected_dialog)
-        self.generate_button.clicked.connect(self.createEllipse)
         self.close_button.clicked.connect(self.closeFn)
         self.standardEllipse_checkBox.toggled.connect(self.drawMode_standardEllipse)
         self.generalizedEllipse_checkBox.toggled.connect(self.drawMode_generalizedEllipse)
         self.originalEllipse_checkBox.toggled.connect(self.drawMode_originalEllipse)
         
+        
+    def drawMode_standardEllipse(self,checked):
+        pass
+        
     
-    def update_visibility_originalEllipse_mode(self,checked):
-        self.J_spinBox.setVisible(not checked)
-        self.Ea_lineEdit.setVisible(not checked)
-        self.Em_lineEdit.setVisible(not checked)
-        self.segment_comboBox.setVisible(not checked)
-        self.saveAsDat_button.setVisible(not checked)
+    def update_visibility_standardEllipse_mode(self,checked):
+        pass
+        
+        
     
     def show_file_selected_dialog(self):
         FILE_FILTERS="data(*.dat);;All Files(*.*)"
@@ -169,24 +169,18 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         if file_path:
             self.filePath_lineEdit.setText(file_path)
             self.canvas.readFile(file_path)
+            
         
     def closeFn(self):
         self.close() 
                 
         
     def drawMode_standardEllipse(self,checked):
-        """
-        if cmds.control('standardEllipse'+'_checkBox',exists=True):
-            ptr=omui.MQtUtil.findControl('standardEllipse_checkBox')
-            checkBox=wrapInstance(long(ptr),QtWidgets.QCheckBox)
-            value=checkBox.isChecked()
-        """
-        if checked==True:
-            pass
-            #self.calculate_standardEllipse()
-        else:
-            # erase standard ellipse
-            pass
+        self.canvas.standardEllipse=checked
+        self.canvas.update()
+        
+        self.saveAsDat_button.setVisible(checked)
+        self.saveAsImg_button.setVisible(checked)
                             
             
     def drawMode_generalizedEllipse(self,checked):
@@ -196,22 +190,23 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             checkBox=wrapInstance(long(ptr),QtWidgets.QCheckBox)
             value=checkBox.isChecked()
         """
-
+        self.canvas.generalizedEllipse=checked
+        self.canvas.update()
+        
         self.J_spinBox.setVisible(checked)
         self.Ea_lineEdit.setVisible(checked)
         self.Em_lineEdit.setVisible(checked)
         self.segment_comboBox.setVisible(checked)
-        self.saveAsDat_button.setVisible(checked)           
+        self.saveAsDat_button.setVisible(checked)  
+        self.saveAsImg_button.setVisible(checked)         
            
         
     def drawMode_originalEllipse(self,checked):
-        self.canvas.draw_originalEllipse=checked
+        self.canvas.originalEllipse=checked
         self.canvas.update()
-        # verify if generalised ellipse is also required to be draw
-        # if yes, then no need to call update_visibiblity_originalEllipse_mode()
-        flag=not self.generalizedEllipse_checkBox.isChecked()
-        if checked and flag:
-            self.update_visibility_originalEllipse_mode(checked)
+
+        self.saveAsDat_button.setVisible(checked)
+        self.saveAsImg_button.setVisible(checked)
             
               
 class Canvas(QtWidgets.QDialog):
@@ -220,9 +215,9 @@ class Canvas(QtWidgets.QDialog):
         super(Canvas,self).__init__(parent)
         self.setMinimumSize(600,600)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.draw_originalEllipse=False
-        self.draw_generalisedEllipse=False
-        self.draw_standardEllipse=False
+        self.originalEllipse=False
+        self.generalisedEllipse=False
+        self.standardEllipse=False
         
         
     def sizeHint(self):
@@ -253,17 +248,13 @@ class Canvas(QtWidgets.QDialog):
         painter.setBrush(Canvas.backgroundColor)
         painter.drawRect(self.rect())
         
-        if self.draw_originalEllipse==True:
-            self.draw_standardEllipse()
+        if self.standardEllipse==True:
+            penColor=QtCore.Qt.green   
+            painter.setPen(penColor)
+            painter.drawLine(self.rect().topLeft(),self.rect().bottomRight())
 
-           
-    def draw_standardEllipse(self):
-        penColor=QtCore.Qt.green   
-        painter=QtGui.QPainter(self)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing,True)
-        painter.setPen(penColor)
-        painter.drawLine(self.rect().topLeft(),self.rect().bottomRight())
 
+        
                   
 
     def draw_generalizedEllipse(self):
