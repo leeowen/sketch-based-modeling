@@ -32,6 +32,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.create_widgets()   
         self.create_layout()
         self.create_connection()
+                
                    
     
     def sizeHint(self):
@@ -90,6 +91,15 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('segment')
         
+        self.J_spinBox.setVisible(False)
+        self.Ea_lineEdit.setVisible(False)
+        self.Em_lineEdit.setVisible(False)
+        self.segment_comboBox.setVisible(False)
+        self.saveAsDat_button.setVisible(False)
+        self.generate_button.setVisible(False)
+        self.saveAsDat_button.setVisible(False)
+        self.saveAsImg_button.setVisible(False)
+        
 
     def create_layout(self):   
         """     
@@ -98,12 +108,9 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         main_layout=QtWidgets.QHBoxLayout(widget_layout_central)
         """
         main_layout=QtWidgets.QHBoxLayout(self)
-                
-        # create layout for canvas
-        left_layout=QtWidgets.QVBoxLayout()
-        
-        left_layout.addWidget(self.canvas)
-        left_layout.setSizeConstraint(QtWidgets.QLayout.SetMinimumSize)        
+                 
+        center_layout=QtWidgets.QHBoxLayout()
+        center_layout.addWidget(self.canvas)
               
         # create layout for different parameters and operation buttons
         right_layout=QtWidgets.QVBoxLayout()
@@ -141,13 +148,14 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         button_layout.addWidget(self.close_button)
         right_layout.addLayout(button_layout)
         
-        main_layout.addLayout(left_layout)
-        main_layout.addLayout(right_layout)
+        center_layout.addLayout(right_layout)
+        
+        main_layout.addLayout(center_layout)
         
 
     def create_connection(self):
         self.file_button.clicked.connect(self.show_file_selected_dialog)
-        self.generate_button.clicked.connect(self.createEllipse)
+        self.generate_button.clicked.connect(self.canvas.update)
         self.close_button.clicked.connect(self.closeFn)
         self.standardEllipse_checkBox.toggled.connect(self.drawMode_standardEllipse)
         self.generalizedEllipse_checkBox.toggled.connect(self.drawMode_generalizedEllipse)
@@ -160,6 +168,13 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.Em_lineEdit.setVisible(not checked)
         self.segment_comboBox.setVisible(not checked)
         self.saveAsDat_button.setVisible(not checked)
+        
+    
+    def update_visibility_generate_mode(self,checked):
+        self.generate_button.setVisible(checked)
+        self.saveAsDat_button.setVisible(checked)
+        self.saveAsImg_button.setVisible(checked)
+        
     
     def show_file_selected_dialog(self):
         FILE_FILTERS="data(*.dat);;All Files(*.*)"
