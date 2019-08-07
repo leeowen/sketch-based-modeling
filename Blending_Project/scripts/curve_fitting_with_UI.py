@@ -218,6 +218,7 @@ class Canvas(QtWidgets.QDialog):
         self.originalEllipse=False
         self.generalisedEllipse=False
         self.standardEllipse=False
+        self.vertices=[]
         
         
     def sizeHint(self):
@@ -231,7 +232,6 @@ class Canvas(QtWidgets.QDialog):
     def readFile(self,file_path):
         f=open(file_path,'r')
         content=f.readlines()
-        self.vertices=[]
         self.numPt=0
         for line in content:
             p=line.split()
@@ -252,10 +252,27 @@ class Canvas(QtWidgets.QDialog):
             penColor=QtCore.Qt.green   
             painter.setPen(penColor)
             painter.drawLine(self.rect().topLeft(),self.rect().bottomRight())
-
-
-        
-                  
+            try:
+                startPoint=QtCore.QPointF(self.vertices[0][0],self.vertices[0][2])
+            except IndexError:
+                error_dialog = QtWidgets.QErrorMessage()
+                error_dialog.showMessage('Please choose a data file first')
+            else:
+                painterPath=QtGui.QPainterPath(startPoint)
+                for i in range(self.numPt):
+                    tmp=self.vertices[(i+1)%self.numPt]-self.vertices[i-1]
+                    tmp/=sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
+                    arc=self.vertices[(i+1)%self.numPt]-self.vertices[i]
+                    arc=sqrt(arc[0]*arc[0]+arc[2]*arc[2])
+                    tmp=tmp*arc/3.0
+                    controlPt1=tmp+self.vertices[i]
+                    
+                    tmp=self.vertices[i]-self.vertices[(i+2)%self.numPt]
+                    tmp/=sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
+                    tmp=tmp*arc/3.0
+                    controlPt2=tmp+self.vertices[(i+1)%self.numPt]
+                    painterPath.cubicTo(controlPt1,controlPt2,self.vertices[(i+1)%self.numPt])
+                         
 
     def draw_generalizedEllipse(self):
         print "draw generalized ellipse"
