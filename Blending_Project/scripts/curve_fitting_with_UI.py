@@ -159,13 +159,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.standardEllipse_checkBox.toggled.connect(self.drawMode_standardEllipse)
         self.generalizedEllipse_checkBox.toggled.connect(self.drawMode_generalizedEllipse)
         self.originalEllipse_checkBox.toggled.connect(self.drawMode_originalEllipse)
-        
-        
-    def drawMode_standardEllipse(self,checked):
-        pass
-        
-    
-
+       
+            
     def update_visibility_originalEllipse_mode(self,checked):
         self.J_spinBox.setVisible(not checked)
         self.Ea_lineEdit.setVisible(not checked)
@@ -253,7 +248,7 @@ class Canvas(QtWidgets.QDialog):
         for line in content:
             p=line.split()
             self.numPt+=1
-            self.vertices.append(om.MPoint(float(p[0]),float(p[1]),float(p[2])))
+            self.vertices.append(om.MVector(float(p[0])*300+self.width()/2,float(p[1])*300,float(p[2])*300+self.height()/2.))
         
         f.close()
 
@@ -269,26 +264,35 @@ class Canvas(QtWidgets.QDialog):
             penColor=QtCore.Qt.green   
             painter.setPen(penColor)
             painter.drawLine(self.rect().topLeft(),self.rect().bottomRight())
+            
+            
+        if self.originalEllipse==True:
+            penColor=QtCore.Qt.green   
+            painter.setPen(penColor)
+    
             try:
                 startPoint=QtCore.QPointF(self.vertices[0][0],self.vertices[0][2])
             except IndexError:
-                error_dialog = QtWidgets.QErrorMessage()
+                error_dialog = QtWidgets.QErrorMessage(self)
                 error_dialog.showMessage('Please choose a data file first')
             else:
                 painterPath=QtGui.QPainterPath(startPoint)
                 for i in range(self.numPt):
                     tmp=self.vertices[(i+1)%self.numPt]-self.vertices[i-1]
-                    tmp/=sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
+                    tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
                     arc=self.vertices[(i+1)%self.numPt]-self.vertices[i]
-                    arc=sqrt(arc[0]*arc[0]+arc[2]*arc[2])
+                    arc=math.sqrt(arc[0]*arc[0]+arc[2]*arc[2])
                     tmp=tmp*arc/3.0
                     controlPt1=tmp+self.vertices[i]
                     
                     tmp=self.vertices[i]-self.vertices[(i+2)%self.numPt]
-                    tmp/=sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
+                    tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
                     tmp=tmp*arc/3.0
                     controlPt2=tmp+self.vertices[(i+1)%self.numPt]
-                    painterPath.cubicTo(controlPt1,controlPt2,self.vertices[(i+1)%self.numPt])
+                    painterPath.cubicTo(controlPt1[0],controlPt1[2],controlPt2[0],controlPt2[2],self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
+                    painterPath.moveTo(self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
+                    
+                painter.drawPath(painterPath)
                          
 
     def draw_generalizedEllipse(self):
