@@ -174,13 +174,15 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
     
     def show_file_selected_dialog(self):
+        dirPath=cmds.workspace(projectPath=True)
         FILE_FILTERS="data(*.dat);;All Files(*.*)"
         selected_filter="data(*.dat)"# default filter, also store last selected filter and can be used as the default filter for next select
-        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName(self, 'Select File','',FILE_FILTERS,selected_filter)
+        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName(self, 'Select File',dirPath+'/data',FILE_FILTERS,selected_filter)
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
             self.filePath_lineEdit.setText(file_path)
             self.canvas.readFile(file_path)
+            self.canvas.update()
             
         
     def closeFn(self):
@@ -245,11 +247,14 @@ class Canvas(QtWidgets.QDialog):
         f=open(file_path,'r')
         content=f.readlines()
         self.numPt=0
+        self.center=QtCore.QPointF(0.0,0.0)
         for line in content:
             p=line.split()
             self.numPt+=1
-            self.vertices.append(om.MVector(float(p[0])*300+self.width()/2,float(p[1])*300,float(p[2])*300+self.height()/2.))
+            self.vertices.append(om.MVector(float(p[0])*300+self.width()/2.,float(p[1])*300,float(p[2])*300+self.height()/2.))
+            self.center+=QtCore.QPointF(float(p[0])*300+self.width()/2.0,float(p[2])*300+self.height()/2.0)
         
+        self.center=self.center/self.numPt
         f.close()
 
     
@@ -260,14 +265,15 @@ class Canvas(QtWidgets.QDialog):
         painter.setBrush(Canvas.backgroundColor)
         painter.drawRect(self.rect())
         
-        if self.standardEllipse==True:
+        painter.setBrush(QtCore.Qt.NoBrush)# no fill inside the shape
+        
+        if self.generalisedEllipse==True:
             penColor=QtCore.Qt.green   
             painter.setPen(penColor)
-            painter.drawLine(self.rect().topLeft(),self.rect().bottomRight())
             
             
         if self.originalEllipse==True:
-            penColor=QtCore.Qt.green   
+            penColor=QtCore.Qt.red   
             painter.setPen(penColor)
     
             try:
@@ -276,24 +282,57 @@ class Canvas(QtWidgets.QDialog):
                 error_dialog = QtWidgets.QErrorMessage(self)
                 error_dialog.showMessage('Please choose a data file first')
             else:
+                for i in range(self.numPt):
+                    p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
+                    p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                    painter.drawLine(p1,p2)
+                
                 painterPath=QtGui.QPainterPath(startPoint)
                 for i in range(self.numPt):
                     tmp=self.vertices[(i+1)%self.numPt]-self.vertices[i-1]
                     tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
                     arc=self.vertices[(i+1)%self.numPt]-self.vertices[i]
                     arc=math.sqrt(arc[0]*arc[0]+arc[2]*arc[2])
-                    tmp=tmp*arc/3.0
+                    tmp=tmp*arc/1.
                     controlPt1=tmp+self.vertices[i]
                     
                     tmp=self.vertices[i]-self.vertices[(i+2)%self.numPt]
                     tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
-                    tmp=tmp*arc/3.0
+                    tmp=tmp*arc/1.
                     controlPt2=tmp+self.vertices[(i+1)%self.numPt]
                     painterPath.cubicTo(controlPt1[0],controlPt1[2],controlPt2[0],controlPt2[2],self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
                     painterPath.moveTo(self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
                     
                 painter.drawPath(painterPath)
-                         
+                
+                
+        if self.standardEllipse==True:
+            penColor=QtCore.Qt.blue  
+            painter.setPen(penColor)
+            
+            # calculate the major axis and minor axis
+            a0u=0.0
+            a0b=0.0
+            b0u=0.0
+            b0b=0.0
+            try:
+                for i in range(self.numPt):
+                    angle=i*2*math.pi/self.numPt
+                    a0u=a0u+(self.vertices[i][0]-self.center.x())*math.cos(angle)
+                    a0b=a0b+math.cos(angle)*math.cos(angle)
+                    b0u=b0u+(self.vertices[i][2]-self.center.y())*math.sin(angle)
+                    b0b=b0b+math.sin(angle)*math.sin(angle)
+                    
+                width=a0u/a0b
+                height=b0u/b0b
+                
+                painter.drawEllipse(self.center,width,height)
+
+            except IndexError:
+                error_dialog = QtWidgets.QErrorMessage(self)
+                error_dialog.showMessage('Please choose a data file first')
+
+
 
     def draw_generalizedEllipse(self):
         print "draw generalized ellipse"
