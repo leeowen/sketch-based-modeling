@@ -7,7 +7,7 @@ import math,sys
 
 sys.path.append('/usr/lib64/python2.7/site-packages')
 sys.path.append('./.local/lib/python2.7/site-packages')
-import numpy
+import numpy as np
 
 
 def maya_useNewAPI():
@@ -270,8 +270,39 @@ class Canvas(QtWidgets.QDialog):
         if self.generalisedEllipse==True:
             penColor=QtCore.Qt.green   
             painter.setPen(penColor)
-            
-            
+            J=3
+            aConstArray=np.zeros((2*J+1,1))
+            aCoefficientMatrix=np.array((2*J+1,I))
+            aTrignometricMatrix=np.array((I,2*J+1))
+            bConstArray=np.zeros((2*J+1,1))
+            bCoefficientMatrix=np.array((2*J+1,I))
+            bTrignometricMatrix=np.array((I,2*J+1))
+            for i in range(I):
+                aCoefficientMatrix[0,i]=1.
+                aTrignometricMatrix[i,0]=1.
+                bCoefficientMatrix[0,i]=1.
+                bTrignometricMatrix[i,0]=1.
+                # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
+            for i in range(I):# for aCoefficientMatrix's column, and trignomatricMatrix's row
+                for j in range(1,J+1):# for aCoefficientMatrix's row, and trignomatricMatrix's column
+                    vi=i*math.pi*2/I
+                    aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
+                    aCoefficientMatrix[2*j,i]=math.sin(vi*j)
+                    aTrignometricMatrix[i,2*j-1]=math.cos(vi*j)
+                    aTrignometricMatrix[i,2*j]=math.sin(vi*j)
+                    aConstArray[2*j-1]+=(self.vertices[i][0]-self.center.x())*math.cos(vi*j)
+                    
+                    bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
+                    bCoefficientMatrix[2*j,i]=math.cos(vi*j)
+                    bTrignometricMatrix[i,2*j-1]=math.sin(vi*j)
+                    bTrignometricMatrix[i,2*j]=math.cos(vi*j)
+                    bConstArray[2*j-1]+=(self.vertices[i][2]-self.center.y())*math.cos(vi*j)
+                                
+            a=np.linalg.solve(aCoefficientMatrix*aTrignometricMatrix,aConstArray)           
+            b=np.linalg.solve(bCoefficientMatrix*bTrignometricMatrix,bConstArray)           
+        
+        
+        
         if self.originalEllipse==True:
             penColor=QtCore.Qt.red   
             painter.setPen(penColor)
