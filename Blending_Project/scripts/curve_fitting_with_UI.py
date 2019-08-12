@@ -204,7 +204,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             checkBox=wrapInstance(long(ptr),QtWidgets.QCheckBox)
             value=checkBox.isChecked()
         """
-        self.canvas.generalizedEllipse=checked
+        self.canvas.generalisedEllipse=checked
         self.canvas.update()
         
         self.J_spinBox.setVisible(checked)
@@ -271,12 +271,13 @@ class Canvas(QtWidgets.QDialog):
             penColor=QtCore.Qt.green   
             painter.setPen(penColor)
             J=3
-            aConstArray=np.zeros((2*J+1,1))
-            aCoefficientMatrix=np.array((2*J+1,I))
-            aTrignometricMatrix=np.array((I,2*J+1))
-            bConstArray=np.zeros((2*J+1,1))
-            bCoefficientMatrix=np.array((2*J+1,I))
-            bTrignometricMatrix=np.array((I,2*J+1))
+            I=self.numPt
+            aConstArray=np.zeros(2*J+1)
+            aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
+            aTrignometricMatrix=np.ndarray(shape=(I,2*J+1), dtype=float, order='C')
+            bConstArray=np.zeros(2*J+1)
+            bCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')
+            bTrignometricMatrix=np.ndarray(shape=(I,2*J+1), dtype=float, order='C')
             for i in range(I):
                 aCoefficientMatrix[0,i]=1.
                 aTrignometricMatrix[i,0]=1.
@@ -298,9 +299,12 @@ class Canvas(QtWidgets.QDialog):
                     bTrignometricMatrix[i,2*j]=math.cos(vi*j)
                     bConstArray[2*j-1]+=(self.vertices[i][2]-self.center.y())*math.cos(vi*j)
                                 
-            a=np.linalg.solve(aCoefficientMatrix*aTrignometricMatrix,aConstArray)           
-            b=np.linalg.solve(bCoefficientMatrix*bTrignometricMatrix,bConstArray)           
-        
+            A=np.dot(aCoefficientMatrix,aTrignometricMatrix)
+            a=np.linalg.solve(A,aConstArray)   
+            B=np.dot(bCoefficientMatrix,bTrignometricMatrix)      
+            b=np.linalg.solve(B,bConstArray)           
+            print a
+            print b
         
         
         if self.originalEllipse==True:
