@@ -292,19 +292,28 @@ class Canvas(QtWidgets.QDialog):
                     aTrignometricMatrix[i,2*j-1]=math.cos(vi*j)
                     aTrignometricMatrix[i,2*j]=math.sin(vi*j)
                     aConstArray[2*j-1]+=(self.vertices[i][0]-self.center.x())*math.cos(vi*j)
+                    aConstArray[2*j]+=(self.vertices[i][0]-self.center.x())*math.sin(vi*j)
                     
                     bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
                     bCoefficientMatrix[2*j,i]=math.cos(vi*j)
                     bTrignometricMatrix[i,2*j-1]=math.sin(vi*j)
                     bTrignometricMatrix[i,2*j]=math.cos(vi*j)
                     bConstArray[2*j-1]+=(self.vertices[i][2]-self.center.y())*math.cos(vi*j)
-                                
+                    bConstArray[2*j]+=(self.vertices[i][2]-self.center.y())*math.sin(vi*j)
+                                  
             A=np.dot(aCoefficientMatrix,aTrignometricMatrix)
             a=np.linalg.solve(A,aConstArray)   
             B=np.dot(bCoefficientMatrix,bTrignometricMatrix)      
             b=np.linalg.solve(B,bConstArray)           
+
             print a
             print b
+            #CoefficientMatrix
+            for i in range(I):
+                v=i*2*math.pi/I
+                x=self.center.x()+a[0]
+                for j in range(1,J):
+                    x+=a[2*j-1]*math.cos(j*v)
         
         
         if self.originalEllipse==True:
