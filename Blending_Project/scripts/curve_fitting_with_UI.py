@@ -32,8 +32,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.create_widgets()   
         self.create_layout()
         self.create_connection()
-                
-                   
+                                   
     
     def sizeHint(self):
         return QtCore.QSize(900,650)
@@ -90,7 +89,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('segment')
         
-
         self.J_spinBox.setVisible(False)
         self.Ea_lineEdit.setVisible(False)
         self.Em_lineEdit.setVisible(False)
@@ -150,7 +148,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         center_layout.addLayout(right_layout)
         
         main_layout.addLayout(center_layout)
-
         
 
     def create_connection(self):
@@ -233,7 +230,7 @@ class Canvas(QtWidgets.QDialog):
         self.generalisedEllipse=False
         self.standardEllipse=False
         self.vertices=[]
-        
+        self.angles=[]
         
     def sizeHint(self):
         return QtCore.QSize(600,600)
@@ -255,9 +252,28 @@ class Canvas(QtWidgets.QDialog):
             self.center+=QtCore.QPointF(float(p[0])*300+self.width()/2.0,float(p[2])*300+self.height()/2.0)
         
         self.center=self.center/self.numPt
+        self.getAngle()
         f.close()
 
     
+    def getAngle(self):
+        for i in range(0,self.numPt):
+            anglem=(self.vertices[i][2]-self.center.y())/math.sqrt((self.vertices[i][2]-self.center.y())**2+(self.vertices[i][0]-self.center.x())**2)
+            anglem=math.asin(anglem)
+            if(self.vertices[i][0]>=self.x() and self.vertices[i][2]>=self.center.y()):
+                self.angles.append(anglem)
+            elif(self.vertices[i][0]>=self.x() and self.vertices[i][2]<self.center.y()):
+                self.angles.append(2*math.pi+anglem)
+            elif (self.vertices[i][0]<self.x() and self.vertices[i][2]<=self.center.y()):
+                self.angles.append(math.pi-anglem)
+            elif (self.vertices[i][0]<self.x() and self.vertices[i][2]<self.center.y()):
+                self.angles.append(math.pi-anglem)
+                
+        for i in range(self.numPt):
+            self.angles[i]=2*math.pi*i/self.numPt          
+            
+                
+        
     def paintEvent(self,evt):
         painter=QtGui.QPainter(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing,True)
@@ -270,7 +286,7 @@ class Canvas(QtWidgets.QDialog):
         if self.generalisedEllipse==True:
             penColor=QtCore.Qt.green   
             painter.setPen(penColor)
-            J=3
+            J=20
             I=self.numPt
             aConstArray=np.zeros(2*J+1)
             aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
@@ -286,7 +302,7 @@ class Canvas(QtWidgets.QDialog):
                 # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
             for i in range(I):# for aCoefficientMatrix's column, and trignomatricMatrix's row
                 for j in range(1,J+1):# for aCoefficientMatrix's row, and trignomatricMatrix's column
-                    vi=i*math.pi*2/I
+                    vi=self.angles[i]
                     aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
                     aCoefficientMatrix[2*j,i]=math.sin(vi*j)
                     aTrignometricMatrix[i,2*j-1]=math.cos(vi*j)
@@ -309,11 +325,16 @@ class Canvas(QtWidgets.QDialog):
             print a
             print b
             #CoefficientMatrix
+            generalisedEllipseVertices=[[0 for i in range(2)] for j in range(I)] 
             for i in range(I):
-                v=i*2*math.pi/I
-                x=self.center.x()+a[0]
+                generalisedEllipseVertices[i][0]=self.center.x()+a[0]
+                generalisedEllipseVertices[i][1]=self.center.y()+b[0]
+                v=self.angles[i]
                 for j in range(1,J):
-                    x+=a[2*j-1]*math.cos(j*v)
+                    generalisedEllipseVertices[i][0]+=a[2*j-1]*math.cos(j*v)+a[2*j]*math.sin(j*v)
+                    generalisedEllipseVertices[i][1]+=b[2*j-1]*math.sin(j*v)+b[2*j]*math.cos(j*v)
+            for i in range(I):
+                painter.drawLine(generalisedEllipseVertices[i][0],generalisedEllipseVertices[i][1],generalisedEllipseVertices[(i+1)%I][0],generalisedEllipseVertices[(i+1)%I][1])    
         
         
         if self.originalEllipse==True:
