@@ -151,6 +151,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
 
     def create_connection(self):
+        self.saveAsDat_button.clicked.connect(self.save_dataFn)
+        self.saveAsImg_button.clicked.connect(self.save_imageFn)
         self.file_button.clicked.connect(self.show_file_selected_dialog)
         self.close_button.clicked.connect(self.closeFn)
         self.standardEllipse_checkBox.toggled.connect(self.drawMode_standardEllipse)
@@ -158,6 +160,20 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.originalEllipse_checkBox.toggled.connect(self.drawMode_originalEllipse)
        
             
+    def save_dataFn(self):
+        pass
+        
+        
+    def save_imageFn(self):
+        dirPath=cmds.workspace(q=True, rootDirectory=True )
+        dirPath+='data'
+        FILE_FILTERS="image(*.png);;All Files(*.*)"
+        selected_filter="data(*.dat)"# default filter, also store last selected filter and can be used as the default filter for next select
+        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName(self, 'Select File',dirPath+'data',FILE_FILTERS,selected_filter)
+        # check if user has cancel the dialog by checking if file_path is none
+        if file_path:
+        
+             
     def update_visibility_originalEllipse_mode(self,checked):
         self.J_spinBox.setVisible(not checked)
         self.Ea_lineEdit.setVisible(not checked)
@@ -171,10 +187,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
     
     def show_file_selected_dialog(self):
-        dirPath=cmds.workspace(projectPath=True)
+        dirPath=cmds.workspace(q=True, rootDirectory=True )
         FILE_FILTERS="data(*.dat);;All Files(*.*)"
         selected_filter="data(*.dat)"# default filter, also store last selected filter and can be used as the default filter for next select
-        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName(self, 'Select File',dirPath+'/data',FILE_FILTERS,selected_filter)
+        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName(self, 'Select File',dirPath+'data',FILE_FILTERS,selected_filter)
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
             self.filePath_lineEdit.setText(file_path)
@@ -260,18 +276,15 @@ class Canvas(QtWidgets.QDialog):
         for i in range(0,self.numPt):
             anglem=(self.vertices[i][2]-self.center.y())/math.sqrt((self.vertices[i][2]-self.center.y())**2+(self.vertices[i][0]-self.center.x())**2)
             anglem=math.asin(anglem)
-            if(self.vertices[i][0]>=self.x() and self.vertices[i][2]>=self.center.y()):
-                self.angles.append(anglem)
-            elif(self.vertices[i][0]>=self.x() and self.vertices[i][2]<self.center.y()):
-                self.angles.append(2*math.pi+anglem)
-            elif (self.vertices[i][0]<self.x() and self.vertices[i][2]<=self.center.y()):
-                self.angles.append(math.pi-anglem)
-            elif (self.vertices[i][0]<self.x() and self.vertices[i][2]<self.center.y()):
-                self.angles.append(math.pi-anglem)
-                
-        for i in range(self.numPt):
-            self.angles[i]=2*math.pi*i/self.numPt          
             
+            if(self.vertices[i][0]>self.center.x() and self.vertices[i][2]>self.center.y()):
+                self.angles.append(anglem)
+            elif(self.vertices[i][0]>self.center.x() and self.vertices[i][2]<self.center.y()):
+                self.angles.append(2*math.pi+anglem)
+            elif (self.vertices[i][0]<self.center.x() and self.vertices[i][2]>self.center.y()):
+                self.angles.append(math.pi-anglem)
+            elif (self.vertices[i][0]<self.center.x() and self.vertices[i][2]<self.center.y()):
+                self.angles.append(math.pi-anglem)
                 
         
     def paintEvent(self,evt):
@@ -314,23 +327,21 @@ class Canvas(QtWidgets.QDialog):
                     bCoefficientMatrix[2*j,i]=math.cos(vi*j)
                     bTrignometricMatrix[i,2*j-1]=math.sin(vi*j)
                     bTrignometricMatrix[i,2*j]=math.cos(vi*j)
-                    bConstArray[2*j-1]+=(self.vertices[i][2]-self.center.y())*math.cos(vi*j)
-                    bConstArray[2*j]+=(self.vertices[i][2]-self.center.y())*math.sin(vi*j)
+                    bConstArray[2*j-1]+=(self.vertices[i][2]-self.center.y())*math.sin(vi*j)
+                    bConstArray[2*j]+=(self.vertices[i][2]-self.center.y())*math.cos(vi*j)
                                   
             A=np.dot(aCoefficientMatrix,aTrignometricMatrix)
             a=np.linalg.solve(A,aConstArray)   
             B=np.dot(bCoefficientMatrix,bTrignometricMatrix)      
             b=np.linalg.solve(B,bConstArray)           
 
-            print a
-            print b
             #CoefficientMatrix
             generalisedEllipseVertices=[[0 for i in range(2)] for j in range(I)] 
             for i in range(I):
                 generalisedEllipseVertices[i][0]=self.center.x()+a[0]
                 generalisedEllipseVertices[i][1]=self.center.y()+b[0]
                 v=self.angles[i]
-                for j in range(1,J):
+                for j in range(1,J+1):
                     generalisedEllipseVertices[i][0]+=a[2*j-1]*math.cos(j*v)+a[2*j]*math.sin(j*v)
                     generalisedEllipseVertices[i][1]+=b[2*j-1]*math.sin(j*v)+b[2*j]*math.cos(j*v)
             for i in range(I):
