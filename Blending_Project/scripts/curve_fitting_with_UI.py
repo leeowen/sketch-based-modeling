@@ -158,7 +158,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.standardEllipse_checkBox.toggled.connect(self.drawMode_standardEllipse)
         self.generalizedEllipse_checkBox.toggled.connect(self.drawMode_generalizedEllipse)
         self.originalEllipse_checkBox.toggled.connect(self.drawMode_originalEllipse)
-       
+        self.J_spinBox.valueChanged.connect(self.canvas.setJ)
+        
             
     def save_dataFn(self):
         pass
@@ -166,12 +167,24 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
     def save_imageFn(self):
         dirPath=cmds.workspace(q=True, rootDirectory=True )
-        dirPath+='data'
-        FILE_FILTERS="image(*.png);;All Files(*.*)"
-        selected_filter="data(*.dat)"# default filter, also store last selected filter and can be used as the default filter for next select
-        file_path,selected_filter=QtWidgets.QFileDialog.getOpenFileName(self, 'Select File',dirPath+'data',FILE_FILTERS,selected_filter)
+        dirPath+='images/'
+        FILE_FILTERS="PNG(*.png);All Files(*.*)"
+        selected_filter="PNG(*.png)"# default filter, also store last selected filter and can be used as the default filter for next select
+        file_path,selected_filter=QtWidgets.QFileDialog.getSaveFileName(self, 'save',dirPath+'data',FILE_FILTERS,selected_filter)
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
+            self.saveFile(file_path)
+            
+         
+    def saveFile(self,file_path):
+        file=QtCore.QFile(file_path)
+        if file.open(QtCore.QIODevice.WriteOnly):
+            pixmap=QtGui.QPixmap(self.canvas.size())
+            self.canvas.render(pixmap)
+            pixmap.save(file,"PNG")
+            file.close()
+        else:
+            QMessageBox.warning(self,'curve fitting',tr("Cannot write file %1. \nError:%2").arg(file_path).arg(file.errorString()))
         
              
     def update_visibility_originalEllipse_mode(self,checked):
@@ -247,6 +260,7 @@ class Canvas(QtWidgets.QDialog):
         self.standardEllipse=False
         self.vertices=[]
         self.angles=[]
+        self.J=10
         
     def sizeHint(self):
         return QtCore.QSize(600,600)
@@ -255,7 +269,10 @@ class Canvas(QtWidgets.QDialog):
     def minimumSize(self):
         return QtCore.Qsize(600,600)
         
-
+    def setJ(self,j):
+        self.J=j
+        self.update()
+    
     def readFile(self,file_path):
         f=open(file_path,'r')
         content=f.readlines()
@@ -297,16 +314,15 @@ class Canvas(QtWidgets.QDialog):
         painter.setBrush(QtCore.Qt.NoBrush)# no fill inside the shape
         
         if self.generalisedEllipse==True:
-            penColor=QtCore.Qt.green   
+            penColor=QtGui.QColor(0,80,0) 
             painter.setPen(penColor)
-            J=20
             I=self.numPt
-            aConstArray=np.zeros(2*J+1)
-            aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
-            aTrignometricMatrix=np.ndarray(shape=(I,2*J+1), dtype=float, order='C')
-            bConstArray=np.zeros(2*J+1)
-            bCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')
-            bTrignometricMatrix=np.ndarray(shape=(I,2*J+1), dtype=float, order='C')
+            aConstArray=np.zeros(2*self.J+1)
+            aCoefficientMatrix=np.ndarray(shape=(2*self.J+1,I), dtype=float, order='C')# row-major
+            aTrignometricMatrix=np.ndarray(shape=(I,2*self.J+1), dtype=float, order='C')
+            bConstArray=np.zeros(2*self.J+1)
+            bCoefficientMatrix=np.ndarray(shape=(2*self.J+1,I), dtype=float, order='C')
+            bTrignometricMatrix=np.ndarray(shape=(I,2*self.J+1), dtype=float, order='C')
             for i in range(I):
                 aCoefficientMatrix[0,i]=1.
                 aTrignometricMatrix[i,0]=1.
@@ -314,7 +330,7 @@ class Canvas(QtWidgets.QDialog):
                 bTrignometricMatrix[i,0]=1.
                 # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
             for i in range(I):# for aCoefficientMatrix's column, and trignomatricMatrix's row
-                for j in range(1,J+1):# for aCoefficientMatrix's row, and trignomatricMatrix's column
+                for j in range(1,self.J+1):# for aCoefficientMatrix's row, and trignomatricMatrix's column
                     vi=self.angles[i]
                     aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
                     aCoefficientMatrix[2*j,i]=math.sin(vi*j)
@@ -341,13 +357,12 @@ class Canvas(QtWidgets.QDialog):
                 generalisedEllipseVertices[i][0]=self.center.x()+a[0]
                 generalisedEllipseVertices[i][1]=self.center.y()+b[0]
                 v=self.angles[i]
-                for j in range(1,J+1):
+                for j in range(1,self.J+1):
                     generalisedEllipseVertices[i][0]+=a[2*j-1]*math.cos(j*v)+a[2*j]*math.sin(j*v)
                     generalisedEllipseVertices[i][1]+=b[2*j-1]*math.sin(j*v)+b[2*j]*math.cos(j*v)
             for i in range(I):
                 painter.drawLine(generalisedEllipseVertices[i][0],generalisedEllipseVertices[i][1],generalisedEllipseVertices[(i+1)%I][0],generalisedEllipseVertices[(i+1)%I][1])    
-        
-        
+                   
         if self.originalEllipse==True:
             penColor=QtCore.Qt.red   
             painter.setPen(penColor)
@@ -407,15 +422,6 @@ class Canvas(QtWidgets.QDialog):
             except IndexError:
                 error_dialog = QtWidgets.QErrorMessage(self)
                 error_dialog.showMessage('Please choose a data file first')
-
-
-
-    def draw_generalizedEllipse(self):
-        print "draw generalized ellipse"
-        
-    
-    def draw_originalEllipse(self):
-        pass
 
 
 if __name__=="__main__":
