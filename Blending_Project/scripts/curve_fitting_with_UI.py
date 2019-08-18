@@ -196,7 +196,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
 
 
     def update_visibility_standardEllipse_mode(self,checked):
-        pass
+        self.saveAsImg_button.setVisible(not checked)
         
     
     def show_file_selected_dialog(self):
@@ -314,31 +314,47 @@ class Canvas(QtWidgets.QDialog):
         painter.setBrush(QtCore.Qt.NoBrush)# no fill inside the shape
         
         if self.generalisedEllipse==True:
-            penColor=QtGui.QColor(0,80,0) 
-            painter.setPen(penColor)
-            I=self.numPt
-            aConstArray=np.zeros(2*self.J+1)
-            aCoefficientMatrix=np.ndarray(shape=(2*self.J+1,I), dtype=float, order='C')# row-major
-            aTrignometricMatrix=np.ndarray(shape=(I,2*self.J+1), dtype=float, order='C')
-            bConstArray=np.zeros(2*self.J+1)
-            bCoefficientMatrix=np.ndarray(shape=(2*self.J+1,I), dtype=float, order='C')
-            bTrignometricMatrix=np.ndarray(shape=(I,2*self.J+1), dtype=float, order='C')
-            for i in range(I):
-                aCoefficientMatrix[0,i]=1.
-                aTrignometricMatrix[i,0]=1.
-                bCoefficientMatrix[0,i]=1.
-                bTrignometricMatrix[i,0]=1.
-                # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
-            for i in range(I):# for aCoefficientMatrix's column, and trignomatricMatrix's row
-                for j in range(1,self.J+1):# for aCoefficientMatrix's row, and trignomatricMatrix's column
+            self.draw_generalisedEllipse(painter)
+
+        if self.originalEllipse==True:
+            self.draw_originalEllipse(painter)
+        
+        if self.standardEllipse==True:
+            self.draw_standardEllipse(painter)
+             
+               
+    def draw_generalisedEllipse(self,painter):
+        penColor=QtGui.QColor(0,80,0) 
+        painter.setPen(penColor)
+        I=self.numPt
+        aConstArray=np.zeros(2*self.J+1)
+        aCoefficientMatrix=np.ndarray(shape=(2*self.J+1,I), dtype=float, order='C')# row-major
+        aTrignometricMatrix=np.ndarray(shape=(I,2*self.J+1), dtype=float, order='C')
+        bConstArray=np.zeros(2*self.J+1)
+        bCoefficientMatrix=np.ndarray(shape=(2*self.J+1,I), dtype=float, order='C')
+        bTrignometricMatrix=np.ndarray(shape=(I,2*self.J+1), dtype=float, order='C')
+        for i in range(I):
+            aCoefficientMatrix[0,i]=1.
+            aTrignometricMatrix[i,0]=1.
+            bCoefficientMatrix[0,i]=1.
+            bTrignometricMatrix[i,0]=1.
+            # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
+        
+        for i in range(I):# for aCoefficientMatrix's column, and trignomatricMatrix's row
+            for j in range(1,self.J+1):# for aCoefficientMatrix's row, and trignomatricMatrix's column
+                try:
                     vi=self.angles[i]
+                except IndexError:
+                    error_dialog = QtWidgets.QErrorMessage(self)
+                    error_dialog.showMessage('Please choose a data file first')
+                else:    
                     aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
                     aCoefficientMatrix[2*j,i]=math.sin(vi*j)
                     aTrignometricMatrix[i,2*j-1]=math.cos(vi*j)
                     aTrignometricMatrix[i,2*j]=math.sin(vi*j)
                     aConstArray[2*j-1]+=(self.vertices[i][0]-self.center.x())*math.cos(vi*j)
                     aConstArray[2*j]+=(self.vertices[i][0]-self.center.x())*math.sin(vi*j)
-                    
+                
                     bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
                     bCoefficientMatrix[2*j,i]=math.cos(vi*j)
                     bTrignometricMatrix[i,2*j-1]=math.sin(vi*j)
@@ -346,82 +362,84 @@ class Canvas(QtWidgets.QDialog):
                     bConstArray[2*j-1]+=(self.vertices[i][2]-self.center.y())*math.sin(vi*j)
                     bConstArray[2*j]+=(self.vertices[i][2]-self.center.y())*math.cos(vi*j)
                                   
-            A=np.dot(aCoefficientMatrix,aTrignometricMatrix)
-            a=np.linalg.solve(A,aConstArray)   
-            B=np.dot(bCoefficientMatrix,bTrignometricMatrix)      
-            b=np.linalg.solve(B,bConstArray)           
+        A=np.dot(aCoefficientMatrix,aTrignometricMatrix)
+        a=np.linalg.solve(A,aConstArray)   
+        B=np.dot(bCoefficientMatrix,bTrignometricMatrix)      
+        b=np.linalg.solve(B,bConstArray)           
 
-            #CoefficientMatrix
-            generalisedEllipseVertices=[[0 for i in range(2)] for j in range(I)] 
-            for i in range(I):
-                generalisedEllipseVertices[i][0]=self.center.x()+a[0]
-                generalisedEllipseVertices[i][1]=self.center.y()+b[0]
-                v=self.angles[i]
-                for j in range(1,self.J+1):
-                    generalisedEllipseVertices[i][0]+=a[2*j-1]*math.cos(j*v)+a[2*j]*math.sin(j*v)
-                    generalisedEllipseVertices[i][1]+=b[2*j-1]*math.sin(j*v)+b[2*j]*math.cos(j*v)
-            for i in range(I):
-                painter.drawLine(generalisedEllipseVertices[i][0],generalisedEllipseVertices[i][1],generalisedEllipseVertices[(i+1)%I][0],generalisedEllipseVertices[(i+1)%I][1])    
-                   
-        if self.originalEllipse==True:
-            penColor=QtCore.Qt.red   
-            painter.setPen(penColor)
+        #CoefficientMatrix
+        generalisedEllipseVertices=[[0 for i in range(2)] for j in range(I)] 
+        for i in range(I):
+            generalisedEllipseVertices[i][0]=self.center.x()+a[0]
+            generalisedEllipseVertices[i][1]=self.center.y()+b[0]
+            v=self.angles[i]
+            for j in range(1,self.J+1):
+                generalisedEllipseVertices[i][0]+=a[2*j-1]*math.cos(j*v)+a[2*j]*math.sin(j*v)
+                generalisedEllipseVertices[i][1]+=b[2*j-1]*math.sin(j*v)+b[2*j]*math.cos(j*v)
+        for i in range(I):
+            painter.drawLine(generalisedEllipseVertices[i][0],generalisedEllipseVertices[i][1],generalisedEllipseVertices[(i+1)%I][0],generalisedEllipseVertices[(i+1)%I][1])    
+               
     
-            try:
-                startPoint=QtCore.QPointF(self.vertices[0][0],self.vertices[0][2])
-            except IndexError:
-                error_dialog = QtWidgets.QErrorMessage(self)
-                error_dialog.showMessage('Please choose a data file first')
-            else:
-                for i in range(self.numPt):
-                    p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
-                    p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
-                    painter.drawLine(p1,p2)
-                
-                painterPath=QtGui.QPainterPath(startPoint)
-                for i in range(self.numPt):
-                    tmp=self.vertices[(i+1)%self.numPt]-self.vertices[i-1]
-                    tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
-                    arc=self.vertices[(i+1)%self.numPt]-self.vertices[i]
-                    arc=math.sqrt(arc[0]*arc[0]+arc[2]*arc[2])
-                    tmp=tmp*arc/1.
-                    controlPt1=tmp+self.vertices[i]
-                    
-                    tmp=self.vertices[i]-self.vertices[(i+2)%self.numPt]
-                    tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
-                    tmp=tmp*arc/1.
-                    controlPt2=tmp+self.vertices[(i+1)%self.numPt]
-                    painterPath.cubicTo(controlPt1[0],controlPt1[2],controlPt2[0],controlPt2[2],self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
-                    painterPath.moveTo(self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
-                    
-                painter.drawPath(painterPath)
-                
-                
-        if self.standardEllipse==True:
-            penColor=QtCore.Qt.blue  
-            painter.setPen(penColor)
-            
-            # calculate the major axis and minor axis
-            a0u=0.0
-            a0b=0.0
-            b0u=0.0
-            b0b=0.0
-            try:
-                for i in range(self.numPt):
-                    angle=i*2*math.pi/self.numPt
-                    a0u=a0u+(self.vertices[i][0]-self.center.x())*math.cos(angle)
-                    a0b=a0b+math.cos(angle)*math.cos(angle)
-                    b0u=b0u+(self.vertices[i][2]-self.center.y())*math.sin(angle)
-                    b0b=b0b+math.sin(angle)*math.sin(angle)
-                    
-                width=a0u/a0b
-                height=b0u/b0b
-                
-                painter.drawEllipse(self.center,width,height)
+    def draw_originalEllipse(self,painter):
+        penColor=QtCore.Qt.red   
+        painter.setPen(penColor)
 
-            except IndexError:
-                error_dialog = QtWidgets.QErrorMessage(self)
-                error_dialog.showMessage('Please choose a data file first')
+        try:
+            startPoint=QtCore.QPointF(self.vertices[0][0],self.vertices[0][2])
+        except IndexError:
+            error_dialog = QtWidgets.QErrorMessage(self)
+            error_dialog.showMessage('Please choose a data file first')
+        else:
+            for i in range(self.numPt):
+                p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
+                p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                painter.drawLine(p1,p2)
+            
+            painterPath=QtGui.QPainterPath(startPoint)
+            for i in range(self.numPt):
+                tmp=self.vertices[(i+1)%self.numPt]-self.vertices[i-1]
+                tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
+                arc=self.vertices[(i+1)%self.numPt]-self.vertices[i]
+                arc=math.sqrt(arc[0]*arc[0]+arc[2]*arc[2])
+                tmp=tmp*arc/1.
+                controlPt1=tmp+self.vertices[i]
+                    
+                tmp=self.vertices[i]-self.vertices[(i+2)%self.numPt]
+                tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
+                tmp=tmp*arc/1.
+                controlPt2=tmp+self.vertices[(i+1)%self.numPt]
+                painterPath.cubicTo(controlPt1[0],controlPt1[2],controlPt2[0],controlPt2[2],self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
+                painterPath.moveTo(self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
+                
+            painter.drawPath(painterPath)               
+                
+        
+    def draw_standardEllipse(self,painter): 
+        penColor=QtCore.Qt.blue        
+        painter.setPen(penColor)
+        
+        # calculate the major axis and minor axis
+        a0u=0.0
+        a0b=0.0
+        b0u=0.0
+        b0b=0.0
+        try:
+            for i in range(self.numPt):
+                angle=i*2*math.pi/self.numPt
+                a0u=a0u+(self.vertices[i][0]-self.center.x())*math.cos(angle)
+                a0b=a0b+math.cos(angle)*math.cos(angle)
+                b0u=b0u+(self.vertices[i][2]-self.center.y())*math.sin(angle)
+                b0b=b0b+math.sin(angle)*math.sin(angle)
+
+        except IndexError:
+            error_dialog = QtWidgets.QErrorMessage(self)
+            error_dialog.showMessage('Please choose a data file first')
+        else:
+            width=a0u/a0b
+            height=b0u/b0b
+            
+            painter.drawEllipse(self.center,width,height)
+
 
 
 if __name__=="__main__":
