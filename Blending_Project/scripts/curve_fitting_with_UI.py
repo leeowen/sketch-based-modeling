@@ -64,9 +64,11 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
         self.Ea_lineEdit=QtWidgets.QLineEdit()
         self.Ea_lineEdit.setFixedWidth(200)
+        self.Ea_lineEdit.setMaxLength(5)
 
         self.Em_lineEdit=QtWidgets.QLineEdit()
         self.Em_lineEdit.setFixedWidth(200)
+        self.Em_lineEdit.setMaxLength(5)
         
         self.canvas=Canvas()       
         
@@ -162,7 +164,25 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
             
     def save_dataFn(self):
-        pass
+        dirPath=cmds.workspace(q=True, rootDirectory=True )
+        dirPath+='data/'
+        FILE_FILTERS="DAT(*.dat);All Files(*.*)"
+        selected_filter="DAT(*.dat)"# default filter, also store last selected filter and can be used as the default filter for next select
+        file_path,selected_filter=QtWidgets.QFileDialog.getSaveFileName(self, 'save',dirPath+'data',FILE_FILTERS,selected_filter)
+        # check if user has cancel the dialog by checking if file_path is none
+        if file_path:
+            f=open(file_path,"w+")
+            f.write('range:')
+            # \u03C0 is greek small letter pi
+            f.write('0-\u03C0 \n')
+            f.write('a: ')
+            for i in range(self.canvas.numPt):
+                f.write(str(self.a[i])+' ')
+            f.write('\n')
+            f.write('b: ')
+            for i in range(self.canvas.numPt):
+                f.write(str(self.b[i])+' ')
+        f.close()
         
         
     def save_imageFn(self):
@@ -170,7 +190,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         dirPath+='images/'
         FILE_FILTERS="PNG(*.png);All Files(*.*)"
         selected_filter="PNG(*.png)"# default filter, also store last selected filter and can be used as the default filter for next select
-        file_path,selected_filter=QtWidgets.QFileDialog.getSaveFileName(self, 'save',dirPath+'data',FILE_FILTERS,selected_filter)
+        file_path,selected_filter=QtWidgets.QFileDialog.getSaveFileName(self, 'save',dirPath+'images',FILE_FILTERS,selected_filter)
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
             self.saveFile(file_path)
@@ -232,14 +252,21 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         """
         self.canvas.generalisedEllipse=checked
         self.canvas.update()
+        s1=str(self.canvas.getEa()*100)
+        s1=s1[0:4]
+        s2=str(self.canvas.getEm()*100)
+        s2=s2[0:4]
+        self.Ea_lineEdit.setText(s1+'%')     
+        self.Em_lineEdit.setText(s2+'%')
+ 
         
         self.J_spinBox.setVisible(checked)
         self.Ea_lineEdit.setVisible(checked)
         self.Em_lineEdit.setVisible(checked)
         self.segment_comboBox.setVisible(checked)
         self.saveAsDat_button.setVisible(checked)  
-        self.saveAsImg_button.setVisible(checked)         
-           
+        self.saveAsImg_button.setVisible(checked)  
+                  
         
     def drawMode_originalEllipse(self,checked):
         self.canvas.originalEllipse=checked
@@ -260,7 +287,14 @@ class Canvas(QtWidgets.QDialog):
         self.standardEllipse=False
         self.vertices=[]
         self.angles=[]
+        self.d=[]
+        self.d_bar=[]
+        self.Ea=0.0
+        self.Em=0.0
+        self.numPt=0
         self.J=10
+        self.a=[]
+        self.b=[]
         
     def sizeHint(self):
         return QtCore.QSize(600,600)
@@ -276,7 +310,6 @@ class Canvas(QtWidgets.QDialog):
     def readFile(self,file_path):
         f=open(file_path,'r')
         content=f.readlines()
-        self.numPt=0
         self.center=QtCore.QPointF(0.0,0.0)
         for line in content:
             p=line.split()
@@ -285,6 +318,8 @@ class Canvas(QtWidgets.QDialog):
             self.center+=QtCore.QPointF(float(p[0])*300+self.width()/2.0,float(p[2])*300+self.height()/2.0)
         
         self.center=self.center/self.numPt
+        for i in range(self.numPt):
+            self.d_bar.append(math.sqrt((self.vertices[i][0]-self.center.x())**2+(self.vertices[i][2]-self.center.y())**2))
         self.getAngle()
         f.close()
 
@@ -338,8 +373,7 @@ class Canvas(QtWidgets.QDialog):
             aTrignometricMatrix[i,0]=1.
             bCoefficientMatrix[0,i]=1.
             bTrignometricMatrix[i,0]=1.
-            # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
-        
+            
         for i in range(I):# for aCoefficientMatrix's column, and trignomatricMatrix's row
             for j in range(1,self.J+1):# for aCoefficientMatrix's row, and trignomatricMatrix's column
                 try:
@@ -352,6 +386,7 @@ class Canvas(QtWidgets.QDialog):
                     aCoefficientMatrix[2*j,i]=math.sin(vi*j)
                     aTrignometricMatrix[i,2*j-1]=math.cos(vi*j)
                     aTrignometricMatrix[i,2*j]=math.sin(vi*j)
+                    # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
                     aConstArray[2*j-1]+=(self.vertices[i][0]-self.center.x())*math.cos(vi*j)
                     aConstArray[2*j]+=(self.vertices[i][0]-self.center.x())*math.sin(vi*j)
                 
@@ -363,19 +398,29 @@ class Canvas(QtWidgets.QDialog):
                     bConstArray[2*j]+=(self.vertices[i][2]-self.center.y())*math.cos(vi*j)
                                   
         A=np.dot(aCoefficientMatrix,aTrignometricMatrix)
-        a=np.linalg.solve(A,aConstArray)   
+        self.a=np.linalg.solve(A,aConstArray)   
         B=np.dot(bCoefficientMatrix,bTrignometricMatrix)      
-        b=np.linalg.solve(B,bConstArray)           
+        self.b=np.linalg.solve(B,bConstArray)           
 
         #CoefficientMatrix
         generalisedEllipseVertices=[[0 for i in range(2)] for j in range(I)] 
+        self.Ea=0.0
+        self.Em=0.0
         for i in range(I):
-            generalisedEllipseVertices[i][0]=self.center.x()+a[0]
-            generalisedEllipseVertices[i][1]=self.center.y()+b[0]
+            generalisedEllipseVertices[i][0]=self.center.x()+self.a[0]
+            generalisedEllipseVertices[i][1]=self.center.y()+self.b[0]
             v=self.angles[i]
             for j in range(1,self.J+1):
-                generalisedEllipseVertices[i][0]+=a[2*j-1]*math.cos(j*v)+a[2*j]*math.sin(j*v)
-                generalisedEllipseVertices[i][1]+=b[2*j-1]*math.sin(j*v)+b[2*j]*math.cos(j*v)
+                generalisedEllipseVertices[i][0]+=self.a[2*j-1]*math.cos(j*v)+self.a[2*j]*math.sin(j*v)
+                generalisedEllipseVertices[i][1]+=self.b[2*j-1]*math.sin(j*v)+self.b[2*j]*math.cos(j*v)
+           
+            di=math.sqrt((self.vertices[i][0]-generalisedEllipseVertices[i][0])**2+(self.vertices[i][2]-generalisedEllipseVertices[i][1])**2)
+            self.d.append(di)
+            self.Ea+=(di/self.d_bar[i])
+            if self.Em<di/self.d_bar[i]:
+                self.Em=di/self.d_bar[i]
+        self.Ea=self.Ea/self.numPt
+        
         for i in range(I):
             painter.drawLine(generalisedEllipseVertices[i][0],generalisedEllipseVertices[i][1],generalisedEllipseVertices[(i+1)%I][0],generalisedEllipseVertices[(i+1)%I][1])    
                
@@ -441,6 +486,13 @@ class Canvas(QtWidgets.QDialog):
             painter.drawEllipse(self.center,width,height)
 
 
+    def getEm(self):
+        return self.Em
+        
+        
+    def getEa(self):
+        return self.Ea
+        
 
 if __name__=="__main__":
     # Check to see if the UI already exists and if so, delete
