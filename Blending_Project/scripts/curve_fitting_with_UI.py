@@ -25,7 +25,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         super(CurveFittingWindowUI,self).__init__(parent)
         
         self.setWindowTitle("Generalized Ellipse")
-        self.setMinimumSize(900,650)
+        self.setMinimumSize(900,700)
         self.setObjectName("generalizedEllipseWin")
         self.setWindowFlags(QtCore.Qt.WindowType.Dialog)
                        
@@ -35,11 +35,11 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
                                    
     
     def sizeHint(self):
-        return QtCore.QSize(900,650)
+        return QtCore.QSize(900,700)
         
         
     def minimumSize(self):
-        return QtCore.Qsize(900,650)        
+        return QtCore.Qsize(900,700)        
         
         
     def create_widgets(self):
@@ -70,7 +70,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.Em_lineEdit.setFixedWidth(200)
         self.Em_lineEdit.setMaxLength(5)
         
-        self.canvas=Canvas()       
+        self.canvas=Canvas()     
+        
+        self.lineWidth_lineEdit=QtWidgets.QLineEdit()
+          
         
         self.file_label=QtWidgets.QLabel('File:')
         sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
@@ -173,8 +176,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         if file_path:
             f=open(file_path,"w+")
             f.write('range:')
-            # \u03C0 is greek small letter pi
-            f.write('0-\u03C0 \n')
+            f.write('0-360 \n')
             f.write('a: ')
             for i in range(self.canvas.numPt):
                 f.write(str(self.a[i])+' ')
@@ -280,7 +282,7 @@ class Canvas(QtWidgets.QDialog):
     backgroundColor=QtCore.Qt.white
     def __init__(self,parent=None):
         super(Canvas,self).__init__(parent)
-        self.setMinimumSize(600,600)
+        self.setMinimumSize(650,600)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.originalEllipse=False
         self.generalisedEllipse=False
@@ -297,20 +299,29 @@ class Canvas(QtWidgets.QDialog):
         self.b=[]
         
     def sizeHint(self):
-        return QtCore.QSize(600,600)
+        return QtCore.QSize(650,600)
         
         
     def minimumSize(self):
-        return QtCore.Qsize(600,600)
+        return QtCore.Qsize(650,600)
+        
         
     def setJ(self,j):
         self.J=j
         self.update()
+        
     
     def readFile(self,file_path):
         f=open(file_path,'r')
         content=f.readlines()
         self.center=QtCore.QPointF(0.0,0.0)
+        self.numPt=0
+        self.vertices=[]
+        self.angles=[]
+        self.d=[]
+        self.d_bar=[]
+        self.Ea=0.0
+        self.Em=0.0
         for line in content:
             p=line.split()
             self.numPt+=1
@@ -435,11 +446,12 @@ class Canvas(QtWidgets.QDialog):
             error_dialog = QtWidgets.QErrorMessage(self)
             error_dialog.showMessage('Please choose a data file first')
         else:
+            """
             for i in range(self.numPt):
                 p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
                 p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
                 painter.drawLine(p1,p2)
-            
+            """
             painterPath=QtGui.QPainterPath(startPoint)
             for i in range(self.numPt):
                 tmp=self.vertices[(i+1)%self.numPt]-self.vertices[i-1]
@@ -456,7 +468,7 @@ class Canvas(QtWidgets.QDialog):
                 painterPath.cubicTo(controlPt1[0],controlPt1[2],controlPt2[0],controlPt2[2],self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
                 painterPath.moveTo(self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
                 
-            painter.drawPath(painterPath)               
+            painter.drawPath(painterPath)              
                 
         
     def draw_standardEllipse(self,painter): 
