@@ -72,8 +72,11 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
         self.canvas=Canvas()     
         
-        self.lineWidth_lineEdit=QtWidgets.QLineEdit()
-          
+        self.lineWidth_doubleSpinBox=QtWidgets.QDoubleSpinBox()
+        self.lineWidth_doubleSpinBox.setRange(1.0,5.0)
+        self.lineWidth_doubleSpinBox.setValue(1.0)
+        self.lineWidth_doubleSpinBox.setSingleStep(0.5)  
+        self.lineWidth_doubleSpinBox.setFixedWidth(120)
         
         self.file_label=QtWidgets.QLabel('File:')
         sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
@@ -126,6 +129,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         file_layout.addWidget(self.file_button)
         right_layout.addLayout(file_layout)
         
+        lineWidth_layout=QtWidgets.QFormLayout()
+        lineWidth_layout.addRow('line width:',self.lineWidth_doubleSpinBox)
+        right_layout.addLayout(lineWidth_layout)
+        
         checkBox_layout=QtWidgets.QVBoxLayout()
         checkBox_layout.addWidget(self.standardEllipse_checkBox)
         checkBox_layout.addWidget(self.generalizedEllipse_checkBox)
@@ -148,7 +155,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         button_layout.addWidget(self.saveAsImg_button)
         button_layout.addWidget(self.close_button)
         right_layout.addLayout(button_layout)
-
         
         center_layout.addLayout(right_layout)
         
@@ -164,6 +170,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.generalizedEllipse_checkBox.toggled.connect(self.drawMode_generalizedEllipse)
         self.originalEllipse_checkBox.toggled.connect(self.drawMode_originalEllipse)
         self.J_spinBox.valueChanged.connect(self.canvas.setJ)
+        self.lineWidth_doubleSpinBox.valueChanged.connect(self.canvas.setLineWidth)
         
             
     def save_dataFn(self):
@@ -297,6 +304,7 @@ class Canvas(QtWidgets.QDialog):
         self.J=10
         self.a=[]
         self.b=[]
+        self.lineWidth=1
         
     def sizeHint(self):
         return QtCore.QSize(650,600)
@@ -350,6 +358,11 @@ class Canvas(QtWidgets.QDialog):
                 self.angles.append(math.pi-anglem)
                 
         
+    def setLineWidth(self,width):
+        self.lineWidth=width
+        self.update()
+        
+        
     def paintEvent(self,evt):
         painter=QtGui.QPainter(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing,True)
@@ -358,20 +371,23 @@ class Canvas(QtWidgets.QDialog):
         painter.drawRect(self.rect())
         
         painter.setBrush(QtCore.Qt.NoBrush)# no fill inside the shape
-        
-        if self.generalisedEllipse==True:
-            self.draw_generalisedEllipse(painter)
 
         if self.originalEllipse==True:
             self.draw_originalEllipse(painter)
         
         if self.standardEllipse==True:
             self.draw_standardEllipse(painter)
+                    
+        if self.generalisedEllipse==True:
+            self.draw_generalisedEllipse(painter)
              
                
     def draw_generalisedEllipse(self,painter):
         penColor=QtGui.QColor(0,80,0) 
-        painter.setPen(penColor)
+        pen=QtGui.QPen()
+        pen.setColor(penColor)
+        pen.setWidthF(self.lineWidth)
+        painter.setPen(pen)
         I=self.numPt
         aConstArray=np.zeros(2*self.J+1)
         aCoefficientMatrix=np.ndarray(shape=(2*self.J+1,I), dtype=float, order='C')# row-major
@@ -438,7 +454,10 @@ class Canvas(QtWidgets.QDialog):
     
     def draw_originalEllipse(self,painter):
         penColor=QtCore.Qt.red   
-        painter.setPen(penColor)
+        pen=QtGui.QPen()
+        pen.setColor(penColor)
+        pen.setWidthF(self.lineWidth)
+        painter.setPen(pen)
 
         try:
             startPoint=QtCore.QPointF(self.vertices[0][0],self.vertices[0][2])
@@ -473,7 +492,10 @@ class Canvas(QtWidgets.QDialog):
         
     def draw_standardEllipse(self,painter): 
         penColor=QtCore.Qt.blue        
-        painter.setPen(penColor)
+        pen=QtGui.QPen()
+        pen.setColor(penColor)
+        pen.setWidthF(self.lineWidth)
+        painter.setPen(pen)
         
         # calculate the major axis and minor axis
         a0u=0.0
