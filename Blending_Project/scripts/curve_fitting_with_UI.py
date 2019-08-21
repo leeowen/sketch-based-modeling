@@ -58,16 +58,16 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
         self.J_spinBox=QtWidgets.QSpinBox()
         self.J_spinBox.setValue(10)
-        self.J_spinBox.setFixedWidth(200)
+        self.J_spinBox.setFixedWidth(150)
         self.J_spinBox.setMinimum(1)
         self.J_spinBox.setSingleStep(1)
         
         self.Ea_lineEdit=QtWidgets.QLineEdit()
-        self.Ea_lineEdit.setFixedWidth(200)
+        self.Ea_lineEdit.setFixedWidth(150)
         self.Ea_lineEdit.setMaxLength(5)
 
         self.Em_lineEdit=QtWidgets.QLineEdit()
-        self.Em_lineEdit.setFixedWidth(200)
+        self.Em_lineEdit.setFixedWidth(150)
         self.Em_lineEdit.setMaxLength(5)
         
         self.canvas=Canvas()     
@@ -82,6 +82,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         self.file_label.setSizePolicy(sizePolicy)
         self.filePath_lineEdit=QtWidgets.QLineEdit()
+        self.filePath_lineEdit.setMaximumWidth(150)
         self.file_label.setBuddy(self.filePath_lineEdit)
         sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self.filePath_lineEdit.setSizePolicy(sizePolicy)
@@ -92,7 +93,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.file_button.setSizePolicy(sizePolicy)
         
         self.segment_comboBox=QtWidgets.QComboBox()
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         self.segment_comboBox.setSizePolicy(sizePolicy)
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('segment')
