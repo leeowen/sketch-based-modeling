@@ -56,21 +56,35 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.originalEllipse_checkBox=QtWidgets.QCheckBox('original ellipse')
         self.originalEllipse_checkBox.setChecked(False)
         
+        self.J_label=QtWidgets.QLabel('J:')
+        self.J_label.setFixedWidth(50)
+        sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        self.J_label.setSizePolicy(sizePolicy)
         self.J_spinBox=QtWidgets.QSpinBox()
         self.J_spinBox.setValue(10)
         self.J_spinBox.setFixedWidth(150)
         self.J_spinBox.setMinimum(1)
         self.J_spinBox.setSingleStep(1)
-        
+
+        self.Ea_label=QtWidgets.QLabel('Ea:') 
+        self.Ea_label.setFixedWidth(50)   
+        sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        self.Ea_label.setSizePolicy(sizePolicy)    
         self.Ea_lineEdit=QtWidgets.QLineEdit()
         self.Ea_lineEdit.setFixedWidth(150)
         self.Ea_lineEdit.setMaxLength(5)
 
+        self.Em_label=QtWidgets.QLabel('Em:')
+        self.Em_label.setFixedWidth(50)
+        sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        self.Em_label.setSizePolicy(sizePolicy)
         self.Em_lineEdit=QtWidgets.QLineEdit()
         self.Em_lineEdit.setFixedWidth(150)
         self.Em_lineEdit.setMaxLength(5)
         
-        self.canvas=Canvas()     
+        self.canvas=Canvas()    
+        sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        self.canvas.setSizePolicy(sizePolicy) 
         
         self.lineWidth_doubleSpinBox=QtWidgets.QDoubleSpinBox()
         self.lineWidth_doubleSpinBox.setRange(1.0,5.0)
@@ -92,15 +106,24 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         self.file_button.setSizePolicy(sizePolicy)
         
+        self.segment_label=QtWidgets.QLabel('segment method:')
+        self.segment_label.setMaximumWidth(150)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        self.segment_label.setSizePolicy(sizePolicy)
         self.segment_comboBox=QtWidgets.QComboBox()
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         self.segment_comboBox.setSizePolicy(sizePolicy)
+        self.segment_comboBox.setMaximumWidth(150)
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('segment')
         
         self.J_spinBox.setVisible(False)
+        self.J_label.setVisible(False)
         self.Ea_lineEdit.setVisible(False)
+        self.Ea_label.setVisible(False)
         self.Em_lineEdit.setVisible(False)
+        self.Em_label.setVisible(False)
+        self.segment_label.setVisible(False)
         self.segment_comboBox.setVisible(False)
         self.saveAsDat_button.setVisible(False)
         self.saveAsImg_button.setVisible(False)
@@ -140,16 +163,20 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         checkBox_layout.addWidget(self.originalEllipse_checkBox)
         right_layout.addLayout(checkBox_layout)
         
-        combo_layout=QtWidgets.QFormLayout()
-        combo_layout.addRow('Mode:',self.segment_comboBox)
-        right_layout.addLayout(combo_layout)
+        segmentMethod_layout=QtWidgets.QVBoxLayout()
+        segmentMethod_layout.addWidget(self.segment_label)
+        segmentMethod_layout.addWidget(self.segment_comboBox)
+        right_layout.addLayout(segmentMethod_layout)
         
-        form_layout=QtWidgets.QFormLayout()
-        form_layout.addRow('J:',self.J_spinBox)
-        form_layout.addRow('Ea:',self.Ea_lineEdit)
-        form_layout.addRow('Em:',self.Em_lineEdit)    
+        grid_layout=QtWidgets.QGridLayout()
+        grid_layout.addWidget(self.J_label,0,0)
+        grid_layout.addWidget(self.J_spinBox,0,1)
+        grid_layout.addWidget(self.Ea_label,1,0)
+        grid_layout.addWidget(self.Ea_lineEdit,1,1)
+        grid_layout.addWidget(self.Em_label,2,0)    
+        grid_layout.addWidget(self.Em_lineEdit,2,1)
                    
-        right_layout.addLayout(form_layout)
+        right_layout.addLayout(grid_layout)
         
         button_layout=QtWidgets.QVBoxLayout()
         button_layout.addWidget(self.saveAsDat_button)
@@ -219,8 +246,12 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
              
     def update_visibility_originalEllipse_mode(self,checked):
         self.J_spinBox.setVisible(not checked)
+        self.J_label.setVisible(not checked)
         self.Ea_lineEdit.setVisible(not checked)
+        self.Ea_label.setVisible(not checked)
         self.Em_lineEdit.setVisible(not checked)
+        self.Em_label.setVisible(not checked)
+        self.segment_label.setVisible(not checked)
         self.segment_comboBox.setVisible(not checked)
         self.saveAsDat_button.setVisible(not checked)
 
@@ -268,11 +299,14 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         s2=s2[0:4]
         self.Ea_lineEdit.setText(s1+'%')     
         self.Em_lineEdit.setText(s2+'%')
- 
-        
+         
         self.J_spinBox.setVisible(checked)
+        self.J_label.setVisible(checked)
         self.Ea_lineEdit.setVisible(checked)
+        self.Ea_label.setVisible(checked)
         self.Em_lineEdit.setVisible(checked)
+        self.Em_label.setVisible(checked)
+        self.segment_label.setVisible(checked)
         self.segment_comboBox.setVisible(checked)
         self.saveAsDat_button.setVisible(checked)  
         self.saveAsImg_button.setVisible(checked)  
