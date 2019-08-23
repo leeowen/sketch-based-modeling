@@ -49,12 +49,15 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
         self.standardEllipse_checkBox=QtWidgets.QCheckBox('standard ellipse')
         self.standardEllipse_checkBox.setChecked(False)
+        self.standardEllipse_checkBox.setVisible(False)
        
         self.generalizedEllipse_checkBox=QtWidgets.QCheckBox('generalized ellipse')
         self.generalizedEllipse_checkBox.setChecked(False)
+        self.generalizedEllipse_checkBox.setVisible(False)
         
         self.originalEllipse_checkBox=QtWidgets.QCheckBox('original ellipse')
         self.originalEllipse_checkBox.setChecked(False)
+        self.originalEllipse_checkBox.setVisible(False)
                        
         self.radio_group=QtWidgets.QGroupBox()  
         self.manualJ_radioButton=QtWidgets.QRadioButton('manual J')
@@ -130,11 +133,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
 
     def create_layout(self):   
-        """     
-        widget_layout_central=QtWidgets.QWidget()
-        self.setCentralWidget(widget_layout_central)
-        main_layout=QtWidgets.QHBoxLayout(widget_layout_central)
-        """
         main_layout=QtWidgets.QHBoxLayout(self)
                  
         center_layout=QtWidgets.QHBoxLayout()
@@ -186,7 +184,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.radio_group.setLayout(grid_layout)
         
         right_layout.addWidget(self.radio_group)           
-        #right_layout.addLayout(grid_layout)
         
         right_layout.addStretch(1)
         
@@ -209,7 +206,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.standardEllipse_checkBox.toggled.connect(self.drawMode_standardEllipse)
         self.generalizedEllipse_checkBox.toggled.connect(self.drawMode_generalizedEllipse)
         self.originalEllipse_checkBox.toggled.connect(self.drawMode_originalEllipse)
-        self.J_spinBox.valueChanged.connect(self.canvas.setJ)
+        self.J_spinBox.valueChanged.connect(self.update_manual_J_value)
         self.lineWidth_doubleSpinBox.valueChanged.connect(self.canvas.setLineWidth)
         self.manualJ_radioButton.toggled.connect(self.update_visibility_manual_J_mode)
         self.autoJ_radioButton.toggled.connect(self.update_visibility_auto_J_mode)
@@ -219,14 +216,23 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.canvas.manualJ=checked
         self.canvas.autoJ=not checked
         self.J_spinBox.setReadOnly(not checked)
+        self.canvas.repaint()# update() prevents multiple fast repaints. call repaint() instead.
+        self.showEaEm()
         
         
     def update_visibility_auto_J_mode(self,checked):
         self.canvas.autoJ=checked
         self.canvas.manualJ=not checked
         self.J_spinBox.setReadOnly(checked)
+        self.canvas.update()
+        self.showEaEm()
         
+    
+    def update_manual_J_value(self,J):
+        self.canvas.setJ(J)
+        self.showEaEm()
         
+            
     def save_dataFn(self):
         dirPath=cmds.workspace(q=True, rootDirectory=True )
         dirPath+='data/'
@@ -289,6 +295,9 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
             self.filePath_lineEdit.setText(file_path)
+            self.standardEllipse_checkBox.setVisible(True)
+            self.generalizedEllipse_checkBox.setVisible(True)
+            self.originalEllipse_checkBox.setVisible(True)
             self.canvas.readFile(file_path)
             self.canvas.update()
             
@@ -312,20 +321,22 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             checkBox=wrapInstance(long(ptr),QtWidgets.QCheckBox)
             value=checkBox.isChecked()
         """
+        self.radio_group.setVisible(checked)
+        self.segment_label.setVisible(checked)
+        self.segment_comboBox.setVisible(checked)
+        self.saveAsDat_button.setVisible(checked)  
+        self.saveAsImg_button.setVisible(checked)  
         self.canvas.generalisedEllipse=checked
         self.canvas.update()
+        
+       
+    def showEaEm(self):   
         s1=str(self.canvas.getEa()*100)
         s1=s1[0:4]
         s2=str(self.canvas.getEm()*100)
         s2=s2[0:4]
         self.Ea_lineEdit.setText(s1+'%')     
         self.Em_lineEdit.setText(s2+'%')
-         
-        self.radio_group.setVisible(checked)
-        self.segment_label.setVisible(checked)
-        self.segment_comboBox.setVisible(checked)
-        self.saveAsDat_button.setVisible(checked)  
-        self.saveAsImg_button.setVisible(checked)  
                   
         
     def drawMode_originalEllipse(self,checked):
@@ -355,6 +366,7 @@ class Canvas(QtWidgets.QDialog):
         self.J=10
         self.a=[]
         self.b=[]
+        self.generalisedEllipseVertices=[]
         self.lineWidth=1
         self.manualJ=False
         self.autoJ=False
@@ -443,12 +455,24 @@ class Canvas(QtWidgets.QDialog):
         pen.setWidthF(self.lineWidth)
         painter.setPen(pen)
         I=self.numPt
-        aConstArray=np.zeros(2*self.J+1)
-        aCoefficientMatrix=np.ndarray(shape=(2*self.J+1,I), dtype=float, order='C')# row-major
-        aTrignometricMatrix=np.ndarray(shape=(I,2*self.J+1), dtype=float, order='C')
-        bConstArray=np.zeros(2*self.J+1)
-        bCoefficientMatrix=np.ndarray(shape=(2*self.J+1,I), dtype=float, order='C')
-        bTrignometricMatrix=np.ndarray(shape=(I,2*self.J+1), dtype=float, order='C')
+        if self.manualJ==True:
+            J=self.J
+            self.a,self.b=self.getCoefficients(J)
+            self.generalisedEllipseVertices,self.Ea,self.Em=self.formGeneralizedEllipse(self.a,self.b)
+
+        if self.manualJ==True or self.autoJ==True:
+            for i in range(I):
+                painter.drawLine(self.generalisedEllipseVertices[i][0],self.generalisedEllipseVertices[i][1],self.generalisedEllipseVertices[(i+1)%I][0],self.generalisedEllipseVertices[(i+1)%I][1])    
+          
+
+    def getCoefficients(self,J):
+        I=self.numPt
+        aConstArray=np.zeros(2*J+1)
+        aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
+        aTrignometricMatrix=np.ndarray(shape=(I,2*J+1), dtype=float, order='C')
+        bConstArray=np.zeros(2*J+1)
+        bCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')
+        bTrignometricMatrix=np.ndarray(shape=(I,2*J+1), dtype=float, order='C')
         for i in range(I):
             aCoefficientMatrix[0,i]=1.
             aTrignometricMatrix[i,0]=1.
@@ -456,7 +480,7 @@ class Canvas(QtWidgets.QDialog):
             bTrignometricMatrix[i,0]=1.
             
         for i in range(I):# for aCoefficientMatrix's column, and trignomatricMatrix's row
-            for j in range(1,self.J+1):# for aCoefficientMatrix's row, and trignomatricMatrix's column
+            for j in range(1,J+1):# for aCoefficientMatrix's row, and trignomatricMatrix's column
                 try:
                     vi=self.angles[i]
                 except IndexError:
@@ -479,33 +503,39 @@ class Canvas(QtWidgets.QDialog):
                     bConstArray[2*j]+=(self.vertices[i][2]-self.center.y())*math.cos(vi*j)
                                   
         A=np.dot(aCoefficientMatrix,aTrignometricMatrix)
-        self.a=np.linalg.solve(A,aConstArray)   
+        a=np.linalg.solve(A,aConstArray)   
         B=np.dot(bCoefficientMatrix,bTrignometricMatrix)      
-        self.b=np.linalg.solve(B,bConstArray)           
-
+        b=np.linalg.solve(B,bConstArray) 
+        
+        return a,b
+        
+    
+    def formGeneralizedEllipse(self,a,b):
         #CoefficientMatrix
+        I=self.numPt
         generalisedEllipseVertices=[[0 for i in range(2)] for j in range(I)] 
-        self.Ea=0.0
-        self.Em=0.0
+        Ea=0.0
+        Em=0.0
+        d=[]
+        J=len(self.a)/2
         for i in range(I):
-            generalisedEllipseVertices[i][0]=self.center.x()+self.a[0]
-            generalisedEllipseVertices[i][1]=self.center.y()+self.b[0]
+            generalisedEllipseVertices[i][0]=self.center.x()+a[0]
+            generalisedEllipseVertices[i][1]=self.center.y()+b[0]
             v=self.angles[i]
-            for j in range(1,self.J+1):
-                generalisedEllipseVertices[i][0]+=self.a[2*j-1]*math.cos(j*v)+self.a[2*j]*math.sin(j*v)
-                generalisedEllipseVertices[i][1]+=self.b[2*j-1]*math.sin(j*v)+self.b[2*j]*math.cos(j*v)
+            for j in range(1,J+1):
+                generalisedEllipseVertices[i][0]+=a[2*j-1]*math.cos(j*v)+a[2*j]*math.sin(j*v)
+                generalisedEllipseVertices[i][1]+=b[2*j-1]*math.sin(j*v)+b[2*j]*math.cos(j*v)
            
             di=math.sqrt((self.vertices[i][0]-generalisedEllipseVertices[i][0])**2+(self.vertices[i][2]-generalisedEllipseVertices[i][1])**2)
-            self.d.append(di)
-            self.Ea+=(di/self.d_bar[i])
-            if self.Em<di/self.d_bar[i]:
-                self.Em=di/self.d_bar[i]
-        self.Ea=self.Ea/self.numPt
+            d.append(di)
+            Ea+=(di/self.d_bar[i])
+            if Em<di/self.d_bar[i]:
+                Em=di/self.d_bar[i]
+        Ea=Ea/self.numPt
         
-        for i in range(I):
-            painter.drawLine(generalisedEllipseVertices[i][0],generalisedEllipseVertices[i][1],generalisedEllipseVertices[(i+1)%I][0],generalisedEllipseVertices[(i+1)%I][1])    
-               
-    
+        return generalisedEllipseVertices,Ea,Em
+             
+   
     def draw_originalEllipse(self,painter):
         penColor=QtCore.Qt.red   
         pen=QtGui.QPen()
