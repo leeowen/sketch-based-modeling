@@ -55,6 +55,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
         self.originalEllipse_checkBox=QtWidgets.QCheckBox('original ellipse')
         self.originalEllipse_checkBox.setChecked(False)
+                       
+        self.radio_group=QtWidgets.QGroupBox()  
+        self.manualJ_radioButton=QtWidgets.QRadioButton('manual J')
+        self.autoJ_radioButton=QtWidgets.QRadioButton('auto J') 
         
         self.J_label=QtWidgets.QLabel('J:')
         self.J_label.setFixedWidth(50)
@@ -65,6 +69,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.J_spinBox.setFixedWidth(100)
         self.J_spinBox.setMinimum(1)
         self.J_spinBox.setSingleStep(1)
+        self.J_spinBox.setReadOnly(not self.manualJ_radioButton.isChecked())
 
         self.Ea_label=QtWidgets.QLabel('Ea:') 
         self.Ea_label.setFixedWidth(50)   
@@ -117,18 +122,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('segment')
         
-        self.radio_group=QtWidgets.QGroupBox()  
-        self.manualJ=QtWidgets.QRadioButton('manual J')
-        self.autoJ=QtWidgets.QRadioButton('auto J') 
-        
-        """
-        self.J_spinBox.setVisible(False)
-        self.J_label.setVisible(False)
-        self.Ea_lineEdit.setVisible(False)
-        self.Ea_label.setVisible(False)
-        self.Em_lineEdit.setVisible(False)
-        self.Em_label.setVisible(False)
-        """
         self.radio_group.setVisible(False)
         self.segment_label.setVisible(False)
         self.segment_comboBox.setVisible(False)
@@ -182,8 +175,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         right_layout.addStretch(1)       
      
         grid_layout=QtWidgets.QGridLayout()
-        grid_layout.addWidget(self.autoJ,0,0,1,2)
-        grid_layout.addWidget(self.manualJ,1,0,1,2)
+        grid_layout.addWidget(self.autoJ_radioButton,0,0,1,2)
+        grid_layout.addWidget(self.manualJ_radioButton,1,0,1,2)
         grid_layout.addWidget(self.J_label,2,0)
         grid_layout.addWidget(self.J_spinBox,2,1)
         grid_layout.addWidget(self.Ea_label,3,0)
@@ -218,8 +211,22 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.originalEllipse_checkBox.toggled.connect(self.drawMode_originalEllipse)
         self.J_spinBox.valueChanged.connect(self.canvas.setJ)
         self.lineWidth_doubleSpinBox.valueChanged.connect(self.canvas.setLineWidth)
+        self.manualJ_radioButton.toggled.connect(self.update_visibility_manual_J_mode)
+        self.autoJ_radioButton.toggled.connect(self.update_visibility_auto_J_mode)
         
             
+    def update_visibility_manual_J_mode(self,checked):
+        self.canvas.manualJ=checked
+        self.canvas.autoJ=not checked
+        self.J_spinBox.setReadOnly(not checked)
+        
+        
+    def update_visibility_auto_J_mode(self,checked):
+        self.canvas.autoJ=checked
+        self.canvas.manualJ=not checked
+        self.J_spinBox.setReadOnly(checked)
+        
+        
     def save_dataFn(self):
         dirPath=cmds.workspace(q=True, rootDirectory=True )
         dirPath+='data/'
@@ -264,14 +271,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
              
     def update_visibility_originalEllipse_mode(self,checked):
-        """
-        self.J_spinBox.setVisible(not checked)
-        self.J_label.setVisible(not checked)
-        self.Ea_lineEdit.setVisible(not checked)
-        self.Ea_label.setVisible(not checked)
-        self.Em_lineEdit.setVisible(not checked)
-        self.Em_label.setVisible(not checked)
-        """
         self.radio_group.setVisible(not checked)
         self.segment_label.setVisible(not checked)
         self.segment_comboBox.setVisible(not checked)
@@ -322,14 +321,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.Ea_lineEdit.setText(s1+'%')     
         self.Em_lineEdit.setText(s2+'%')
          
-        """
-        self.J_spinBox.setVisible(checked)
-        self.J_label.setVisible(checked)
-        self.Ea_lineEdit.setVisible(checked)
-        self.Ea_label.setVisible(checked)
-        self.Em_lineEdit.setVisible(checked)
-        self.Em_label.setVisible(checked)
-        """
         self.radio_group.setVisible(checked)
         self.segment_label.setVisible(checked)
         self.segment_comboBox.setVisible(checked)
@@ -365,6 +356,9 @@ class Canvas(QtWidgets.QDialog):
         self.a=[]
         self.b=[]
         self.lineWidth=1
+        self.manualJ=False
+        self.autoJ=False
+        
         
     def sizeHint(self):
         return QtCore.QSize(650,600)
