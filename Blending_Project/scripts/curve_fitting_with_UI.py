@@ -62,7 +62,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.J_label.setSizePolicy(sizePolicy)
         self.J_spinBox=QtWidgets.QSpinBox()
         self.J_spinBox.setValue(10)
-        self.J_spinBox.setFixedWidth(150)
+        self.J_spinBox.setFixedWidth(100)
         self.J_spinBox.setMinimum(1)
         self.J_spinBox.setSingleStep(1)
 
@@ -71,7 +71,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         self.Ea_label.setSizePolicy(sizePolicy)    
         self.Ea_lineEdit=QtWidgets.QLineEdit()
-        self.Ea_lineEdit.setFixedWidth(150)
+        self.Ea_lineEdit.setFixedWidth(100)
         self.Ea_lineEdit.setMaxLength(5)
 
         self.Em_label=QtWidgets.QLabel('Em:')
@@ -79,7 +79,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         sizePolicy=QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         self.Em_label.setSizePolicy(sizePolicy)
         self.Em_lineEdit=QtWidgets.QLineEdit()
-        self.Em_lineEdit.setFixedWidth(150)
+        self.Em_lineEdit.setFixedWidth(100)
         self.Em_lineEdit.setMaxLength(5)
         
         self.canvas=Canvas()    
@@ -117,12 +117,19 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('segment')
         
+        self.radio_group=QtWidgets.QGroupBox()  
+        self.manualJ=QtWidgets.QRadioButton('manual J')
+        self.autoJ=QtWidgets.QRadioButton('auto J') 
+        
+        """
         self.J_spinBox.setVisible(False)
         self.J_label.setVisible(False)
         self.Ea_lineEdit.setVisible(False)
         self.Ea_label.setVisible(False)
         self.Em_lineEdit.setVisible(False)
         self.Em_label.setVisible(False)
+        """
+        self.radio_group.setVisible(False)
         self.segment_label.setVisible(False)
         self.segment_comboBox.setVisible(False)
         self.saveAsDat_button.setVisible(False)
@@ -143,7 +150,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
               
         # create layout for different parameters and operation buttons
         right_layout=QtWidgets.QVBoxLayout()
-        #right_layout.addStretch()
+        
         right_layout.setContentsMargins(2,2,3,3)
         #right_layout.setSpacing(10)
         
@@ -157,26 +164,38 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         lineWidth_layout.addRow('line width:',self.lineWidth_doubleSpinBox)
         right_layout.addLayout(lineWidth_layout)
         
+        right_layout.addStretch(1)
+        
         checkBox_layout=QtWidgets.QVBoxLayout()
         checkBox_layout.addWidget(self.standardEllipse_checkBox)
         checkBox_layout.addWidget(self.generalizedEllipse_checkBox)
         checkBox_layout.addWidget(self.originalEllipse_checkBox)
         right_layout.addLayout(checkBox_layout)
         
+        right_layout.addStretch(1)
+        
         segmentMethod_layout=QtWidgets.QVBoxLayout()
         segmentMethod_layout.addWidget(self.segment_label)
         segmentMethod_layout.addWidget(self.segment_comboBox)
-        right_layout.addLayout(segmentMethod_layout)
+        right_layout.addLayout(segmentMethod_layout) 
         
+        right_layout.addStretch(1)       
+     
         grid_layout=QtWidgets.QGridLayout()
-        grid_layout.addWidget(self.J_label,0,0)
-        grid_layout.addWidget(self.J_spinBox,0,1)
-        grid_layout.addWidget(self.Ea_label,1,0)
-        grid_layout.addWidget(self.Ea_lineEdit,1,1)
-        grid_layout.addWidget(self.Em_label,2,0)    
-        grid_layout.addWidget(self.Em_lineEdit,2,1)
-                   
-        right_layout.addLayout(grid_layout)
+        grid_layout.addWidget(self.autoJ,0,0,1,2)
+        grid_layout.addWidget(self.manualJ,1,0,1,2)
+        grid_layout.addWidget(self.J_label,2,0)
+        grid_layout.addWidget(self.J_spinBox,2,1)
+        grid_layout.addWidget(self.Ea_label,3,0)
+        grid_layout.addWidget(self.Ea_lineEdit,3,1)
+        grid_layout.addWidget(self.Em_label,4,0)    
+        grid_layout.addWidget(self.Em_lineEdit,4,1)
+        self.radio_group.setLayout(grid_layout)
+        
+        right_layout.addWidget(self.radio_group)           
+        #right_layout.addLayout(grid_layout)
+        
+        right_layout.addStretch(1)
         
         button_layout=QtWidgets.QVBoxLayout()
         button_layout.addWidget(self.saveAsDat_button)
@@ -245,12 +264,15 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
              
     def update_visibility_originalEllipse_mode(self,checked):
+        """
         self.J_spinBox.setVisible(not checked)
         self.J_label.setVisible(not checked)
         self.Ea_lineEdit.setVisible(not checked)
         self.Ea_label.setVisible(not checked)
         self.Em_lineEdit.setVisible(not checked)
         self.Em_label.setVisible(not checked)
+        """
+        self.radio_group.setVisible(not checked)
         self.segment_label.setVisible(not checked)
         self.segment_comboBox.setVisible(not checked)
         self.saveAsDat_button.setVisible(not checked)
@@ -300,12 +322,15 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.Ea_lineEdit.setText(s1+'%')     
         self.Em_lineEdit.setText(s2+'%')
          
+        """
         self.J_spinBox.setVisible(checked)
         self.J_label.setVisible(checked)
         self.Ea_lineEdit.setVisible(checked)
         self.Ea_label.setVisible(checked)
         self.Em_lineEdit.setVisible(checked)
         self.Em_label.setVisible(checked)
+        """
+        self.radio_group.setVisible(checked)
         self.segment_label.setVisible(checked)
         self.segment_comboBox.setVisible(checked)
         self.saveAsDat_button.setVisible(checked)  
