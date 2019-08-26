@@ -60,8 +60,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.originalEllipse_checkBox.setVisible(False)
                        
         self.radio_group=QtWidgets.QGroupBox()  
-        self.manualJ_radioButton=QtWidgets.QRadioButton('manual J')
-        self.autoJ_radioButton=QtWidgets.QRadioButton('auto J') 
+        self.manualJ_mode_radioButton=QtWidgets.QRadioButton('manual J')
+        self.autoJ_mode_radioButton=QtWidgets.QRadioButton('auto J') 
         
         self.J_label=QtWidgets.QLabel('J:')
         self.J_label.setFixedWidth(50)
@@ -72,7 +72,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.J_spinBox.setFixedWidth(100)
         self.J_spinBox.setMinimum(1)
         self.J_spinBox.setSingleStep(1)
-        self.J_spinBox.setReadOnly(not self.manualJ_radioButton.isChecked())
+        self.J_spinBox.setReadOnly(not self.manualJ_mode_radioButton.isChecked())
 
         self.Ea_label=QtWidgets.QLabel('Ea:') 
         self.Ea_label.setFixedWidth(50)   
@@ -175,8 +175,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         right_layout.addStretch(1)       
      
         grid_layout=QtWidgets.QGridLayout()
-        grid_layout.addWidget(self.autoJ_radioButton,0,0,1,2)
-        grid_layout.addWidget(self.manualJ_radioButton,1,0,1,2)
+        grid_layout.addWidget(self.autoJ_mode_radioButton,0,0,1,2)
+        grid_layout.addWidget(self.manualJ_mode_radioButton,1,0,1,2)
         grid_layout.addWidget(self.J_label,2,0)
         grid_layout.addWidget(self.J_spinBox,2,1)
         grid_layout.addWidget(self.Ea_label,3,0)
@@ -210,8 +210,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.originalEllipse_checkBox.toggled.connect(self.drawMode_originalEllipse)
         self.J_spinBox.valueChanged.connect(self.update_manual_J_value)
         self.lineWidth_doubleSpinBox.valueChanged.connect(self.canvas.setLineWidth)
-        self.manualJ_radioButton.toggled.connect(self.update_visibility_manual_J_mode)
-        self.autoJ_radioButton.toggled.connect(self.update_visibility_auto_J_mode)
+        self.manualJ_mode_radioButton.toggled.connect(self.update_visibility_manual_J_mode)
+        self.autoJ_mode_radioButton.toggled.connect(self.update_visibility_auto_J_mode)
         
             
     def update_visibility_manual_J_mode(self,checked):
@@ -228,10 +228,11 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.J_spinBox.setReadOnly(checked)
         self.canvas.update()
         self.showEaEm()
+        self.J_spinBox.setValue(self.canvas.autoJ)
         
     
     def update_manual_J_value(self,J):
-        self.canvas.setJ(J)
+        self.canvas.setManualJ(J)
         self.showEaEm()
         
             
@@ -368,13 +369,14 @@ class Canvas(QtWidgets.QDialog):
         self.Ea=0.0
         self.Em=0.0
         self.numPt=0
-        self.J=10
+        self.manualJ=10
+        self.autoJ=0
         self.a=[]
         self.b=[]
         self.generalisedEllipseVertices=[]
         self.lineWidth=1
-        self.manualJ=False
-        self.autoJ=False
+        self.manualJ_mode=False
+        self.autoJ_mode=False
         
         
     def sizeHint(self):
@@ -385,8 +387,8 @@ class Canvas(QtWidgets.QDialog):
         return QtCore.Qsize(650,600)
         
         
-    def setJ(self,j):
-        self.J=j
+    def setManualJ(self,j):
+        self.manualJ=j
         self.update()
         
     
@@ -460,59 +462,87 @@ class Canvas(QtWidgets.QDialog):
         pen.setWidthF(self.lineWidth)
         painter.setPen(pen)
         I=self.numPt
-        if self.manualJ==True:
-            J=self.J
+        J=0
+        if self.manualJ_mode==True:
+            J=self.manualJ
+        elif self.autoJ_mode==True:
+            J=self.findJ()
+            self.autoJ=J
+
+        if self.manualJ_mode==True or self.autoJ_mode==True:
             self.a,self.b=self.getCoefficients(J)
             self.generalisedEllipseVertices,self.Ea,self.Em=self.formGeneralizedEllipse(self.a,self.b)
-        #elif self.autoJ==True:
-            #self.findJ()
-
-        if self.manualJ==True or self.autoJ==True:
+ 
             for i in range(I):
                 painter.drawLine(self.generalisedEllipseVertices[i][0],self.generalisedEllipseVertices[i][1],self.generalisedEllipseVertices[(i+1)%I][0],self.generalisedEllipseVertices[(i+1)%I][1])    
           
-    """
+    
     def findJ(self):
+        J=0
         a3,b3=self.getCoefficients(3)
         v3,Ea3,Em3=self.formGeneralizedEllipse(a3,b3)
         a10,b10=self.getCoefficients(10)
         v10,Ea10,Em10=self.forGeneralizedEllipse(a10,b10)
         if Ea3<Ea_criteria and Em3<Em_criteria:
-            self.find_smaller_J(3,Ea3)
+            J=self.find_smaller_J(3,10,Ea3,Ea10)
         elif Ea10>=Ea_criteria:
-            self.find_bigger_J(10,Ea,Ea_criteria)
+            J=self.find_bigger_J(3,10,Ea3,Ea10,Ea_criteria)
         elif Em10>=Em_criteria:
-            self.find_bigger_J(10,Em,Em_criteria)
+            J=self.find_bigger_J(3,10,Em3,Em10,Em_criteria)
         else: 
             if Ea3>=Ea_criteria:
-                self.find_in-between_J(3,10,Ea3,Ea10,Ea_criteria)
+                J=self.find_in-between_J(3,10,Ea3,Ea10,Ea_criteria)
             elif Em3>=Em_criteria:
-                self.find_in-between_J(3,10,Em3,Em10,Em_criteria)       
-    """        
+                J=self.find_in-between_J(3,10,Em3,Em10,Em_criteria)       
+        return J
     
-    def find_in-between_J(self,J_small,J_big,E_smallJ,E_bigJ,E_criteria):
-        #Linear interpolate to find J_small<J<J_big        
+    
+    def find_in-between_J(self,J_small,J_big,Ea_smallJ,Ea_bigJ,Em_smallJ,Em_bigJ):
+        """
+        Linear interpolate to find J_small<J<J_big        
+        """
         if J_small>J_big:
             tmp=J_small
             J_small=J_big
             J_big=tmp
-        if E_smallJ<E_criteria and E_bigJ>=E_criteria:
-            tmp=E_smallJ
-            E_smallJ=E_bigJ
-            E_bigJ=tmp
-        J=
+            
+        if J_small==J_big-1:
+            return J_big
+        
+        if Ea_smallJ<Ea_criteria and Ea_bigJ>=Ea_criteria:
+            tmp=Ea_smallJ
+            Ea_smallJ=Ea_bigJ
+            Ea_bigJ=tmp
+        if Em_smallJ<Em_criteria and Em_bigJ>=Em_criteria:
+            tmp=Em_smallJ
+            Em_smallJ=Em_bigJ
+            Em_bigJ=tmp  
+            
+        if Ea_bigJ>=Ea_criteria:          
+            J=round((Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
+        elif Em_bigJ>=Em_criteria:
+            J=round((Em_criteria-Em_smallJ)*(J_big-J_small)/(Em_bigJ-Em_smallJ))+J_small
+            
         a,b=self.getCoefficients(J)       
+        v,Ea,Em=self.formGeneralizedEllipse(a,b)
+        if Ea<Ea_criteria and Em<Em_criteria:
+            if J==J_small+1:
+                return J
+            else:
+                self.find_in-between_J(J_small,J,Ea_small,Ea,Em_small,Em)
+        elif Ea>=Ea_criteria:
+            self.find_in-between_J(J,J_big,Ea,Ea_bigJ,Em,Em_bigJ)
         
        
-    def find_bigger_J(self,J_small,E_small,E_criteria):
+    def find_bigger_J(self,J_small,J_big,E_smallJ,E_bigJ,E_criteria):
         #Linear extrapolate to find bigger J>J_small
-        J=round(J_small*E_small/E_criteria)
+        J=round((E_criteria-E_smallJ)*(J_big-J_small)/(E_bigJ-E_smallJ))+J_small
         a,b=self.getCoefficients(J)
         v,Ea,Em=self.formGeneralizedEllipse(a,b)
         if Ea>=Ea_criteria: 
-            self.find_bigger_J(J,Ea,Ea_criteria)
+            self.find_bigger_J(J,J_big,Ea,Ea_bigJ,Ea_criteria)
         elif Em>=Em_criteria:
-            self.find_bigger_J(J,Em,Em_criteria)
+            self.find_bigger_J(J,J_big,Em,Em_bigJ,Em_criteria)
         else:
             # we are close to the solution, hence, a while function will suffice
             while Ea<Ea_criteria and Em<Em_criteria and J>J_small:
@@ -522,16 +552,21 @@ class Canvas(QtWidgets.QDialog):
             return J+1
     
            
-    def find_smaller_J(self,J_big,Ea_big):
-        #Linear extrapolate to find smaller J<J_big
-        J=round(J_big*Ea_big/Ea_criteria)
+    def find_smaller_J(self,J_small,J_big,Ea_smallJ,Ea_bigJ):
+        """
+        Linear extrapolate to find smaller J<J_small<J_big,
+        The criteria is always Ea_criteria, 
+        because both (Ea_smallJ,Em_smallJ) and (Ea_bigJ,Em_bigJ) meet criteria. 
+        In this case, we will always use the average error Ea for the extrapolation since the average error is a global measurement. 
+        """
+        J=round((Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
         a,b=self.getCoefficients(J)
-        v,Ea,Eb=self.formGeneralizedEllipse(a,b)
+        v,Ea,Em=self.formGeneralizedEllipse(a,b)
         if Ea<Ea_criteria and Em<Em_criteria:
-            self.fingSmallerJ(J,Ea)
+            self.fingSmallerJ(J,J_small,Ea,Ea_smallJ)
         else:
             # we are close to the solution, hence, a while function will suffice
-            while Ea>=Ea_criteria or Em>=Em_criteria and J<J_big:
+            while Ea>=Ea_criteria or Em>=Em_criteria and J<J_small:
                 J+=1
                 a,b=self.getCoefficients(J)
             return J
