@@ -215,16 +215,16 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
             
     def update_visibility_manual_J_mode(self,checked):
-        self.canvas.manualJ=checked
-        self.canvas.autoJ=not checked
+        self.canvas.manualJ_mode=checked
+        self.canvas.autoJ_mode=not checked
         self.J_spinBox.setReadOnly(not checked)
         self.canvas.repaint()# update() prevents multiple fast repaints. call repaint() instead.
         self.showEaEm()
         
         
     def update_visibility_auto_J_mode(self,checked):
-        self.canvas.autoJ=checked
-        self.canvas.manualJ=not checked
+        self.canvas.autoJ_mode=checked
+        self.canvas.manualJ_mode=not checked
         self.J_spinBox.setReadOnly(checked)
         self.canvas.update()
         self.showEaEm()
@@ -463,120 +463,121 @@ class Canvas(QtWidgets.QDialog):
         painter.setPen(pen)
         I=self.numPt
         J=0
+        
         if self.manualJ_mode==True:
             J=self.manualJ
+        
         elif self.autoJ_mode==True:
             J=self.findJ()
             self.autoJ=J
-
+        
         if self.manualJ_mode==True or self.autoJ_mode==True:
             self.a,self.b=self.getCoefficients(J)
             self.generalisedEllipseVertices,self.Ea,self.Em=self.formGeneralizedEllipse(self.a,self.b)
  
             for i in range(I):
                 painter.drawLine(self.generalisedEllipseVertices[i][0],self.generalisedEllipseVertices[i][1],self.generalisedEllipseVertices[(i+1)%I][0],self.generalisedEllipseVertices[(i+1)%I][1])    
-          
     
+       
     def findJ(self):
         J=0
         a3,b3=self.getCoefficients(3)
         v3,Ea3,Em3=self.formGeneralizedEllipse(a3,b3)
         a10,b10=self.getCoefficients(10)
-        v10,Ea10,Em10=self.forGeneralizedEllipse(a10,b10)
-        if Ea3<Ea_criteria and Em3<Em_criteria:
+        v10,Ea10,Em10=self.formGeneralizedEllipse(a10,b10)
+        if Ea3<Canvas.Ea_criteria and Em3<Canvas.Em_criteria:
             J=self.find_smaller_J(3,10,Ea3,Ea10)
-        elif Ea10>=Ea_criteria:
-            J=self.find_bigger_J(3,10,Ea3,Ea10,Ea_criteria)
-        elif Em10>=Em_criteria:
-            J=self.find_bigger_J(3,10,Em3,Em10,Em_criteria)
+        elif Ea10>=Canvas.Ea_criteria:
+            J=self.find_bigger_J(3,10,Ea3,Ea10,Canvas.Ea_criteria)
+        elif Em10>=Canvas.Em_criteria:
+            J=self.find_bigger_J(3,10,Em3,Em10,Canvas.Em_criteria)
         else: 
-            if Ea3>=Ea_criteria:
-                J=self.find_in-between_J(3,10,Ea3,Ea10,Ea_criteria)
-            elif Em3>=Em_criteria:
-                J=self.find_in-between_J(3,10,Em3,Em10,Em_criteria)       
+            if Ea3>=Canvas.Ea_criteria:
+                J=self.find_inbetween_J(3,10,Ea3,Ea10,Em3,Em10)
+            elif Em3>=Canvas.Em_criteria:
+                J=self.find_inbetween_J(3,10,Ea3,Ea10,Em3,Em10)       
         return J
     
     
-    def find_in-between_J(self,J_small,J_big,Ea_smallJ,Ea_bigJ,Em_smallJ,Em_bigJ):
-        """
-        Linear interpolate to find J_small<J<J_big        
-        """
+    def find_inbetween_J(self,J_small,J_big,Ea_smallJ,Ea_bigJ,Em_smallJ,Em_bigJ):
+        #Linear interpolate to find J_small<J<J_big  
+        
         if J_small>J_big:
             tmp=J_small
             J_small=J_big
             J_big=tmp
-            
-        if J_small==J_big-1:
-            return J_big
         
-        if Ea_smallJ<Ea_criteria and Ea_bigJ>=Ea_criteria:
+        if Ea_smallJ<Canvas.Ea_criteria and Ea_bigJ>=Canvas.Ea_criteria:
             tmp=Ea_smallJ
             Ea_smallJ=Ea_bigJ
             Ea_bigJ=tmp
-        if Em_smallJ<Em_criteria and Em_bigJ>=Em_criteria:
+        if Em_smallJ<Canvas.Em_criteria and Em_bigJ>=Canvas.Em_criteria:
             tmp=Em_smallJ
             Em_smallJ=Em_bigJ
             Em_bigJ=tmp  
-            
-        if Ea_bigJ>=Ea_criteria:          
-            J=round((Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
-        elif Em_bigJ>=Em_criteria:
-            J=round((Em_criteria-Em_smallJ)*(J_big-J_small)/(Em_bigJ-Em_smallJ))+J_small
-            
+        
+        if J_small==J_big-1:
+            return J_big
+        
+        J=0
+        if Ea_smallJ>=Canvas.Ea_criteria:          
+            J=round((Canvas.Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
+            J=int(J)
+        elif Em_smallJ>=Canvas.Em_criteria:
+            J=round((Canvas.Em_criteria-Em_smallJ)*(J_big-J_small)/(Em_bigJ-Em_smallJ))+J_small
+            J=int(J)
+
         a,b=self.getCoefficients(J)       
         v,Ea,Em=self.formGeneralizedEllipse(a,b)
-        if Ea<Ea_criteria and Em<Em_criteria:
+        if Ea<Canvas.Ea_criteria and Em<Canvas.Em_criteria:
             if J==J_small+1:
                 return J
             else:
-                self.find_in-between_J(J_small,J,Ea_small,Ea,Em_small,Em)
-        elif Ea>=Ea_criteria:
-            self.find_in-between_J(J,J_big,Ea,Ea_bigJ,Em,Em_bigJ)
-        
+                return self.find_inbetween_J(J_small,J,Ea_smallJ,Ea,Em_smallJ,Em)
+        elif Ea>=Canvas.Ea_criteria or Em>=Canvas.Em_criteria:
+            return self.find_inbetween_J(J,J_big,Ea,Ea_bigJ,Em,Em_bigJ)
+       
        
     def find_bigger_J(self,J_small,J_big,E_smallJ,E_bigJ,E_criteria):
         #Linear extrapolate to find bigger J>J_small
         J=round((E_criteria-E_smallJ)*(J_big-J_small)/(E_bigJ-E_smallJ))+J_small
         a,b=self.getCoefficients(J)
         v,Ea,Em=self.formGeneralizedEllipse(a,b)
-        if Ea>=Ea_criteria: 
-            self.find_bigger_J(J,J_big,Ea,Ea_bigJ,Ea_criteria)
-        elif Em>=Em_criteria:
-            self.find_bigger_J(J,J_big,Em,Em_bigJ,Em_criteria)
+        if Ea>=Canvas.Ea_criteria: 
+            return self.find_bigger_J(J,J_big,Ea,Ea_bigJ,Canvas.Ea_criteria)
+        elif Em>=Canvas.Em_criteria:
+            return self.find_bigger_J(J,J_big,Em,Em_bigJ,Canvas.Em_criteria)
         else:
             # we are close to the solution, hence, a while function will suffice
-            while Ea<Ea_criteria and Em<Em_criteria and J>J_small:
+            while Ea<Canvas.Ea_criteria and Em<Canvas.Em_criteria and J>J_small:
                 J-=1
                 a,b=self.getCoefficients(J)
                 v,Ea,Em=self.formGeneralizedEllipse(a,b)
+            
             return J+1
     
-           
+
     def find_smaller_J(self,J_small,J_big,Ea_smallJ,Ea_bigJ):
-        """
-        Linear extrapolate to find smaller J<J_small<J_big,
-        The criteria is always Ea_criteria, 
-        because both (Ea_smallJ,Em_smallJ) and (Ea_bigJ,Em_bigJ) meet criteria. 
-        In this case, we will always use the average error Ea for the extrapolation since the average error is a global measurement. 
-        """
-        J=round((Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
+        #Linear extrapolate to find smaller J<J_small<J_big,
+        #The criteria is always Canvas.Ea_criteria, 
+        #because both (Ea_smallJ,Em_smallJ) and (Ea_bigJ,Em_bigJ) meet criteria. 
+        #In this case, we will always use the average error Ea for the extrapolation since the average error is a global measurement. 
+       
+        J=round((Canvas.Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
         a,b=self.getCoefficients(J)
         v,Ea,Em=self.formGeneralizedEllipse(a,b)
-        if Ea<Ea_criteria and Em<Em_criteria:
-            self.fingSmallerJ(J,J_small,Ea,Ea_smallJ)
+        if Ea<Canvas.Ea_criteria and Em<Canvas.Em_criteria:
+            return self.fingSmallerJ(J,J_small,Ea,Ea_smallJ)
         else:
             # we are close to the solution, hence, a while function will suffice
-            while Ea>=Ea_criteria or Em>=Em_criteria and J<J_small:
+            while Ea>=Canvas.Ea_criteria or Em>=Canvas.Em_criteria and J<J_small:
                 J+=1
                 a,b=self.getCoefficients(J)
+            
             return J
-          
-        
+                  
     
-    def getCoefficients(self,J):
-        """
-            abtain a[2j+1] and b[2j+1]
-        """
+    def getCoefficients(self,J):#abtain a[2j+1] and b[2j+1]
         I=self.numPt
         aConstArray=np.zeros(2*J+1)
         aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
@@ -628,7 +629,7 @@ class Canvas(QtWidgets.QDialog):
         Ea=0.0
         Em=0.0
         d=[]
-        J=len(self.a)/2
+        J=len(a)/2
         for i in range(I):
             generalisedEllipseVertices[i][0]=self.center.x()+a[0]
             generalisedEllipseVertices[i][1]=self.center.y()+b[0]
