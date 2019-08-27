@@ -3,8 +3,9 @@ import maya.cmds as cmds
 dirPath=cmds.workspace(q=True, rootDirectory=True )
 dirPath+='scripts/'
 cmds.loadPlugin(dirPath+"cross_section_extract_cmd.py")
-
-grp=cmds.group( em=True, name='source_cross_section_group' )
+grp=cmds.ls('source_cross_section_group',transforms=True)
+if not grp:
+    grp=cmds.group( em=True, name='source_cross_section_group' )
 
 head=[0.9,0.62,0.22]
 for i in head:
