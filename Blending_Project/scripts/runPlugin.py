@@ -8,13 +8,13 @@ grp=cmds.group( em=True, name='source_cross_section_group' )
 
 head=[0.9,0.62,0.22]
 for i in head:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Head",md=40)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Head",md=80)
     cmds.parent( tmp, grp )
 
     
 neck=[0.8,0.3]
 for i in neck:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Neck",md=40)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Neck",md=80)
     cmds.parent( tmp, grp )
 
 
@@ -33,7 +33,7 @@ for i in belly:
 
 hip=[0.75,0.5,0.25,0.0]
 for i in hip:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Hip",md=80)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Hip",md=120)
     cmds.parent( tmp, grp )
 
 
