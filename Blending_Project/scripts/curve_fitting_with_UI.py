@@ -226,7 +226,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.canvas.autoJ_mode=checked
         self.canvas.manualJ_mode=not checked
         self.J_spinBox.setReadOnly(checked)
-        self.canvas.update()
+        self.canvas.repaint()
         self.showEaEm()
         self.J_spinBox.setValue(self.canvas.autoJ)
         
@@ -511,6 +511,7 @@ class Canvas(QtWidgets.QDialog):
             tmp=Ea_smallJ
             Ea_smallJ=Ea_bigJ
             Ea_bigJ=tmp
+            
         if Em_smallJ<Canvas.Em_criteria and Em_bigJ>=Canvas.Em_criteria:
             tmp=Em_smallJ
             Em_smallJ=Em_bigJ
@@ -521,12 +522,13 @@ class Canvas(QtWidgets.QDialog):
         
         J=0
         if Ea_smallJ>=Canvas.Ea_criteria:          
-            J=round((Canvas.Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
-            J=int(J)
+            J=int((Canvas.Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
         elif Em_smallJ>=Canvas.Em_criteria:
-            J=round((Canvas.Em_criteria-Em_smallJ)*(J_big-J_small)/(Em_bigJ-Em_smallJ))+J_small
-            J=int(J)
-
+            J=int((Canvas.Em_criteria-Em_smallJ)*(J_big-J_small)/(Em_bigJ-Em_smallJ))+J_small
+        
+        if J==J_small:
+            J+=1
+            
         a,b=self.getCoefficients(J)       
         v,Ea,Em=self.formGeneralizedEllipse(a,b)
         if Ea<Canvas.Ea_criteria and Em<Canvas.Em_criteria:
@@ -535,12 +537,15 @@ class Canvas(QtWidgets.QDialog):
             else:
                 return self.find_inbetween_J(J_small,J,Ea_smallJ,Ea,Em_smallJ,Em)
         elif Ea>=Canvas.Ea_criteria or Em>=Canvas.Em_criteria:
-            return self.find_inbetween_J(J,J_big,Ea,Ea_bigJ,Em,Em_bigJ)
+            if J==J_big-1:
+                return J_big
+            else:
+                return self.find_inbetween_J(J,J_big,Ea,Ea_bigJ,Em,Em_bigJ)
        
        
     def find_bigger_J(self,J_small,J_big,E_smallJ,E_bigJ,E_criteria):
         #Linear extrapolate to find bigger J>J_small
-        J=round((E_criteria-E_smallJ)*(J_big-J_small)/(E_bigJ-E_smallJ))+J_small
+        J=int((E_criteria-E_smallJ)*(J_big-J_small)/(E_bigJ-E_smallJ))+J_small
         a,b=self.getCoefficients(J)
         v,Ea,Em=self.formGeneralizedEllipse(a,b)
         if Ea>=Canvas.Ea_criteria: 
@@ -563,7 +568,7 @@ class Canvas(QtWidgets.QDialog):
         #because both (Ea_smallJ,Em_smallJ) and (Ea_bigJ,Em_bigJ) meet criteria. 
         #In this case, we will always use the average error Ea for the extrapolation since the average error is a global measurement. 
        
-        J=round((Canvas.Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
+        J=int((Canvas.Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
         a,b=self.getCoefficients(J)
         v,Ea,Em=self.formGeneralizedEllipse(a,b)
         if Ea<Canvas.Ea_criteria and Em<Canvas.Em_criteria:
