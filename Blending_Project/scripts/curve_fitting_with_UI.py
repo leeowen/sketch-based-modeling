@@ -212,8 +212,20 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.lineWidth_doubleSpinBox.valueChanged.connect(self.canvas.setLineWidth)
         self.manualJ_mode_radioButton.toggled.connect(self.update_visibility_manual_J_mode)
         self.autoJ_mode_radioButton.toggled.connect(self.update_visibility_auto_J_mode)
+        self.segment_comboBox.currentTextChanged.connect(self.segmentMode_change)
         
+    
+    def segmentMode_change(self,text):
+        if text=='single piece':
+            self.canvas.single_piece_mode=True
+            self.canvas.segment_mode=False
+        elif text=='segment':
+            self.canvas.segment_mode=True
+            self.canvas.single_piece_mode=False
             
+        self.canvas.update()
+                        
+    
     def update_visibility_manual_J_mode(self,checked):
         self.canvas.manualJ_mode=checked
         self.canvas.autoJ_mode=not checked
@@ -284,6 +296,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_label.setVisible(not checked)
         self.segment_comboBox.setVisible(not checked)
         self.saveAsDat_button.setVisible(not checked)
+        self.saveAsImg_button.setVisible(checked)
 
 
     def update_visibility_standardEllipse_mode(self,checked):
@@ -377,6 +390,8 @@ class Canvas(QtWidgets.QDialog):
         self.lineWidth=1
         self.manualJ_mode=False
         self.autoJ_mode=False
+        self.single_piece_mode=True
+        self.segment_mode=False
         
         
     def sizeHint(self):
@@ -464,20 +479,23 @@ class Canvas(QtWidgets.QDialog):
         I=self.numPt
         J=0
         
-        if self.manualJ_mode==True:
-            J=self.manualJ
-        
-        elif self.autoJ_mode==True:
-            J=self.findJ()
-            self.autoJ=J
-        
-        if self.manualJ_mode==True or self.autoJ_mode==True:
-            self.a,self.b=self.getCoefficients(J)
-            self.generalisedEllipseVertices,self.Ea,self.Em=self.formGeneralizedEllipse(self.a,self.b)
- 
-            for i in range(I):
-                painter.drawLine(self.generalisedEllipseVertices[i][0],self.generalisedEllipseVertices[i][1],self.generalisedEllipseVertices[(i+1)%I][0],self.generalisedEllipseVertices[(i+1)%I][1])    
-    
+        if self.single_piece_mode==True:
+            if self.manualJ_mode==True:
+                J=self.manualJ
+            
+            elif self.autoJ_mode==True:
+                J=self.findJ()
+                self.autoJ=J
+            
+            if self.manualJ_mode==True or self.autoJ_mode==True:
+                self.a,self.b=self.getCoefficients(J)
+                self.generalisedEllipseVertices,self.Ea,self.Em=self.formGeneralizedEllipse(self.a,self.b)
+     
+                for i in range(I):
+                    painter.drawLine(self.generalisedEllipseVertices[i][0],self.generalisedEllipseVertices[i][1],self.generalisedEllipseVertices[(i+1)%I][0],self.generalisedEllipseVertices[(i+1)%I][1])    
+        else:
+            pass
+  
        
     def findJ(self):
         J=0
@@ -487,15 +505,10 @@ class Canvas(QtWidgets.QDialog):
         v10,Ea10,Em10=self.formGeneralizedEllipse(a10,b10)
         if Ea3<Canvas.Ea_criteria and Em3<Canvas.Em_criteria:
             J=self.find_smaller_J(3,10,Ea3,Ea10)
-        elif Ea10>=Canvas.Ea_criteria:
+        elif Ea10>=Canvas.Ea_criteria or Em10>=Canvas.Em_criteria:
             J=self.find_bigger_J(3,10,Ea3,Ea10,Canvas.Ea_criteria)
-        elif Em10>=Canvas.Em_criteria:
-            J=self.find_bigger_J(3,10,Em3,Em10,Canvas.Em_criteria)
-        else: 
-            if Ea3>=Canvas.Ea_criteria:
-                J=self.find_inbetween_J(3,10,Ea3,Ea10,Em3,Em10)
-            elif Em3>=Canvas.Em_criteria:
-                J=self.find_inbetween_J(3,10,Ea3,Ea10,Em3,Em10)       
+        elif Ea3>=Canvas.Ea_criteria or Em3>=Canvas.Em_criteria:
+            J=self.find_inbetween_J(3,10,Ea3,Ea10,Em3,Em10)       
         return J
     
     
@@ -543,15 +556,16 @@ class Canvas(QtWidgets.QDialog):
                 return self.find_inbetween_J(J,J_big,Ea,Ea_bigJ,Em,Em_bigJ)
        
        
-    def find_bigger_J(self,J_small,J_big,E_smallJ,E_bigJ,E_criteria):
+    def find_bigger_J(self,J_small,J_big,Ea_smallJ,Em_smallJ,Ea_bigJ,Em_bigJ):
         #Linear extrapolate to find bigger J>J_small
-        J=int((E_criteria-E_smallJ)*(J_big-J_small)/(E_bigJ-E_smallJ))+J_small
+        if Ea_bigJ>=Canvas.Ea_criteria:
+            J=int((Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
+        elif Em_bigJ>=Canvas.Em_criteria:
+            J=int((Em_criteria-Em_smallJ)*(J_big-J_small)/(Em_bigJ-Em_smallJ))+J_small            
         a,b=self.getCoefficients(J)
         v,Ea,Em=self.formGeneralizedEllipse(a,b)
-        if Ea>=Canvas.Ea_criteria: 
+        if Ea>=Canvas.Ea_criteria or Em>=Canvas.Em_criteria: 
             return self.find_bigger_J(J,J_big,Ea,Ea_bigJ,Canvas.Ea_criteria)
-        elif Em>=Canvas.Em_criteria:
-            return self.find_bigger_J(J,J_big,Em,Em_bigJ,Canvas.Em_criteria)
         else:
             # we are close to the solution, hence, a while function will suffice
             while Ea<Canvas.Ea_criteria and Em<Canvas.Em_criteria and J>J_small:
@@ -586,15 +600,13 @@ class Canvas(QtWidgets.QDialog):
         I=self.numPt
         aConstArray=np.zeros(2*J+1)
         aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
-        aTrignometricMatrix=np.ndarray(shape=(I,2*J+1), dtype=float, order='C')
+        
         bConstArray=np.zeros(2*J+1)
         bCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')
-        bTrignometricMatrix=np.ndarray(shape=(I,2*J+1), dtype=float, order='C')
+        
         for i in range(I):
             aCoefficientMatrix[0,i]=1.
-            aTrignometricMatrix[i,0]=1.
             bCoefficientMatrix[0,i]=1.
-            bTrignometricMatrix[i,0]=1.
             
         for i in range(I):# for aCoefficientMatrix's column, and trignomatricMatrix's row
             for j in range(1,J+1):# for aCoefficientMatrix's row, and trignomatricMatrix's column
@@ -606,22 +618,20 @@ class Canvas(QtWidgets.QDialog):
                 else:    
                     aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
                     aCoefficientMatrix[2*j,i]=math.sin(vi*j)
-                    aTrignometricMatrix[i,2*j-1]=math.cos(vi*j)
-                    aTrignometricMatrix[i,2*j]=math.sin(vi*j)
+
                     # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
                     aConstArray[2*j-1]+=(self.vertices[i][0]-self.center.x())*math.cos(vi*j)
                     aConstArray[2*j]+=(self.vertices[i][0]-self.center.x())*math.sin(vi*j)
                 
                     bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
                     bCoefficientMatrix[2*j,i]=math.cos(vi*j)
-                    bTrignometricMatrix[i,2*j-1]=math.sin(vi*j)
-                    bTrignometricMatrix[i,2*j]=math.cos(vi*j)
+                   
                     bConstArray[2*j-1]+=(self.vertices[i][2]-self.center.y())*math.sin(vi*j)
                     bConstArray[2*j]+=(self.vertices[i][2]-self.center.y())*math.cos(vi*j)
                                   
-        A=np.dot(aCoefficientMatrix,aTrignometricMatrix)
+        A=np.dot(aCoefficientMatrix,aCoefficientMatrix.transpose())
         a=np.linalg.solve(A,aConstArray)   
-        B=np.dot(bCoefficientMatrix,bTrignometricMatrix)      
+        B=np.dot(bCoefficientMatrix,bCoefficientMatrix.transpose())      
         b=np.linalg.solve(B,bConstArray) 
         
         return a,b
@@ -666,7 +676,6 @@ class Canvas(QtWidgets.QDialog):
             error_dialog = QtWidgets.QErrorMessage(self)
             error_dialog.showMessage('Please choose a data file first')
         else:
-            """
             for i in range(self.numPt):
                 p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
                 p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
@@ -688,7 +697,8 @@ class Canvas(QtWidgets.QDialog):
                 painterPath.cubicTo(controlPt1[0],controlPt1[2],controlPt2[0],controlPt2[2],self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
                 painterPath.moveTo(self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
                 
-            painter.drawPath(painterPath)              
+            painter.drawPath(painterPath)    
+            """          
                 
         
     def draw_standardEllipse(self,painter): 
