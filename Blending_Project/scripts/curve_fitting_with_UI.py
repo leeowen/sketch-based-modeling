@@ -594,31 +594,24 @@ class Canvas(QtWidgets.QDialog):
         bConstArray=np.zeros(2*J+1)
         bCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')
         
-        for i in range(I):
-            aCoefficientMatrix[0,i]=1.
-            bCoefficientMatrix[0,i]=1.
             
         for i in range(I):# for aCoefficientMatrix's column
-            for j in range(1,J+1):# for aCoefficientMatrix's row
-                try:
-                    vi=self.angles_first_half[i]
-                except IndexError:
-                    error_dialog = QtWidgets.QErrorMessage(self)
-                    error_dialog.showMessage('vertices data is empty, please choose a data file first')
-                else:    
-                    aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
-                    aCoefficientMatrix[2*j,i]=math.sin(vi*j)
-
-                    # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
-                    aConstArray[2*j-1]+=(self.vertices_first_half[i][0]-self.center_first_half.x())*math.cos(vi*j)
-                    aConstArray[2*j]+=(self.vertices_first_half[i][0]-self.center_first_half.x())*math.sin(vi*j)
-                
-                    bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
-                    bCoefficientMatrix[2*j,i]=math.cos(vi*j)
-                   
-                    bConstArray[2*j-1]+=(self.vertices_first_half[i][2]-self.center_first_half.y())*math.sin(vi*j)
-                    bConstArray[2*j]+=(self.vertices_first_half[i][2]-self.center_first_half.y())*math.cos(vi*j)
-                                  
+            vi=self.angles_first_half[i]
+           
+            for j in range(3,J+1):# for aCoefficientMatrix's row
+                aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
+                aCoefficientMatrix[2*j,i]=math.sin(vi*j)
+    
+                # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
+                aConstArray[2*j-1]+=(self.vertices_first_half[i][0]-self.center_first_half.x())*math.cos(vi*j)
+                aConstArray[2*j]+=(self.vertices_first_half[i][0]-self.center_first_half.x())*math.sin(vi*j)
+                    
+                        bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
+                        bCoefficientMatrix[2*j,i]=math.cos(vi*j)
+                       
+                        bConstArray[2*j-1]+=(self.vertices_first_half[i][2]-self.center_first_half.y())*math.sin(vi*j)
+                        bConstArray[2*j]+=(self.vertices_first_half[i][2]-self.center_first_half.y())*math.cos(vi*j)
+                                      
         A=np.dot(aCoefficientMatrix,aCoefficientMatrix.transpose())
         a=np.linalg.solve(A,aConstArray)   
         B=np.dot(bCoefficientMatrix,bCoefficientMatrix.transpose())      
