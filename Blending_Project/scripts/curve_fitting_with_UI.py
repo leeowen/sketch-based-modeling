@@ -512,7 +512,7 @@ class Canvas(QtWidgets.QDialog):
                 for i in range(I):
                     painter.drawLine(self.generalisedEllipseVertices[i][0],self.generalisedEllipseVertices[i][1],self.generalisedEllipseVertices[(i+1)%I][0],self.generalisedEllipseVertices[(i+1)%I][1])    
         
-        elif self.segment_mode==True:        
+        elif self.segment_mode==True:      
             if self.manualJ_mode==True:
                 J=self.manualJ
                 a_first_half,b_first_half=self.coefficients_solver_for_first_half_of_segmented_ellipse(J)
@@ -588,30 +588,29 @@ class Canvas(QtWidgets.QDialog):
         
         
     def coefficients_solver_for_second_half_of_segmented_ellipse(self,J,a_first_half,b_first_half):
+        I=len(self.vertices_second_half)
         aConstArray=np.zeros(2*J+1)
-        aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
+        aCoefficientMatrix=np.zeros(shape=(2*J+1,I), dtype=float, order='C')# row-major
         
         bConstArray=np.zeros(2*J+1)
-        bCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')
+        bCoefficientMatrix=np.zeros(shape=(2*J+1,I), dtype=float, order='C')
         
-            
-        for i in range(I):# for aCoefficientMatrix's column
-            vi=self.angles_first_half[i]
-           
-            for j in range(3,J+1):# for aCoefficientMatrix's row
-                aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
-                aCoefficientMatrix[2*j,i]=math.sin(vi*j)
-    
-                # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
-                aConstArray[2*j-1]+=(self.vertices_first_half[i][0]-self.center_first_half.x())*math.cos(vi*j)
-                aConstArray[2*j]+=(self.vertices_first_half[i][0]-self.center_first_half.x())*math.sin(vi*j)
-                    
-                        bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
-                        bCoefficientMatrix[2*j,i]=math.cos(vi*j)
-                       
-                        bConstArray[2*j-1]+=(self.vertices_first_half[i][2]-self.center_first_half.y())*math.sin(vi*j)
-                        bConstArray[2*j]+=(self.vertices_first_half[i][2]-self.center_first_half.y())*math.cos(vi*j)
-                                      
+        A_i=np.zeros(shape=(I-1,2*J+1),dtype=float,order='C')
+        for i in range (I-1):
+            v_i=self.angles_second_half[i]
+            A_i[i][0]=1-math.cos(2*v-i)
+            A_i[i][1]=0
+            A_i[i][2]=0
+            A_i[i][3]=0
+            A_i[i][4]=0
+            for j in range(3,J+1):
+                D1=(1-(-1)**j)*math.cos(v_i)+(1+(-1)**j)*math.cos(2*v_i)
+                A_i[i][2*j-1]=math.cos(j*v_i)-1/2.*D1
+                D2=(1-(-1)**j)*math.sin(v_i)+1/2.0*(1+(-1)**j)*math.sin(2*v_i)
+                A_i[i][2*j]=math.sin(j*v_i)-j/2.0*D2
+        
+        
+                          
         A=np.dot(aCoefficientMatrix,aCoefficientMatrix.transpose())
         a=np.linalg.solve(A,aConstArray)   
         B=np.dot(bCoefficientMatrix,bCoefficientMatrix.transpose())      
