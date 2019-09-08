@@ -608,8 +608,7 @@ class Canvas(QtWidgets.QDialog):
                 A_i[i][2*j-1]=math.cos(j*v_i)-1/2.*D1
                 D2=(1-(-1)**j)*math.sin(v_i)+1/2.0*(1+(-1)**j)*math.sin(2*v_i)
                 A_i[i][2*j]=math.sin(j*v_i)-j/2.0*D2
-        
-        
+
                           
         A=np.dot(aCoefficientMatrix,aCoefficientMatrix.transpose())
         a=np.linalg.solve(A,aConstArray)   
