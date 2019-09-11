@@ -589,31 +589,50 @@ class Canvas(QtWidgets.QDialog):
         
     def coefficients_solver_for_second_half_of_segmented_ellipse(self,J,a_first_half,b_first_half):
         I=len(self.vertices_second_half)
-        aConstArray=np.zeros(2*J+1)
-        aCoefficientMatrix=np.zeros(shape=(2*J+1,I), dtype=float, order='C')# row-major
+        Ca=np.zeros(I)
+        aCoefficientMatrix=np.zeros(shape=(2*J-3,I), dtype=float, order='C')# row-major
         
-        bConstArray=np.zeros(2*J+1)
-        bCoefficientMatrix=np.zeros(shape=(2*J+1,I), dtype=float, order='C')
+        Cb=np.zeros(I)
+        bCoefficientMatrix=np.zeros(shape=(2*J-3,I), dtype=float, order='C')
         
-        A_i=np.zeros(shape=(I-1,2*J+1),dtype=float,order='C')
-        for i in range (I-1):
+        Ma=np.zeros(shape=(2*J-3，I),dtype=float,order='C')
+        Mb=np.zeros(shape=(2*J-3，I),dtype=float,order='C')
+        for i in range (I):
             v_i=self.angles_second_half[i]
-            A_i[i][0]=1-math.cos(2*v-i)
-            A_i[i][1]=0
-            A_i[i][2]=0
-            A_i[i][3]=0
-            A_i[i][4]=0
+            tmp=1-math.cos(2*v_i)
+            Ma[0][i]=tmp
+            Mb[0][i]=tmp
+            x_i=self.vertices_second_half[i][0]
+            y_i=self.vertices_second_half[i][2]
+            Ca[i]=x_i-(self.center_first_half[0]+a_first_half[0])*math.cos(2*v_i)-self.center_second_half[0]*(1-math.cos(2*v_i))
+            Cb[i]=y_i-(self.center_first_half[1]+b_first_half[0])*math.cos(2*v_i)-self.center_second_half[1]*(1-math.cos(2*v_i))
+            for j in range(1,3):
+                D1=(1-(-1)**j)*math.cos(v_i)+(1+(-1)**j)*math.cos(2*v_i)
+                D2=(1-(-1)**j)*math.sin(v_i)+1/2.0*(1+(-1)**j)*math.sin(2*v_i)
+                Ca[i]-=1/2.0*(D1*a_first_half[2*j-1]+j*D2*a_first_half[2*j])
+                Cb[i]-=1/2.0*(j*D2*b_first_half[2*j-1]+D1*b_first_half[2*j])
             for j in range(3,J+1):
                 D1=(1-(-1)**j)*math.cos(v_i)+(1+(-1)**j)*math.cos(2*v_i)
-                A_i[i][2*j-1]=math.cos(j*v_i)-1/2.*D1
+                tmp=math.cos(j*v_i)-1/2.0*D1
+                Ma[j*2-5][i]=tmp
+                Mb[j*2-4][i]=tmp
                 D2=(1-(-1)**j)*math.sin(v_i)+1/2.0*(1+(-1)**j)*math.sin(2*v_i)
-                A_i[i][2*j]=math.sin(j*v_i)-j/2.0*D2
-
-                          
+                tmp=math.sin(j*v_i)-j/2.0*D2
+                Ma[j*2-4][i]=tmp
+                Mb[j*2-5][i]=tmp
+                Ca[i]-=1/2.0*(D1*a_first_half[2*j-1]+j*D2*a_first_half[2*j])
+                Cb[i]-=1/2.0*(j*D2*b_first_half[2*j-1]+D1*b_first_half[2*j])
+                                  
         A=np.dot(aCoefficientMatrix,aCoefficientMatrix.transpose())
+        aConstArray=np.dot(aCoefficientMatrix,Ca.transpose())
         a=np.linalg.solve(A,aConstArray)   
-        B=np.dot(bCoefficientMatrix,bCoefficientMatrix.transpose())      
+        B=np.dot(bCoefficientMatrix,bCoefficientMatrix.transpose())   
+        bConstArray=np.dot(bCoefficientMatrix,Cb.transpose())   
         b=np.linalg.solve(B,bConstArray) 
+        
+        # get a1,a2,a3,a4 and b1,b2,b3,b4
+        for j in range(J+1):
+            
         
         return a,b
         
