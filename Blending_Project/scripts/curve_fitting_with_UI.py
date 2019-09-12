@@ -445,8 +445,8 @@ class Canvas(QtWidgets.QDialog):
         for i in range(I):
             self.center_first_half+=QtCore.QPointF(self.vertices_first_half[i][0],self.vertices_first_half[i][2])
             self.center_second_half+=QtCore.QPointF(self.vertices_second_half[i][0],self.vertices_second_half[i][2])
-        self.first_half_center/=(I+1)
-        self.second_half_center/=(I+1)
+        self.center_first_half/=(I+1)
+        self.center_second_half/=(I+1)
             
     
     def getAngle(self):
@@ -518,9 +518,9 @@ class Canvas(QtWidgets.QDialog):
                 a_first_half,b_first_half=self.coefficients_solver_for_first_half_of_segmented_ellipse(J)
                 a_second_half,b_second_half=self.coefficients_solver_for_second_half_of_segmented_ellipse(J,a_first_half,b_first_half)
                 
-            first_half_vertices,first_half_Ea,first_half_Em=self.form_vertices_of_first_half_of_segmented_ellipse(a_first_half,b_first_half)    
-            
-        
+                first_half_vertices,first_half_Ea,first_half_Em=self.form_vertices_of_first_half_of_segmented_ellipse(a_first_half,b_first_half)    
+                second_half_vertices,second_half_Ea,second_half_Em=self.form_vertices_of_second_half_of_segmented_ellipse(a_second_half,b_second_half)    
+           
     def form_vertices_of_first_half_of_segmented_ellipse(self,a,b):
         #CoefficientMatrix
         I=self.numPt/2
@@ -548,6 +548,7 @@ class Canvas(QtWidgets.QDialog):
         
                     
     def coefficients_solver_for_first_half_of_segmented_ellipse(self,J):
+        I=len(self.vertices_first_half)
         aConstArray=np.zeros(2*J+1)
         aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
         
@@ -585,18 +586,17 @@ class Canvas(QtWidgets.QDialog):
         b=np.linalg.solve(B,bConstArray) 
         
         return a,b
-        
-        
+       
+  
     def coefficients_solver_for_second_half_of_segmented_ellipse(self,J,a_first_half,b_first_half):
         I=len(self.vertices_second_half)
-        Ca=np.zeros(I)
-        aCoefficientMatrix=np.zeros(shape=(2*J-3,I), dtype=float, order='C')# row-major
         
+        Ca=np.zeros(I)        
         Cb=np.zeros(I)
-        bCoefficientMatrix=np.zeros(shape=(2*J-3,I), dtype=float, order='C')
         
-        Ma=np.zeros(shape=(2*J-3，I),dtype=float,order='C')
-        Mb=np.zeros(shape=(2*J-3，I),dtype=float,order='C')
+        Ma=np.zeros((2*J-3,I),order='C')# row-major
+        Mb=np.zeros((2*J-3,I),order='C')
+        
         for i in range (I):
             v_i=self.angles_second_half[i]
             tmp=1-math.cos(2*v_i)
@@ -604,8 +604,8 @@ class Canvas(QtWidgets.QDialog):
             Mb[0][i]=tmp
             x_i=self.vertices_second_half[i][0]
             y_i=self.vertices_second_half[i][2]
-            Ca[i]=x_i-(self.center_first_half[0]+a_first_half[0])*math.cos(2*v_i)-self.center_second_half[0]*(1-math.cos(2*v_i))
-            Cb[i]=y_i-(self.center_first_half[1]+b_first_half[0])*math.cos(2*v_i)-self.center_second_half[1]*(1-math.cos(2*v_i))
+            Ca[i]=x_i-(self.center_first_half.x()+a_first_half[0])*math.cos(2*v_i)-self.center_second_half.x()*(1-math.cos(2*v_i))
+            Cb[i]=y_i-(self.center_first_half.y()+b_first_half[0])*math.cos(2*v_i)-self.center_second_half.y()*(1-math.cos(2*v_i))
             for j in range(1,3):
                 D1=(1-(-1)**j)*math.cos(v_i)+(1+(-1)**j)*math.cos(2*v_i)
                 D2=(1-(-1)**j)*math.sin(v_i)+1/2.0*(1+(-1)**j)*math.sin(2*v_i)
@@ -623,19 +623,52 @@ class Canvas(QtWidgets.QDialog):
                 Ca[i]-=1/2.0*(D1*a_first_half[2*j-1]+j*D2*a_first_half[2*j])
                 Cb[i]-=1/2.0*(j*D2*b_first_half[2*j-1]+D1*b_first_half[2*j])
                                   
-        A=np.dot(aCoefficientMatrix,aCoefficientMatrix.transpose())
-        aConstArray=np.dot(aCoefficientMatrix,Ca.transpose())
+        A=np.dot(Ma,Ma.transpose())
+        aConstArray=np.dot(Ma,Ca.transpose())
         a=np.linalg.solve(A,aConstArray)   
-        B=np.dot(bCoefficientMatrix,bCoefficientMatrix.transpose())   
-        bConstArray=np.dot(bCoefficientMatrix,Cb.transpose())   
+        B=np.dot(Mb,Mb.transpose())   
+        bConstArray=np.dot(Mb,Cb.transpose())   
         b=np.linalg.solve(B,bConstArray) 
         
         # get a1,a2,a3,a4 and b1,b2,b3,b4
-        for j in range(J+1):
-            
+        a1=0
+        a2=0
+        a3=self.center_first_half.x()-self.center_second_half.x()+a_first_half[0]-a[0]
+        a4=0
+        b1=0
+        b2=0
+        b3=0
+        b4=self.center_first_half.y()-self.center_second_half.y()+b_first_half[0]-b[0]
         
+        for j in range(1,3):
+            a1+=0.5*(1-(-1)**j)*a_first_half[2*j-1]
+            a2+=0.5*(1-(-1)**j)*j*a_first_half[2*j]
+            a3+=0.5*(1+(-1)**j)*a_first_half[2*j-1]
+            a4+=0.25*(1+(-1)**j)*j*a_first_half[2*j-1]
+            b1+=0.5*(1-(-1)**j)*b_first_half[2*j-1]
+            b2+=0.5*(1-(-1)**j)*j*b_first_half[2*j]
+            b3+=0.25*(1+(-1)**j)*j*b_first_half[2*j-1]
+            b4+=0.5*(1+(-1)**j)*b_first_half[2*j-1]
+        for j in range(3,J+1):
+            a1+=0.5*(1-(-1)**j)*(a_first_half[2*j-1]-a[2*j-5])
+            a2+=0.5*(1-(-1)**j)*j*(a_first_half[2*j]-a[2*j-4])
+            a3+=0.5*(1+(-1)**j)*(a_first_half[2*j-1]-a[2*j-5])
+            a4+=0.25*(1+(-1)**j)*j*(a_first_half[2*j]-a[2*j-4])
+            b1+=0.5*(1-(-1)**j)*j*(b_first_half[2*j-1]-b[2*j-5])
+            b2+=0.5*(1-(-1)**j)*(b_first_half[2*j]-b[2*j-4])
+            b3+=0.25*(1+(-1)**j)*j*(b_first_half[2*j-1]-a[2*j-5])
+            b4+=0.5*(1+(-1)**j)*(b_first_half[2*j]-b[2*j-4])
+        
+        np.insert(a,1,a1)
+        np.insert(a,2,a2)
+        np.insert(a,3,a3)
+        np.insert(a,4,a4)
+        np.insert(b,1,b1)
+        np.insert(b,2,b2)
+        np.insert(b,3,b3)
+        np.insert(b,4,b4)        
         return a,b
-        
+              
        
     def findJ(self):
         J=0
