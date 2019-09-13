@@ -529,6 +529,7 @@ class Canvas(QtWidgets.QDialog):
     def form_vertices_of_segmented_ellipse(self,a1,b1,a2,b2):
         #CoefficientMatrix
         I=len(self.vertices_first_half)
+
         segmented_ellipse_vertices=[[0 for i in range(2)] for j in range(self.numPt)]
         Ea=0.0
         Em=0.0
@@ -553,15 +554,18 @@ class Canvas(QtWidgets.QDialog):
             segmented_ellipse_vertices[i][0]=first_half_vertex[0]
             segmented_ellipse_vertices[i][1]=first_half_vertex[1]
             di1=math.sqrt((self.vertices_first_half[i][0]-first_half_vertex[0])**2+(self.vertices_first_half[i][1]-first_half_vertex[1])**2)
+
             d[i]=di1
             Ea+=(di1/self.d_bar[i])
             if Em<di1/self.d_bar[i]:
                 Em=di1/self.d_bar[i]
                 
             if i!=0 and i!=(I-1):
+
                 segmented_ellipse_vertices[i+I-1][0]=second_half_vertex[0]
                 segmented_ellipse_vertices[i+I-1][1]=second_half_vertex[1]
                 di2=math.sqrt((self.vertices_second_half[i][0]-second_half_vertex[0])**2+(self.vertices_second_half[i][1]-second_half_vertex[1])**2)
+
                 d[i+I-1]=di2
                 Ea+=(di2/self.d_bar[i+I-1])
                 
