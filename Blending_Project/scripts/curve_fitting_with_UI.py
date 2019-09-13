@@ -434,15 +434,16 @@ class Canvas(QtWidgets.QDialog):
         self.a_first_half=[]
         self.b_first_half=[]
         I=self.numPt/2
-        self.vertices_first_half=self.vertices[0:I]
-        self.angles_first_half=self.angles[0:I]
+        self.vertices_first_half=self.vertices[0:I+1]
+        self.angles_first_half=self.angles[0:I+1]
         self.vertices_second_half=self.vertices[I:self.numPt]
         self.vertices_second_half.append(self.vertices[0])
         self.angles_second_half=self.angles[I:self.numPt]
         self.angles_second_half.append(self.angles[0])
         self.center_first_half=QtCore.QPointF(0.0,0.0)
         self.center_second_half=QtCore.QPointF(0.0,0.0)
-        for i in range(I):
+        
+        for i in range(I+1):
             self.center_first_half+=QtCore.QPointF(self.vertices_first_half[i][0],self.vertices_first_half[i][2])
             self.center_second_half+=QtCore.QPointF(self.vertices_second_half[i][0],self.vertices_second_half[i][2])
         self.center_first_half/=(I+1)
@@ -517,34 +518,53 @@ class Canvas(QtWidgets.QDialog):
                 J=self.manualJ
                 a_first_half,b_first_half=self.coefficients_solver_for_first_half_of_segmented_ellipse(J)
                 a_second_half,b_second_half=self.coefficients_solver_for_second_half_of_segmented_ellipse(J,a_first_half,b_first_half)
+
+                segmented_ellipse_vertices,first_half_Ea,first_half_Em=self.form_vertices_of_segmented_ellipse(a_first_half,b_first_half,a_second_half,b_second_half)     
+                numpt=len(segmented_ellipse_vertices)
                 
-                first_half_vertices,first_half_Ea,first_half_Em=self.form_vertices_of_first_half_of_segmented_ellipse(a_first_half,b_first_half)    
-                second_half_vertices,second_half_Ea,second_half_Em=self.form_vertices_of_second_half_of_segmented_ellipse(a_second_half,b_second_half)    
-           
-    def form_vertices_of_first_half_of_segmented_ellipse(self,a,b):
+                for i in range(numpt-1):
+                    painter.drawLine(segmented_ellipse_vertices[i][0],segmented_ellipse_vertices[i][1],segmented_ellipse_vertices[i+1][0],segmented_ellipse_vertices[i+1][1])    
+        
+        
+    def form_vertices_of_segmented_ellipse(self,a1,b1,a2,b2):
         #CoefficientMatrix
-        I=self.numPt/2
+        I=len(self.vertices_first_half)
         first_half_vertices=[[0 for i in range(2)] for j in range(I)] 
+        second_half_vertices=[[0 for i in range(2)] for j in range(I)] 
         Ea=0.0
         Em=0.0
-        d=[]
-        J=len(a)/2
+        d=[0.0]*len(self.vertices)
+        J=len(a1)/2
         for i in range(I):
-            first_half_vertices[i][0]=self.center_first_half.x()+a[0]
-            first_half_vertices[i][1]=self.center_first_half.y()+b[0]
-            v=self.angles[i]
+            first_half_vertices[i][0]=self.center_first_half.x()+a1[0]
+            first_half_vertices[i][1]=self.center_first_half.y()+b1[0]
+            v1=self.angles_first_half[i]
+            
+            second_half_vertices[i][0]=self.center_second_half.x()+a2[0]
+            second_half_vertices[i][1]=self.center_second_half.y()+b2[0]
+            v2=self.angles_second_half[i]
             for j in range(1,J+1):
-                first_half_vertices[i][0]+=a[2*j-1]*math.cos(j*v)+a[2*j]*math.sin(j*v)
-                first_half_vertices[i][1]+=b[2*j-1]*math.sin(j*v)+b[2*j]*math.cos(j*v)
-           
-            di=math.sqrt((self.vertices_first_half[i][0]-first_half_vertices[i][0])**2+(self.vertices_first_half[i][2]-first_half_vertices[i][1])**2)
-            d.append(di)
-            Ea+=(di/self.d_bar[i])
-            if Em<di/self.d_bar[i]:
-                Em=di/self.d_bar[i]
-        Ea=Ea/(I+1)
+                first_half_vertices[i][0]+=a1[2*j-1]*math.cos(j*v1)+a1[2*j]*math.sin(j*v1)
+                first_half_vertices[i][1]+=b1[2*j-1]*math.sin(j*v1)+b1[2*j]*math.cos(j*v1)
+                second_half_vertices[i][0]+=a2[2*j-1]*math.cos(j*v2)+a2[2*j]*math.sin(j*v2)
+                second_half_vertices[i][1]+=b2[2*j-1]*math.sin(j*v2)+b2[2*j]*math.cos(j*v2)
+            di1=math.sqrt((self.vertices_first_half[i][0]-first_half_vertices[i][0])**2+(self.vertices_first_half[i][1]-first_half_vertices[i][1])**2)
+            d[i]=di1
+            Ea+=(di1/self.d_bar[i])
+            if Em<di1/self.d_bar[i]:
+                Em=di1/self.d_bar[i]
+                
+            if i!=0 and i!=(I-1):
+                di2=math.sqrt((self.vertices_second_half[i][0]-second_half_vertices[i][0])**2+(self.vertices_second_half[i][1]-second_half_vertices[i][1])**2)
+                d[i+I-1]=di2
+                Ea+=(di2/self.d_bar[i+I-1])
+                
+                if Em<di2/self.d_bar[i+I-1]:
+                    Em=di2/self.d_bar[i+I-1]
+                      
+        Ea=Ea/self.numPt
         
-        return generalisedEllipseVertices,Ea,Em
+        return first_half_vertices,Ea,Em
         
                     
     def coefficients_solver_for_first_half_of_segmented_ellipse(self,J):
@@ -625,20 +645,20 @@ class Canvas(QtWidgets.QDialog):
                                   
         A=np.dot(Ma,Ma.transpose())
         aConstArray=np.dot(Ma,Ca.transpose())
-        a=np.linalg.solve(A,aConstArray)   
+        a_tmp=np.linalg.solve(A,aConstArray)   
         B=np.dot(Mb,Mb.transpose())   
         bConstArray=np.dot(Mb,Cb.transpose())   
-        b=np.linalg.solve(B,bConstArray) 
+        b_tmp=np.linalg.solve(B,bConstArray) 
         
         # get a1,a2,a3,a4 and b1,b2,b3,b4
         a1=0
         a2=0
-        a3=self.center_first_half.x()-self.center_second_half.x()+a_first_half[0]-a[0]
+        a3=self.center_first_half.x()-self.center_second_half.x()+a_first_half[0]-a_tmp[0]
         a4=0
         b1=0
         b2=0
         b3=0
-        b4=self.center_first_half.y()-self.center_second_half.y()+b_first_half[0]-b[0]
+        b4=self.center_first_half.y()-self.center_second_half.y()+b_first_half[0]-b_tmp[0]
         
         for j in range(1,3):
             a1+=0.5*(1-(-1)**j)*a_first_half[2*j-1]
@@ -650,23 +670,33 @@ class Canvas(QtWidgets.QDialog):
             b3+=0.25*(1+(-1)**j)*j*b_first_half[2*j-1]
             b4+=0.5*(1+(-1)**j)*b_first_half[2*j-1]
         for j in range(3,J+1):
-            a1+=0.5*(1-(-1)**j)*(a_first_half[2*j-1]-a[2*j-5])
-            a2+=0.5*(1-(-1)**j)*j*(a_first_half[2*j]-a[2*j-4])
-            a3+=0.5*(1+(-1)**j)*(a_first_half[2*j-1]-a[2*j-5])
-            a4+=0.25*(1+(-1)**j)*j*(a_first_half[2*j]-a[2*j-4])
-            b1+=0.5*(1-(-1)**j)*j*(b_first_half[2*j-1]-b[2*j-5])
-            b2+=0.5*(1-(-1)**j)*(b_first_half[2*j]-b[2*j-4])
-            b3+=0.25*(1+(-1)**j)*j*(b_first_half[2*j-1]-a[2*j-5])
-            b4+=0.5*(1+(-1)**j)*(b_first_half[2*j]-b[2*j-4])
+            a1+=0.5*(1-(-1)**j)*(a_first_half[2*j-1]-a_tmp[2*j-5])
+            a2+=0.5*(1-(-1)**j)*j*(a_first_half[2*j]-a_tmp[2*j-4])
+            a3+=0.5*(1+(-1)**j)*(a_first_half[2*j-1]-a_tmp[2*j-5])
+            a4+=0.25*(1+(-1)**j)*j*(a_first_half[2*j]-a_tmp[2*j-4])
+            b1+=0.5*(1-(-1)**j)*j*(b_first_half[2*j-1]-b_tmp[2*j-5])
+            b2+=0.5*(1-(-1)**j)*(b_first_half[2*j]-b_tmp[2*j-4])
+            b3+=0.25*(1+(-1)**j)*j*(b_first_half[2*j-1]-a_tmp[2*j-5])
+            b4+=0.5*(1+(-1)**j)*(b_first_half[2*j]-b_tmp[2*j-4])
         
-        np.insert(a,1,a1)
-        np.insert(a,2,a2)
-        np.insert(a,3,a3)
-        np.insert(a,4,a4)
-        np.insert(b,1,b1)
-        np.insert(b,2,b2)
-        np.insert(b,3,b3)
-        np.insert(b,4,b4)        
+        a=np.zeros(2*J+1)
+        b=np.zeros(2*J+1)
+        a[0]=a_tmp[0]
+        a[1]=a1
+        a[2]=a2
+        a[3]=a3
+        a[4]=a4        
+        b[0]=b_tmp[0]
+        b[1]=b1
+        b[2]=b2
+        b[3]=b3
+        b[4]=b4   
+        for j in range(3,J):
+            a[2*j-1]=a_tmp[2*j-5]
+            a[2*j]=a_tmp[2*j-4]
+            b[2*j-1]=b_tmp[2*j-5]
+            b[2*j]=b_tmp[2*j-4]    
+
         return a,b
               
        
