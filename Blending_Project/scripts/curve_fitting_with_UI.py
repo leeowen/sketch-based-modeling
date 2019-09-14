@@ -542,14 +542,23 @@ class Canvas(QtWidgets.QDialog):
             first_half_vertex[1]=self.center_first_half.y()+b1[0]
             v1=self.angles_first_half[i]
             
-            second_half_vertex[0]=self.center_second_half.x()+a2[0]
-            second_half_vertex[1]=self.center_second_half.y()+b2[0]
             v2=self.angles_second_half[i]
+            second_half_vertex[0]=(self.center_first_half.x()+a1[0])*math.cos(2*v2)+(self.center_second_half.x()+a2[0])*(1-math.cos(2*v2))
+            second_half_vertex[1]=(self.center_first_half.y()+b1[0])*math.cos(2*v2)+(self.center_second_half.y()+b2[0])*(1-math.cos(2*v2))
+           
             for j in range(1,J+1):
                 first_half_vertex[0]+=a1[2*j-1]*math.cos(j*v1)+a1[2*j]*math.sin(j*v1)
                 first_half_vertex[1]+=b1[2*j-1]*math.sin(j*v1)+b1[2*j]*math.cos(j*v1)
-                second_half_vertex[0]+=a2[2*j-1]*math.cos(j*v2)+a2[2*j]*math.sin(j*v2)
-                second_half_vertex[1]+=b2[2*j-1]*math.sin(j*v2)+b2[2*j]*math.cos(j*v2)
+                D1=(1-pow(-1,j))*math.cos(v2)+(1+pow(-1,j))*math.cos(2*v2)
+                D2=(1-pow(-1,j))*math.sin(v2)+0.5*(1+pow(-1,j))*math.sin(2*v2)
+                second_half_vertex[0]+=0.5*(D1*a1[2*j-1]+j*D2*a1[2*j])
+                second_half_vertex[1]+=0.5*(j*D2*b1[2*j-1]+D1*b1[2*j])
+            for j in range(3,J+1):
+                D1=(1-pow(-1,j))*math.cos(v2)+(1+pow(-1,j))*math.cos(2*v2)
+                D2=(1-pow(-1,j))*math.sin(v2)+0.5*(1+pow(-1,j))*math.sin(2*v2)
+                second_half_vertex[0]+=(math.cos(j*v2)-0.5*D1)*a2[2*j-1]+(math.sin(j*v2)-j/2.0*D2)*a2[2*j]
+                second_half_vertex[1]+=(math.sin(j*v2)-j/2.0*D2)*b2[2*j-1]+(math.cos(j*v2)-D1/2.0)*b2[2*j]
+            
             segmented_ellipse_vertices[i][0]=first_half_vertex[0]
             segmented_ellipse_vertices[i][1]=first_half_vertex[1]
             di1=math.sqrt((self.vertices_first_half[i][0]-first_half_vertex[0])**2+(self.vertices_first_half[i][2]-first_half_vertex[1])**2)
