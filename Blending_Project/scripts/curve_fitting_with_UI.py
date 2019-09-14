@@ -447,8 +447,8 @@ class Canvas(QtWidgets.QDialog):
         for i in range(I+1):
             self.center_first_half+=QtCore.QPointF(self.vertices_first_half[i][0],self.vertices_first_half[i][2])
             self.center_second_half+=QtCore.QPointF(self.vertices_second_half[i][0],self.vertices_second_half[i][2])
-        self.center_first_half/=(I+1)
-        self.center_second_half/=(I+1)
+        self.center_first_half/=len(self.vertices_first_half)
+        self.center_second_half/=len(self.vertices_second_half)
             
     
     def getAngle(self):
@@ -521,18 +521,12 @@ class Canvas(QtWidgets.QDialog):
                 a_second_half,b_second_half=self.coefficients_solver_for_second_half_of_segmented_ellipse(J,a_first_half,b_first_half)
 
                 segmented_ellipse_vertices,Ea,Em=self.form_vertices_of_segmented_ellipse(a_first_half,b_first_half,a_second_half,b_second_half)     
-                numpt=len(segmented_ellipse_vertices)
 
-                for i in range(numpt-1):
-                    painter.drawLine(segmented_ellipse_vertices[i][0],segmented_ellipse_vertices[i][1],segmented_ellipse_vertices[i+1][0],segmented_ellipse_vertices[i+1][1])    
+                for i in range(self.numPt):
+                    painter.drawLine(segmented_ellipse_vertices[i][0],segmented_ellipse_vertices[i][1],segmented_ellipse_vertices[(i+1)%self.numPt][0],segmented_ellipse_vertices[(i+1)%self.numPt][1])    
                    
         
     def form_vertices_of_segmented_ellipse(self,a1,b1,a2,b2):
-        #print a1
-        #print a2
-        #print b1
-        #print b2
-
         I=len(self.vertices_first_half)
         segmented_ellipse_vertices=[[0 for i in range(2)] for j in range(self.numPt)]
         Ea=0.0
@@ -576,6 +570,8 @@ class Canvas(QtWidgets.QDialog):
                       
         Ea=Ea/self.numPt
         
+        print segmented_ellipse_vertices[I+4][0]-segmented_ellipse_vertices[I+3][0]
+        print segmented_ellipse_vertices[I+4][1]-segmented_ellipse_vertices[I+3][1]
         return segmented_ellipse_vertices,Ea,Em
         
                     
