@@ -224,6 +224,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.canvas.single_piece_mode=False
             
         self.canvas.update()
+        self.showEaEm()
                         
     
     def update_visibility_manual_J_mode(self,checked):
@@ -524,17 +525,21 @@ class Canvas(QtWidgets.QDialog):
 
                 for i in range(numpt-1):
                     painter.drawLine(segmented_ellipse_vertices[i][0],segmented_ellipse_vertices[i][1],segmented_ellipse_vertices[i+1][0],segmented_ellipse_vertices[i+1][1])    
-        
+                   
         
     def form_vertices_of_segmented_ellipse(self,a1,b1,a2,b2):
-        #CoefficientMatrix
-        I=len(self.vertices_first_half)
+        #print a1
+        #print a2
+        #print b1
+        #print b2
 
+        I=len(self.vertices_first_half)
         segmented_ellipse_vertices=[[0 for i in range(2)] for j in range(self.numPt)]
         Ea=0.0
         Em=0.0
         d=[0.0]*self.numPt
         J=len(a1)/2
+        
         for i in range(I):
             first_half_vertex=[0.0]*2
             second_half_vertex=[0.0]*2
@@ -553,19 +558,16 @@ class Canvas(QtWidgets.QDialog):
                 second_half_vertex[1]+=b2[2*j-1]*math.sin(j*v2)+b2[2*j]*math.cos(j*v2)
             segmented_ellipse_vertices[i][0]=first_half_vertex[0]
             segmented_ellipse_vertices[i][1]=first_half_vertex[1]
-            di1=math.sqrt((self.vertices_first_half[i][0]-first_half_vertex[0])**2+(self.vertices_first_half[i][1]-first_half_vertex[1])**2)
-
+            di1=math.sqrt((self.vertices_first_half[i][0]-first_half_vertex[0])**2+(self.vertices_first_half[i][2]-first_half_vertex[1])**2)
             d[i]=di1
             Ea+=(di1/self.d_bar[i])
             if Em<di1/self.d_bar[i]:
                 Em=di1/self.d_bar[i]
                 
             if i!=0 and i!=(I-1):
-
                 segmented_ellipse_vertices[i+I-1][0]=second_half_vertex[0]
                 segmented_ellipse_vertices[i+I-1][1]=second_half_vertex[1]
-                di2=math.sqrt((self.vertices_second_half[i][0]-second_half_vertex[0])**2+(self.vertices_second_half[i][1]-second_half_vertex[1])**2)
-
+                di2=math.sqrt((self.vertices_second_half[i][0]-second_half_vertex[0])**2+(self.vertices_second_half[i][2]-second_half_vertex[1])**2)
                 d[i+I-1]=di2
                 Ea+=(di2/self.d_bar[i+I-1])
                 
@@ -636,22 +638,20 @@ class Canvas(QtWidgets.QDialog):
             y_i=self.vertices_second_half[i][2]
             Ca[i]=x_i-(self.center_first_half.x()+a_first_half[0])*math.cos(2*v_i)-self.center_second_half.x()*(1-math.cos(2*v_i))
             Cb[i]=y_i-(self.center_first_half.y()+b_first_half[0])*math.cos(2*v_i)-self.center_second_half.y()*(1-math.cos(2*v_i))
-            for j in range(1,3):
-                D1=(1-(-1)**j)*math.cos(v_i)+(1+(-1)**j)*math.cos(2*v_i)
-                D2=(1-(-1)**j)*math.sin(v_i)+1/2.0*(1+(-1)**j)*math.sin(2*v_i)
+            for j in range(1,J+1):
+                D1=(1-pow(-1,j))*math.cos(v_i)+(1+pow(-1,j))*math.cos(2*v_i)
+                D2=(1-pow(-1,j))*math.sin(v_i)+1/2.0*(1+pow(-1,j))*math.sin(2*v_i)
                 Ca[i]-=1/2.0*(D1*a_first_half[2*j-1]+j*D2*a_first_half[2*j])
                 Cb[i]-=1/2.0*(j*D2*b_first_half[2*j-1]+D1*b_first_half[2*j])
             for j in range(3,J+1):
-                D1=(1-(-1)**j)*math.cos(v_i)+(1+(-1)**j)*math.cos(2*v_i)
+                D1=(1-pow(-1,j))*math.cos(v_i)+(1+pow(-1,j))*math.cos(2*v_i)
                 tmp=math.cos(j*v_i)-1/2.0*D1
                 Ma[j*2-5][i]=tmp
                 Mb[j*2-4][i]=tmp
-                D2=(1-(-1)**j)*math.sin(v_i)+1/2.0*(1+(-1)**j)*math.sin(2*v_i)
+                D2=(1-pow(-1,j))*math.sin(v_i)+1/2.0*(1+pow(-1,j))*math.sin(2*v_i)
                 tmp=math.sin(j*v_i)-j/2.0*D2
                 Ma[j*2-4][i]=tmp
                 Mb[j*2-5][i]=tmp
-                Ca[i]-=1/2.0*(D1*a_first_half[2*j-1]+j*D2*a_first_half[2*j])
-                Cb[i]-=1/2.0*(j*D2*b_first_half[2*j-1]+D1*b_first_half[2*j])
                                   
         A=np.dot(Ma,Ma.transpose())
         aConstArray=np.dot(Ma,Ca.transpose())
@@ -671,23 +671,23 @@ class Canvas(QtWidgets.QDialog):
         b4=self.center_first_half.y()-self.center_second_half.y()+b_first_half[0]-b_tmp[0]
         
         for j in range(1,3):
-            a1+=0.5*(1-(-1)**j)*a_first_half[2*j-1]
-            a2+=0.5*(1-(-1)**j)*j*a_first_half[2*j]
-            a3+=0.5*(1+(-1)**j)*a_first_half[2*j-1]
-            a4+=0.25*(1+(-1)**j)*j*a_first_half[2*j-1]
-            b1+=0.5*(1-(-1)**j)*b_first_half[2*j-1]
-            b2+=0.5*(1-(-1)**j)*j*b_first_half[2*j]
-            b3+=0.25*(1+(-1)**j)*j*b_first_half[2*j-1]
-            b4+=0.5*(1+(-1)**j)*b_first_half[2*j-1]
+            a1+=0.5*(1-pow(-1,j))*a_first_half[2*j-1]
+            a2+=0.5*(1-pow(-1,j))*j*a_first_half[2*j]
+            a3+=0.5*(1+pow(-1,j))*a_first_half[2*j-1]
+            a4+=0.25*(1+pow(-1,j))*j*a_first_half[2*j-1]
+            b1+=0.5*(1-pow(-1,j))*b_first_half[2*j-1]
+            b2+=0.5*(1-pow(-1,j))*j*b_first_half[2*j]
+            b3+=0.25*(1+pow(-1,j))*j*b_first_half[2*j-1]
+            b4+=0.5*(1+pow(-1,j))*b_first_half[2*j-1]
         for j in range(3,J+1):
-            a1+=0.5*(1-(-1)**j)*(a_first_half[2*j-1]-a_tmp[2*j-5])
-            a2+=0.5*(1-(-1)**j)*j*(a_first_half[2*j]-a_tmp[2*j-4])
-            a3+=0.5*(1+(-1)**j)*(a_first_half[2*j-1]-a_tmp[2*j-5])
-            a4+=0.25*(1+(-1)**j)*j*(a_first_half[2*j]-a_tmp[2*j-4])
-            b1+=0.5*(1-(-1)**j)*j*(b_first_half[2*j-1]-b_tmp[2*j-5])
-            b2+=0.5*(1-(-1)**j)*(b_first_half[2*j]-b_tmp[2*j-4])
-            b3+=0.25*(1+(-1)**j)*j*(b_first_half[2*j-1]-a_tmp[2*j-5])
-            b4+=0.5*(1+(-1)**j)*(b_first_half[2*j]-b_tmp[2*j-4])
+            a1+=0.5*(1-pow(-1,j))*(a_first_half[2*j-1]-a_tmp[2*j-5])
+            a2+=0.5*(1-pow(-1,j))*j*(a_first_half[2*j]-a_tmp[2*j-4])
+            a3+=0.5*(1+pow(-1,j))*(a_first_half[2*j-1]-a_tmp[2*j-5])
+            a4+=0.25*(1+pow(-1,j))*j*(a_first_half[2*j]-a_tmp[2*j-4])
+            b1+=0.5*(1-pow(-1,j))*j*(b_first_half[2*j-1]-b_tmp[2*j-5])
+            b2+=0.5*(1-pow(-1,j))*(b_first_half[2*j]-b_tmp[2*j-4])
+            b3+=0.25*(1+pow(-1,j))*j*(b_first_half[2*j-1]-a_tmp[2*j-5])
+            b4+=0.5*(1+pow(-1,j))*(b_first_half[2*j]-b_tmp[2*j-4])
         
         a=np.zeros(2*J+1)
         b=np.zeros(2*J+1)
