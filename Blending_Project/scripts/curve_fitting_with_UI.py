@@ -70,7 +70,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.J_spinBox=QtWidgets.QSpinBox()
         self.J_spinBox.setValue(10)
         self.J_spinBox.setFixedWidth(100)
-        self.J_spinBox.setMinimum(1)
+        self.J_spinBox.setMinimum(2)
         self.J_spinBox.setSingleStep(1)
         self.J_spinBox.setReadOnly(not self.manualJ_mode_radioButton.isChecked())
 
@@ -246,6 +246,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
     
     def update_manual_J_value(self,J):
         self.canvas.setManualJ(J)
+        self.canvas.repaint()
         self.showEaEm()
         
             
@@ -367,7 +368,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
 class Canvas(QtWidgets.QDialog):
     backgroundColor=QtCore.Qt.white
     Ea_criteria=0.01
-    Em_criteria=0.05
+    Em_criteria=0.03
     
     def __init__(self,parent=None):
         super(Canvas,self).__init__(parent)
@@ -521,7 +522,8 @@ class Canvas(QtWidgets.QDialog):
                 a_second_half,b_second_half=self.coefficients_solver_for_second_half_of_segmented_ellipse(J,a_first_half,b_first_half)
 
                 segmented_ellipse_vertices,Ea,Em=self.form_vertices_of_segmented_ellipse(a_first_half,b_first_half,a_second_half,b_second_half)     
-
+                self.Ea=Ea
+                self.Em=Em
                 for i in range(self.numPt):
                     painter.drawLine(segmented_ellipse_vertices[i][0],segmented_ellipse_vertices[i][1],segmented_ellipse_vertices[(i+1)%self.numPt][0],segmented_ellipse_vertices[(i+1)%self.numPt][1])    
                    
@@ -532,7 +534,7 @@ class Canvas(QtWidgets.QDialog):
         Ea=0.0
         Em=0.0
         d=[0.0]*self.numPt
-        J=len(a1)/2
+        J=(len(a1)-1)/2
         
         for i in range(I):
             first_half_vertex=[0.0]*2
@@ -570,7 +572,7 @@ class Canvas(QtWidgets.QDialog):
             if i!=0 and i!=(I-1):
                 segmented_ellipse_vertices[i+I-1][0]=second_half_vertex[0]
                 segmented_ellipse_vertices[i+I-1][1]=second_half_vertex[1]
-                di2=math.sqrt((self.vertices_second_half[i][0]-second_half_vertex[0])**2+(self.vertices_second_half[i][2]-second_half_vertex[1])**2)
+                di2=math.sqrt(pow(self.vertices_second_half[i][0]-second_half_vertex[0],2)+pow(self.vertices_second_half[i][2]-second_half_vertex[1],2))
                 d[i+I-1]=di2
                 Ea+=(di2/self.d_bar[i+I-1])
                 
@@ -578,9 +580,7 @@ class Canvas(QtWidgets.QDialog):
                     Em=di2/self.d_bar[i+I-1]
                       
         Ea=Ea/self.numPt
-        
-        print segmented_ellipse_vertices[I+4][0]-segmented_ellipse_vertices[I+3][0]
-        print segmented_ellipse_vertices[I+4][1]-segmented_ellipse_vertices[I+3][1]
+       
         return segmented_ellipse_vertices,Ea,Em
         
                     
@@ -628,10 +628,10 @@ class Canvas(QtWidgets.QDialog):
     def coefficients_solver_for_second_half_of_segmented_ellipse(self,J,a_first_half,b_first_half):
         I=len(self.vertices_second_half)
         
-        Ca=np.zeros(I)        
-        Cb=np.zeros(I)
+        Ca=np.zeros((I,1),order='C')# order='C' means row-major  
+        Cb=np.zeros((I,1),order='C')
         
-        Ma=np.zeros((2*J-3,I),order='C')# row-major
+        Ma=np.zeros((2*J-3,I),order='C')
         Mb=np.zeros((2*J-3,I),order='C')
         
         for i in range (I):
@@ -641,13 +641,13 @@ class Canvas(QtWidgets.QDialog):
             Mb[0][i]=tmp
             x_i=self.vertices_second_half[i][0]
             y_i=self.vertices_second_half[i][2]
-            Ca[i]=x_i-(self.center_first_half.x()+a_first_half[0])*math.cos(2*v_i)-self.center_second_half.x()*(1-math.cos(2*v_i))
-            Cb[i]=y_i-(self.center_first_half.y()+b_first_half[0])*math.cos(2*v_i)-self.center_second_half.y()*(1-math.cos(2*v_i))
+            Ca[i][0]=x_i-(self.center_first_half.x()+a_first_half[0])*math.cos(2*v_i)-self.center_second_half.x()*(1-math.cos(2*v_i))
+            Cb[i][0]=y_i-(self.center_first_half.y()+b_first_half[0])*math.cos(2*v_i)-self.center_second_half.y()*(1-math.cos(2*v_i))
             for j in range(1,J+1):
                 D1=(1-pow(-1,j))*math.cos(v_i)+(1+pow(-1,j))*math.cos(2*v_i)
                 D2=(1-pow(-1,j))*math.sin(v_i)+1/2.0*(1+pow(-1,j))*math.sin(2*v_i)
-                Ca[i]-=1/2.0*(D1*a_first_half[2*j-1]+j*D2*a_first_half[2*j])
-                Cb[i]-=1/2.0*(j*D2*b_first_half[2*j-1]+D1*b_first_half[2*j])
+                Ca[i][0]-=1/2.0*(D1*a_first_half[2*j-1]+j*D2*a_first_half[2*j])
+                Cb[i][0]-=1/2.0*(j*D2*b_first_half[2*j-1]+D1*b_first_half[2*j])
             for j in range(3,J+1):
                 D1=(1-pow(-1,j))*math.cos(v_i)+(1+pow(-1,j))*math.cos(2*v_i)
                 tmp=math.cos(j*v_i)-1/2.0*D1
@@ -658,11 +658,11 @@ class Canvas(QtWidgets.QDialog):
                 Ma[j*2-4][i]=tmp
                 Mb[j*2-5][i]=tmp
                                   
-        A=np.dot(Ma,Ma.transpose())
-        aConstArray=np.dot(Ma,Ca.transpose())
+        A=Ma.dot(Ma.transpose())       
+        aConstArray=Ma.dot(Ca)
         a_tmp=np.linalg.solve(A,aConstArray)   
         B=np.dot(Mb,Mb.transpose())   
-        bConstArray=np.dot(Mb,Cb.transpose())   
+        bConstArray=np.dot(Mb,Cb)   
         b_tmp=np.linalg.solve(B,bConstArray) 
         
         # get a1,a2,a3,a4 and b1,b2,b3,b4
@@ -706,7 +706,7 @@ class Canvas(QtWidgets.QDialog):
         b[2]=b2
         b[3]=b3
         b[4]=b4   
-        for j in range(3,J):
+        for j in range(3,J+1):
             a[2*j-1]=a_tmp[2*j-5]
             a[2*j]=a_tmp[2*j-4]
             b[2*j-1]=b_tmp[2*j-5]
@@ -724,7 +724,7 @@ class Canvas(QtWidgets.QDialog):
         if Ea3<Canvas.Ea_criteria and Em3<Canvas.Em_criteria:
             J=self.find_smaller_J(3,10,Ea3,Ea10)
         elif Ea10>=Canvas.Ea_criteria or Em10>=Canvas.Em_criteria:
-            J=self.find_bigger_J(3,10,Ea3,Ea10,Canvas.Ea_criteria)
+            J=self.find_bigger_J(3,10,Ea3,Ea10,Em3,Em10)
         elif Ea3>=Canvas.Ea_criteria or Em3>=Canvas.Em_criteria:
             J=self.find_inbetween_J(3,10,Ea3,Ea10,Em3,Em10)       
         return J
@@ -777,13 +777,16 @@ class Canvas(QtWidgets.QDialog):
     def find_bigger_J(self,J_small,J_big,Ea_smallJ,Em_smallJ,Ea_bigJ,Em_bigJ):
         #Linear extrapolate to find bigger J>J_small
         if Ea_bigJ>=Canvas.Ea_criteria:
-            J=int((Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
+            J=int((Canvas.Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
         elif Em_bigJ>=Canvas.Em_criteria:
-            J=int((Em_criteria-Em_smallJ)*(J_big-J_small)/(Em_bigJ-Em_smallJ))+J_small            
-        a,b=self.getCoefficients(J)
+            J=int((Canvas.Em_criteria-Em_smallJ)*(J_big-J_small)/(Em_bigJ-Em_smallJ))+J_small            
+        if J>J_big:
+            a,b=self.getCoefficients(J)
+        else:
+            return J_big
         v,Ea,Em=self.formGeneralizedEllipse(a,b)
         if Ea>=Canvas.Ea_criteria or Em>=Canvas.Em_criteria: 
-            return self.find_bigger_J(J,J_big,Ea,Ea_bigJ,Canvas.Ea_criteria)
+            return self.find_bigger_J(J,J_big,Ea,Ea_bigJ,Em,Em_bigJ)
         else:
             # we are close to the solution, hence, a while function will suffice
             while Ea<Canvas.Ea_criteria and Em<Canvas.Em_criteria and J>J_small:
@@ -917,7 +920,7 @@ class Canvas(QtWidgets.QDialog):
                 
             painter.drawPath(painterPath)    
             """          
-                
+                            
         
     def draw_standardEllipse(self,painter): 
         penColor=QtCore.Qt.blue        
