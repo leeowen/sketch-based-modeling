@@ -316,6 +316,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         file_path,selected_filter=QtWidgets.QFileDialog.getSaveFileName(self, 'save',dirPath+'images',FILE_FILTERS,selected_filter)
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
+            if '.png' not in file_path or '.PNG' not in file_path:
+                file_path+='.png'
             self.saveFile(file_path)
             
          
@@ -324,6 +326,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         if file.open(QtCore.QIODevice.WriteOnly):
             pixmap=QtGui.QPixmap(self.canvas.size())
             self.canvas.render(pixmap)
+            if '.png' not in file_path or '.PNG' not in file_path:
+                file_path+='.png'
             pixmap.save(file,"PNG")
             file.close()
         else:
@@ -572,7 +576,12 @@ class Canvas(QtWidgets.QDialog):
                 segmented_ellipse_vertices,Ea,Em=self.form_vertices_of_segmented_ellipse(a_first_half,b_first_half,a_second_half,b_second_half)     
                 self.Ea=Ea
                 self.Em=Em
-                for i in range(self.numPt):
+                for i in range(self.numPt/2):
+                    painter.drawLine(segmented_ellipse_vertices[i][0],segmented_ellipse_vertices[i][1],segmented_ellipse_vertices[(i+1)%self.numPt][0],segmented_ellipse_vertices[(i+1)%self.numPt][1])    
+                second_half_color=QtGui.QColor(127,0,255) 
+                pen.setColor(second_half_color)
+                painter.setPen(pen)
+                for i in range(self.numPt/2,self.numPt):
                     painter.drawLine(segmented_ellipse_vertices[i][0],segmented_ellipse_vertices[i][1],segmented_ellipse_vertices[(i+1)%self.numPt][0],segmented_ellipse_vertices[(i+1)%self.numPt][1])    
         
         elif self.fragment_mode==True:       
@@ -591,7 +600,7 @@ class Canvas(QtWidgets.QDialog):
         start_index=int(self.numPt*self.fragment_range)
         end_index=start_index+self.numPt/2
         
-        if end_index>self.numPt:
+        if end_index>=self.numPt:
             end_index-=self.numPt
           
         #extract data
@@ -1087,11 +1096,21 @@ class Canvas(QtWidgets.QDialog):
                     
                 painter.drawPath(painterPath)    
                 """    
-            else: 
-                 for i in range(self.start_index+1,self.end_index+1):   
-                    p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
-                    p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
-                    painter.drawLine(p1,p2) 
+            else:
+                if self.start_index<self.end_index:
+                    for i in range(self.start_index+1,self.end_index+1):   
+                        p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
+                        p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                        painter.drawLine(p1,p2) 
+                else:        
+                    for i in range(self.start_index+1,self.numPt):   
+                        p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
+                        p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                        painter.drawLine(p1,p2)   
+                    for i in range(self.end_index+1):   
+                        p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
+                        p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                        painter.drawLine(p1,p2) 
                             
         
     def draw_standardEllipse(self,painter): 
