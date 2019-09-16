@@ -126,10 +126,24 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_comboBox.setMaximumWidth(150)
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('segment')
+        self.segment_comboBox.addItem('fragment')
+        
+        self.range_label=QtWidgets.QLabel('range:')
+        self.range_label.setMaximumWidth(150)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        self.range_label.setSizePolicy(sizePolicy)
+        self.range_slider=QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        self.range_slider.setSizePolicy(sizePolicy)
+        self.range_slider.setMaximumWidth(150)
+        self.range_slider.setMinimum(0)
+        self.range_slider.setMaximum(100)
         
         self.radio_group.setVisible(False)
         self.segment_label.setVisible(False)
         self.segment_comboBox.setVisible(False)
+        self.range_label.setVisible(False)
+        self.range_slider.setVisible(False)
         self.saveAsDat_button.setVisible(False)
         self.saveAsImg_button.setVisible(False)
         
@@ -172,7 +186,14 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         segmentMethod_layout.addWidget(self.segment_comboBox)
         right_layout.addLayout(segmentMethod_layout) 
         
-        right_layout.addStretch(1)       
+        right_layout.addStretch(1)    
+        
+        rangeSlider_layout=QtWidgets.QHBoxLayout()
+        rangeSlider_layout.addWidget(self.range_label)
+        rangeSlider_layout.addWidget(self.range_slider)
+        right_layout.addLayout(rangeSlider_layout) 
+        
+        right_layout.addStretch(1)    
      
         grid_layout=QtWidgets.QGridLayout()
         grid_layout.addWidget(self.autoJ_mode_radioButton,0,0,1,2)
@@ -213,15 +234,31 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.manualJ_mode_radioButton.toggled.connect(self.update_visibility_manual_J_mode)
         self.autoJ_mode_radioButton.toggled.connect(self.update_visibility_auto_J_mode)
         self.segment_comboBox.currentTextChanged.connect(self.segmentMode_change)
+        self.range_slider.valueChanged.connect(self.fragment_range_change)
         
     
+    def fragment_range_change(self,value):
+        self.canvas.set_fragment_range(value/100.0)
+        
     def segmentMode_change(self,text):
         if text=='single piece':
             self.canvas.single_piece_mode=True
             self.canvas.segment_mode=False
+            self.canvas.fragment_mode=False
+            self.range_label.setVisible(False)
+            self.range_slider.setVisible(False)
         elif text=='segment':
             self.canvas.segment_mode=True
             self.canvas.single_piece_mode=False
+            self.canvas.fragment_mode=False
+            self.range_label.setVisible(False)
+            self.range_slider.setVisible(False)
+        elif text=='fragment':
+            self.canvas.segment_mode=False
+            self.canvas.single_piece_mode=False
+            self.canvas.fragment_mode=True
+            self.range_label.setVisible(True)
+            self.range_slider.setVisible(True)
             
         self.canvas.update()
         self.showEaEm()
@@ -394,6 +431,10 @@ class Canvas(QtWidgets.QDialog):
         self.autoJ_mode=False
         self.single_piece_mode=True
         self.segment_mode=False
+        self.fragment_mode=False
+        self.fragment_range=0.0
+        self.start_index=0
+        self.end_index=0
         
         
     def sizeHint(self):
@@ -471,7 +512,12 @@ class Canvas(QtWidgets.QDialog):
         self.lineWidth=width
         self.update()
         
+    
+    def set_fragment_range(self,value):   
+        self.fragment_range=value
+        self.update()
         
+         
     def paintEvent(self,evt):
         painter=QtGui.QPainter(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing,True)
@@ -489,6 +535,8 @@ class Canvas(QtWidgets.QDialog):
                     
         if self.generalisedEllipse==True:
             self.draw_generalisedEllipse(painter)
+            
+        painter.end()
              
                
     def draw_generalisedEllipse(self,painter):
@@ -526,7 +574,84 @@ class Canvas(QtWidgets.QDialog):
                 self.Em=Em
                 for i in range(self.numPt):
                     painter.drawLine(segmented_ellipse_vertices[i][0],segmented_ellipse_vertices[i][1],segmented_ellipse_vertices[(i+1)%self.numPt][0],segmented_ellipse_vertices[(i+1)%self.numPt][1])    
-                   
+        
+        elif self.fragment_mode==True:       
+            if self.manualJ_mode==True:
+                J=self.manualJ
+                angles,vertices,center=self.extract_fragment_data()    
+                a,b=self.coefficients_solver_for_fragmented_ellipse(J,angles,vertices,center)
+                fragment_vertices,Ea,Em=self.form_vertices_of_fragment(a,b,vertices,angles,center) 
+                self.Ea=Ea
+                self.Em=Em
+                for i in range(len(fragment_vertices)-1):
+                    painter.drawLine(fragment_vertices[i][0],fragment_vertices[i][1],fragment_vertices[i+1][0],fragment_vertices[i+1][1])    
+        
+    
+    def extract_fragment_data(self):
+        start_index=int(self.numPt*self.fragment_range)
+        end_index=start_index+self.numPt/2
+        
+        if end_index>self.numPt:
+            end_index-=self.numPt
+          
+        #extract data
+        angles=[]
+        vertices=[]
+        if start_index<end_index:
+            for i in range(start_index,end_index+1):
+                angles.append(self.angles[i])
+                vertices.append(self.vertices[i])
+        else:
+            for i in range(start_index,self.numPt): 
+                angles.append(self.angles[i])
+                vertices.append(self.vertices[i])     
+            for i in range(end_index+1): 
+                angles.append(self.angles[i])
+                vertices.append(self.vertices[i]) 
+        
+        center=QtCore.QPointF(0.0,0.0)
+        for v in vertices:
+            center.setX(center.x()+v[0])
+            center.setY(center.y()+v[2])
+        center.setX(center.x()/len(vertices))    
+        center.setY(center.y()/len(vertices))  
+         
+        self.start_index=start_index
+        self.end_index=end_index 
+        
+        return angles, vertices, center
+     
+    
+    def form_vertices_of_fragment(self,a,b,vertices,angles,center) :
+        I=len(vertices)
+        fragment_vertices=[[0 for i in range(2)] for j in range(I)]
+        Ea=0.0
+        Em=0.0
+        d=[]
+        J=(len(a)-1)/2
+        
+        for i in range(I):
+            v_i=angles[i]
+            x_i=center.x()+a[0]
+            y_i=center.y()+b[0]
+            
+            for j in range(1,J+1):
+                x_i+=a[2*j-1]*math.cos(j*v_i)+a[2*j]*math.sin(j*v_i)
+                y_i+=b[2*j-1]*math.sin(j*v_i)+b[2*j]*math.cos(j*v_i)
+            
+            fragment_vertices[i][0]=x_i
+            fragment_vertices[i][1]=y_i
+            d_i=math.sqrt(pow(vertices[i][0]-x_i,2)+pow(vertices[i][2]-y_i,2))
+            d.append(d_i)
+            index=(i+self.start_index)%self.numPt
+            Ea+=(d_i/self.d_bar[index])
+            if Em<d_i/self.d_bar[index]:
+                Em=d_i/self.d_bar[index]
+        
+        Ea=Ea/self.numPt
+       
+        return fragment_vertices,Ea,Em        
+            
         
     def form_vertices_of_segmented_ellipse(self,a1,b1,a2,b2):
         I=len(self.vertices_first_half)
@@ -584,6 +709,47 @@ class Canvas(QtWidgets.QDialog):
         return segmented_ellipse_vertices,Ea,Em
         
                     
+    def coefficients_solver_for_fragmented_ellipse(self,J,angles,vertices,center):
+        I=len(angles)
+        aConstArray=np.zeros(2*J+1)
+        aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
+        
+        bConstArray=np.zeros(2*J+1)
+        bCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')
+        
+        for i in range(I):
+            aCoefficientMatrix[0,i]=1.
+            bCoefficientMatrix[0,i]=1.
+            
+        for i in range(I):# for aCoefficientMatrix's column
+            for j in range(1,J+1):# for aCoefficientMatrix's row
+                try:
+                    vi=angles[i]
+                except IndexError:
+                    error_dialog = QtWidgets.QErrorMessage(self)
+                    error_dialog.showMessage('vertices data is empty, please choose a data file first')
+                else:    
+                    aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
+                    aCoefficientMatrix[2*j,i]=math.sin(vi*j)
+
+                    # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
+                    aConstArray[2*j-1]+=(vertices[i][0]-center.x())*math.cos(vi*j)
+                    aConstArray[2*j]+=(vertices[i][0]-center.x())*math.sin(vi*j)
+                
+                    bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
+                    bCoefficientMatrix[2*j,i]=math.cos(vi*j)
+                   
+                    bConstArray[2*j-1]+=(vertices[i][2]-center.y())*math.sin(vi*j)
+                    bConstArray[2*j]+=(vertices[i][2]-center.y())*math.cos(vi*j)
+                                  
+        A=np.dot(aCoefficientMatrix,aCoefficientMatrix.transpose())
+        a=np.linalg.solve(A,aConstArray)   
+        B=np.dot(bCoefficientMatrix,bCoefficientMatrix.transpose())      
+        b=np.linalg.solve(B,bConstArray) 
+        
+        return a,b
+        
+        
     def coefficients_solver_for_first_half_of_segmented_ellipse(self,J):
         I=len(self.vertices_first_half)
         aConstArray=np.zeros(2*J+1)
@@ -897,29 +1063,35 @@ class Canvas(QtWidgets.QDialog):
             error_dialog = QtWidgets.QErrorMessage(self)
             error_dialog.showMessage('Please choose a data file first')
         else:
-            for i in range(self.numPt):
-                p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
-                p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
-                painter.drawLine(p1,p2)
-            """
-            painterPath=QtGui.QPainterPath(startPoint)
-            for i in range(self.numPt):
-                tmp=self.vertices[(i+1)%self.numPt]-self.vertices[i-1]
-                tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
-                arc=self.vertices[(i+1)%self.numPt]-self.vertices[i]
-                arc=math.sqrt(arc[0]*arc[0]+arc[2]*arc[2])
-                tmp=tmp*arc/1.
-                controlPt1=tmp+self.vertices[i]
+            if self.fragment_mode==False:
+                for i in range(self.numPt):
+                    p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
+                    p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                    painter.drawLine(p1,p2)
+                """
+                painterPath=QtGui.QPainterPath(startPoint)
+                for i in range(self.numPt):
+                    tmp=self.vertices[(i+1)%self.numPt]-self.vertices[i-1]
+                    tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
+                    arc=self.vertices[(i+1)%self.numPt]-self.vertices[i]
+                    arc=math.sqrt(arc[0]*arc[0]+arc[2]*arc[2])
+                    tmp=tmp*arc/1.
+                    controlPt1=tmp+self.vertices[i]
+                        
+                    tmp=self.vertices[i]-self.vertices[(i+2)%self.numPt]
+                    tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
+                    tmp=tmp*arc/1.
+                    controlPt2=tmp+self.vertices[(i+1)%self.numPt]
+                    painterPath.cubicTo(controlPt1[0],controlPt1[2],controlPt2[0],controlPt2[2],self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
+                    painterPath.moveTo(self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
                     
-                tmp=self.vertices[i]-self.vertices[(i+2)%self.numPt]
-                tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
-                tmp=tmp*arc/1.
-                controlPt2=tmp+self.vertices[(i+1)%self.numPt]
-                painterPath.cubicTo(controlPt1[0],controlPt1[2],controlPt2[0],controlPt2[2],self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
-                painterPath.moveTo(self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
-                
-            painter.drawPath(painterPath)    
-            """          
+                painter.drawPath(painterPath)    
+                """    
+            else: 
+                 for i in range(self.start_index+1,self.end_index+1):   
+                    p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
+                    p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                    painter.drawLine(p1,p2) 
                             
         
     def draw_standardEllipse(self,painter): 

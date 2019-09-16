@@ -121,15 +121,28 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         self.segment_label.setSizePolicy(sizePolicy)
         self.segment_comboBox=QtWidgets.QComboBox()
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         self.segment_comboBox.setSizePolicy(sizePolicy)
         self.segment_comboBox.setMaximumWidth(150)
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('segment')
+        self.segment_comboBox.addItem('fragment')
+        
+        self.range_label=QtWidgets.QLabel('range:')
+        self.range_label.setMaximumWidth(150)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        self.range_label.setSizePolicy(sizePolicy)
+        self.range_slider=QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        self.range_slider.setSizePolicy(sizePolicy)
+        self.range_slider.setMaximumWidth(150)
+        self.range_slider.setMinimum(0.0)
+        self.range_slider.setMaximum(1.0)
         
         self.radio_group.setVisible(False)
         self.segment_label.setVisible(False)
         self.segment_comboBox.setVisible(False)
+        self.range_label.setVisible(False)
+        self.range_slider.setVisible(False)
         self.saveAsDat_button.setVisible(False)
         self.saveAsImg_button.setVisible(False)
         
@@ -172,7 +185,14 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         segmentMethod_layout.addWidget(self.segment_comboBox)
         right_layout.addLayout(segmentMethod_layout) 
         
-        right_layout.addStretch(1)       
+        right_layout.addStretch(1)      
+        
+        rangeSlider_layout=QtWidgets.QHBoxLayout()
+        rangeSlider_layout.addWidget(self.range_label)
+        rangeSlider_layout.addWidget(self.range_slider)
+        right_layout.addLayout(rangeSlider_layout) 
+        
+        right_layout.addStretch(1) 
      
         grid_layout=QtWidgets.QGridLayout()
         grid_layout.addWidget(self.autoJ_mode_radioButton,0,0,1,2)
@@ -219,9 +239,21 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         if text=='single piece':
             self.canvas.single_piece_mode=True
             self.canvas.segment_mode=False
+            self.canvas.fragment_mode=False
+            self.range_label.setVisible(False)
+            self.range_slider.setVisible(False)
         elif text=='segment':
             self.canvas.segment_mode=True
             self.canvas.single_piece_mode=False
+            self.canvas.fragment_mode=False
+            self.range_label.setVisible(False)
+            self.range_slider.setVisible(False)
+        elif text=='fragment':
+            self.canvas.segment_mode=False
+            self.canvas.single_piece_mode=False
+            self.canvas.fragment_mode=True
+            self.range_label.setVisible(True)
+            self.range_slider.setVisible(True)
             
         self.canvas.update()
         self.showEaEm()
@@ -577,7 +609,7 @@ class Canvas(QtWidgets.QDialog):
         return segmented_ellipse_vertices,Ea,Em
         
                     
-    def coefficients_solver_for_half_of_segmented_ellipse(self,J):
+    def coefficients_solver_half_of_segmented_ellipse(self,J):
         I=len(self.vertices_first_half)
         a1ConstArray=np.zeros(2*J+1)
         a1CoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
