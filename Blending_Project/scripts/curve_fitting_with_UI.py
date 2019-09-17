@@ -316,17 +316,21 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         file_path,selected_filter=QtWidgets.QFileDialog.getSaveFileName(self, 'save',dirPath+'images',FILE_FILTERS,selected_filter)
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
-            if '.png' not in file_path or '.PNG' not in file_path:
+            a=file_path.find('.png')
+            b=file_path.find('.PNG')
+            if a==-1 and b==-1:
                 file_path+='.png'
             self.saveFile(file_path)
             
-         
+         , 
     def saveFile(self,file_path):
         file=QtCore.QFile(file_path)
         if file.open(QtCore.QIODevice.WriteOnly):
             pixmap=QtGui.QPixmap(self.canvas.size())
             self.canvas.render(pixmap)
-            if '.png' not in file_path or '.PNG' not in file_path:
+            a=file_path.find('.png')
+            b=file_path.find('.PNG')
+            if a==-1 and b==-1:
                 file_path+='.png'
             pixmap.save(file,"PNG")
             file.close()
@@ -409,7 +413,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
 class Canvas(QtWidgets.QDialog):
     backgroundColor=QtCore.Qt.white
     Ea_criteria=0.01
-    Em_criteria=0.03
+    Em_criteria=0.025
     
     def __init__(self,parent=None):
         super(Canvas,self).__init__(parent)
