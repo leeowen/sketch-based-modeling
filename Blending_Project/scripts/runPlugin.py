@@ -56,7 +56,7 @@ for i in leg:
     cmds.parent( tmp, grp )
 
     
-arm=[0.32,0.55,0.91,1]
+arm=[0.3,0.32,0.4,0.5,0.55,0.6,0.7,0.8,0.9,0.95,1.0]#arm=[0.32,0.55,0.91,1]
 for i in arm:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_RightArm",md=40) 
     cmds.parent( tmp, grp )
@@ -65,7 +65,7 @@ for i in arm:
     cmds.parent( tmp, grp )
     
 
-foreArm=[0.1,0.35,0.5,0.6,0.9,1]
+foreArm=[0.1,0.2,0.3,0.35,0.4,0.5,0.6,0.7,0.8,0.9,1.0]#foreArm=[0.1,0.35,0.5,0.6,0.9,1]
 for i in foreArm:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_RightForeArm",md=40) 
     cmds.parent( tmp, grp )
