@@ -297,14 +297,15 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         if file_path:
             f=open(file_path,"w+")
             f.write('range:')
-            f.write('0-360 \n')
+            if self.canvas.single_piece_mode==True:
+                f.write('0-360 \n')
             f.write('a: ')
-            for i in range(self.canvas.numPt):
-                f.write(str(self.a[i])+' ')
+            for i in self.canvas.a:
+                f.write(str(i)+' ')
             f.write('\n')
             f.write('b: ')
-            for i in range(self.canvas.numPt):
-                f.write(str(self.b[i])+' ')
+            for i in self.canvas.b:
+                f.write(str(i)+' ')
         f.close()
         
         
@@ -320,22 +321,14 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             b=file_path.find('.PNG')
             if a==-1 and b==-1:
                 file_path+='.png'
-            self.saveFile(file_path)
-            
-         , 
-    def saveFile(self,file_path):
-        file=QtCore.QFile(file_path)
-        if file.open(QtCore.QIODevice.WriteOnly):
-            pixmap=QtGui.QPixmap(self.canvas.size())
-            self.canvas.render(pixmap)
-            a=file_path.find('.png')
-            b=file_path.find('.PNG')
-            if a==-1 and b==-1:
-                file_path+='.png'
-            pixmap.save(file,"PNG")
-            file.close()
-        else:
-            QMessageBox.warning(self,'curve fitting',tr("Cannot write file %1. \nError:%2").arg(file_path).arg(file.errorString()))
+            file=QtCore.QFile(file_path)
+            if file.open(QtCore.QIODevice.WriteOnly):
+                pixmap=QtGui.QPixmap(self.canvas.size())
+                self.canvas.render(pixmap)
+                pixmap.save(file,"PNG")
+                file.close()
+            else:
+                QMessageBox.warning(self,'curve fitting',tr("Cannot write file %1. \nError:%2").arg(file_path).arg(file.errorString()))
         
              
     def update_visibility_originalEllipse_mode(self,checked):

@@ -92,6 +92,11 @@ class ImportFileUI(QtWidgets.QDialog):
             f.close()
         
         
+    def data_process(self):
+        pass
+        
+        
+
 if __name__=="__main__":
     # Check to see if the UI already exists and if so, delete
     if cmds.window("importFileDialogue",exists=True):
