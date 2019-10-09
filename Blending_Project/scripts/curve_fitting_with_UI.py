@@ -497,17 +497,19 @@ class Canvas(QtWidgets.QDialog):
     def getAngle(self):
         for i in range(0,self.numPt):
             anglem=(self.vertices[i][2]-self.center.y())/math.sqrt((self.vertices[i][2]-self.center.y())**2+(self.vertices[i][0]-self.center.x())**2)
-            anglem=math.asin(anglem)
+            anglem=math.acos(anglem)
             
             if(self.vertices[i][0]>self.center.x() and self.vertices[i][2]>self.center.y()):
-                self.angles.append(anglem)
+                pass 
             elif(self.vertices[i][0]>self.center.x() and self.vertices[i][2]<self.center.y()):
-                self.angles.append(2*math.pi+anglem)
+                pass 
             elif (self.vertices[i][0]<self.center.x() and self.vertices[i][2]>self.center.y()):
-                self.angles.append(math.pi-anglem)
+                anglem=2*math.pi-anglem
             elif (self.vertices[i][0]<self.center.x() and self.vertices[i][2]<self.center.y()):
-                self.angles.append(math.pi-anglem)
-                
+                anglem=2*math.pi-anglem
+            
+            self.angles.append(anglem)
+    
         
     def setLineWidth(self,width):
         self.lineWidth=width

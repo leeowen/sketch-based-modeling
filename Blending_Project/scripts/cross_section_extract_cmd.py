@@ -193,7 +193,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
             
         for i in range(0,self.division):
             angle=2*math.pi*float(i)/float(self.division)
-            ray=UAxis.rotateBy(om.MQuaternion(angle,VAxis))
+            ray=WAxis.rotateBy(om.MQuaternion(angle,VAxis))
             rayDirection=om.MFloatVector(ray)
             
             try:
