@@ -240,6 +240,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
     def fragment_range_change(self,value):
         self.canvas.set_fragment_range(value/100.0)
         
+        
     def segmentMode_change(self,text):
         if text=='single piece':
             self.canvas.single_piece_mode=True
@@ -471,8 +472,13 @@ class Canvas(QtWidgets.QDialog):
         self.center=self.center/self.numPt
         for i in range(self.numPt):
             self.d_bar.append(math.sqrt((self.vertices[i][0]-self.center.x())**2+(self.vertices[i][2]-self.center.y())**2))
-        self.getAngle()
+
         f.close()
+        
+        self.calculateAngle()
+        self.calculateArcLength()
+        self.calculateCurvature()# add curvature attribute to every point
+        
         
         # split data for 2 segments respectively
         self.a_first_half=[]
@@ -494,7 +500,7 @@ class Canvas(QtWidgets.QDialog):
         self.center_second_half/=len(self.vertices_second_half)
             
     
-    def getAngle(self):
+    def calculateAngle(self):
         for i in range(0,self.numPt):
             anglem=(self.vertices[i][2]-self.center.y())/math.sqrt((self.vertices[i][2]-self.center.y())**2+(self.vertices[i][0]-self.center.x())**2)
             anglem=math.acos(anglem)
@@ -511,6 +517,30 @@ class Canvas(QtWidgets.QDialog):
             self.angles.append(anglem)
     
         
+    def calculateArcLength(self):
+        self.totalArcLength=0.0
+        self.arcLength=[]
+        for i in range(0,self.numPt):
+            arcLength=math.sqrt(pow(self.vertices[(i+1)%self.numPt][0]-self.vertices[i][0],2)+pow(self.vertices[(i+1)%self.numPt][2]-self.vertices[i][2],2))
+            self.arcLength.append(arcLength)
+            self.totalArcLength+=arcLength
+            
+    
+    def calculateCurvature(self):
+        self.curvature=[]
+        self.tangent=[]
+        for i in range(0,self.numPt):
+            # primes refer to the derivatives dx/dt, dy/dt with respect to the angle t
+            tan_x=(self.vertices[(i+1)%self.numPt][0]-self.vertices[i-1][0])/(self.angles[(i+1)%self.numPt]-self.angles[i-1])
+            tan_y=(self.vertices[(i+1)%self.numPt][2]-self.vertices[i-1][2])/(self.angles[(i+1)%self.numPt]-self.angles[i-1])
+            self.tangent.append((tan_x,tan_y))
+        for i in range(0,self.numPt):
+            d2xdt2=(self.tangent[(i+1)%self.numPt][0]-self.tangent[i][0])/(self.angles[(i+1)%self.numPt]-self.angles[i-1])
+            d2ydt2=(self.tangent[(i+1)%self.numPt][1]-self.tangent[i][1])/(self.angles[(i+1)%self.numPt]-self.angles[i-1])
+            k=(self.tangent[i][0]*d2ydt2-self.tangent[i][1]*d2xdt2)/pow(pow(self.tangent[i][0],2)+pow(self.tangent[i][1],2),3.0/2.0)
+            self.curvature.append(k)
+            
+    
     def setLineWidth(self,width):
         self.lineWidth=width
         self.update()
