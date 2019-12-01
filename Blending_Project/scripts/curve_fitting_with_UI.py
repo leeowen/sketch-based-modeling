@@ -3,7 +3,7 @@ import maya.cmds as cmds
 from PySide2 import QtCore, QtGui, QtWidgets
 from shiboken2 import wrapInstance
 import maya.OpenMayaUI as omui
-import math,sys
+import math,sys, os
 
 sys.path.append('/usr/lib64/python2.7/site-packages')
 sys.path.append('./.local/lib/python2.7/site-packages')
@@ -291,9 +291,21 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
     def save_dataFn(self):
         dirPath=cmds.workspace(q=True, rootDirectory=True )
         dirPath+='data/'
+        source_file_name = self.filePath_lineEdit.text()
+        file_name = source_file_name.split('/')[-1]
+        file_name = file_name.replace('Source_','')
+        dirPath += file_name.split('_cross_section_')[0]
+        directory = os.path.dirname(dirPath+'/'+ file_name)
+        print directory
+        
+        try:
+            os.stat(directory)
+        except:
+            os.mkdir(directory) 
+            
         FILE_FILTERS="DAT(*.dat);All Files(*.*)"
         selected_filter="DAT(*.dat)"# default filter, also store last selected filter and can be used as the default filter for next select
-        file_path,selected_filter=QtWidgets.QFileDialog.getSaveFileName(self, 'save',dirPath+'data',FILE_FILTERS,selected_filter)
+        file_path,selected_filter=QtWidgets.QFileDialog.getSaveFileName(self, 'save',dirPath +'/'+ file_name,FILE_FILTERS,selected_filter)
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
             f=open(file_path,"w+")
@@ -307,7 +319,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             f.write('b: ')
             for i in self.canvas.b:
                 f.write(str(i)+' ')
-        f.close()
+            f.close()
         
         
     def save_imageFn(self):
