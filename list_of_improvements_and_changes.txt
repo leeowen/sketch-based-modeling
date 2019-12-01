@@ -1,5 +1,0 @@
-The original CGI2019 conference paper is 'ODE-Driven Sketch-Based Organic Modelling'
-
-The changes and improvement of this paper compared to the original paper is:
-1. elaborate the related work in section 2.
-2. add section 3 and section 4 to the original paper
