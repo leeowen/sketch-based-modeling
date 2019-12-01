@@ -70,7 +70,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.J_spinBox=QtWidgets.QSpinBox()
         self.J_spinBox.setValue(10)
         self.J_spinBox.setFixedWidth(100)
-        self.J_spinBox.setMinimum(2)
+        self.J_spinBox.setMinimum(3)
         self.J_spinBox.setSingleStep(1)
         self.J_spinBox.setReadOnly(not self.manualJ_mode_radioButton.isChecked())
 
@@ -296,7 +296,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         file_name = file_name.replace('Source_','')
         dirPath += file_name.split('_cross_section_')[0]
         directory = os.path.dirname(dirPath+'/'+ file_name)
-        print directory
         
         try:
             os.stat(directory)
@@ -475,6 +474,8 @@ class Canvas(QtWidgets.QDialog):
         self.d_bar=[]
         self.Ea=0.0
         self.Em=0.0
+        self.a = []
+        self.b = []
         for line in content:
             p=line.split()
             self.numPt+=1
