@@ -237,6 +237,11 @@ class CrossSectionExtractCmd(om.MPxCommand):
             outFile.write('{} {} {} \n'.format(x,y,z))
             
         outFile.close()
+        joint_file_name = os.path.join(save_path,self.joint_name+'.dat')
+        joint_outFile = open(joint_file_name,'w+')
+        joint_outFile.write('joint position: {} {} {}\n'.format(joint_position[0],joint_position[1],joint_position[2]))
+        joint_outFile.write('next joint position: {} {} {}\n'.format(nextjoint_position[0],nextjoint_position[1],nextjoint_position[2]))
+        joint_outFile.close()
         
 def initializePlugin(plugin):
     pluginFn = om.MFnPlugin(plugin)

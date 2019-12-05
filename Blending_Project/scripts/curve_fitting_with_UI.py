@@ -311,6 +311,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             f.write('range:')
             if self.canvas.single_piece_mode==True:
                 f.write('0-360 \n')
+            f.write('center: {} {}\n'.format(self.canvas.center.x(),self.canvas.center.y()))
             f.write('a: ')
             for i in self.canvas.a:
                 f.write(str(i)+' ')
@@ -1119,25 +1120,7 @@ class Canvas(QtWidgets.QDialog):
                     p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
                     p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
                     painter.drawLine(p1,p2)
-                """
-                painterPath=QtGui.QPainterPath(startPoint)
-                for i in range(self.numPt):
-                    tmp=self.vertices[(i+1)%self.numPt]-self.vertices[i-1]
-                    tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
-                    arc=self.vertices[(i+1)%self.numPt]-self.vertices[i]
-                    arc=math.sqrt(arc[0]*arc[0]+arc[2]*arc[2])
-                    tmp=tmp*arc/1.
-                    controlPt1=tmp+self.vertices[i]
-                        
-                    tmp=self.vertices[i]-self.vertices[(i+2)%self.numPt]
-                    tmp/=math.sqrt(tmp[0]*tmp[0]+tmp[2]*tmp[2])#normalise vector
-                    tmp=tmp*arc/1.
-                    controlPt2=tmp+self.vertices[(i+1)%self.numPt]
-                    painterPath.cubicTo(controlPt1[0],controlPt1[2],controlPt2[0],controlPt2[2],self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
-                    painterPath.moveTo(self.vertices[(i+1)%self.numPt][0],self.vertices[(i+1)%self.numPt][2])
-                    
-                painter.drawPath(painterPath)    
-                """    
+                
             else:
                 if self.start_index<self.end_index:
                     for i in range(self.start_index+1,self.end_index+1):   
