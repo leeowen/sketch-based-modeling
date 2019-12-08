@@ -1152,19 +1152,18 @@ class Canvas(QtWidgets.QDialog):
         b0b=0.0
         try:
             for i in range(self.numPt):
-                angle=i*2*math.pi/self.numPt
-                a0u=a0u+(self.vertices[i][0]-self.center.x())*math.cos(angle)
-                a0b=a0b+math.cos(angle)*math.cos(angle)
-                b0u=b0u+(self.vertices[i][2]-self.center.y())*math.sin(angle)
-                b0b=b0b+math.sin(angle)*math.sin(angle)
-
+                angle=self.angles[i]
+                a0u=a0u+(self.vertices[i][0]-self.center.x())*math.sin(angle)
+                a0b=a0b+math.sin(angle)*math.sin(angle)
+                b0u=b0u+(self.vertices[i][2]-self.center.y())*math.cos(angle)
+                b0b=b0b+math.cos(angle)*math.cos(angle)
+                
         except IndexError:
             error_dialog = QtWidgets.QErrorMessage(self)
             error_dialog.showMessage('Please choose a data file first')
         else:
             width=a0u/a0b
             height=b0u/b0b
-            
             painter.drawEllipse(self.center,width,height)
 
 
