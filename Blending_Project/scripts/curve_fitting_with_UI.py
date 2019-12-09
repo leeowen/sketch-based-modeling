@@ -480,8 +480,8 @@ class Canvas(QtWidgets.QDialog):
         for line in content:
             p=line.split()
             self.numPt+=1
-            self.vertices.append(om.MVector(float(p[0])*300+self.width()/2.,float(p[1])*300,float(p[2])*300+self.height()/2.))
-            self.center+=QtCore.QPointF(float(p[0])*300+self.width()/2.0,float(p[2])*300+self.height()/2.0)
+            self.vertices.append(om.MVector(float(p[0]),float(p[1]),float(p[2])))
+            self.center+=QtCore.QPointF(float(p[0]),float(p[2]))
         
         self.center=self.center/self.numPt
         for i in range(self.numPt):
@@ -608,7 +608,7 @@ class Canvas(QtWidgets.QDialog):
                 self.generalisedEllipseVertices,self.Ea,self.Em=self.formGeneralizedEllipse(self.a,self.b)
      
                 for i in range(I):
-                    painter.drawLine(self.generalisedEllipseVertices[i][0],self.generalisedEllipseVertices[i][1],self.generalisedEllipseVertices[(i+1)%I][0],self.generalisedEllipseVertices[(i+1)%I][1])    
+                    painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2.,self.generalisedEllipseVertices[i][1]*300+self.height()/2.,self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2.,self.generalisedEllipseVertices[(i+1)%I][1]*300+self.height()/2.)    
         
         elif self.segment_mode==True:      
             if self.manualJ_mode==True:
@@ -620,12 +620,12 @@ class Canvas(QtWidgets.QDialog):
                 self.Ea=Ea
                 self.Em=Em
                 for i in range(self.numPt/2):
-                    painter.drawLine(segmented_ellipse_vertices[i][0],segmented_ellipse_vertices[i][1],segmented_ellipse_vertices[(i+1)%self.numPt][0],segmented_ellipse_vertices[(i+1)%self.numPt][1])    
+                    painter.drawLine(segmented_ellipse_vertices[i][0]*300+self.width()/2.,segmented_ellipse_vertices[i][1]*300+self.height()/2.,segmented_ellipse_vertices[(i+1)%self.numPt][0]*300+self.width()/2.,segmented_ellipse_vertices[(i+1)%self.numPt][1]*300+self.height()/2.)    
                 second_half_color=QtGui.QColor(127,0,255) 
                 pen.setColor(second_half_color)
                 painter.setPen(pen)
                 for i in range(self.numPt/2,self.numPt):
-                    painter.drawLine(segmented_ellipse_vertices[i][0],segmented_ellipse_vertices[i][1],segmented_ellipse_vertices[(i+1)%self.numPt][0],segmented_ellipse_vertices[(i+1)%self.numPt][1])    
+                    painter.drawLine(segmented_ellipse_vertices[i][0]*300+self.width()/2.,segmented_ellipse_vertices[i][1]*300+self.height()/2.,segmented_ellipse_vertices[(i+1)%self.numPt][0]*300+self.width()/2.,segmented_ellipse_vertices[(i+1)%self.numPt][1]*300+self.height()/2.)    
         
         elif self.fragment_mode==True:       
             if self.manualJ_mode==True:
@@ -636,7 +636,7 @@ class Canvas(QtWidgets.QDialog):
                 self.Ea=Ea
                 self.Em=Em
                 for i in range(len(fragment_vertices)-1):
-                    painter.drawLine(fragment_vertices[i][0],fragment_vertices[i][1],fragment_vertices[i+1][0],fragment_vertices[i+1][1])    
+                    painter.drawLine(fragment_vertices[i][0]*300+self.width()/2.,fragment_vertices[i][1]*300+self.height()/2.,fragment_vertices[i+1][0]*300+self.width()/2.,fragment_vertices[i+1][1]*300+self.height()/2.)    
         
     
     def extract_fragment_data(self):
@@ -1110,31 +1110,31 @@ class Canvas(QtWidgets.QDialog):
         painter.setPen(pen)
 
         try:
-            startPoint=QtCore.QPointF(self.vertices[0][0],self.vertices[0][2])
+            startPoint=QtCore.QPointF(self.vertices[0][0]*300+self.width()/2.,self.vertices[0][2]*self.height()/2.)
         except IndexError:
             error_dialog = QtWidgets.QErrorMessage(self)
             error_dialog.showMessage('Please choose a data file first')
         else:
             if self.fragment_mode==False:
                 for i in range(self.numPt):
-                    p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
-                    p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                    p1=QtCore.QPointF(self.vertices[i-1][0]*300+self.width()/2.,self.vertices[i-1][2]*300+self.height()/2.)
+                    p2=QtCore.QPointF(self.vertices[i][0]*300+self.width()/2.,self.vertices[i][2]*300+self.height()/2.)
                     painter.drawLine(p1,p2)
                 
             else:
                 if self.start_index<self.end_index:
                     for i in range(self.start_index+1,self.end_index+1):   
-                        p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
-                        p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                        p1=QtCore.QPointF(self.vertices[i-1][0]*300+self.width()/2.,self.vertices[i-1][2]*300+self.height()/2.)
+                        p2=QtCore.QPointF(self.vertices[i][0]*300+self.width()/2.,self.vertices[i][2]*300+self.height()/2.)
                         painter.drawLine(p1,p2) 
                 else:        
                     for i in range(self.start_index+1,self.numPt):   
-                        p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
-                        p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                        p1=QtCore.QPointF(self.vertices[i-1][0]*300+self.width()/2.,self.vertices[i-1][2]*300+self.height()/2.)
+                        p2=QtCore.QPointF(self.vertices[i][0]*300+self.width()/2.,self.vertices[i][2]*300+self.height()/2.)
                         painter.drawLine(p1,p2)   
                     for i in range(self.end_index+1):   
-                        p1=QtCore.QPointF(self.vertices[i-1][0],self.vertices[i-1][2])
-                        p2=QtCore.QPointF(self.vertices[i][0],self.vertices[i][2])
+                        p1=QtCore.QPointF(self.vertices[i-1][0]*300+self.width()/2.,self.vertices[i-1][2]*300+self.height()/2.)
+                        p2=QtCore.QPointF(self.vertices[i][0]*300+self.width()/2.,self.vertices[i][2]*300+self.height()/2.)
                         painter.drawLine(p1,p2) 
                             
         
@@ -1164,7 +1164,7 @@ class Canvas(QtWidgets.QDialog):
         else:
             width=a0u/a0b
             height=b0u/b0b
-            painter.drawEllipse(self.center,width,height)
+            painter.drawEllipse(self.center+QtCore.QPointF(self.width()/2.,self.height()/2.),width*300,height*300)
 
 
     def getEm(self):
