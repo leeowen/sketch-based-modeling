@@ -4,14 +4,11 @@ from PySide2 import QtCore, QtGui, QtWidgets
 from shiboken2 import wrapInstance
 import maya.OpenMayaUI as omui
 import math,sys, os
-
 sys.path.append('/usr/lib64/python2.7/site-packages')
 sys.path.append('./.local/lib/python2.7/site-packages')
+sys.path.append(cmds.workspace(fn=True)+'/scripts/')
 import numpy as np
-
-
-def maya_useNewAPI():
-    pass
+import curve_fitting
 
 
 def maya_main_window():
@@ -258,6 +255,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.canvas.segment_mode=False
             self.canvas.single_piece_mode=False
             self.canvas.fragment_mode=True
+            self.autoJ_mode_radioButton.setVisible(False)
             self.range_label.setVisible(True)
             self.range_slider.setVisible(True)
             
@@ -279,7 +277,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.J_spinBox.setReadOnly(checked)
         self.canvas.repaint()
         self.showEaEm()
-        self.J_spinBox.setValue(self.canvas.autoJ)
+        self.J_spinBox.setValue(self.canvas.autoJ_value)
         
     
     def update_manual_J_value(self,J):
@@ -435,8 +433,9 @@ class Canvas(QtWidgets.QDialog):
         self.Ea=0.0
         self.Em=0.0
         self.numPt=0
+        self.center = QtCore.QPointF(0.0,0.0)
         self.manualJ=10
-        self.autoJ=0
+        self.autoJ_value=0
         self.a=[]
         self.b=[]
         self.generalisedEllipseVertices=[]
@@ -465,34 +464,18 @@ class Canvas(QtWidgets.QDialog):
         
     
     def readFile(self,file_path):
-        f=open(file_path,'r')
-        content=f.readlines()
-        self.center=QtCore.QPointF(0.0,0.0)
-        self.numPt=0
-        self.vertices=[]
-        self.angles=[]
-        self.d=[]
-        self.d_bar=[]
-        self.Ea=0.0
-        self.Em=0.0
-        self.a = []
-        self.b = []
+        f = open(file_path,'r')
+        content = f.readlines()
         for line in content:
             p=line.split()
             self.numPt+=1
             self.vertices.append(om.MVector(float(p[0]),float(p[1]),float(p[2])))
-            self.center+=QtCore.QPointF(float(p[0]),float(p[2]))
-        
-        self.center=self.center/self.numPt
-        for i in range(self.numPt):
-            self.d_bar.append(math.sqrt((self.vertices[i][0]-self.center.x())**2+(self.vertices[i][2]-self.center.y())**2))
-
         f.close()
+
+        self.center = curve_fitting.getCenter(self.vertices)
+        self.d_bar = curve_fitting.get_d_bar(self.vertices, self.center)
         
-        self.calculateAngle()
-        self.calculateArcLength()
-        self.calculateCurvature()# add curvature attribute to every point
-        
+        self.angles = curve_fitting.calculateAngle(self.vertices, self.center)
         
         # split data for 2 segments respectively
         self.a_first_half=[]
@@ -504,55 +487,8 @@ class Canvas(QtWidgets.QDialog):
         self.vertices_second_half.append(self.vertices[0])
         self.angles_second_half=self.angles[I:self.numPt]
         self.angles_second_half.append(self.angles[0])
-        self.center_first_half=QtCore.QPointF(0.0,0.0)
-        self.center_second_half=QtCore.QPointF(0.0,0.0)
-        
-        for i in range(I+1):
-            self.center_first_half+=QtCore.QPointF(self.vertices_first_half[i][0],self.vertices_first_half[i][2])
-            self.center_second_half+=QtCore.QPointF(self.vertices_second_half[i][0],self.vertices_second_half[i][2])
-        self.center_first_half/=len(self.vertices_first_half)
-        self.center_second_half/=len(self.vertices_second_half)
-            
-    
-    def calculateAngle(self):
-        for i in range(0,self.numPt):
-            anglem=(self.vertices[i][2]-self.center.y())/math.sqrt((self.vertices[i][2]-self.center.y())**2+(self.vertices[i][0]-self.center.x())**2)
-            anglem=math.acos(anglem)
-            
-            if(self.vertices[i][0]>self.center.x() and self.vertices[i][2]>self.center.y()):
-                pass 
-            elif(self.vertices[i][0]>self.center.x() and self.vertices[i][2]<self.center.y()):
-                pass 
-            elif (self.vertices[i][0]<self.center.x() and self.vertices[i][2]>self.center.y()):
-                anglem=2*math.pi-anglem
-            elif (self.vertices[i][0]<self.center.x() and self.vertices[i][2]<self.center.y()):
-                anglem=2*math.pi-anglem
-            
-            self.angles.append(anglem)
-    
-        
-    def calculateArcLength(self):
-        self.totalArcLength=0.0
-        self.arcLength=[]
-        for i in range(0,self.numPt):
-            arcLength=math.sqrt(pow(self.vertices[(i+1)%self.numPt][0]-self.vertices[i][0],2)+pow(self.vertices[(i+1)%self.numPt][2]-self.vertices[i][2],2))
-            self.arcLength.append(arcLength)
-            self.totalArcLength+=arcLength
-            
-    
-    def calculateCurvature(self):
-        self.curvature=[]
-        self.tangent=[]
-        for i in range(0,self.numPt):
-            # primes refer to the derivatives dx/dt, dy/dt with respect to the angle t
-            tan_x=(self.vertices[(i+1)%self.numPt][0]-self.vertices[i-1][0])/(self.angles[(i+1)%self.numPt]-self.angles[i-1])
-            tan_y=(self.vertices[(i+1)%self.numPt][2]-self.vertices[i-1][2])/(self.angles[(i+1)%self.numPt]-self.angles[i-1])
-            self.tangent.append((tan_x,tan_y))
-        for i in range(0,self.numPt):
-            d2xdt2=(self.tangent[(i+1)%self.numPt][0]-self.tangent[i][0])/(self.angles[(i+1)%self.numPt]-self.angles[i-1])
-            d2ydt2=(self.tangent[(i+1)%self.numPt][1]-self.tangent[i][1])/(self.angles[(i+1)%self.numPt]-self.angles[i-1])
-            k=(self.tangent[i][0]*d2ydt2-self.tangent[i][1]*d2xdt2)/pow(pow(self.tangent[i][0],2)+pow(self.tangent[i][1],2),3.0/2.0)
-            self.curvature.append(k)
+        self.center_first_half=curve_fitting.getCenter(self.vertices_first_half)
+        self.center_second_half=curve_fitting.getCenter(self.vertices_second_half)
             
     
     def setLineWidth(self,width):
@@ -600,12 +536,15 @@ class Canvas(QtWidgets.QDialog):
                 J=self.manualJ
             
             elif self.autoJ_mode==True:
-                J=self.findJ()
-                self.autoJ=J
+                J = curve_fitting.findJ(self.vertices,self.angles,self.d_bar,self.center,self.Ea_criteria,self.Em_criteria)
+                self.autoJ_value=J
             
             if self.manualJ_mode==True or self.autoJ_mode==True:
-                self.a,self.b=self.getCoefficients(J)
-                self.generalisedEllipseVertices,self.Ea,self.Em=self.formGeneralizedEllipse(self.a,self.b)
+                self.a,self.b=curve_fitting.getCoefficients(J,self.vertices,self.center,self.angles)
+                self.generalisedEllipseVertices,self.Ea,self.Em=curve_fitting.formGeneralizedEllipse(self.a,self.b,
+                                                                                                     self.vertices,
+                                                                                                     self.center,
+                                                                                                     self.angles, self.d_bar)
      
                 for i in range(I):
                     painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2.,self.generalisedEllipseVertices[i][1]*300+self.height()/2.,self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2.,self.generalisedEllipseVertices[(i+1)%I][1]*300+self.height()/2.)    
@@ -613,10 +552,20 @@ class Canvas(QtWidgets.QDialog):
         elif self.segment_mode==True:      
             if self.manualJ_mode==True:
                 J=self.manualJ
-                a_first_half,b_first_half=self.coefficients_solver_for_first_half_of_segmented_ellipse(J)
-                a_second_half,b_second_half=self.coefficients_solver_for_second_half_of_segmented_ellipse(J,a_first_half,b_first_half)
+                a_first_half,b_first_half=curve_fitting.coefficients_solver_for_first_half_of_segmented_ellipse(self.vertices_first_half,
+                                                                                                                self.angles_first_half,
+                                                                                                                self.center_first_half, J)
+                a_second_half,b_second_half=curve_fitting.coefficients_solver_for_second_half_of_segmented_ellipse(self.vertices_second_half, self.angles_second_half, self.center_first_half, self.center_second_half, J, a_first_half, b_first_half)
 
-                segmented_ellipse_vertices,Ea,Em=self.form_vertices_of_segmented_ellipse(a_first_half,b_first_half,a_second_half,b_second_half)     
+                segmented_ellipse_vertices,Ea,Em=curve_fitting.form_vertices_of_segmented_ellipse(self.vertices_first_half,
+                                                                                                  self.vertices_second_half,
+                                                                                                  self.center_first_half,
+                                                                                                  self.center_second_half,
+                                                                                                  self.angles_first_half,
+                                                                                                  self.angles_second_half,
+                                                                                                  self.d_bar, a_first_half,
+                                                                                                  b_first_half,a_second_half,
+                                                                                                  b_second_half)
                 self.Ea=Ea
                 self.Em=Em
                 for i in range(self.numPt/2):
@@ -630,478 +579,15 @@ class Canvas(QtWidgets.QDialog):
         elif self.fragment_mode==True:       
             if self.manualJ_mode==True:
                 J=self.manualJ
-                angles,vertices,center=self.extract_fragment_data()    
-                a,b=self.coefficients_solver_for_fragmented_ellipse(J,angles,vertices,center)
-                fragment_vertices,Ea,Em=self.form_vertices_of_fragment(a,b,vertices,angles,center) 
+                angles, vertices, center, self.start_index, self.end_index = curve_fitting.extract_fragment_data(self.vertices, self.angles, self.fragment_range)
+                a,b=curve_fitting.coefficients_solver_for_fragmented_ellipse(J,angles,vertices,center)
+                fragment_vertices,Ea,Em = curve_fitting.form_vertices_of_fragment(a,b,vertices,angles,center, self.d_bar, self.start_index)
                 self.Ea=Ea
                 self.Em=Em
                 for i in range(len(fragment_vertices)-1):
-                    painter.drawLine(fragment_vertices[i][0]*300+self.width()/2.,fragment_vertices[i][1]*300+self.height()/2.,fragment_vertices[i+1][0]*300+self.width()/2.,fragment_vertices[i+1][1]*300+self.height()/2.)    
-        
-    
-    def extract_fragment_data(self):
-        start_index=int(self.numPt*self.fragment_range)
-        end_index=start_index+self.numPt/2
-        
-        if end_index>=self.numPt:
-            end_index-=self.numPt
-          
-        #extract data
-        angles=[]
-        vertices=[]
-        if start_index<end_index:
-            for i in range(start_index,end_index+1):
-                angles.append(self.angles[i])
-                vertices.append(self.vertices[i])
-        else:
-            for i in range(start_index,self.numPt): 
-                angles.append(self.angles[i])
-                vertices.append(self.vertices[i])     
-            for i in range(end_index+1): 
-                angles.append(self.angles[i])
-                vertices.append(self.vertices[i]) 
-        
-        center=QtCore.QPointF(0.0,0.0)
-        for v in vertices:
-            center.setX(center.x()+v[0])
-            center.setY(center.y()+v[2])
-        center.setX(center.x()/len(vertices))    
-        center.setY(center.y()/len(vertices))  
-         
-        self.start_index=start_index
-        self.end_index=end_index 
-        
-        return angles, vertices, center
-     
-    
-    def form_vertices_of_fragment(self,a,b,vertices,angles,center) :
-        I=len(vertices)
-        fragment_vertices=[[0 for i in range(2)] for j in range(I)]
-        Ea=0.0
-        Em=0.0
-        d=[]
-        J=(len(a)-1)/2
-        
-        for i in range(I):
-            v_i=angles[i]
-            x_i=center.x()+a[0]
-            y_i=center.y()+b[0]
-            
-            for j in range(1,J+1):
-                x_i+=a[2*j-1]*math.cos(j*v_i)+a[2*j]*math.sin(j*v_i)
-                y_i+=b[2*j-1]*math.sin(j*v_i)+b[2*j]*math.cos(j*v_i)
-            
-            fragment_vertices[i][0]=x_i
-            fragment_vertices[i][1]=y_i
-            d_i=math.sqrt(pow(vertices[i][0]-x_i,2)+pow(vertices[i][2]-y_i,2))
-            d.append(d_i)
-            index=(i+self.start_index)%self.numPt
-            Ea+=(d_i/self.d_bar[index])
-            if Em<d_i/self.d_bar[index]:
-                Em=d_i/self.d_bar[index]
-        
-        Ea=Ea/self.numPt
-       
-        return fragment_vertices,Ea,Em        
-            
-        
-    def form_vertices_of_segmented_ellipse(self,a1,b1,a2,b2):
-        I=len(self.vertices_first_half)
-        segmented_ellipse_vertices=[[0 for i in range(2)] for j in range(self.numPt)]
-        Ea=0.0
-        Em=0.0
-        d=[0.0]*self.numPt
-        J=(len(a1)-1)/2
-        
-        for i in range(I):
-            first_half_vertex=[0.0]*2
-            second_half_vertex=[0.0]*2
-        
-            first_half_vertex[0]=self.center_first_half.x()+a1[0]
-            first_half_vertex[1]=self.center_first_half.y()+b1[0]
-            v1=self.angles_first_half[i]
-            
-            v2=self.angles_second_half[i]
-            second_half_vertex[0]=(self.center_first_half.x()+a1[0])*math.cos(2*v2)+(self.center_second_half.x()+a2[0])*(1-math.cos(2*v2))
-            second_half_vertex[1]=(self.center_first_half.y()+b1[0])*math.cos(2*v2)+(self.center_second_half.y()+b2[0])*(1-math.cos(2*v2))
-           
-            for j in range(1,J+1):
-                first_half_vertex[0]+=a1[2*j-1]*math.cos(j*v1)+a1[2*j]*math.sin(j*v1)
-                first_half_vertex[1]+=b1[2*j-1]*math.sin(j*v1)+b1[2*j]*math.cos(j*v1)
-                D1=(1-pow(-1,j))*math.cos(v2)+(1+pow(-1,j))*math.cos(2*v2)
-                D2=(1-pow(-1,j))*math.sin(v2)+0.5*(1+pow(-1,j))*math.sin(2*v2)
-                second_half_vertex[0]+=0.5*(D1*a1[2*j-1]+j*D2*a1[2*j])
-                second_half_vertex[1]+=0.5*(j*D2*b1[2*j-1]+D1*b1[2*j])
-            for j in range(3,J+1):
-                D1=(1-pow(-1,j))*math.cos(v2)+(1+pow(-1,j))*math.cos(2*v2)
-                D2=(1-pow(-1,j))*math.sin(v2)+0.5*(1+pow(-1,j))*math.sin(2*v2)
-                second_half_vertex[0]+=(math.cos(j*v2)-0.5*D1)*a2[2*j-1]+(math.sin(j*v2)-j/2.0*D2)*a2[2*j]
-                second_half_vertex[1]+=(math.sin(j*v2)-j/2.0*D2)*b2[2*j-1]+(math.cos(j*v2)-D1/2.0)*b2[2*j]
-            
-            segmented_ellipse_vertices[i][0]=first_half_vertex[0]
-            segmented_ellipse_vertices[i][1]=first_half_vertex[1]
-            di1=math.sqrt((self.vertices_first_half[i][0]-first_half_vertex[0])**2+(self.vertices_first_half[i][2]-first_half_vertex[1])**2)
-            d[i]=di1
-            Ea+=(di1/self.d_bar[i])
-            if Em<di1/self.d_bar[i]:
-                Em=di1/self.d_bar[i]
-                
-            if i!=0 and i!=(I-1):
-                segmented_ellipse_vertices[i+I-1][0]=second_half_vertex[0]
-                segmented_ellipse_vertices[i+I-1][1]=second_half_vertex[1]
-                di2=math.sqrt(pow(self.vertices_second_half[i][0]-second_half_vertex[0],2)+pow(self.vertices_second_half[i][2]-second_half_vertex[1],2))
-                d[i+I-1]=di2
-                Ea+=(di2/self.d_bar[i+I-1])
-                
-                if Em<di2/self.d_bar[i+I-1]:
-                    Em=di2/self.d_bar[i+I-1]
-                      
-        Ea=Ea/self.numPt
-       
-        return segmented_ellipse_vertices,Ea,Em
-        
-                    
-    def coefficients_solver_for_fragmented_ellipse(self,J,angles,vertices,center):
-        I=len(angles)
-        aConstArray=np.zeros(2*J+1)
-        aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
-        
-        bConstArray=np.zeros(2*J+1)
-        bCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')
-        
-        for i in range(I):
-            aCoefficientMatrix[0,i]=1.
-            bCoefficientMatrix[0,i]=1.
-            
-        for i in range(I):# for aCoefficientMatrix's column
-            for j in range(1,J+1):# for aCoefficientMatrix's row
-                try:
-                    vi=angles[i]
-                except IndexError:
-                    error_dialog = QtWidgets.QErrorMessage(self)
-                    error_dialog.showMessage('vertices data is empty, please choose a data file first')
-                else:    
-                    aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
-                    aCoefficientMatrix[2*j,i]=math.sin(vi*j)
-
-                    # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
-                    aConstArray[2*j-1]+=(vertices[i][0]-center.x())*math.cos(vi*j)
-                    aConstArray[2*j]+=(vertices[i][0]-center.x())*math.sin(vi*j)
-                
-                    bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
-                    bCoefficientMatrix[2*j,i]=math.cos(vi*j)
-                   
-                    bConstArray[2*j-1]+=(vertices[i][2]-center.y())*math.sin(vi*j)
-                    bConstArray[2*j]+=(vertices[i][2]-center.y())*math.cos(vi*j)
-                                  
-        A=np.dot(aCoefficientMatrix,aCoefficientMatrix.transpose())
-        a=np.linalg.solve(A,aConstArray)   
-        B=np.dot(bCoefficientMatrix,bCoefficientMatrix.transpose())      
-        b=np.linalg.solve(B,bConstArray) 
-        
-        return a,b
-        
-        
-    def coefficients_solver_for_first_half_of_segmented_ellipse(self,J):
-        I=len(self.vertices_first_half)
-        aConstArray=np.zeros(2*J+1)
-        aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
-        
-        bConstArray=np.zeros(2*J+1)
-        bCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')
-        
-        for i in range(I):
-            aCoefficientMatrix[0,i]=1.
-            bCoefficientMatrix[0,i]=1.
-            
-        for i in range(I):# for aCoefficientMatrix's column
-            for j in range(1,J+1):# for aCoefficientMatrix's row
-                try:
-                    vi=self.angles_first_half[i]
-                except IndexError:
-                    error_dialog = QtWidgets.QErrorMessage(self)
-                    error_dialog.showMessage('vertices data is empty, please choose a data file first')
-                else:    
-                    aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
-                    aCoefficientMatrix[2*j,i]=math.sin(vi*j)
-
-                    # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
-                    aConstArray[2*j-1]+=(self.vertices_first_half[i][0]-self.center_first_half.x())*math.cos(vi*j)
-                    aConstArray[2*j]+=(self.vertices_first_half[i][0]-self.center_first_half.x())*math.sin(vi*j)
-                
-                    bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
-                    bCoefficientMatrix[2*j,i]=math.cos(vi*j)
-                   
-                    bConstArray[2*j-1]+=(self.vertices_first_half[i][2]-self.center_first_half.y())*math.sin(vi*j)
-                    bConstArray[2*j]+=(self.vertices_first_half[i][2]-self.center_first_half.y())*math.cos(vi*j)
-                                  
-        A=np.dot(aCoefficientMatrix,aCoefficientMatrix.transpose())
-        a=np.linalg.solve(A,aConstArray)   
-        B=np.dot(bCoefficientMatrix,bCoefficientMatrix.transpose())      
-        b=np.linalg.solve(B,bConstArray) 
-        
-        return a,b
-       
-  
-    def coefficients_solver_for_second_half_of_segmented_ellipse(self,J,a_first_half,b_first_half):
-        I=len(self.vertices_second_half)
-        
-        Ca=np.zeros((I,1),order='C')# order='C' means row-major  
-        Cb=np.zeros((I,1),order='C')
-        
-        Ma=np.zeros((2*J-3,I),order='C')
-        Mb=np.zeros((2*J-3,I),order='C')
-        
-        for i in range (I):
-            v_i=self.angles_second_half[i]
-            tmp=1-math.cos(2*v_i)
-            Ma[0][i]=tmp
-            Mb[0][i]=tmp
-            x_i=self.vertices_second_half[i][0]
-            y_i=self.vertices_second_half[i][2]
-            Ca[i][0]=x_i-(self.center_first_half.x()+a_first_half[0])*math.cos(2*v_i)-self.center_second_half.x()*(1-math.cos(2*v_i))
-            Cb[i][0]=y_i-(self.center_first_half.y()+b_first_half[0])*math.cos(2*v_i)-self.center_second_half.y()*(1-math.cos(2*v_i))
-            for j in range(1,J+1):
-                D1=(1-pow(-1,j))*math.cos(v_i)+(1+pow(-1,j))*math.cos(2*v_i)
-                D2=(1-pow(-1,j))*math.sin(v_i)+1/2.0*(1+pow(-1,j))*math.sin(2*v_i)
-                Ca[i][0]-=1/2.0*(D1*a_first_half[2*j-1]+j*D2*a_first_half[2*j])
-                Cb[i][0]-=1/2.0*(j*D2*b_first_half[2*j-1]+D1*b_first_half[2*j])
-            for j in range(3,J+1):
-                D1=(1-pow(-1,j))*math.cos(v_i)+(1+pow(-1,j))*math.cos(2*v_i)
-                tmp=math.cos(j*v_i)-1/2.0*D1
-                Ma[j*2-5][i]=tmp
-                Mb[j*2-4][i]=tmp
-                D2=(1-pow(-1,j))*math.sin(v_i)+1/2.0*(1+pow(-1,j))*math.sin(2*v_i)
-                tmp=math.sin(j*v_i)-j/2.0*D2
-                Ma[j*2-4][i]=tmp
-                Mb[j*2-5][i]=tmp
-                                  
-        A=Ma.dot(Ma.transpose())       
-        aConstArray=Ma.dot(Ca)
-        a_tmp=np.linalg.solve(A,aConstArray)   
-        B=np.dot(Mb,Mb.transpose())   
-        bConstArray=np.dot(Mb,Cb)   
-        b_tmp=np.linalg.solve(B,bConstArray) 
-        
-        # get a1,a2,a3,a4 and b1,b2,b3,b4
-        a1=0
-        a2=0
-        a3=self.center_first_half.x()-self.center_second_half.x()+a_first_half[0]-a_tmp[0]
-        a4=0
-        b1=0
-        b2=0
-        b3=0
-        b4=self.center_first_half.y()-self.center_second_half.y()+b_first_half[0]-b_tmp[0]
-        
-        for j in range(1,3):
-            a1+=0.5*(1-pow(-1,j))*a_first_half[2*j-1]
-            a2+=0.5*(1-pow(-1,j))*j*a_first_half[2*j]
-            a3+=0.5*(1+pow(-1,j))*a_first_half[2*j-1]
-            a4+=0.25*(1+pow(-1,j))*j*a_first_half[2*j-1]
-            b1+=0.5*(1-pow(-1,j))*b_first_half[2*j-1]
-            b2+=0.5*(1-pow(-1,j))*j*b_first_half[2*j]
-            b3+=0.25*(1+pow(-1,j))*j*b_first_half[2*j-1]
-            b4+=0.5*(1+pow(-1,j))*b_first_half[2*j-1]
-        for j in range(3,J+1):
-            a1+=0.5*(1-pow(-1,j))*(a_first_half[2*j-1]-a_tmp[2*j-5])
-            a2+=0.5*(1-pow(-1,j))*j*(a_first_half[2*j]-a_tmp[2*j-4])
-            a3+=0.5*(1+pow(-1,j))*(a_first_half[2*j-1]-a_tmp[2*j-5])
-            a4+=0.25*(1+pow(-1,j))*j*(a_first_half[2*j]-a_tmp[2*j-4])
-            b1+=0.5*(1-pow(-1,j))*j*(b_first_half[2*j-1]-b_tmp[2*j-5])
-            b2+=0.5*(1-pow(-1,j))*(b_first_half[2*j]-b_tmp[2*j-4])
-            b3+=0.25*(1+pow(-1,j))*j*(b_first_half[2*j-1]-a_tmp[2*j-5])
-            b4+=0.5*(1+pow(-1,j))*(b_first_half[2*j]-b_tmp[2*j-4])
-        
-        a=np.zeros(2*J+1)
-        b=np.zeros(2*J+1)
-        a[0]=a_tmp[0]
-        a[1]=a1
-        a[2]=a2
-        a[3]=a3
-        a[4]=a4        
-        b[0]=b_tmp[0]
-        b[1]=b1
-        b[2]=b2
-        b[3]=b3
-        b[4]=b4   
-        for j in range(3,J+1):
-            a[2*j-1]=a_tmp[2*j-5]
-            a[2*j]=a_tmp[2*j-4]
-            b[2*j-1]=b_tmp[2*j-5]
-            b[2*j]=b_tmp[2*j-4]    
-
-        return a,b
-              
-       
-    def findJ(self):
-        J=0
-        a3,b3=self.getCoefficients(3)
-        v3,Ea3,Em3=self.formGeneralizedEllipse(a3,b3)
-        a10,b10=self.getCoefficients(10)
-        v10,Ea10,Em10=self.formGeneralizedEllipse(a10,b10)
-        if Ea3<Canvas.Ea_criteria and Em3<Canvas.Em_criteria:
-            J=self.find_smaller_J(3,10,Ea3,Ea10)
-        elif Ea10>=Canvas.Ea_criteria or Em10>=Canvas.Em_criteria:
-            J=self.find_bigger_J(3,10,Ea3,Ea10,Em3,Em10)
-        elif Ea3>=Canvas.Ea_criteria or Em3>=Canvas.Em_criteria:
-            J=self.find_inbetween_J(3,10,Ea3,Ea10,Em3,Em10)       
-        return J
-    
-    
-    def find_inbetween_J(self,J_small,J_big,Ea_smallJ,Ea_bigJ,Em_smallJ,Em_bigJ):
-        #Linear interpolate to find J_small<J<J_big  
-        
-        if J_small>J_big:
-            tmp=J_small
-            J_small=J_big
-            J_big=tmp
-        
-        if Ea_smallJ<Canvas.Ea_criteria and Ea_bigJ>=Canvas.Ea_criteria:
-            tmp=Ea_smallJ
-            Ea_smallJ=Ea_bigJ
-            Ea_bigJ=tmp
-            
-        if Em_smallJ<Canvas.Em_criteria and Em_bigJ>=Canvas.Em_criteria:
-            tmp=Em_smallJ
-            Em_smallJ=Em_bigJ
-            Em_bigJ=tmp  
-        
-        if J_small==J_big-1:
-            return J_big
-        
-        J=0
-        if Ea_smallJ>=Canvas.Ea_criteria:          
-            J=int((Canvas.Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
-        elif Em_smallJ>=Canvas.Em_criteria:
-            J=int((Canvas.Em_criteria-Em_smallJ)*(J_big-J_small)/(Em_bigJ-Em_smallJ))+J_small
-        
-        if J==J_small:
-            J+=1
-            
-        a,b=self.getCoefficients(J)       
-        v,Ea,Em=self.formGeneralizedEllipse(a,b)
-        if Ea<Canvas.Ea_criteria and Em<Canvas.Em_criteria:
-            if J==J_small+1:
-                return J
-            else:
-                return self.find_inbetween_J(J_small,J,Ea_smallJ,Ea,Em_smallJ,Em)
-        elif Ea>=Canvas.Ea_criteria or Em>=Canvas.Em_criteria:
-            if J==J_big-1:
-                return J_big
-            else:
-                return self.find_inbetween_J(J,J_big,Ea,Ea_bigJ,Em,Em_bigJ)
-       
-       
-    def find_bigger_J(self,J_small,J_big,Ea_smallJ,Em_smallJ,Ea_bigJ,Em_bigJ):
-        #Linear extrapolate to find bigger J>J_small
-        if Ea_bigJ>=Canvas.Ea_criteria:
-            J=int((Canvas.Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
-        elif Em_bigJ>=Canvas.Em_criteria:
-            J=int((Canvas.Em_criteria-Em_smallJ)*(J_big-J_small)/(Em_bigJ-Em_smallJ))+J_small            
-        if J>J_big:
-            a,b=self.getCoefficients(J)
-        else:
-            return J_big
-        v,Ea,Em=self.formGeneralizedEllipse(a,b)
-        if Ea>=Canvas.Ea_criteria or Em>=Canvas.Em_criteria: 
-            return self.find_bigger_J(J,J_big,Ea,Ea_bigJ,Em,Em_bigJ)
-        else:
-            # we are close to the solution, hence, a while function will suffice
-            while Ea<Canvas.Ea_criteria and Em<Canvas.Em_criteria and J>J_small:
-                J-=1
-                a,b=self.getCoefficients(J)
-                v,Ea,Em=self.formGeneralizedEllipse(a,b)
-            
-            return J+1
+                    painter.drawLine(fragment_vertices[i][0]*300+self.width()/2.,fragment_vertices[i][1]*300+self.height()/2.,fragment_vertices[i+1][0]*300+self.width()/2.,fragment_vertices[i+1][1]*300+self.height()/2.)
     
 
-    def find_smaller_J(self,J_small,J_big,Ea_smallJ,Ea_bigJ):
-        #Linear extrapolate to find smaller J<J_small<J_big,
-        #The criteria is always Canvas.Ea_criteria, 
-        #because both (Ea_smallJ,Em_smallJ) and (Ea_bigJ,Em_bigJ) meet criteria. 
-        #In this case, we will always use the average error Ea for the extrapolation since the average error is a global measurement. 
-       
-        J=int((Canvas.Ea_criteria-Ea_smallJ)*(J_big-J_small)/(Ea_bigJ-Ea_smallJ))+J_small
-        a,b=self.getCoefficients(J)
-        v,Ea,Em=self.formGeneralizedEllipse(a,b)
-        if Ea<Canvas.Ea_criteria and Em<Canvas.Em_criteria:
-            return self.fingSmallerJ(J,J_small,Ea,Ea_smallJ)
-        else:
-            # we are close to the solution, hence, a while function will suffice
-            while Ea>=Canvas.Ea_criteria or Em>=Canvas.Em_criteria and J<J_small:
-                J+=1
-                a,b=self.getCoefficients(J)
-            
-            return J
-                  
-    
-    def getCoefficients(self,J):#abtain a[2j+1] and b[2j+1]
-        I=self.numPt
-        aConstArray=np.zeros(2*J+1)
-        aCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')# row-major
-        
-        bConstArray=np.zeros(2*J+1)
-        bCoefficientMatrix=np.ndarray(shape=(2*J+1,I), dtype=float, order='C')
-        
-        for i in range(I):
-            aCoefficientMatrix[0,i]=1.
-            bCoefficientMatrix[0,i]=1.
-            
-        for i in range(I):# for aCoefficientMatrix's column
-            for j in range(1,J+1):# for aCoefficientMatrix's row
-                try:
-                    vi=self.angles[i]
-                except IndexError:
-                    error_dialog = QtWidgets.QErrorMessage(self)
-                    error_dialog.showMessage('Please choose a data file first')
-                else:    
-                    aCoefficientMatrix[2*j-1,i]=math.cos(vi*j)
-                    aCoefficientMatrix[2*j,i]=math.sin(vi*j)
-
-                    # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
-                    aConstArray[2*j-1]+=(self.vertices[i][0]-self.center.x())*math.cos(vi*j)
-                    aConstArray[2*j]+=(self.vertices[i][0]-self.center.x())*math.sin(vi*j)
-                
-                    bCoefficientMatrix[2*j-1,i]=math.sin(vi*j)
-                    bCoefficientMatrix[2*j,i]=math.cos(vi*j)
-                   
-                    bConstArray[2*j-1]+=(self.vertices[i][2]-self.center.y())*math.sin(vi*j)
-                    bConstArray[2*j]+=(self.vertices[i][2]-self.center.y())*math.cos(vi*j)
-                                  
-        A=np.dot(aCoefficientMatrix,aCoefficientMatrix.transpose())
-        a=np.linalg.solve(A,aConstArray)   
-        B=np.dot(bCoefficientMatrix,bCoefficientMatrix.transpose())      
-        b=np.linalg.solve(B,bConstArray) 
-        
-        return a,b
-        
-    
-    def formGeneralizedEllipse(self,a,b):
-        #CoefficientMatrix
-        I=self.numPt
-        generalisedEllipseVertices=[[0 for i in range(2)] for j in range(I)] 
-        Ea=0.0
-        Em=0.0
-        d=[]
-        J=len(a)/2
-        for i in range(I):
-            generalisedEllipseVertices[i][0]=self.center.x()+a[0]
-            generalisedEllipseVertices[i][1]=self.center.y()+b[0]
-            v=self.angles[i]
-            for j in range(1,J+1):
-                generalisedEllipseVertices[i][0]+=a[2*j-1]*math.cos(j*v)+a[2*j]*math.sin(j*v)
-                generalisedEllipseVertices[i][1]+=b[2*j-1]*math.sin(j*v)+b[2*j]*math.cos(j*v)
-           
-            di=math.sqrt((self.vertices[i][0]-generalisedEllipseVertices[i][0])**2+(self.vertices[i][2]-generalisedEllipseVertices[i][1])**2)
-            d.append(di)
-            Ea+=(di/self.d_bar[i])
-            if Em<di/self.d_bar[i]:
-                Em=di/self.d_bar[i]
-        Ea=Ea/self.numPt
-        
-        return generalisedEllipseVertices,Ea,Em
-             
-   
     def draw_originalEllipse(self,painter):
         penColor=QtCore.Qt.red   
         pen=QtGui.QPen()
