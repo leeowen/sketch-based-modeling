@@ -455,17 +455,15 @@ def findJ(vertices,angles,d_bar,center,Ea_criteria,Em_criteria):
     elif Ea10>=Ea_criteria or Em10>=Em_criteria:
         J=find_bigger_J(vertices,angles,d_bar, center,3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria)
     elif Ea3>=Ea_criteria or Em3>=Em_criteria:
-        J=find_inbetween_J(vertices,angles,d_bar, center,3, 10, Ea3, Ea10, Em3, Em10, Ea_criteria,Em_criteria)
+        J=find_inbetween_J(vertices,angles,d_bar, center,3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria,Em_criteria)
     return J
 
 
-def find_inbetween_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Ea_bigJ, Em_smallJ, Em_bigJ, Ea_criteria,Em_criteria):
+def find_inbetween_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Em_smallJ,Ea_bigJ, Em_bigJ, Ea_criteria,Em_criteria):
     # Linear interpolate to find J_small<J<J_big
     if J_small > J_big:
-        tmp = J_small
-        J_small = J_big
-        J_big = tmp
-
+        raise ValueError('J_small({}) is bigger than J_big({})'.format(J_small, J_big))
+    """
     if Ea_smallJ < Ea_criteria and Ea_bigJ >= Ea_criteria:
         tmp = Ea_smallJ
         Ea_smallJ = Ea_bigJ
@@ -475,6 +473,7 @@ def find_inbetween_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Ea
         tmp = Em_smallJ
         Em_smallJ = Em_bigJ
         Em_bigJ = tmp
+    """
 
     if J_small == J_big - 1:
         return J_big
