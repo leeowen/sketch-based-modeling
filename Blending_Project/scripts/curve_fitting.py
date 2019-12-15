@@ -543,3 +543,71 @@ def find_smaller_J(vertices,angles,d_bar,center,J_small, J_big, Ea_smallJ, Ea_bi
 
         return J
 
+
+if __name__ == "__main__":
+    file_paths = [
+        'Source_LeftForeArm_cross_section_u_at_0_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_10_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_20_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_30_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_35_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_40_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_50_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_60_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_70_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_80_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_90_percentage.dat',
+        'Source_LeftForeArm_cross_section_u_at_100_percentage.dat'
+    ]
+    dirPath = cmds.workspace(fn=True)+'/data/'
+    vertices = []
+    numPt = 0
+    for file_path in file_paths:
+        with open(dirPath + file_path, 'r') as f:
+            content = f.readlines()
+            for line in content:
+                p = line.split()
+                numPt += 1
+                vertices.append(om.MVector(float(p[0]), float(p[1]), float(p[2])))
+
+        center = getCenter(vertices)
+        d_bar = get_d_bar(vertices, center)
+        angles = calculateAngle(vertices, center)
+        J = 6
+        a, b = getCoefficients(J, vertices, center, angles)
+        generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
+
+        file_name = file_path.replace('Source_', '')
+        directory = dirPath + file_name.split('_cross_section_')[0]
+
+        try:
+            os.stat(directory)
+        except:
+            os.mkdir(directory)
+
+        FILE_FILTERS = "DAT(*.dat);All Files(*.*)"
+        selected_filter = "DAT(*.dat)"  # default filter, also store last selected filter and can be used as the default filter for next select
+        save_file_path = directory + '/' +file_name
+
+        # check if user has cancel the dialog by checking if file_path is none
+        if save_file_path:
+            f = open(save_file_path, "w+")
+            f.write('range:')
+            f.write('0-360 \n')
+            f.write('center: {} {}\n'.format(center.x(), center.y()))
+            f.write('a: ')
+            for i in a:
+                f.write(str(i) + ' ')
+            f.write('\n')
+            f.write('b: ')
+            for i in b:
+                f.write(str(i) + ' ')
+            f.write('\n')
+            # f.write('angles: ')
+            # for i in self.canvas.angles:
+            #    f.write(str(i)+' ')
+            # f.write('\n')
+            f.close()
+
+
+

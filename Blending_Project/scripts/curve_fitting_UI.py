@@ -317,6 +317,11 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             f.write('b: ')
             for i in self.canvas.b:
                 f.write(str(i)+' ')
+            f.write('\n')
+            #f.write('angles: ')
+            #for i in self.canvas.angles:
+            #    f.write(str(i)+' ')
+            #f.write('\n')
             f.close()
         
         
