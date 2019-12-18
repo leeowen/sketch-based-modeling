@@ -545,6 +545,7 @@ def find_smaller_J(vertices,angles,d_bar,center,J_small, J_big, Ea_smallJ, Ea_bi
 
 
 if __name__ == "__main__":
+    """
     file_paths = [
         'Source_LeftForeArm_cross_section_u_at_0_percentage.dat',
         'Source_LeftForeArm_cross_section_u_at_10_percentage.dat',
@@ -558,6 +559,19 @@ if __name__ == "__main__":
         'Source_LeftForeArm_cross_section_u_at_80_percentage.dat',
         'Source_LeftForeArm_cross_section_u_at_90_percentage.dat',
         'Source_LeftForeArm_cross_section_u_at_100_percentage.dat'
+    ]
+    """
+    file_paths = [
+        'Source_LeftLeg_cross_section_u_at_10_percentage.dat',
+        'Source_LeftLeg_cross_section_u_at_20_percentage.dat',
+        'Source_LeftLeg_cross_section_u_at_30_percentage.dat',
+        'Source_LeftLeg_cross_section_u_at_40_percentage.dat',
+        'Source_LeftLeg_cross_section_u_at_50_percentage.dat',
+        'Source_LeftLeg_cross_section_u_at_60_percentage.dat',
+        'Source_LeftLeg_cross_section_u_at_70_percentage.dat',
+        'Source_LeftLeg_cross_section_u_at_80_percentage.dat',
+        'Source_LeftLeg_cross_section_u_at_90_percentage.dat',
+        'Source_LeftLeg_cross_section_u_at_100_percentage.dat'
     ]
     dirPath = cmds.workspace(fn=True)+'/data/'
     vertices = []
