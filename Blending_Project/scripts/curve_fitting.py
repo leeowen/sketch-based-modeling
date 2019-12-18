@@ -599,11 +599,7 @@ if __name__ == "__main__":
         except:
             os.mkdir(directory)
 
-        FILE_FILTERS = "DAT(*.dat);All Files(*.*)"
-        selected_filter = "DAT(*.dat)"  # default filter, also store last selected filter and can be used as the default filter for next select
         save_file_path = directory + '/' +file_name
-
-        # check if user has cancel the dialog by checking if file_path is none
         if save_file_path:
             f = open(save_file_path, "w+")
             f.write('range:')
@@ -622,6 +618,23 @@ if __name__ == "__main__":
             #    f.write(str(i)+' ')
             # f.write('\n')
             f.close()
-
+            
+        """
+        image_name = file_name.split('.dat')[0] + '_generalised_ellipse.png'
+        image_dir = cmds.workspace(fn=True)+'/images/'+file_name.split('_cross_section_')[0]+ '/'
+        try:
+            os.stat(directory)
+        except:
+            os.mkdir(directory)
+        save_image_path = image_dir + image_name
+        
+        file=QtCore.QFile(file_path)
+        try:
+            file.open(QtCore.QIODevice.WriteOnly):
+            pixmap=QtGui.QPixmap((500,400))
+            self.canvas.render(pixmap)
+            pixmap.save(file,"PNG")
+            file.close()
+        """        
 
 

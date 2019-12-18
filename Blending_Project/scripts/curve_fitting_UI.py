@@ -330,7 +330,17 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         dirPath+='images/'
         FILE_FILTERS="PNG(*.png);All Files(*.*)"
         selected_filter="PNG(*.png)"# default filter, also store last selected filter and can be used as the default filter for next select
-        file_path,selected_filter=QtWidgets.QFileDialog.getSaveFileName(self, 'save',dirPath+'images',FILE_FILTERS,selected_filter)
+        image_name = self.filePath_lineEdit.text()
+        image_name = image_name.split('Source_')[1]
+        image_name = image_name.replace('.dat','.png')
+        part_name = image_name.split('_cross_section')[0]
+        image_name = image_name.replace('_cross_section','_generalised_ellipse')
+        dirPath += part_name+ '/'
+        try:
+            os.stat(dirPath)
+        except:
+            os.mkdir(dirPath)
+        file_path,selected_filter = QtWidgets.QFileDialog.getSaveFileName(self, 'save', dirPath+image_name, FILE_FILTERS, selected_filter)
         # check if user has cancel the dialog by checking if file_path is none
         if file_path:
             a=file_path.find('.png')
