@@ -144,7 +144,6 @@ def formGeneralizedEllipse(a, b, vertices, center, angles, d_bar):
         if Em < di / d_bar[i]:
             Em = di / d_bar[i]
     Ea = Ea / I
-
     return generalisedEllipseVertices, Ea, Em
 
 
@@ -560,7 +559,7 @@ if __name__ == "__main__":
         'Source_LeftForeArm_cross_section_u_at_90_percentage.dat',
         'Source_LeftForeArm_cross_section_u_at_100_percentage.dat'
     ]
-    """
+    
     file_paths = [
         'Source_LeftLeg_cross_section_u_at_10_percentage.dat',
         'Source_LeftLeg_cross_section_u_at_20_percentage.dat',
@@ -573,10 +572,23 @@ if __name__ == "__main__":
         'Source_LeftLeg_cross_section_u_at_90_percentage.dat',
         'Source_LeftLeg_cross_section_u_at_100_percentage.dat'
     ]
+    """
+    file_paths = [
+        'Source_LeftArm_cross_section_u_at_16_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_20_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_30_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_40_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_51_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_60_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_70_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_80_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_90_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_100_percentage.dat'
+    ]
     dirPath = cmds.workspace(fn=True)+'/data/'
-    vertices = []
-    numPt = 0
     for file_path in file_paths:
+        vertices = []
+        numPt = 0
         with open(dirPath + file_path, 'r') as f:
             content = f.readlines()
             for line in content:
@@ -613,10 +625,10 @@ if __name__ == "__main__":
             for i in b:
                 f.write(str(i) + ' ')
             f.write('\n')
-            # f.write('angles: ')
-            # for i in self.canvas.angles:
-            #    f.write(str(i)+' ')
-            # f.write('\n')
+            f.write('angles: ')
+            for i in angles:
+               f.write(str(i)+' ')
+            f.write('\n')
             f.close()
             
         """
