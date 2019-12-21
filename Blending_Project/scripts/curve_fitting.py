@@ -570,6 +570,7 @@ if __name__ == "__main__":
         'Source_LeftLeg_cross_section_u_at_70_percentage.dat',
         'Source_LeftLeg_cross_section_u_at_80_percentage.dat',
         'Source_LeftLeg_cross_section_u_at_90_percentage.dat',
+        'Source_LeftLeg_cross_section_u_at_95_percentage.dat',
         'Source_LeftLeg_cross_section_u_at_100_percentage.dat'
     ]
     """
@@ -578,13 +579,15 @@ if __name__ == "__main__":
         'Source_LeftArm_cross_section_u_at_20_percentage.dat',
         'Source_LeftArm_cross_section_u_at_30_percentage.dat',
         'Source_LeftArm_cross_section_u_at_40_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_51_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_50_percentage.dat',
         'Source_LeftArm_cross_section_u_at_60_percentage.dat',
         'Source_LeftArm_cross_section_u_at_70_percentage.dat',
         'Source_LeftArm_cross_section_u_at_80_percentage.dat',
         'Source_LeftArm_cross_section_u_at_90_percentage.dat',
+        'Source_LeftArm_cross_section_u_at_95_percentage.dat',
         'Source_LeftArm_cross_section_u_at_100_percentage.dat'
     ]
+
     dirPath = cmds.workspace(fn=True)+'/data/'
     for file_path in file_paths:
         vertices = []

@@ -54,7 +54,7 @@ for i in leg:
     
     #tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_LeftLeg",md=40) 
     #cmds.parent( tmp, grp )
-leftLeg=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]
+leftLeg=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.95,1]
 for i in leftLeg:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_LeftLeg",md=40) 
     cmds.parent( tmp, grp )
@@ -64,7 +64,7 @@ for i in arm:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_RightArm",md=40) 
     cmds.parent( tmp, grp )
 
-leftArm=[0.16,0.2,0.3,0.4,0.51,0.6,0.7,0.8,0.9,1.0]
+leftArm=[0.16,0.2,0.3,0.4,0.50,0.6,0.7,0.8,0.9,0.95,1.0]
 for i in leftArm:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_LeftArm",md=40) 
     cmds.parent( tmp, grp )

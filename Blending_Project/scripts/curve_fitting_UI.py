@@ -562,8 +562,8 @@ class Canvas(QtWidgets.QDialog):
                                                                                                      self.angles, self.d_bar)
      
                 for i in range(I):
-                    painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2.,self.generalisedEllipseVertices[i][1]*300+self.height()/2.,self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2.,self.generalisedEllipseVertices[(i+1)%I][1]*300+self.height()/2.)    
-        
+                    painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2.,self.generalisedEllipseVertices[i][1]*300+self.height()/2.,self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2.,self.generalisedEllipseVertices[(i+1)%I][1]*300+self.height()/2.)     
+                
         elif self.segment_mode==True:      
             if self.manualJ_mode==True:
                 J=self.manualJ
@@ -601,8 +601,9 @@ class Canvas(QtWidgets.QDialog):
                 self.Em=Em
                 for i in range(len(fragment_vertices)-1):
                     painter.drawLine(fragment_vertices[i][0]*300+self.width()/2.,fragment_vertices[i][1]*300+self.height()/2.,fragment_vertices[i+1][0]*300+self.width()/2.,fragment_vertices[i+1][1]*300+self.height()/2.)
-    
+                maya_polygon_plane(generalisedEllipseVertices)
 
+    
     def draw_originalEllipse(self,painter):
         penColor=QtCore.Qt.red   
         pen=QtGui.QPen()
@@ -675,7 +676,33 @@ class Canvas(QtWidgets.QDialog):
     def getEa(self):
         return self.Ea
         
+def maya_polygon_plane(generalisedEllipseVertices):
+    width = 10.0
+    length = 10.0
+    face_count = 1
+    vertex_count = len(generalisedEllipseVertices)
+    # Create vertex positions
+    vertices = OpenMaya.MFloatPointArray()
+    for v in generalisedEllipseVertices:
+        vertices.append(OpenMaya.MFloatPoint(v[0]*300, 0.0 , v[1]*300))
 
+    # Vertex count for this polygon face
+    face_vertexes = OpenMaya.MIntArray()
+    face_vertexes.append(vertex_count)
+
+    # Vertex indexes for this polygon face
+    vertex_indexes = OpenMaya.MIntArray()
+    vertex_indexes.copy([i for i in range(vertex_count)])
+
+    # Create mesh
+    mesh_object = OpenMaya.MObject()
+    mesh = OpenMaya.MFnMesh()
+    mesh_object = mesh.create(vertices, face_vertexes, vertex_indexes)
+    mesh.updateSurface()
+    # Assign default shading
+    cmds.sets(mesh.name(), edit=True, forceElement="initialShadingGroup")
+    
+    
 if __name__=="__main__":
     # Check to see if the UI already exists and if so, delete
     if cmds.window("generalizedEllipseWin",exists=True):
