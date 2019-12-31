@@ -1,9 +1,12 @@
 import math,sys, os
 from PySide2 import QtCore
+import maya.api.OpenMaya as om
 
 sys.path.append('/usr/lib64/python2.7/site-packages')
 sys.path.append('./.local/lib/python2.7/site-packages')
 import numpy as np
+from scipy import optimize
+import matplotlib.pyplot as plt
 
 
 def maya_useNewAPI():
@@ -18,10 +21,25 @@ def getCenter(vertices):
     return center
 
 
+def getCenter3(vertices):
+    center = om.MVector(0.0, 0.0, 0.0)
+    for v in vertices:
+        center += v
+    center = center / len(vertices)
+    return center
+
+
 def get_d_bar(vertices,center):
     d_bar = []
     for v in vertices:
         d_bar.append(math.sqrt((v[0] - center.x()) ** 2 + (v[2] - center.y()) ** 2))
+    return d_bar
+
+
+def get_d_bar3(vertices,center):
+    d_bar = []
+    for v in vertices:
+        d_bar.append(math.sqrt((v[0] - center[0]) ** 2 + (v[1] - center[1]) ** 2 + (v[2] - center[2]) ** 2))
     return d_bar
 
 
@@ -39,6 +57,26 @@ def calculateAngle(vertices,center):
         elif v[0] < center.x() and v[2] > center.y():
             anglem = 2 * math.pi - anglem
         elif v[0] < center.x() and v[2] < center.y():
+            anglem = 2 * math.pi - anglem
+
+        angles.append(anglem)
+    return angles
+
+
+def calculateAngle3(vertices,center):
+    angles = []
+    for v in vertices:
+        anglem = (v[2] - center[2]) / math.sqrt(
+            (v[2] - center[2]) ** 2 + (v[0] - center[0]) ** 2)
+        anglem = math.acos(anglem)
+
+        if v[0] > center[0] and v[2] > center[2]:
+            pass
+        elif v[0] > center[0] and v[2] < center[2]:
+            pass
+        elif v[0] < center[0] and v[2] > center[2]:
+            anglem = 2 * math.pi - anglem
+        elif v[0] < center[0] and v[2] < center[2]:
             anglem = 2 * math.pi - anglem
 
         angles.append(anglem)
@@ -121,6 +159,55 @@ def getCoefficients(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
     return a, b
 
 
+def getCoefficients3(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
+    I = len(vertices)
+    aConstArray = np.zeros(2 * J + 1)
+    aCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')  # row-major
+
+    bConstArray = np.zeros(2 * J + 1)
+    bCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')
+
+    cConstArray = np.zeros(2 * J + 1)
+    cCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')
+
+    for i in range(I):
+        aCoefficientMatrix[0, i] = 1.
+        bCoefficientMatrix[0, i] = 1.
+        cCoefficientMatrix[0, i] = 1.
+
+    for i in range(I):  # for aCoefficientMatrix's column
+        for j in range(1, J + 1):  # for aCoefficientMatrix's row
+            vi = angles[i]
+
+            aCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
+            aCoefficientMatrix[2 * j, i] = math.sin(vi * j)
+
+            # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
+            aConstArray[2 * j - 1] += (vertices[i][0] - center[0]) * math.cos(vi * j)
+            aConstArray[2 * j] += (vertices[i][0] - center[0]) * math.sin(vi * j)
+
+            bCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
+            bCoefficientMatrix[2 * j, i] = math.sin(vi * j)
+
+            bConstArray[2 * j - 1] += (vertices[i][1] - center[1]) * math.cos(vi * j)
+            bConstArray[2 * j] += (vertices[i][1] - center[1]) * math.sin(vi * j)
+
+            cCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
+            cCoefficientMatrix[2 * j, i] = math.sin(vi * j)
+
+            cConstArray[2 * j - 1] += (vertices[i][2] - center[2]) * math.cos(vi * j)
+            cConstArray[2 * j] += (vertices[i][2] - center[2]) * math.sin(vi * j)
+
+    A = np.dot(aCoefficientMatrix, aCoefficientMatrix.transpose())
+    a = np.linalg.solve(A, aConstArray)
+    B = np.dot(bCoefficientMatrix, bCoefficientMatrix.transpose())
+    b = np.linalg.solve(B, bConstArray)
+    C = np.dot(cCoefficientMatrix, cCoefficientMatrix.transpose())
+    c = np.linalg.solve(C, cConstArray)
+
+    return a, b, c
+
+
 def formGeneralizedEllipse(a, b, vertices, center, angles, d_bar):
     # CoefficientMatrix
     I = len(vertices)
@@ -139,6 +226,35 @@ def formGeneralizedEllipse(a, b, vertices, center, angles, d_bar):
 
         di = math.sqrt((vertices[i][0] - generalisedEllipseVertices[i][0]) ** 2 + (
                     vertices[i][2] - generalisedEllipseVertices[i][1]) ** 2)
+        d.append(di)
+        Ea += (di / d_bar[i])
+        if Em < di / d_bar[i]:
+            Em = di / d_bar[i]
+    Ea = Ea / I
+    return generalisedEllipseVertices, Ea, Em
+
+
+def formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar):
+    # CoefficientMatrix
+    I = len(vertices)
+    generalisedEllipseVertices = [[0 for i in range(3)] for j in range(I)]
+    Ea = 0.0
+    Em = 0.0
+    d = []
+    J = len(a) / 2
+    for i in range(I):
+        generalisedEllipseVertices[i][0] = center[0] + a[0]
+        generalisedEllipseVertices[i][1] = center[1] + b[0]
+        generalisedEllipseVertices[i][2] = center[2] + c[0]
+        v = angles[i]
+        for j in range(1, J + 1):
+            generalisedEllipseVertices[i][0] += a[2 * j - 1] * math.cos(j * v) + a[2 * j] * math.sin(j * v)
+            generalisedEllipseVertices[i][1] += b[2 * j - 1] * math.sin(j * v) + b[2 * j] * math.cos(j * v)
+            generalisedEllipseVertices[i][2] += c[2 * j - 1] * math.cos(j * v) + c[2 * j] * math.sin(j * v)
+
+        di = math.sqrt((vertices[i][0] - generalisedEllipseVertices[i][0]) ** 2 + (
+                    vertices[i][1] - generalisedEllipseVertices[i][1]) ** 2 + (
+                    vertices[i][2] - generalisedEllipseVertices[i][2]) ** 2)
         d.append(di)
         Ea += (di / d_bar[i])
         if Em < di / d_bar[i]:
@@ -560,18 +676,30 @@ if __name__ == "__main__":
         'Source_LeftForeArm_cross_section_u_at_100_percentage.dat'
     ]
     
+        file_paths = [
+        'Source_LeftLeg_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_95_percentage_worldspace.dat'
+    ]
+    """
     file_paths = [
-        'Source_LeftLeg_cross_section_u_at_10_percentage.dat',
-        'Source_LeftLeg_cross_section_u_at_20_percentage.dat',
-        'Source_LeftLeg_cross_section_u_at_30_percentage.dat',
-        'Source_LeftLeg_cross_section_u_at_40_percentage.dat',
-        'Source_LeftLeg_cross_section_u_at_50_percentage.dat',
-        'Source_LeftLeg_cross_section_u_at_60_percentage.dat',
-        'Source_LeftLeg_cross_section_u_at_70_percentage.dat',
-        'Source_LeftLeg_cross_section_u_at_80_percentage.dat',
-        'Source_LeftLeg_cross_section_u_at_90_percentage.dat',
-        'Source_LeftLeg_cross_section_u_at_95_percentage.dat',
-        'Source_LeftLeg_cross_section_u_at_100_percentage.dat'
+        'Source_RightLeg_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_95_percentage_worldspace.dat'
     ]
     """
     file_paths = [
@@ -587,7 +715,7 @@ if __name__ == "__main__":
         'Source_LeftArm_cross_section_u_at_95_percentage.dat',
         'Source_LeftArm_cross_section_u_at_100_percentage.dat'
     ]
-
+    """
     dirPath = cmds.workspace(fn=True)+'/data/'
     for file_path in file_paths:
         vertices = []
@@ -599,13 +727,6 @@ if __name__ == "__main__":
                 numPt += 1
                 vertices.append(om.MVector(float(p[0]), float(p[1]), float(p[2])))
 
-        center = getCenter(vertices)
-        d_bar = get_d_bar(vertices, center)
-        angles = calculateAngle(vertices, center)
-        J = 6
-        a, b = getCoefficients(J, vertices, center, angles)
-        generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
-
         file_name = file_path.replace('Source_', '')
         directory = dirPath + file_name.split('_cross_section_')[0]
 
@@ -614,26 +735,60 @@ if __name__ == "__main__":
         except:
             os.mkdir(directory)
 
-        save_file_path = directory + '/' +file_name
-        if save_file_path:
-            f = open(save_file_path, "w+")
-            f.write('range:')
-            f.write('0-360 \n')
-            f.write('center: {} {}\n'.format(center.x(), center.y()))
-            f.write('a: ')
-            for i in a:
-                f.write(str(i) + ' ')
-            f.write('\n')
-            f.write('b: ')
-            for i in b:
-                f.write(str(i) + ' ')
-            f.write('\n')
-            f.write('angles: ')
-            for i in angles:
-               f.write(str(i)+' ')
-            f.write('\n')
-            f.close()
-            
+        save_file_path = directory + '/' + file_name
+
+        J = 6
+
+        if 'worldspace' not in file_path:
+            center = getCenter(vertices)
+            d_bar = get_d_bar(vertices, center)
+            angles = calculateAngle(vertices, center)
+            a, b = getCoefficients(J, vertices, center, angles)
+            generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
+
+            with open(save_file_path, "w+") as f:
+                f.write('range:')
+                f.write('0-360 \n')
+                f.write('center: {} {}\n'.format(center.x(), center.y()))
+                f.write('a: ')
+                for i in a:
+                    f.write(str(i) + ' ')
+                f.write('\n')
+                f.write('b: ')
+                for i in b:
+                    f.write(str(i) + ' ')
+                f.write('\n')
+                f.write('angles: ')
+                for i in angles:
+                   f.write(str(i)+' ')
+                f.write('\n')
+        else:
+            center = getCenter3(vertices)
+            d_bar = get_d_bar3(vertices, center)
+            angles = calculateAngle3(vertices, center)
+            a, b, c = getCoefficients3(J, vertices, center, angles)
+            generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar)
+
+            with open(save_file_path, "w+") as f:
+                f.write('range:')
+                f.write('0-360 \n')
+                f.write('center: {} {} {}\n'.format(center[0], center[1], center[2]))
+                f.write('a: ')
+                for i in a:
+                    f.write(str(i) + ' ')
+                f.write('\n')
+                f.write('b: ')
+                for i in b:
+                    f.write(str(i) + ' ')
+                f.write('\n')
+                f.write('c: ')
+                for i in c:
+                    f.write(str(i) + ' ')
+                f.write('\n')
+                f.write('angles: ')
+                for i in angles:
+                   f.write(str(i)+' ')
+                f.write('\n')
         """
         image_name = file_name.split('.dat')[0] + '_generalised_ellipse.png'
         image_dir = cmds.workspace(fn=True)+'/images/'+file_name.split('_cross_section_')[0]+ '/'

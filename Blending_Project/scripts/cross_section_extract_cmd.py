@@ -7,11 +7,12 @@
 #   To use the command, select the joint and mesh that you want data for and
 #   then type the command, being sure to use the -mu/-myUParameter flag to specify
 #   the location on the Joint where a ray will cast out and later intersect with the mesh 
-#   to form the cross-section curve.
+#   to form the cross-section curve. By default, the output is in local space.
+#   Set the -world flag to True to set the output in -m/-myWorld space instead.
 # 
 #   For example:
 #    
-#     crossSectionExtract -mu 0.1 -md 40 -mmn "source_male_mesh" -mbn "Source_LeftUpLeg"
+#     crossSectionExtract -mu 0.1 -md 40 -mmn "source_male_mesh" -mbn "Source_LeftUpLeg" -world True
 #
 #   The output is made up by two parts. One is a cross section curve extracted from mesh "Source_male_meshShape", 
 #   paralled with a Joint named "Source_LeftUpLeg" at the location u=0.1, and it is in world space. 
@@ -42,6 +43,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         self.nextJoint_dagPath = om.MDagPath() 
         self.u_parameter=0.0    #default value
         self.division=20
+        self.world_flag = False
 
         
     @staticmethod
@@ -56,6 +58,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         syntax.addFlag('-mmn','-myMeshName',om.MSyntax.kString)
         syntax.addFlag('-mbn','-myJointName',om.MSyntax.kString)
         syntax.addFlag('-md','-myDivision',om.MSyntax.kLong)
+        syntax.addFlag('-mw','-myWorld', om.MSyntax.kBoolean)
         return syntax
         
     
@@ -71,13 +74,15 @@ class CrossSectionExtractCmd(om.MPxCommand):
     def parseArguments(self, args):
         argData=om.MArgDatabase(self.syntax(),args)
         if argData.isFlagSet('-mu'):
-            self.u_parameter = argData.flagArgumentDouble( '-mu', 0 )
+            self.u_parameter = argData.flagArgumentDouble('-mu', 0)
         if argData.isFlagSet('-mmn'):
-            self.mesh_name = argData.flagArgumentString( '-mmn', 0 )
+            self.mesh_name = argData.flagArgumentString('-mmn', 0)
         if argData.isFlagSet('-mbn'):
-            self.joint_name = argData.flagArgumentString( '-mbn', 0 )  
+            self.joint_name = argData.flagArgumentString('-mbn', 0)
         if argData.isFlagSet('-md'):
-            self.division = argData.flagArgumentInt( '-md', 0 )  
+            self.division = argData.flagArgumentInt('-md', 0 )
+        if argData.isFlagSet('-mw'):
+            self.world_flag = argData.flagArgumentBool('-mw', 0)
                 
         # WHEN NO MESH IS SPECIFIED IN THE COMMAND, GET THE FIRST SELECTED MESH FROM THE SELECTION LIST:
         if (self.mesh_name == "") or (self.joint_name == ""):
@@ -197,17 +202,18 @@ class CrossSectionExtractCmd(om.MPxCommand):
             rayDirection=om.MFloatVector(ray)
             
             try:
-                hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kWorld,9999,False,idsSorted=False,tolerance=0.001)    
+                hitPoint, hitRayParam, hitFace, hitTriangle, hitBary1, hitBary2 = meshFn.closestIntersection(raySource,rayDirection,om.MSpace.kWorld,9999,False,idsSorted=False,tolerance=0.001)
             except:
                 raise
             else:
                 eps.append(hitPoint)
                 hitPointLocal=om.MVector(hitPoint[0],hitPoint[1],hitPoint[2])
-                hitPointLocal-=ray_center
-                # This is the quaternion that transform a point from world coordinate into local coordinate 
-                # Hence, we need to inverse the quaternion we get above
-                hitPointLocal=hitPointLocal.rotateBy(quaternion.inverse())
-                epsLocal.append(hitPointLocal)
+                if self.world_flag == False:
+                    hitPointLocal -= ray_center
+                    # This is the quaternion that transform a point from world coordinate into local coordinate
+                    # Hence, we need to inverse the quaternion we get above
+                    hitPointLocal=hitPointLocal.rotateBy(quaternion.inverse())
+                    epsLocal.append(hitPointLocal)
                 
         curveFn=om.MFnNurbsCurve()
         self.cross_section_obj=curveFn.createWithEditPoints(eps,2,om.MFnNurbsCurve.kClosed, False, False, True)
@@ -228,13 +234,22 @@ class CrossSectionExtractCmd(om.MPxCommand):
         om.MPxCommand.setResult(om.MFnDependencyNode(self.cross_section_obj).name())
                                 #,om.MFnDependencyNode(self.cross_section_obj_meta).name()])
         save_path=dirPath+'data/'
-        complete_name=os.path.join(save_path,transform_name+'.dat')
-        outFile=open(complete_name,'w+')# Here we used "w" letter in our argument, which indicates write and the plus sign that means it will create a file if it does not exist in library
-        for i in range(0,self.division):
-            x=epsLocal[i].x
-            y=epsLocal[i].y
-            z=epsLocal[i].z
-            outFile.write('{} {} {} \n'.format(x,y,z))
+        if self.world_flag == False:
+            complete_name=os.path.join(save_path,transform_name+'.dat')
+            outFile=open(complete_name,'w+')# Here we used "w" letter in our argument, which indicates write and the plus sign that means it will create a file if it does not exist in library
+            for i in range(0,self.division):
+                x=epsLocal[i].x
+                y=epsLocal[i].y
+                z=epsLocal[i].z
+                outFile.write('{} {} {} \n'.format(x,y,z))
+        else:
+            complete_name=os.path.join(save_path,transform_name+'_worldspace.dat')
+            outFile=open(complete_name,'w+')# Here we used "w" letter in our argument, which indicates write and the plus sign that means it will create a file if it does not exist in library
+            for i in range(0,self.division):
+                x=eps[i].x
+                y=eps[i].y
+                z=eps[i].z
+                outFile.write('{} {} {} \n'.format(x,y,z))
             
         outFile.close()
         joint_file_name = os.path.join(save_path,self.joint_name+'.dat')
