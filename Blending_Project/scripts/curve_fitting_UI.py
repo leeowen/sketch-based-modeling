@@ -570,7 +570,7 @@ class Canvas(QtWidgets.QDialog):
                 a_first_half,b_first_half=curve_fitting.coefficients_solver_for_first_half_of_segmented_ellipse(self.vertices_first_half,
                                                                                                                 self.angles_first_half,
                                                                                                                 self.center_first_half, J)
-                a_second_half,b_second_half=curve_fitting.coefficients_solver_for_second_half_of_segmented_ellipse(self.vertices_second_half, self.angles_second_half, self.center_first_half, self.center_second_half, J, a_first_half, b_first_half)
+                a_second_half,b_second_half=curve_fitting.coefficients_solver_for_second_half_of_segmented_ellipse(a_first_half, b_first_half)
 
                 segmented_ellipse_vertices,Ea,Em=curve_fitting.form_vertices_of_segmented_ellipse(self.vertices_first_half,
                                                                                                   self.vertices_second_half,
