@@ -55,6 +55,14 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.originalEllipse_checkBox=QtWidgets.QCheckBox('original ellipse')
         self.originalEllipse_checkBox.setChecked(False)
         self.originalEllipse_checkBox.setVisible(False)
+
+        self.showTangent_checkBox = QtWidgets.QCheckBox('show tangent')
+        self.showTangent_checkBox.setChecked(False)
+        self.showTangent_checkBox.setVisible(False)
+
+        self.showCurvature_checkBox = QtWidgets.QCheckBox('show curvature')
+        self.showCurvature_checkBox.setChecked(False)
+        self.showCurvature_checkBox.setVisible(False)
                        
         self.radio_group=QtWidgets.QGroupBox()  
         self.manualJ_mode_radioButton=QtWidgets.QRadioButton('manual J')
@@ -169,6 +177,13 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         right_layout.addLayout(lineWidth_layout)
         
         right_layout.addStretch(1)
+
+        checkBox2_layout=QtWidgets.QVBoxLayout()
+        checkBox2_layout.addWidget(self.showTangent_checkBox)
+        checkBox2_layout.addWidget(self.showCurvature_checkBox)
+        right_layout.addLayout(checkBox2_layout)
+
+        right_layout.addStretch(1)
         
         checkBox_layout=QtWidgets.QVBoxLayout()
         checkBox_layout.addWidget(self.standardEllipse_checkBox)
@@ -232,6 +247,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.autoJ_mode_radioButton.toggled.connect(self.update_visibility_auto_J_mode)
         self.segment_comboBox.currentTextChanged.connect(self.segmentMode_change)
         self.range_slider.valueChanged.connect(self.fragment_range_change)
+        self.showCurvature_checkBox.toggled.connect(self.update_curvature)
+        self.showTangent_checkBox.toggled.connect(self.update_tangent)
         
     
     def fragment_range_change(self,value):
@@ -285,7 +302,17 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.canvas.repaint()
         self.showEaEm()
         
-            
+
+    def update_tangent(self,checked):
+        self.canvas.activateTangent=checked
+        self.canvas.repaint()
+
+
+    def update_curvature(self,checked):
+        self.canvas.activateCurvature=checked
+        self.canvas.repaint()
+
+
     def save_dataFn(self):
         dirPath=cmds.workspace(q=True, rootDirectory=True )
         dirPath+='data/'
@@ -427,6 +454,8 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
 
         self.saveAsDat_button.setVisible(checked)
         self.saveAsImg_button.setVisible(checked)
+        self.showCurvature_checkBox.setVisible(checked)
+        self.showTangent_checkBox.setVisible(checked)
             
               
 class Canvas(QtWidgets.QDialog):
@@ -441,28 +470,16 @@ class Canvas(QtWidgets.QDialog):
         self.originalEllipse=False
         self.generalisedEllipse=False
         self.standardEllipse=False
-        self.vertices=[]
-        self.angles=[]
-        self.d=[]
-        self.d_bar=[]
-        self.Ea=0.0
-        self.Em=0.0
-        self.numPt=0
-        self.center = QtCore.QPointF(0.0,0.0)
         self.manualJ=10
         self.autoJ_value=0
-        self.a=[]
-        self.b=[]
-        self.generalisedEllipseVertices=[]
         self.lineWidth=1
         self.manualJ_mode=False
         self.autoJ_mode=False
         self.single_piece_mode=True
         self.segment_mode=False
         self.fragment_mode=False
-        self.fragment_range=0.0
-        self.start_index=0
-        self.end_index=0
+        self.activateTangent=False
+        self.activateCurvature=False
         
         
     def sizeHint(self):
@@ -479,6 +496,20 @@ class Canvas(QtWidgets.QDialog):
         
     
     def readFile(self,file_path):
+        self.vertices = []
+        self.angles = []
+        self.d = []
+        self.d_bar = []
+        self.Ea = 0.0
+        self.Em = 0.0
+        self.numPt = 0
+        self.center = QtCore.QPointF(0.0, 0.0)
+        self.fragment_range=0.0
+        self.start_index=0
+        self.end_index=0
+        self.a=[]
+        self.b=[]
+        self.generalisedEllipseVertices=[]
         f = open(file_path,'r')
         content = f.readlines()
         for line in content:
@@ -491,6 +522,8 @@ class Canvas(QtWidgets.QDialog):
         self.d_bar = curve_fitting.get_d_bar(self.vertices, self.center)
         
         self.angles = curve_fitting.calculateAngle(self.vertices, self.center)
+        self.tangents = curve_fitting.calculateTangent(self.vertices,self.angles)
+        self.curvatures = curve_fitting.calculateCurvature(self.tangents,self.angles)
         
         # split data for 2 segments respectively
         self.a_first_half=[]
@@ -622,6 +655,23 @@ class Canvas(QtWidgets.QDialog):
                     p1=QtCore.QPointF(self.vertices[i-1][0]*300+self.width()/2.,self.vertices[i-1][2]*300+self.height()/2.)
                     p2=QtCore.QPointF(self.vertices[i][0]*300+self.width()/2.,self.vertices[i][2]*300+self.height()/2.)
                     painter.drawLine(p1,p2)
+
+                    if self.activateTangent == True:
+                        t = QtGui.QVector2D(self.tangents[i][0],self.tangents[i][1]).normalized()*20.0
+                        p3 = QtCore.QPointF(t.x()+p2.x(),t.y()+p2.y())
+                        pen1 = QtGui.QPen()
+                        pen1.setColor(QtCore.Qt.blue)
+                        painter.setPen(pen1)
+                        painter.drawLine(p2,p3)
+                    if self.activateCurvature == True:
+                        normal = QtGui.QVector2D(-self.tangents[i][1],self.tangents[i][0]).normalized()
+                        p4 = QtCore.QPointF(normal.x()*self.curvatures[i]+p2.x(),normal.y()*self.curvatures[i]+p2.y())
+                        pen2 = QtGui.QPen()
+                        pen2.setColor(QtCore.Qt.green)
+                        painter.setPen(pen2)
+                        painter.drawLine(p2, p4)
+
+                    painter.setPen(pen)
                 
             else:
                 if self.start_index<self.end_index:
@@ -637,7 +687,8 @@ class Canvas(QtWidgets.QDialog):
                     for i in range(self.end_index+1):   
                         p1=QtCore.QPointF(self.vertices[i-1][0]*300+self.width()/2.,self.vertices[i-1][2]*300+self.height()/2.)
                         p2=QtCore.QPointF(self.vertices[i][0]*300+self.width()/2.,self.vertices[i][2]*300+self.height()/2.)
-                        painter.drawLine(p1,p2) 
+                        painter.drawLine(p1,p2)
+
                             
         
     def draw_standardEllipse(self,painter): 

@@ -95,15 +95,16 @@ def calculateArcLength(vertices):
     return totalArcLength, arcLength
 
 
-def calculateTangent (vertices, angles):
+def calculateTangent(vertices, angles):
     tangents = []
     numPt = len(vertices)
     for i in range(0, numPt):
         # primes refer to the derivatives dx/dt, dy/dt with respect to the angle t
-        tan_x = (vertices[(i + 1) % numPt][0] - vertices[i - 1][0]) / (
-                    angles[(i + 1) % numPt] - angles[i - 1])
-        tan_y = (vertices[(i + 1) % numPt][2] - vertices[i - 1][2]) / (
-                    angles[(i + 1) % numPt] - angles[i - 1])
+        dt = angles[(i + 1) % numPt] - angles[i - 1]
+        if dt<0:
+            dt += math.pi*2
+        tan_x = (vertices[(i + 1) % numPt][0] - vertices[i - 1][0]) / dt
+        tan_y = (vertices[(i + 1) % numPt][2] - vertices[i - 1][2]) / dt
         tangents.append((tan_x, tan_y))
     return tangents
 
@@ -112,10 +113,11 @@ def calculateCurvature(tangents, angles):
     curvatures = []
     numPt = len(tangents)
     for i in range(0, numPt):
-        d2xdt2 = (tangents[(i + 1) % numPt][0] - tangents[i][0]) / (
-                    angles[(i + 1) % numPt] - angles[i - 1])
-        d2ydt2 = (tangenst[(i + 1) % numPt][1] - tangents[i][1]) / (
-                    angles[(i + 1) % numPt] - angles[i - 1])
+        dt = angles[(i + 1) % numPt] - angles[i - 1]
+        if dt<0:
+            dt += math.pi*2
+        d2xdt2 = (tangents[(i + 1) % numPt][0] - tangents[i][0]) / dt
+        d2ydt2 = (tangents[(i + 1) % numPt][1] - tangents[i][1]) / dt
         k = (tangents[i][0] * d2ydt2 - tangents[i][1] * d2xdt2) / pow(
             pow(tangents[i][0], 2) + pow(tangents[i][1], 2), 3.0 / 2.0)
         curvatures.append(k)
