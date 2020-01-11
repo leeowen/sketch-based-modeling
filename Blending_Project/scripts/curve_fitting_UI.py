@@ -130,7 +130,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_comboBox.setSizePolicy(sizePolicy)
         self.segment_comboBox.setMaximumWidth(150)
         self.segment_comboBox.addItem('single piece')
-        self.segment_comboBox.addItem('segment')
+        self.segment_comboBox.addItem('2 symmetrical halves')
         self.segment_comboBox.addItem('fragment')
         
         self.range_label=QtWidgets.QLabel('range:')
@@ -258,18 +258,18 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
     def segmentMode_change(self,text):
         if text=='single piece':
             self.canvas.single_piece_mode=True
-            self.canvas.segment_mode=False
+            self.canvas.symmetry_mode=False
             self.canvas.fragment_mode=False
             self.range_label.setVisible(False)
             self.range_slider.setVisible(False)
-        elif text=='segment':
-            self.canvas.segment_mode=True
+        elif text=='2 symmetrical halves':
+            self.canvas.symmetry_mode=True
             self.canvas.single_piece_mode=False
             self.canvas.fragment_mode=False
             self.range_label.setVisible(False)
             self.range_slider.setVisible(False)
         elif text=='fragment':
-            self.canvas.segment_mode=False
+            self.canvas.symmetry_mode=False
             self.canvas.single_piece_mode=False
             self.canvas.fragment_mode=True
             self.autoJ_mode_radioButton.setVisible(False)
@@ -476,7 +476,7 @@ class Canvas(QtWidgets.QDialog):
         self.manualJ_mode=False
         self.autoJ_mode=False
         self.single_piece_mode=True
-        self.segment_mode=False
+        self.symmetry_mode=False
         self.fragment_mode=False
         self.activateTangent=False
         self.activateCurvature=False
@@ -597,7 +597,7 @@ class Canvas(QtWidgets.QDialog):
                 for i in range(I):
                     painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2.,self.generalisedEllipseVertices[i][1]*300+self.height()/2.,self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2.,self.generalisedEllipseVertices[(i+1)%I][1]*300+self.height()/2.)     
                 
-        elif self.segment_mode==True:      
+        elif self.symmetry_mode==True:
             if self.manualJ_mode==True:
                 J=self.manualJ
                 a_first_half,b_first_half=curve_fitting.coefficients_solver_for_first_half_of_segmented_ellipse(self.vertices_first_half,
