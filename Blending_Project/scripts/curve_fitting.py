@@ -543,7 +543,7 @@ def find_bigger_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Em_sm
         return J_big
     v, Ea, Em = formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
     if Ea >= Ea_criteria or Em >= Em_criteria:
-        return find_bigger_J(vertices,angles,d_bar, center,J, J_big, Ea, Em, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria)
+        return find_bigger_J(vertices,angles,d_bar, center, J_big, J, Ea_bigJ, Em_bigJ, Ea, Em, Ea_criteria, Em_criteria)
     else:
         # we are close to the solution, hence, a while function will suffice
         while Ea < Ea_criteria and Em < Em_criteria and J > J_small:

@@ -132,6 +132,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_comboBox.addItem('single piece')
         self.segment_comboBox.addItem('2 symmetrical halves')
         self.segment_comboBox.addItem('fragment')
+        self.segment_comboBox.addItem('composite')
         
         self.range_label=QtWidgets.QLabel('range:')
         self.range_label.setMaximumWidth(150)
@@ -260,21 +261,31 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.canvas.single_piece_mode=True
             self.canvas.symmetry_mode=False
             self.canvas.fragment_mode=False
+            self.canvas.composite_mode=False
             self.range_label.setVisible(False)
             self.range_slider.setVisible(False)
         elif text=='2 symmetrical halves':
             self.canvas.symmetry_mode=True
             self.canvas.single_piece_mode=False
             self.canvas.fragment_mode=False
+            self.canvas.composite_mode=False
             self.range_label.setVisible(False)
             self.range_slider.setVisible(False)
         elif text=='fragment':
             self.canvas.symmetry_mode=False
             self.canvas.single_piece_mode=False
             self.canvas.fragment_mode=True
+            self.canvas.composite_mode=False
             self.autoJ_mode_radioButton.setVisible(False)
             self.range_label.setVisible(True)
             self.range_slider.setVisible(True)
+        elif text == 'composite':
+            self.canvas.symmetry_mode=False
+            self.canvas.single_piece_mode=False
+            self.canvas.fragment_mode=False
+            self.canvas.composite_mode=True
+            self.range_label.setVisible(False)
+            self.range_slider.setVisible(False)
             
         self.canvas.update()
         self.showEaEm()
