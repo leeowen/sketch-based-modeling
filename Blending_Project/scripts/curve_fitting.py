@@ -1,4 +1,5 @@
 import math,sys, os
+import operator
 from PySide2 import QtCore
 import maya.api.OpenMaya as om
 
@@ -7,6 +8,7 @@ sys.path.append('./.local/lib/python2.7/site-packages')
 import numpy as np
 from scipy import optimize
 import matplotlib.pyplot as plt
+
 
 
 def maya_useNewAPI():
@@ -122,6 +124,14 @@ def calculateCurvature(tangents, angles):
             pow(tangents[i][0], 2) + pow(tangents[i][1], 2), 3.0 / 2.0)
         curvatures.append(k)
     return curvatures
+
+
+def sortCurvature(curvatures):
+    dict = {}
+    for i in range(curvatures):
+        dict[i]=curvatures[i]
+    sorted_d = sorted(dict.items(), key=operator.itemgetter(1))
+    return sorted_d
 
 
 def getCoefficients(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]

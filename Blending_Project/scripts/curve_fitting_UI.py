@@ -63,6 +63,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.showCurvature_checkBox = QtWidgets.QCheckBox('show curvature')
         self.showCurvature_checkBox.setChecked(False)
         self.showCurvature_checkBox.setVisible(False)
+
+        self.cut_point_label = QtWidgets.QLabel('cut point(s) list:')
+        self.cut_point_lineEdit = QtWidgets.QLineEdit()
+        self.cut_point_button = QtWidgets.QPushButton('Confirm')
                        
         self.radio_group=QtWidgets.QGroupBox()  
         self.manualJ_mode_radioButton=QtWidgets.QRadioButton('manual J')
@@ -152,6 +156,9 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.range_slider.setVisible(False)
         self.saveAsDat_button.setVisible(False)
         self.saveAsImg_button.setVisible(False)
+        self.cut_point_button.setVisible(False)
+        self.cut_point_label.setVisible(False)
+        self.cut_point_lineEdit.setVisible(False)
         
 
     def create_layout(self):   
@@ -206,8 +213,16 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         rangeSlider_layout.addWidget(self.range_slider)
         right_layout.addLayout(rangeSlider_layout) 
         
-        right_layout.addStretch(1)    
-     
+        right_layout.addStretch(1)
+
+        cutPoint_layout = QtWidgets.QVBoxLayout()
+        cutPoint_layout.addWidget(self.cut_point_label)
+        cutPoint_layout.addWidget(self.cut_point_lineEdit)
+        cutPoint_layout.addWidget(self.cut_point_button)
+        right_layout.addLayout(cutPoint_layout)
+
+        right_layout.addStretch(1)
+
         grid_layout=QtWidgets.QGridLayout()
         grid_layout.addWidget(self.autoJ_mode_radioButton,0,0,1,2)
         grid_layout.addWidget(self.manualJ_mode_radioButton,1,0,1,2)
@@ -264,6 +279,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.canvas.composite_mode=False
             self.range_label.setVisible(False)
             self.range_slider.setVisible(False)
+            self.manualJ_mode_radioButton.setVisible(True)
+            self.cut_point_button.setVisible(False)
+            self.cut_point_label.setVisible(False)
+            self.cut_point_lineEdit.setVisible(False)
         elif text=='2 symmetrical halves':
             self.canvas.symmetry_mode=True
             self.canvas.single_piece_mode=False
@@ -271,6 +290,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.canvas.composite_mode=False
             self.range_label.setVisible(False)
             self.range_slider.setVisible(False)
+            self.manualJ_mode_radioButton.setVisible(True)
+            self.cut_point_button.setVisible(False)
+            self.cut_point_label.setVisible(False)
+            self.cut_point_lineEdit.setVisible(False)
         elif text=='fragment':
             self.canvas.symmetry_mode=False
             self.canvas.single_piece_mode=False
@@ -279,6 +302,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.autoJ_mode_radioButton.setVisible(False)
             self.range_label.setVisible(True)
             self.range_slider.setVisible(True)
+            self.manualJ_mode_radioButton.setVisible(True)
+            self.cut_point_button.setVisible(False)
+            self.cut_point_label.setVisible(False)
+            self.cut_point_lineEdit.setVisible(False)
         elif text == 'composite':
             self.canvas.symmetry_mode=False
             self.canvas.single_piece_mode=False
@@ -286,6 +313,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.canvas.composite_mode=True
             self.range_label.setVisible(False)
             self.range_slider.setVisible(False)
+            self.manualJ_mode_radioButton.setVisible(False)
+            self.cut_point_button.setVisible(True)
+            self.cut_point_label.setVisible(True)
+            self.cut_point_lineEdit.setVisible(True)
             
         self.canvas.update()
         self.showEaEm()
