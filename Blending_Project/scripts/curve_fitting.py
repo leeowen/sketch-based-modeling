@@ -1,6 +1,6 @@
 import math,sys, os
 import operator
-from PySide2 import QtCore
+from PySide2 import QtCore, QtGui
 import maya.api.OpenMaya as om
 
 sys.path.append('/usr/lib64/python2.7/site-packages')
@@ -111,6 +111,13 @@ def calculateTangent(vertices, angles):
     return tangents
 
 
+def calculateNormal(tangents):
+    normals=[]
+    for t in tangents:
+        normal = QtGui.QVector2D(-t[1], t[0]).normalized()
+        normals.append(normal)
+    return normals
+
 def calculateCurvature(tangents, angles):
     curvatures = []
     numPt = len(tangents)
@@ -128,8 +135,8 @@ def calculateCurvature(tangents, angles):
 
 def sortCurvature(curvatures):
     dict = {}
-    for i in range(curvatures):
-        dict[i]=curvatures[i]
+    for i in range(len(curvatures)):
+        dict[i]=abs(curvatures[i])
     sorted_d = sorted(dict.items(), key=operator.itemgetter(1))
     return sorted_d
 
