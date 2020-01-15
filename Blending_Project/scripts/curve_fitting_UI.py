@@ -64,6 +64,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.showCurvature_checkBox.setChecked(False)
         self.showCurvature_checkBox.setVisible(False)
 
+        self.showCutPointCandidate_checkBox = QtWidgets.QCheckBox('show cut point candidate(s)')
+        self.showCutPointCandidate_checkBox.setChecked(False)
+        self.showCutPointCandidate_checkBox.setVisible(False)
+
         self.cut_point_label = QtWidgets.QLabel('cut point(s) list:')
         self.cut_point_lineEdit = QtWidgets.QLineEdit()
         self.cut_point_button = QtWidgets.QPushButton('Confirm')
@@ -189,6 +193,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         checkBox2_layout=QtWidgets.QVBoxLayout()
         checkBox2_layout.addWidget(self.showTangent_checkBox)
         checkBox2_layout.addWidget(self.showCurvature_checkBox)
+        checkBox2_layout.addWidget(self.showCutPointCandidate_checkBox)
         right_layout.addLayout(checkBox2_layout)
 
         right_layout.addStretch(1)
@@ -264,7 +269,9 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.segment_comboBox.currentTextChanged.connect(self.segmentMode_change)
         self.range_slider.valueChanged.connect(self.fragment_range_change)
         self.showCurvature_checkBox.toggled.connect(self.update_curvature)
+        self.showCutPointCandidate_checkBox.toggled.connect(self.update_cut_point)
         self.showTangent_checkBox.toggled.connect(self.update_tangent)
+        self.cut_point_button.clicked.connect(self.get_cut_point)
         
     
     def fragment_range_change(self,value):
@@ -317,6 +324,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.cut_point_button.setVisible(True)
             self.cut_point_label.setVisible(True)
             self.cut_point_lineEdit.setVisible(True)
+            self.originalEllipse_checkBox.setChecked(True)
             
         self.canvas.update()
         self.showEaEm()
@@ -352,6 +360,11 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
 
     def update_curvature(self,checked):
         self.canvas.activateCurvature=checked
+        self.canvas.repaint()
+
+
+    def update_cut_point(self,checked):
+        self.canvas.activateCutPoint=checked
         self.canvas.repaint()
 
 
@@ -498,6 +511,14 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.saveAsImg_button.setVisible(checked)
         self.showCurvature_checkBox.setVisible(checked)
         self.showTangent_checkBox.setVisible(checked)
+        self.showCutPointCandidate_checkBox.setVisible(checked)
+
+
+    def get_cut_point(self):
+        str = self.cut_point_lineEdit.text()
+        list = str.split(' ')
+        cut_points = [int(i) for i in list]
+        self.canvas.cut_curve(cut_points)
             
               
 class Canvas(QtWidgets.QDialog):
@@ -522,6 +543,7 @@ class Canvas(QtWidgets.QDialog):
         self.fragment_mode=False
         self.activateTangent=False
         self.activateCurvature=False
+        self.activateCutPoint=False
         
         
     def sizeHint(self):
@@ -536,7 +558,25 @@ class Canvas(QtWidgets.QDialog):
         self.manualJ=j
         self.update()
         
-    
+
+    def cut_curve(self,cut_points):
+        self.cut_points = cut_points
+        # split data for N segments
+        N = len(self.cut_points)
+        self.vertices_matrix = []
+        self.angles_matrix = []
+        self.center_list = []
+        for i in range(N):
+            tmp_vertices = self.vertices[self.cut_points[i]-1:self.cut_points[(i+1)%N]]
+            self.vertices_matrix.append(tmp_vertices)
+            tmp_angles = self.angles[self.cut_points[i]-1:self.cut_points[(i+1)%N]]
+            self.angles_matrix.append(tmp_angles)
+            tmp_center = curve_fitting.getCenter(tmp_vertices)
+            self.center_list.append(tmp_center)
+
+        self.update()
+
+
     def readFile(self,file_path):
         self.vertices = []
         self.angles = []
@@ -552,6 +592,7 @@ class Canvas(QtWidgets.QDialog):
         self.a=[]
         self.b=[]
         self.generalisedEllipseVertices=[]
+        self.cut_points = []
         f = open(file_path,'r')
         content = f.readlines()
         for line in content:
@@ -567,7 +608,7 @@ class Canvas(QtWidgets.QDialog):
         self.tangents = curve_fitting.calculateTangent(self.vertices,self.angles)
         self.curvatures = curve_fitting.calculateCurvature(self.tangents,self.angles)
         
-        # split data for 2 segments respectively
+        # split data for 2 symmetrical segments respectively
         self.a_first_half=[]
         self.b_first_half=[]
         I=self.numPt/2
@@ -676,9 +717,13 @@ class Canvas(QtWidgets.QDialog):
                 self.Em=Em
                 for i in range(len(fragment_vertices)-1):
                     painter.drawLine(fragment_vertices[i][0]*300+self.width()/2.,fragment_vertices[i][1]*300+self.height()/2.,fragment_vertices[i+1][0]*300+self.width()/2.,fragment_vertices[i+1][1]*300+self.height()/2.)
-                maya_polygon_plane(generalisedEllipseVertices)
+                maya_polygon_plane(self.generalisedEllipseVertices)
 
-    
+        elif self.composite_mode==True:
+            for cp in self.cut_points:
+                pass
+
+
     def draw_originalEllipse(self,painter):
         penColor=QtCore.Qt.red   
         pen=QtGui.QPen()
@@ -692,7 +737,7 @@ class Canvas(QtWidgets.QDialog):
             error_dialog = QtWidgets.QErrorMessage(self)
             error_dialog.showMessage('Please choose a data file first')
         else:
-            if self.fragment_mode==False:
+            if self.fragment_mode==False and self.composite_mode==False:
                 for i in range(self.numPt):
                     p1=QtCore.QPointF(self.vertices[i-1][0]*300+self.width()/2.,self.vertices[i-1][2]*300+self.height()/2.)
                     p2=QtCore.QPointF(self.vertices[i][0]*300+self.width()/2.,self.vertices[i][2]*300+self.height()/2.)
@@ -714,8 +759,16 @@ class Canvas(QtWidgets.QDialog):
                         painter.drawLine(p2, p4)
 
                     painter.setPen(pen)
-                
-            else:
+
+                if self.activateCutPoint == True:
+                    od = curve_fitting.sortCurvature(self.curvatures)
+                    # show first 5 cut point candidates based on curvatures on original curve
+                    for i in range(20):
+                        index = od[-i][0]
+                        p = self.vertices[index]
+                        painter.drawText (p[0]*300+self.width()/2., p[2]*300+self.height()/2., str(index))
+
+            elif self.fragment_mode==True:
                 if self.start_index<self.end_index:
                     for i in range(self.start_index+1,self.end_index+1):   
                         p1=QtCore.QPointF(self.vertices[i-1][0]*300+self.width()/2.,self.vertices[i-1][2]*300+self.height()/2.)
@@ -731,9 +784,26 @@ class Canvas(QtWidgets.QDialog):
                         p2=QtCore.QPointF(self.vertices[i][0]*300+self.width()/2.,self.vertices[i][2]*300+self.height()/2.)
                         painter.drawLine(p1,p2)
 
-                            
-        
-    def draw_standardEllipse(self,painter): 
+            elif self.composite_mode==True:
+                N = len(self.cut_points)
+                for j in range(N):
+                    if self.cut_points[j]<self.cut_points[(j+1)%N]+1:
+                        for i in range(self.cut_points[j],self.cut_points[(j+1)%N]+1):
+                            p1 = QtCore.QPointF(self.vertices[i - 1][0] * 300 + self.width() / 2.,self.vertices[i - 1][2] * 300 + self.height() / 2.)
+                            p2 = QtCore.QPointF(self.vertices[i][0] * 300 + self.width() / 2.,self.vertices[i][2] * 300 + self.height() / 2.)
+                            painter.drawLine(p1, p2)
+                    else:
+                        for i in range(self.cut_points[(j+1)%N],len(self.vertices)):
+                            p1 = QtCore.QPointF(self.vertices[i - 1][0] * 300 + self.width() / 2.,self.vertices[i - 1][2] * 300 + self.height() / 2.)
+                            p2 = QtCore.QPointF(self.vertices[i][0] * 300 + self.width() / 2.,self.vertices[i][2] * 300 + self.height() / 2.)
+                            painter.drawLine(p1, p2)
+                        for i in range(0,self.cut_points[j]):
+                            p1 = QtCore.QPointF(self.vertices[i - 1][0] * 300 + self.width() / 2.,self.vertices[i - 1][2] * 300 + self.height() / 2.)
+                            p2 = QtCore.QPointF(self.vertices[i][0] * 300 + self.width() / 2.,self.vertices[i][2] * 300 + self.height() / 2.)
+                            painter.drawLine(p1, p2)
+
+
+    def draw_standardEllipse(self,painter):
         penColor=QtCore.Qt.blue        
         pen=QtGui.QPen()
         pen.setColor(penColor)
