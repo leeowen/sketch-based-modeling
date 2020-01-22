@@ -315,8 +315,8 @@ def extract_fragment_data(vertices, angles, fragment_range):
     return angles_fragment, vertices_fragment, center_fragment, start_index, end_index
 
 
-def coefficients_solver_for_first_half_of_segmented_ellipse(vertices_first_half, angles_first_half, center_first_half, J):
-    I = len(vertices_first_half)
+def coefficients_solver_for_first_generalized_elliptic_segment(vertices_first_segment, angles_first_segment, center_first_segment, J):
+    I = len(vertices_first_segment)
     aConstArray = np.zeros(2 * J + 1)
     aCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')  # row-major
 
@@ -330,7 +330,7 @@ def coefficients_solver_for_first_half_of_segmented_ellipse(vertices_first_half,
     for i in range(I):  # for aCoefficientMatrix's column
         for j in range(1, J + 1):  # for aCoefficientMatrix's row
             try:
-                vi = angles_first_half[i]
+                vi = angles_first_segment[i]
             except IndexError:
                 raise
             else:
@@ -338,16 +338,16 @@ def coefficients_solver_for_first_half_of_segmented_ellipse(vertices_first_half,
                 aCoefficientMatrix[2 * j, i] = math.sin(vi * j)
 
                 # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
-                aConstArray[2 * j - 1] += (vertices_first_half[i][0] - center_first_half.x()) * math.cos(
+                aConstArray[2 * j - 1] += (vertices_first_segment[i][0] - center_first_segment.x()) * math.cos(
                     vi * j)
-                aConstArray[2 * j] += (vertices_first_half[i][0] - center_first_half.x()) * math.sin(
+                aConstArray[2 * j] += (vertices_first_segment[i][0] - center_first_segment.x()) * math.sin(
                     vi * j)
 
                 bCoefficientMatrix[2 * j - 1, i] = math.sin(vi * j)
                 bCoefficientMatrix[2 * j, i] = math.cos(vi * j)
 
-                bConstArray[2 * j - 1] += (vertices_first_half[i][2] - center_first_half.y()) * math.sin(vi * j)
-                bConstArray[2 * j] += (vertices_first_half[i][2] - center_first_half.y()) * math.cos(vi * j)
+                bConstArray[2 * j - 1] += (vertices_first_segment[i][2] - center_first_segment.y()) * math.sin(vi * j)
+                bConstArray[2 * j] += (vertices_first_segment[i][2] - center_first_segment.y()) * math.cos(vi * j)
 
     A = np.dot(aCoefficientMatrix, aCoefficientMatrix.transpose())
     a = np.linalg.solve(A, aConstArray)
@@ -357,7 +357,7 @@ def coefficients_solver_for_first_half_of_segmented_ellipse(vertices_first_half,
     return a, b
 
 
-def coefficients_solver_for_second_half_of_segmented_ellipse(a_first_half, b_first_half):
+def coefficients_solver_for_second_half_of_symmetrical_ellipse(a_first_half, b_first_half):
     a = np.zeros(len(a_first_half))
     b = np.zeros(len(b_first_half))
     a[0]=-a_first_half[0]
@@ -498,7 +498,7 @@ def findJ(vertices,angles,d_bar,center,Ea_criteria,Em_criteria):
     a10,b10=getCoefficients(10,vertices,center,angles)
     v10,Ea10,Em10=formGeneralizedEllipse(a10, b10, vertices, center, angles, d_bar)
     if Ea3<Ea_criteria and Em3<Em_criteria:
-        J=find_smaller_J(vertices,angles,d_bar,center,3,10, Ea3, Ea10,Ea_criteria,Em_criteria)
+        J=find_smaller_J(vertices,angles,d_bar,center,3,10, Ea3, Ea10, Ea_criteria, Em_criteria)
     elif Ea10>=Ea_criteria or Em10>=Em_criteria:
         J=find_bigger_J(vertices,angles,d_bar, center,3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria)
     elif Ea3>=Ea_criteria or Em3>=Em_criteria:
@@ -506,46 +506,42 @@ def findJ(vertices,angles,d_bar,center,Ea_criteria,Em_criteria):
     return J
 
 
-def find_inbetween_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Em_smallJ,Ea_bigJ, Em_bigJ, Ea_criteria,Em_criteria):
+def find_inbetween_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria,Em_criteria):
     # Linear interpolate to find J_small<J<J_big
-    if J_small > J_big:
-        raise ValueError('J_small({}) is bigger than J_big({})'.format(J_small, J_big))
-    """
-    if Ea_smallJ < Ea_criteria and Ea_bigJ >= Ea_criteria:
-        tmp = Ea_smallJ
-        Ea_smallJ = Ea_bigJ
-        Ea_bigJ = tmp
-
-    if Em_smallJ < Em_criteria and Em_bigJ >= Em_criteria:
-        tmp = Em_smallJ
-        Em_smallJ = Em_bigJ
-        Em_bigJ = tmp
-    """
+    if J_small > J_big or J_small == J_big:
+        raise ValueError('J_small({}) is no smaller than J_big({})'.format(J_small, J_big))
 
     if J_small == J_big - 1:
         return J_big
 
     J = 0
     if Ea_smallJ >= Ea_criteria:
-        J = int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ)) + J_small
+        J = J_big - int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ))
     elif Em_smallJ >= Em_criteria:
-        J = int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ)) + J_small
+        J = J_big - int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ))
+
+    if J < J_small:
+        raise ValueError('J({}) is smaller than J_small({})'.format(J,J_small))
+    if J > J_big:
+        raise ValueError('J({}) is bigger than J_big({})'.format(J, J_big))
 
     if J == J_small:
-        J += 1
+        J = J_small+1
+    if J == J_big:
+        J = J_big-1
 
     a, b = getCoefficients(J, vertices, center, angles)
     v, Ea, Em = formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
-    if Ea < Ea_criteria and Em < Em_criteria:
-        if J == J_small + 1:
+    if Ea < Ea_criteria and Em < Em_criteria: # J meets the criteria
+        if J == J_small+1:
             return J
         else:
-            return find_inbetween_J(vertices,angles,d_bar, center, J_small, J, Ea_smallJ, Ea, Em_smallJ, Em, Ea_criteria, Em_criteria)
-    elif Ea >= Ea_criteria or Em >= Em_criteria:
-        if J == J_big - 1:
+            return find_inbetween_J(vertices, angles, d_bar, center, J_small, J, Ea_smallJ, Em_smallJ, Ea, Em, Ea_criteria, Em_criteria)
+    else:# J doesn't meet the criteria
+        if J == J_big-1:
             return J_big
         else:
-            return find_inbetween_J(vertices,angles,d_bar, center,J, J_big, Ea, Ea_bigJ, Em, Em_bigJ, Ea_criteria, Em_criteria)
+            return find_inbetween_J(vertices, angles, d_bar, center, J, J_big, Ea, Em, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria)
 
 
 def find_bigger_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria):

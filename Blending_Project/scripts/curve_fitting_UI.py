@@ -13,7 +13,7 @@ import curve_fitting
 
 def maya_main_window():
     main_window_ptr=omui.MQtUtil.mainWindow()
-    return wrapInstance(long(main_window_ptr),QtWidgets.QWidget)
+    return wrapInstance(long(main_window_ptr), QtWidgets.QWidget)
     
              
 class CurveFittingWindowUI(QtWidgets.QWidget):
@@ -22,7 +22,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         super(CurveFittingWindowUI,self).__init__(parent)
         
         self.setWindowTitle("Generalized Ellipse")
-        self.setMinimumSize(900,700)
+        self.setMinimumSize(900, 700)
         self.setObjectName("generalizedEllipseWin")
         self.setWindowFlags(QtCore.Qt.WindowType.Dialog)
                        
@@ -720,31 +720,47 @@ class Canvas(QtWidgets.QDialog):
         elif self.symmetry_mode==True:
             if self.manualJ_mode==True:
                 J=self.manualJ
-                a_first_half,b_first_half=curve_fitting.coefficients_solver_for_first_half_of_segmented_ellipse(self.vertices_first_half,
-                                                                                                                self.angles_first_half,
-                                                                                                                self.center_first_half, J)
-                a_second_half,b_second_half=curve_fitting.coefficients_solver_for_second_half_of_segmented_ellipse(a_first_half, b_first_half)
 
-                segmented_ellipse_vertices,Ea,Em=curve_fitting.form_vertices_of_segmented_ellipse(self.vertices_first_half,
-                                                                                                  self.vertices_second_half,
-                                                                                                  self.center_first_half,
-                                                                                                  self.center_second_half,
-                                                                                                  self.angles_first_half,
-                                                                                                  self.angles_second_half,
-                                                                                                  self.d_bar, a_first_half,
-                                                                                                  b_first_half,a_second_half,
-                                                                                                  b_second_half)
-                self.Ea=Ea
-                self.Em=Em
-                for i in range(self.numPt/2):
-                    painter.drawLine(segmented_ellipse_vertices[i][0]*300+self.width()/2.,segmented_ellipse_vertices[i][1]*300+self.height()/2.,segmented_ellipse_vertices[(i+1)%self.numPt][0]*300+self.width()/2.,segmented_ellipse_vertices[(i+1)%self.numPt][1]*300+self.height()/2.)    
-                second_half_color=QtGui.QColor(127,0,255) 
+            elif self.autoJ_mode==True:
+                J = curve_fitting.findJ(self.vertices_first_half,self.angles_first_half,self.d_bar,self.center_first_half,self.Ea_criteria,self.Em_criteria)
+                self.autoJ_value=J
+
+            if self.manualJ_mode==True or self.autoJ_mode==True:
+                a_first_half, b_first_half = curve_fitting.coefficients_solver_for_first_generalized_elliptic_segment(
+                    self.vertices_first_half,
+                    self.angles_first_half,
+                    self.center_first_half, J)
+                a_second_half, b_second_half = curve_fitting.coefficients_solver_for_second_half_of_symmetrical_ellipse(
+                    a_first_half, b_first_half)
+
+                segmented_ellipse_vertices, Ea, Em = curve_fitting.form_vertices_of_segmented_ellipse(
+                    self.vertices_first_half,
+                    self.vertices_second_half,
+                    self.center_first_half,
+                    self.center_second_half,
+                    self.angles_first_half,
+                    self.angles_second_half,
+                    self.d_bar, a_first_half,
+                    b_first_half, a_second_half,
+                    b_second_half)
+                self.Ea = Ea
+                self.Em = Em
+                for i in range(self.numPt / 2):
+                    painter.drawLine(segmented_ellipse_vertices[i][0] * 300 + self.width() / 2.,
+                                     segmented_ellipse_vertices[i][1] * 300 + self.height() / 2.,
+                                     segmented_ellipse_vertices[(i + 1) % self.numPt][0] * 300 + self.width() / 2.,
+                                     segmented_ellipse_vertices[(i + 1) % self.numPt][1] * 300 + self.height() / 2.)
+                second_half_color = QtGui.QColor(127, 0, 255)
                 pen.setColor(second_half_color)
                 painter.setPen(pen)
-                for i in range(self.numPt/2,self.numPt):
-                    painter.drawLine(segmented_ellipse_vertices[i][0]*300+self.width()/2.,segmented_ellipse_vertices[i][1]*300+self.height()/2.,segmented_ellipse_vertices[(i+1)%self.numPt][0]*300+self.width()/2.,segmented_ellipse_vertices[(i+1)%self.numPt][1]*300+self.height()/2.)    
-        
-        elif self.fragment_mode==True:       
+                for i in range(self.numPt / 2, self.numPt):
+                    painter.drawLine(segmented_ellipse_vertices[i][0] * 300 + self.width() / 2.,
+                                     segmented_ellipse_vertices[i][1] * 300 + self.height() / 2.,
+                                     segmented_ellipse_vertices[(i + 1) % self.numPt][0] * 300 + self.width() / 2.,
+                                     segmented_ellipse_vertices[(i + 1) % self.numPt][1] * 300 + self.height() / 2.)
+
+
+        elif self.fragment_mode==True:
             if self.manualJ_mode==True:
                 J=self.manualJ
                 angles, vertices, center, self.start_index, self.end_index = curve_fitting.extract_fragment_data(self.vertices, self.angles, self.fragment_range)
@@ -757,8 +773,10 @@ class Canvas(QtWidgets.QDialog):
                 maya_polygon_plane(self.generalisedEllipseVertices)
 
         elif self.composite_mode==True:
-            for cp in self.cut_points:
-                pass
+            # for the first segment
+            J1 = curve_fitting.findJ(self.vertices_matrix[0], self.angles_matrix[0], self.d_bar, self.segment_center_list[0], self.Ea_criteria, self.Em_criteria)
+            a,b=curve_fitting.coefficients_solver_for_first_generalized_elliptic_segment(self.vertices_matrix[0],self.angles_matrix[0],self.segment_center_list[0])
+
 
 
     def draw_originalEllipse(self,painter):
@@ -873,6 +891,9 @@ class Canvas(QtWidgets.QDialog):
         return self.Ea
         
 def maya_polygon_plane(generalisedEllipseVertices):
+    """
+    test the plane in Maya
+    """
     width = 10.0
     length = 10.0
     face_count = 1
