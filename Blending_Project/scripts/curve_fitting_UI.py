@@ -572,7 +572,7 @@ class Canvas(QtWidgets.QDialog):
     def setManualJ(self,j):
         self.manualJ=j
         self.update()
-        
+
 
     def cut_curve(self,cut_points):
         self.cut_points = cut_points
@@ -688,6 +688,7 @@ class Canvas(QtWidgets.QDialog):
         for i in range(self.numPt):
             p = self.vertices[i]
             painter.drawText(p[0] * 300 + self.width() / 2., p[2] * 300 + self.height() / 2., str(i))
+            painter.drawEllipse(QtCore.QPointF(p[0] * 300 + self.width() / 2., p[2] * 300 + self.height() / 2.),3,3)
 
 
     def draw_generalisedEllipse(self,painter):
@@ -770,7 +771,7 @@ class Canvas(QtWidgets.QDialog):
                 self.Em=Em
                 for i in range(len(fragment_vertices)-1):
                     painter.drawLine(fragment_vertices[i][0]*300+self.width()/2.,fragment_vertices[i][1]*300+self.height()/2.,fragment_vertices[i+1][0]*300+self.width()/2.,fragment_vertices[i+1][1]*300+self.height()/2.)
-                maya_polygon_plane(self.generalisedEllipseVertices)
+                #maya_polygon_plane(self.generalisedEllipseVertices)
 
         elif self.composite_mode==True:
             # for the first segment
@@ -815,14 +816,14 @@ class Canvas(QtWidgets.QDialog):
 
                     painter.setPen(pen)
 
+
                 if self.activateCutPoint == True:
                     od = curve_fitting.sortCurvature(self.curvatures)
-                    # show first 10 cut point candidates based on curvatures on original curve
-                    for i in range(10):
+                    # show first 5 cut point candidates based on curvatures on original curve
+                    for i in range(20):
                         index = od[-i][0]
                         p = self.vertices[index]
                         painter.drawText (p[0]*300+self.width()/2., p[2]*300+self.height()/2., str(index))
-                        painter.drawEllipse(QtCore.QPoint(p[0]*300+self.width()/2., p[2]*300+self.height()/2.), 5, 5)
 
             elif self.fragment_mode==True:
                 if self.start_index<self.end_index:

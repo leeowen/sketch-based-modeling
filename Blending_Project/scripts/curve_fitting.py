@@ -135,8 +135,10 @@ def calculateCurvature(tangents, angles):
 
 def sortCurvature(curvatures):
     dict = {}
+
     for i in range(len(curvatures)):
         dict[i]=abs(curvatures[i])
+
     sorted_d = sorted(dict.items(), key=operator.itemgetter(1))
     return sorted_d
 
