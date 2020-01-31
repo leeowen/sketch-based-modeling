@@ -330,7 +330,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.cut_point_button.setVisible(True)
             self.cut_point_label.setVisible(True)
             self.cut_point_lineEdit.setVisible(True)
-            self.originalEllipse_checkBox.setChecked(True)
             
         self.canvas.update()
         self.showEaEm()
@@ -581,8 +580,8 @@ class Canvas(QtWidgets.QDialog):
         self.vertices_matrix = []
         self.angles_matrix = []
         self.segment_center_list = []
-        tmp_vertices=[]
-        tmp_angles=[]
+        tmp_vertices = []
+        tmp_angles = []
         for i in range(N):
             if self.cut_points[i]<self.cut_points[(i+1)%N]:
                 tmp_vertices = self.vertices[self.cut_points[i]:self.cut_points[(i+1)%N]+1]
@@ -596,7 +595,6 @@ class Canvas(QtWidgets.QDialog):
             self.angles_matrix.append(tmp_angles)
             tmp_center = curve_fitting.getCenter(tmp_vertices)
             self.segment_center_list.append(tmp_center)
-
         self.update()
 
 
@@ -713,10 +711,12 @@ class Canvas(QtWidgets.QDialog):
                 self.generalisedEllipseVertices,self.Ea,self.Em=curve_fitting.formGeneralizedEllipse(self.a,self.b,
                                                                                                      self.vertices,
                                                                                                      self.center,
-                                                                                                     self.angles, self.d_bar)
+                                                                                                     self.angles,
+                                                                                                     self.d_bar)
      
                 for i in range(I):
-                    painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2.,self.generalisedEllipseVertices[i][1]*300+self.height()/2.,self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2.,self.generalisedEllipseVertices[(i+1)%I][1]*300+self.height()/2.)     
+                    painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2.,self.generalisedEllipseVertices[i][1]*300+self.height()/2.,
+                                     self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2.,self.generalisedEllipseVertices[(i+1)%I][1]*300+self.height()/2.)
                 
         elif self.symmetry_mode==True:
             if self.manualJ_mode==True:
@@ -727,11 +727,11 @@ class Canvas(QtWidgets.QDialog):
                 self.autoJ_value=J
 
             if self.manualJ_mode==True or self.autoJ_mode==True:
-                a_first_half, b_first_half = curve_fitting.coefficients_solver_for_first_generalized_elliptic_segment(
+                a_first_half, b_first_half = curve_fitting.getCoefficients_for_first_generalized_elliptic_segment(
                     self.vertices_first_half,
                     self.angles_first_half,
                     self.center_first_half, J)
-                a_second_half, b_second_half = curve_fitting.coefficients_solver_for_second_half_of_symmetrical_ellipse(
+                a_second_half, b_second_half = curve_fitting.getCoefficients_for_second_half_of_symmetrical_ellipse(
                     a_first_half, b_first_half)
 
                 segmented_ellipse_vertices, Ea, Em = curve_fitting.form_vertices_of_segmented_ellipse(
@@ -765,8 +765,8 @@ class Canvas(QtWidgets.QDialog):
             if self.manualJ_mode==True:
                 J=self.manualJ
                 angles, vertices, center, self.start_index, self.end_index = curve_fitting.extract_fragment_data(self.vertices, self.angles, self.fragment_range)
-                a,b=curve_fitting.coefficients_solver_for_fragmented_ellipse(J,angles,vertices,center)
-                fragment_vertices,Ea,Em = curve_fitting.form_vertices_of_fragment(a,b,vertices,angles,center, self.d_bar, self.start_index)
+                a,b=curve_fitting.getCoefficients_for_fragmented_ellipse(J,angles,vertices,center)
+                fragment_vertices,Ea,Em = curve_fitting.form_vertices_of_fragment(a, b, vertices, center, angles, self.d_bar, self.start_index)
                 self.Ea=Ea
                 self.Em=Em
                 for i in range(len(fragment_vertices)-1):
@@ -774,10 +774,24 @@ class Canvas(QtWidgets.QDialog):
                 #maya_polygon_plane(self.generalisedEllipseVertices)
 
         elif self.composite_mode==True:
-            # for the first segment
-            J1 = curve_fitting.findJ(self.vertices_matrix[0], self.angles_matrix[0], self.d_bar, self.segment_center_list[0], self.Ea_criteria, self.Em_criteria)
-            a,b=curve_fitting.coefficients_solver_for_first_generalized_elliptic_segment(self.vertices_matrix[0],self.angles_matrix[0],self.segment_center_list[0])
-
+            if self.autoJ_mode==True:
+                """
+                # for the first segment
+                J1 = curve_fitting.findJ(self.vertices_matrix[0], self.angles_matrix[0], self.d_bar, self.segment_center_list[0], self.Ea_criteria, self.Em_criteria)
+                a,b=curve_fitting.getCoefficients_for_first_generalized_elliptic_segment(self.vertices_matrix[0], self.angles_matrix[0], self.segment_center_list[0],J1)
+                fragment_vertices, Ea, Em = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[0], self.angles_matrix[0], self.segment_center_list[0], self.d_bar, self.cut_points[0])
+                if self.Ea < Ea:
+                    self.Ea = Ea
+                if self.Em < Em:
+                    self.Em = Em
+                """
+                composite_vertices, Ea, Em = curve_fitting.composite_auto_mode(self.vertices_matrix, self.angles_matrix, self.segment_center_list, self.cut_points, self.d_bar, self.Ea_criteria, self.Em_criteria)
+                for row in composite_vertices:
+                    for i in range(len(row)-1):
+                        painter.drawLine(row[i][0] * 300 + self.width() / 2.,
+                                        row[i][1] * 300 + self.height() / 2.,
+                                        row[i + 1][0] * 300 + self.width() / 2.,
+                                        row[i + 1][1] * 300 + self.height() / 2.)
 
 
     def draw_originalEllipse(self,painter):
@@ -881,7 +895,7 @@ class Canvas(QtWidgets.QDialog):
         else:
             width=a0u/a0b
             height=b0u/b0b
-            painter.drawEllipse(self.center+QtCore.QPointF(self.width()/2.,self.height()/2.),width*300,height*300)
+            painter.drawEllipse(self.center+QtCore.QPointF(self.width()/2., self.height()/2.), width*300, height*300)
 
 
     def getEm(self):
@@ -890,7 +904,8 @@ class Canvas(QtWidgets.QDialog):
         
     def getEa(self):
         return self.Ea
-        
+
+
 def maya_polygon_plane(generalisedEllipseVertices):
     """
     test the plane in Maya
@@ -902,7 +917,7 @@ def maya_polygon_plane(generalisedEllipseVertices):
     # Create vertex positions
     vertices = OpenMaya.MFloatPointArray()
     for v in generalisedEllipseVertices:
-        vertices.append(OpenMaya.MFloatPoint(v[0]*300, 0.0 , v[1]*300))
+        vertices.append(OpenMaya.MFloatPoint(v[0]*300, 0.0, v[1]*300))
 
     # Vertex count for this polygon face
     face_vertexes = OpenMaya.MIntArray()
