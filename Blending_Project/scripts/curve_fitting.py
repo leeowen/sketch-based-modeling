@@ -722,10 +722,10 @@ def getCoefficients_for_end_composite(J, vertices, center, angles, previous, nex
     aCoefficientMatrix[2 * J + 2, 0] = 0.
     bCoefficientMatrix[2 * J + 2, 0] = 0.
     for j in range(1, J + 1):
-        aCoefficientMatrix[2 * J + 3, 2 * j - 1] = -j * math.sin(j * angles[0])
-        aCoefficientMatrix[2 * J + 3, 2 * j] = j * math.cos(j * angles[0])
-        bCoefficientMatrix[2 * J + 3, 2 * j - 1] = j * math.cos(j * angles[0])
-        bCoefficientMatrix[2 * J + 3, 2 * j] = -j * math.sin(j * angles[0])
+        aCoefficientMatrix[2 * J + 2, 2 * j - 1] = -j * math.sin(j * angles[0])
+        aCoefficientMatrix[2 * J + 2, 2 * j] = j * math.cos(j * angles[0])
+        bCoefficientMatrix[2 * J + 2, 2 * j - 1] = j * math.cos(j * angles[0])
+        bCoefficientMatrix[2 * J + 2, 2 * j] = -j * math.sin(j * angles[0])
 
     # the No.2J+4 row of coefficients matrix, which is another positional continuity
     aConstArray[2 * J + 3] = next['position x'] - center.x()

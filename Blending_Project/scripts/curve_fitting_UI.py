@@ -308,10 +308,10 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.cut_point_label.setVisible(False)
             self.cut_point_lineEdit.setVisible(False)
         elif text=='fragment':
-            self.canvas.symmetry_mode=False
-            self.canvas.single_piece_mode=False
-            self.canvas.fragment_mode=True
-            self.canvas.composite_mode=False
+            self.canvas.symmetry_mode = False
+            self.canvas.single_piece_mode = False
+            self.canvas.fragment_mode = True
+            self.canvas.composite_mode = False
             self.autoJ_mode_radioButton.setVisible(False)
             self.range_label.setVisible(True)
             self.range_slider.setVisible(True)
@@ -498,6 +498,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             value=checkBox.isChecked()
         """
         self.showPointIndex_checkBox.setVisible(checked)
+        self.showTangent_checkBox.setVisible(checked)
         self.radio_group.setVisible(checked)
         self.segment_label.setVisible(checked)
         self.segment_comboBox.setVisible(checked)
@@ -692,45 +693,47 @@ class Canvas(QtWidgets.QDialog):
             painter.drawEllipse(QtCore.QPointF(p[0] * 300 + self.width() / 2., p[2] * 300 + self.height() / 2.),1,1)
 
 
-    def draw_generalisedEllipse(self,painter):
-        penColor=QtGui.QColor(0,80,0) 
-        pen=QtGui.QPen()
+    def draw_generalisedEllipse(self, painter):
+        penColor = QtGui.QColor(0, 80, 0)
+        pen = QtGui.QPen()
         pen.setColor(penColor)
         pen.setWidthF(self.lineWidth)
         painter.setPen(pen)
-        I=self.numPt
-        J=0
+        I = self.numPt
+        J = 0
         
-        if self.single_piece_mode==True:
-            if self.manualJ_mode==True:
-                J=self.manualJ
+        if self.single_piece_mode == True:
+            if self.manualJ_mode == True:
+                J = self.manualJ
             
             elif self.autoJ_mode==True:
-                J = curve_fitting.findJ(self.vertices,self.angles,self.d_bar,self.center,self.Ea_criteria,self.Em_criteria)
-                self.autoJ_value=J
+                J = curve_fitting.findJ(self.vertices, self.angles, self.d_bar, self.center, self.Ea_criteria, self.Em_criteria)
+                self.autoJ_value = J
             
-            if self.manualJ_mode==True or self.autoJ_mode==True:
-                self.a,self.b=curve_fitting.getCoefficients(J,self.vertices,self.center,self.angles)
-                self.generalisedEllipseVertices,self.Ea,self.Em=curve_fitting.formGeneralizedEllipse(self.a,self.b,
-                                                                                                     self.vertices,
-                                                                                                     self.center,
-                                                                                                     self.angles,
-                                                                                                     self.d_bar)
+            if self.manualJ_mode == True or self.autoJ_mode == True:
+                self.a, self.b = curve_fitting.getCoefficients(J, self.vertices, self.center, self.angles)
+                self.generalisedEllipseVertices, self.Ea, self.Em = curve_fitting.formGeneralizedEllipse(self.a, self.b, self.vertices, self.center, self.angles, self.d_bar)
      
                 for i in range(I):
-                    painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2.,self.generalisedEllipseVertices[i][1]*300+self.height()/2.,
-                                     self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2.,self.generalisedEllipseVertices[(i+1)%I][1]*300+self.height()/2.)
+                    painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2., self.generalisedEllipseVertices[i][1]*300+self.height()/2.,
+                                     self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2., self.generalisedEllipseVertices[(i+1) % I][1]*300+self.height()/2.)
 
                 if self.activateTangent == True:
+                    pen1 = QtGui.QPen()
+                    pen1.setColor(QtCore.Qt.cyan)
+                    painter.setPen(pen1)
                     for i in range(I):
-                        x, y, x_tan, y_tan = curve_fitting.position_and_tangent_of_parametric_point(self.a, self.b, self.angles[i])
+                        x_tan, y_tan, x, y = curve_fitting.position_and_tangent_of_parametric_point(self.a, self.b, self.angles[i])
+                        x += self.center.x()
+                        y += self.center.y()
                         p0 = QtCore.QPointF(x * 300 + self.width()/2., y * 300 + self.height()/2.)
                         p1 = QtCore.QPointF(x * 300 + self.width()/2. + x_tan, y * 300 + self.height()/2. + y_tan)
                         painter.drawLine(p0, p1)
+                    painter.setPen(pen)
 
         elif self.symmetry_mode==True:
             if self.manualJ_mode==True:
-                J=self.manualJ
+                J = self.manualJ
 
             elif self.autoJ_mode==True:
                 J = curve_fitting.findJ(self.vertices_first_half,self.angles_first_half,self.d_bar,self.center_first_half,self.Ea_criteria,self.Em_criteria)
@@ -773,14 +776,14 @@ class Canvas(QtWidgets.QDialog):
 
         elif self.fragment_mode==True:
             if self.manualJ_mode==True:
-                J=self.manualJ
+                J = self.manualJ
                 angles, vertices, center, self.start_index, self.end_index = curve_fitting.extract_fragment_data(self.vertices, self.angles, self.fragment_range)
-                a,b=curve_fitting.getCoefficients_for_fragmented_ellipse(J,angles,vertices,center)
-                fragment_vertices,Ea,Em = curve_fitting.form_vertices_of_fragment(a, b, vertices, center, angles, self.d_bar, self.start_index)
+                a, b=curve_fitting.getCoefficients_for_fragmented_ellipse(J,angles,vertices,center)
+                fragment_vertices, Ea, Em = curve_fitting.form_vertices_of_fragment(a, b, vertices, center, angles, self.d_bar, self.start_index)
                 self.Ea = Ea
                 self.Em = Em
                 for i in range(len(fragment_vertices)-1):
-                    painter.drawLine(fragment_vertices[i][0]*300+self.width()/2.,fragment_vertices[i][1]*300+self.height()/2.,fragment_vertices[i+1][0]*300+self.width()/2.,fragment_vertices[i+1][1]*300+self.height()/2.)
+                    painter.drawLine(fragment_vertices[i][0]*300+self.width()/2., fragment_vertices[i][1]*300+self.height()/2., fragment_vertices[i+1][0]*300+self.width()/2., fragment_vertices[i+1][1]*300+self.height()/2.)
                 #maya_polygon_plane(self.generalisedEllipseVertices)
 
         elif self.composite_mode == True:
@@ -820,8 +823,12 @@ class Canvas(QtWidgets.QDialog):
                     self.Em = Emn
 
                 def draw_meet_points_tangent():
-                    painter.drawLine(x0 * 300 + self.width() / 2., y0 * 300 + self.height() / 2., x0 * 300 + x0_tan + self.width() / 2., y0 * 300 + y0_tan + self.height() / 2.)
-                    painter.drawLine(x1 * 300 + self.width() / 2., y1 * 300 + self.height() / 2., x1 * 300 + x1_tan + self.width() / 2., y1 * 300 + y1_tan + self.height() / 2.)
+                    pen1 = QtGui.QPen()
+                    pen1.setColor(QtCore.Qt.magenta)
+                    painter.setPen(pen1)
+                    painter.drawLine(x0 * 300 + self.width() / 2., y0 * 300 + self.height() / 2., x0 * 300 + x0_tan * 10 + self.width() / 2., y0 * 300 + y0_tan * 10 + self.height() / 2.)
+                    painter.drawLine(x1 * 300 + self.width() / 2., y1 * 300 + self.height() / 2., x1 * 300 + x1_tan * 10 + self.width() / 2., y1 * 300 + y1_tan * 10 + self.height() / 2.)
+                    painter.setPen(pen)
 
                 draw_meet_points_tangent()
 
@@ -833,8 +840,12 @@ class Canvas(QtWidgets.QDialog):
                 test_y1 += self.segment_center_list[1].y()
 
                 def test_meet_points_tangent():
-                    painter.drawLine(test_x0 * 300 + self.width() / 2., test_y0 * 300 + self.height() / 2., test_x0 * 300 + test_x0_tan + self.width() / 2., test_y0 * 300 + test_y0_tan + self.height() / 2.)
-                    painter.drawLine(test_x1 * 300 + self.width() / 2., test_y1 * 300 + self.height() / 2., test_x1 * 300 + test_x1_tan + self.width() / 2., test_y1 * 300 + test_y1_tan + self.height() / 2.)
+                    pen1 = QtGui.QPen()
+                    pen1.setColor(QtCore.Qt.black)
+                    painter.setPen(pen1)
+                    painter.drawLine(test_x0 * 300 + self.width() / 2., test_y0 * 300 + self.height() / 2., test_x0 * 300 + test_x0_tan * 10 + self.width() / 2., test_y0 * 300 + test_y0_tan * 10 + self.height() / 2.)
+                    painter.drawLine(test_x1 * 300 + self.width() / 2., test_y1 * 300 + self.height() / 2., test_x1 * 300 + test_x1_tan * 10 + self.width() / 2., test_y1 * 300 + test_y1_tan * 10 + self.height() / 2.)
+                    painter.setPen(pen)
 
                 test_meet_points_tangent()
 
