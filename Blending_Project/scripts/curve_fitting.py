@@ -492,7 +492,7 @@ def form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index
         if Em < d_i / d_bar[index]:
             Em = d_i / d_bar[index]
 
-    Ea = Ea / numPt
+    Ea = Ea / I
 
     return fragment_vertices, Ea, Em
 
@@ -595,14 +595,19 @@ def find_smaller_J(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, E
         return J
 
 
-def adjacent_tangent(a_adjacent, b_adjacent, angle):
+def position_and_tangent_of_parametric_point(a_adjacent, b_adjacent, angle):
     x_tan = 0
     y_tan = 0
+    x = a_adjacent[0]
+    y = b_adjacent[0]
     J = (len(a_adjacent)-1)/2
     for j in range(1, J+1):
-        x_tan += a_adjacent[2*j-1] * (-j) * math.sin(j * angle) + a_adjacent[2*j] * j * math.cos(j * angle)
-        y_tan += b_adjacent[2*j-1] * j * math.cos(j * angle) + b_adjacent[2*j] * (-j) * math.sin(j * angle)
-    return x_tan, y_tan
+        x_tan += a_adjacent[2 * j] * j * math.cos(j * angle) - a_adjacent[2 * j - 1] * j * math.sin(j * angle)
+        y_tan += b_adjacent[2 * j - 1] * j * math.cos(j * angle) - b_adjacent[2 * j] * j * math.sin(j * angle)
+        x += a_adjacent[2 * j - 1] * math.cos(j * angle) + a_adjacent[2 * j] * math.sin(j * angle)
+        y += b_adjacent[2 * j - 1] * math.sin(j * angle) + b_adjacent[2 * j] * math.cos(j * angle)
+
+    return x_tan, y_tan, x, y
 
 
 def composite_auto_mode(vertices_matrix, angles_matrix, segment_center_list, cut_points, d_bar, Ea_criteria, Em_criteria):
@@ -621,7 +626,7 @@ def composite_auto_mode(vertices_matrix, angles_matrix, segment_center_list, cut
     # for the segments in-between
     if len(cut_points)>2:
         for i in range(1, len(cut_points)):
-            x_tan, y_tan = adjacent_tangent(composite_a[-1], composite_b[-1], angles_matrix[i-1][-1])
+            x_tan, y_tan = position_and_tangent_of_parametric_point(composite_a[-1], composite_b[-1], angles_matrix[i-1][-1])
             previous = {'position x':composite_vertices[-1][-1][0], 'position y': composite_vertices[-1][-1][1], 'tangent x':x_tan, 'tangent y': y_tan, 'cut point index': cut_points[i]}
             Ji = findJ_for_non_end_composite(vertices_matrix[i], angles_matrix[i], d_bar, segment_center_list[i], Ea_criteria, Em_criteria, previous)
             a, b = getCoefficients_for_non_end_composite(Ji, vertices_matrix[i], segment_center_list[i], angles_matrix[i], previous)
@@ -633,13 +638,11 @@ def composite_auto_mode(vertices_matrix, angles_matrix, segment_center_list, cut
             if Em < Emi:
                 Em = Emi
 
-
-
     # for the end segment that links the first segment
-    x_tan, y_tan = adjacent_tangent(composite_a[-1], composite_b[-1], angles_matrix[-2][-1])
+    x_tan, y_tan = position_and_tangent_of_parametric_point(composite_a[-1], composite_b[-1], angles_matrix[-2][-1])
     previous = {'position x': composite_vertices[-1][-1][0], 'position y': composite_vertices[-1][-1][1], 'tangent x': x_tan,
                 'tangent y': y_tan, 'cut point index': cut_points[-2]}
-    x_tan, y_tan = adjacent_tangent(composite_a[0], composite_b[0], angles_matrix[0][0])
+    x_tan, y_tan = position_and_tangent_of_parametric_point(composite_a[0], composite_b[0], angles_matrix[0][0])
     next = {'position x': composite_vertices[0][0][0], 'position y': composite_vertices[0][0][1], 'tangent x': x_tan,
             'tangent y': y_tan, 'cut point index': cut_points[0]}
     Jn = findJ_for_end_segment(vertices_matrix[-1], angles_matrix[-1], d_bar, segment_center_list[-1], Ea_criteria, Em_criteria, previous, next)
@@ -657,7 +660,7 @@ def composite_auto_mode(vertices_matrix, angles_matrix, segment_center_list, cut
 
 def getCoefficients_for_end_composite(J, vertices, center, angles, previous, next):
     I = len(vertices)
-    if len(angles)!=I:
+    if len(angles)!= I:
         raise ValueError('the size of vertices is not the same as that of angles')
     aConstArray = np.zeros(2 * J + 5)
     aCoefficientMatrix = np.zeros(shape=(2 * J + 5, 2 * J + 1), dtype=float, order='C')  # row-major
@@ -665,7 +668,7 @@ def getCoefficients_for_end_composite(J, vertices, center, angles, previous, nex
     bConstArray = np.zeros(2 * J + 5)
     bCoefficientMatrix = np.zeros(shape=(2 * J + 5, 2 * J + 1), dtype=float, order='C')
 
-    for i in range(1, I-1):
+    for i in range(I):
         vi = angles[i]
 
         # the first row of coefficients matrix
@@ -679,10 +682,10 @@ def getCoefficients_for_end_composite(J, vertices, center, angles, previous, nex
             aCoefficientMatrix[0, 2 * j - 1] += math.cos(j * vi)
             aCoefficientMatrix[0, 2 * j] += math.sin(j * vi)
 
-        # the second to No.2J+1 row of coefficients matrix
+        # the second to No.2J+2 row of coefficients matrix
         for k in range(1, J + 1):
             aConstArray[2 * k - 1] += (vertices[i][0] - center.x()) * math.cos(vi * k)
-            aConstArray[2 * k] += (vertices[i][0] - center.y()) * math.sin(vi * k)
+            aConstArray[2 * k] += (vertices[i][0] - center.x()) * math.sin(vi * k)
             bConstArray[2 * k - 1] += (vertices[i][2] - center.y()) * math.sin(vi * k)
             bConstArray[2 * k] += (vertices[i][2] - center.y()) * math.cos(vi * k)
 
@@ -774,21 +777,18 @@ def findJ_for_non_end_composite(vertices, angles, d_bar, center, Ea_criteria, Em
 
 
 def findJ_for_end_segment(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous, next):
-    J = 0
+    J = 5
     start_index = previous['cut point index']
     a3, b3 = getCoefficients_for_end_composite(3, vertices, center, angles, previous, next)
     v3, Ea3, Em3 = form_vertices_of_fragment(a3, b3, vertices, center, angles, d_bar, start_index)
     a10, b10 = getCoefficients_for_end_composite(10, vertices, center, angles, previous, next)
     v10, Ea10, Em10 = form_vertices_of_fragment(a10, b10, vertices, center, angles, d_bar, start_index)
     if Ea3 < Ea_criteria and Em3 < Em_criteria:
-        J = find_smaller_J_for_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Ea10, Ea_criteria,
-                                                 Em_criteria, previous, next)
+        J = find_smaller_J_for_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Ea10, Ea_criteria, Em_criteria, previous, next)
     elif Ea10 >= Ea_criteria or Em10 >= Em_criteria:
-        J = find_bigger_J_for_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10,
-                                                Ea_criteria, Em_criteria, previous, next)
+        J = find_bigger_J_for_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria, previous, next)
     elif Ea3 >= Ea_criteria or Em3 >= Em_criteria:
-        J = find_inbetween_J_for_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10,
-                                                   Ea_criteria, Em_criteria, previous, next)
+        J = find_inbetween_J_for_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria, previous, next)
     return J
 
 
@@ -902,18 +902,24 @@ def find_bigger_J_for_non_end_composite(vertices, angles, d_bar, center, J_small
 
 def find_bigger_J_for_end_composite(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria, previous, next):
     # Linear extrapolate to find bigger J>J_small
+    print 'find bigger J. J_small is {} and J_big is {}'.format(J_small, J_big)
     start_index = previous['cut point index']
+    J = J_big
     if Ea_bigJ >= Ea_criteria:
         J = int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ)) + J_small
     elif Em_bigJ >= Em_criteria:
         J = int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ)) + J_small
-    if J == J_big:
-        J = J + 1
+    if J <= J_big:
+        print 'weird, J({}) is smaller than J_big({})'.format(J, J_big)
+        J = J_big + 1
         return J
+
     a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
     v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
+
     if Ea >= Ea_criteria or Em >= Em_criteria:
-        return find_bigger_J_for_end_composite(vertices, angles, d_bar, center, J_big, J, Ea_bigJ, Em_bigJ, Ea, Em, Ea_criteria, Em_criteria, previous, next)
+        find_bigger_J_for_end_composite(vertices, angles, d_bar, center, J_big, J, Ea_bigJ, Em_bigJ, Ea, Em, Ea_criteria, Em_criteria, previous, next)
+
     else:
         # we are close to the solution, hence, a while function will suffice
         while Ea < Ea_criteria and Em < Em_criteria and J > J_small:
@@ -1001,7 +1007,7 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
         # the second to No.2J+1 row of coefficients matrix
         for k in range(1, J + 1):
             aConstArray[2 * k - 1] += (vertices[i][0] - center.x()) * math.cos(vi * k)
-            aConstArray[2 * k] += (vertices[i][0] - center.y()) * math.sin(vi * k)
+            aConstArray[2 * k] += (vertices[i][0] - center.x()) * math.sin(vi * k)
             bConstArray[2 * k - 1] += (vertices[i][2] - center.y()) * math.sin(vi * k)
             bConstArray[2 * k] += (vertices[i][2] - center.y()) * math.cos(vi * k)
 
