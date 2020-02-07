@@ -726,8 +726,9 @@ class Canvas(QtWidgets.QDialog):
                         x_tan, y_tan, x, y = curve_fitting.position_and_tangent_of_parametric_point(self.a, self.b, self.angles[i])
                         x += self.center.x()
                         y += self.center.y()
+                        t = QtGui.QVector2D(x_tan, y_tan).normalized() * 20.0
                         p0 = QtCore.QPointF(x * 300 + self.width()/2., y * 300 + self.height()/2.)
-                        p1 = QtCore.QPointF(x * 300 + self.width()/2. + x_tan, y * 300 + self.height()/2. + y_tan)
+                        p1 = QtCore.QPointF(x * 300 + self.width()/2. + t.x(), y * 300 + self.height()/2. + t.y())
                         painter.drawLine(p0, p1)
                     painter.setPen(pen)
 
