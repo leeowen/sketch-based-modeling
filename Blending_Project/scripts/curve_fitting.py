@@ -382,7 +382,6 @@ def getCoefficients_for_second_half_of_symmetrical_ellipse(a_first_half, b_first
 
 
 def getCoefficients_for_second_half_of_composite_segment(J, vertices_second_half, angles_second_half, center_first_half, center_second_half, a_first_half, b_first_half):
-    """
     I = len(vertices_second_half)
     J1 = (len(a_first_half)-1) / 2
     aConstArray = np.zeros(I)
@@ -438,14 +437,15 @@ def getCoefficients_for_second_half_of_composite_segment(J, vertices_second_half
         b3 = b3 - (1 + (-1)**j) * j * b[2 * j - 5] / 4.0
         b4 = b4 - (1 + (-1)**j) * b[2 * j - 4] / 2.0
 
-    np.insert(a, 1, a1)
-    np.insert(a, 2, a2)
-    np.insert(a, 3, a3)
-    np.insert(a, 4, a4)
-    np.insert(b, 1, b1)
-    np.insert(b, 2, b2)
-    np.insert(b, 3, b3)
-    np.insert(b, 4, b4)
+    a = np.insert(a, 1, a1)
+    a = np.insert(a, 2, a2)
+    a = np.insert(a, 3, a3)
+    a = np.insert(a, 4, a4)
+    b = np.insert(b, 1, b1)
+    b = np.insert(b, 2, b2)
+    b = np.insert(b, 3, b3)
+    b = np.insert(b, 4, b4)
+
     """
     J1 = (len(a_first_half) - 1)/2
     I = len(vertices_second_half)
@@ -535,15 +535,14 @@ def getCoefficients_for_second_half_of_composite_segment(J, vertices_second_half
         a[2 * j] = a_tmp[2 * j - 4]
         b[2 * j - 1] = b_tmp[2 * j - 5]
         b[2 * j] = b_tmp[2 * j - 4]
-
+    """
     return a, b
 
 
-def form_vertices_of_segmented_ellipse(vertices_first_half, vertices_second_half, center_first_half,center_second_half,
-                                       angles_first_half, angles_second_half, d_bar, a1, b1, a2, b2):
+def form_vertices_of_symmetry_ellipse(vertices_first_half, center_first_half, angles_first_half, d_bar, a1, b1, a2, b2):
     I = len(vertices_first_half)
     numPt = len(d_bar)
-    segmented_ellipse_vertices = [[0 for i in range(2)] for j in range(numPt)]
+    symmetry_ellipse_vertices = [[0 for i in range(2)] for j in range(numPt)]
     Ea = 0.0
     Em = 0.0
     d = [0.0] * numPt
@@ -569,8 +568,8 @@ def form_vertices_of_segmented_ellipse(vertices_first_half, vertices_second_half
             new_second_half_vertex[0] += a2[2 * j - 1] * math.cos(j * v2) + a2[2 * j] * math.sin(j * v2)
             new_second_half_vertex[1] += b2[2 * j - 1] * math.sin(j * v2) + b2[2 * j] * math.cos(j * v2)
 
-        segmented_ellipse_vertices[i][0] = new_first_half_vertex[0]
-        segmented_ellipse_vertices[i][1] = new_first_half_vertex[1]
+        symmetry_ellipse_vertices[i][0] = new_first_half_vertex[0]
+        symmetry_ellipse_vertices[i][1] = new_first_half_vertex[1]
         di1 = math.sqrt((vertices_first_half[i][0] - new_first_half_vertex[0]) ** 2 + (vertices_first_half[i][2] - new_first_half_vertex[1]) ** 2)
         d[i] = di1
         Ea += (di1 / d_bar[i])
@@ -578,8 +577,8 @@ def form_vertices_of_segmented_ellipse(vertices_first_half, vertices_second_half
             Em = di1 / d_bar[i]
 
         if i != 0 and i != (I - 1):
-            segmented_ellipse_vertices[numPt - i][0] = new_second_half_vertex[0]
-            segmented_ellipse_vertices[numPt - i][1] = new_second_half_vertex[1]
+            symmetry_ellipse_vertices[numPt - i][0] = new_second_half_vertex[0]
+            symmetry_ellipse_vertices[numPt - i][1] = new_second_half_vertex[1]
             di2 = math.sqrt(pow(-vertices_first_half[i][0] - new_second_half_vertex[0], 2) + pow(vertices_first_half[i][2] - new_second_half_vertex[1], 2))
             d[numPt - i] = di2
             Ea += (di2 / d_bar[numPt - i])
@@ -589,7 +588,59 @@ def form_vertices_of_segmented_ellipse(vertices_first_half, vertices_second_half
 
     Ea = Ea / numPt
 
-    return segmented_ellipse_vertices, Ea, Em
+    return symmetry_ellipse_vertices, Ea, Em
+
+
+def form_vertices_of_composite_ellipse(vertices_first_half, vertices_second_half, center_first_half, center_second_half, angles_first_half, angles_second_half, d_bar, a1, b1, a2, b2):
+    I = len(vertices_first_half)
+    numPt = len(d_bar)
+    composite_ellipse_vertices = [[0 for i in range(2)] for j in range(numPt)]
+    Ea = 0.0
+    Em = 0.0
+    d = [0.0] * numPt
+    J1 = (len(a1) - 1) / 2
+    J2 = (len(a2) - 1) / 2
+
+    for i in range(I):
+        new_first_half_vertex = [0.0] * 2
+        new_second_half_vertex = [0.0] * 2
+
+        new_first_half_vertex[0] = center_first_half.x() + a1[0]
+        new_first_half_vertex[1] = center_first_half.y() + b1[0]
+        v1 = angles_first_half[i]
+
+        v2 = angles_second_half[i]
+        new_second_half_vertex[0] = center_second_half.x() + a2[0]
+        new_second_half_vertex[1] = center_second_half.y() + b2[0]
+
+        for j in range(1, J1 + 1):
+            new_first_half_vertex[0] += a1[2 * j - 1] * math.cos(j * v1) + a1[2 * j] * math.sin(j * v1)
+            new_first_half_vertex[1] += b1[2 * j - 1] * math.sin(j * v1) + b1[2 * j] * math.cos(j * v1)
+        for j in range(1, J2 + 1):
+            new_second_half_vertex[0] += a2[2 * j - 1] * math.cos(j * v2) + a2[2 * j] * math.sin(j * v2)
+            new_second_half_vertex[1] += b2[2 * j - 1] * math.sin(j * v2) + b2[2 * j] * math.cos(j * v2)
+
+        composite_ellipse_vertices[i][0] = new_first_half_vertex[0]
+        composite_ellipse_vertices[i][1] = new_first_half_vertex[1]
+        di1 = math.sqrt((vertices_first_half[i][0] - new_first_half_vertex[0]) ** 2 + (vertices_first_half[i][2] - new_first_half_vertex[1]) ** 2)
+        d[i] = di1
+        Ea += (di1 / d_bar[i])
+        if Em < di1 / d_bar[i]:
+            Em = di1 / d_bar[i]
+
+        if i != 0 and i != (I - 1):
+            composite_ellipse_vertices[I -1 + i][0] = new_second_half_vertex[0]
+            composite_ellipse_vertices[I -1 + i][1] = new_second_half_vertex[1]
+            di2 = math.sqrt(pow(vertices_second_half[i][0] - new_second_half_vertex[0], 2) + pow(vertices_second_half[i][2] - new_second_half_vertex[1], 2))
+            d[numPt - i] = di2
+            Ea += (di2 / d_bar[I -1 + i])
+
+            if Em < di2 / d_bar[I - 1 + i]:
+                Em = di2 / d_bar[I - 1 + i]
+
+    Ea = Ea / numPt
+
+    return composite_ellipse_vertices, Ea, Em
 
 
 def getCoefficients_for_fragmented_ellipse( J, angles, vertices, center):

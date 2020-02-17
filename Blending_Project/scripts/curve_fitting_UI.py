@@ -737,31 +737,28 @@ class Canvas(QtWidgets.QDialog):
                 a_second_half, b_second_half = curve_fitting.getCoefficients_for_second_half_of_symmetrical_ellipse(
                     a_first_half, b_first_half)
 
-                segmented_ellipse_vertices, Ea, Em = curve_fitting.form_vertices_of_segmented_ellipse(
+                symmetry_ellipse_vertices, Ea, Em = curve_fitting.form_vertices_of_symmetry_ellipse(
                     self.vertices_first_half,
-                    self.vertices_second_half,
                     self.center_first_half,
-                    self.center_second_half,
                     self.angles_first_half,
-                    self.angles_second_half,
                     self.d_bar, a_first_half,
                     b_first_half, a_second_half,
                     b_second_half)
                 self.Ea = Ea
                 self.Em = Em
                 for i in range(self.numPt / 2):
-                    painter.drawLine(segmented_ellipse_vertices[i][0] * 300 + self.width() / 2.,
-                                     segmented_ellipse_vertices[i][1] * 300 + self.height() / 2.,
-                                     segmented_ellipse_vertices[(i + 1) % self.numPt][0] * 300 + self.width() / 2.,
-                                     segmented_ellipse_vertices[(i + 1) % self.numPt][1] * 300 + self.height() / 2.)
+                    painter.drawLine(symmetry_ellipse_vertices[i][0] * 300 + self.width() / 2.,
+                                     symmetry_ellipse_vertices[i][1] * 300 + self.height() / 2.,
+                                     symmetry_ellipse_vertices[(i + 1) % self.numPt][0] * 300 + self.width() / 2.,
+                                     symmetry_ellipse_vertices[(i + 1) % self.numPt][1] * 300 + self.height() / 2.)
                 second_half_color = QtGui.QColor(127, 0, 255)
                 pen.setColor(second_half_color)
                 painter.setPen(pen)
                 for i in range(self.numPt / 2, self.numPt):
-                    painter.drawLine(segmented_ellipse_vertices[i][0] * 300 + self.width() / 2.,
-                                     segmented_ellipse_vertices[i][1] * 300 + self.height() / 2.,
-                                     segmented_ellipse_vertices[(i + 1) % self.numPt][0] * 300 + self.width() / 2.,
-                                     segmented_ellipse_vertices[(i + 1) % self.numPt][1] * 300 + self.height() / 2.)
+                    painter.drawLine(symmetry_ellipse_vertices[i][0] * 300 + self.width() / 2.,
+                                     symmetry_ellipse_vertices[i][1] * 300 + self.height() / 2.,
+                                     symmetry_ellipse_vertices[(i + 1) % self.numPt][0] * 300 + self.width() / 2.,
+                                     symmetry_ellipse_vertices[(i + 1) % self.numPt][1] * 300 + self.height() / 2.)
 
         elif self.composite_mode == True:
             if not self.vertices_first_half:
@@ -774,14 +771,26 @@ class Canvas(QtWidgets.QDialog):
                 J2 = self.manualJ
                 a_second_half, b_second_half = curve_fitting.getCoefficients_for_second_half_of_composite_segment(J2, self.vertices_second_half, self.angles_second_half, self.center_first_half, self.center_second_half, a_first_half, b_first_half)
 
-                vertices, self.Ea, self.Em =curve_fitting.form_vertices_of_segmented_ellipse(self.vertices_first_half, self.vertices_second_half, self.center_first_half, self.center_second_half,
+                vertices, self.Ea, self.Em =curve_fitting.form_vertices_of_composite_ellipse(self.vertices_first_half, self.vertices_second_half, self.center_first_half, self.center_second_half,
                                        self.angles_first_half, self.angles_second_half, self.d_bar, a_first_half, b_first_half, a_second_half, b_second_half)
+
                 for i in range(len(vertices)):
                     painter.drawLine(vertices[i][0] * 300 + self.width() / 2.,
                                      vertices[i][1] * 300 + self.height() / 2.,
                                      vertices[(i + 1) % len(vertices)][0] * 300 + self.width() / 2.,
                                      vertices[(i + 1) % len(vertices)][1] * 300 + self.height() / 2.)
-
+                """
+                for i in range(len(self.vertices_first_half)):
+                    painter.drawLine(self.vertices_first_half[i][0] * 300 + self.width() / 2.,
+                                     self.vertices_first_half[i][2] * 300 + self.height() / 2.,
+                                     self.vertices_first_half[(i + 1) % len(self.vertices_first_half)][0] * 300 + self.width() / 2.,
+                                     self.vertices_first_half[(i + 1) % len(self.vertices_first_half)][2] * 300 + self.height() / 2.)
+                for i in range(len(self.vertices_second_half)):
+                    painter.drawLine(self.vertices_second_half[i][0] * 300 + self.width() / 2.,
+                                     self.vertices_second_half[i][2] * 300 + self.height() / 2.,
+                                     self.vertices_second_half[(i + 1) % len(self.vertices_second_half)][0] * 300 + self.width() / 2.,
+                                     self.vertices_second_half[(i + 1) % len(self.vertices_second_half)][2] * 300 + self.height() / 2.)
+                """
         elif self.fragment_mode==True:
             if self.manualJ_mode==True:
                 J = self.manualJ
@@ -861,21 +870,8 @@ class Canvas(QtWidgets.QDialog):
                         p2=QtCore.QPointF(self.vertices[i][0]*300+self.width()/2.,self.vertices[i][2]*300+self.height()/2.)
                         painter.drawLine(p1,p2)
 
-            elif self.composite_mode == True:
-                if self.cut_points != []:
-                    for row in self.vertices_matrix:
-                        pen3 = QtGui.QPen()
-                        color = QtGui.QColor(random.randrange(0, 255), random.randrange(0, 255), random.randrange(0, 255))
-                        pen3.setColor(color)
-                        painter.setPen(pen3)
-                        for i in range(len(row)-1):
-                            p1 = QtCore.QPointF(row[i][0] * 300 + self.width() / 2.,row[i][2] * 300 + self.height() / 2.)
-                            p2 = QtCore.QPointF(row[i+1][0] * 300 + self.width() / 2.,row[i+1][2] * 300 + self.height() / 2.)
-                            painter.drawLine(p1, p2)
-
-                    painter.setPen(pen)
-                else:
-                    draw_whole_curve()
+            else:
+                draw_whole_curve()
 
 
     def draw_standardEllipse(self,painter):
