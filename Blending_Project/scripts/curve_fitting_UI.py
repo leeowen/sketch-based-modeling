@@ -3,7 +3,7 @@ import maya.cmds as cmds
 from PySide2 import QtCore, QtGui, QtWidgets
 from shiboken2 import wrapInstance
 import maya.OpenMayaUI as omui
-import math,sys, os, random
+import math, sys, os, random
 sys.path.append('/usr/lib64/python2.7/site-packages')
 sys.path.append('./.local/lib/python2.7/site-packages')
 sys.path.append(cmds.workspace(fn=True)+'/scripts/')
@@ -32,11 +32,11 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
                                    
     
     def sizeHint(self):
-        return QtCore.QSize(900,700)
+        return QtCore.QSize(900, 700)
         
         
     def minimumSize(self):
-        return QtCore.Qsize(900,700)        
+        return QtCore.Qsize(900, 700)
         
         
     def create_widgets(self):
@@ -71,10 +71,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.showCutPointCandidate_checkBox = QtWidgets.QCheckBox('show cut point candidate(s)')
         self.showCutPointCandidate_checkBox.setChecked(False)
         self.showCutPointCandidate_checkBox.setVisible(False)
-
-        self.cut_point_label = QtWidgets.QLabel('cut point(s) list:')
-        self.cut_point_lineEdit = QtWidgets.QLineEdit()
-        self.cut_point_button = QtWidgets.QPushButton('Confirm')
                        
         self.radio_group=QtWidgets.QGroupBox()  
         self.manualJ_mode_radioButton=QtWidgets.QRadioButton('manual J')
@@ -164,9 +160,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.range_slider.setVisible(False)
         self.saveAsDat_button.setVisible(False)
         self.saveAsImg_button.setVisible(False)
-        self.cut_point_button.setVisible(False)
-        self.cut_point_label.setVisible(False)
-        self.cut_point_lineEdit.setVisible(False)
         
 
     def create_layout(self):   
@@ -225,14 +218,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         
         right_layout.addStretch(1)
 
-        cutPoint_layout = QtWidgets.QVBoxLayout()
-        cutPoint_layout.addWidget(self.cut_point_label)
-        cutPoint_layout.addWidget(self.cut_point_lineEdit)
-        cutPoint_layout.addWidget(self.cut_point_button)
-        right_layout.addLayout(cutPoint_layout)
-
-        right_layout.addStretch(1)
-
         grid_layout=QtWidgets.QGridLayout()
         grid_layout.addWidget(self.autoJ_mode_radioButton,0,0,1,2)
         grid_layout.addWidget(self.manualJ_mode_radioButton,1,0,1,2)
@@ -275,9 +260,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.range_slider.valueChanged.connect(self.fragment_range_change)
         self.showPointIndex_checkBox.toggled.connect(self.update_display_point_index)
         self.showCurvature_checkBox.toggled.connect(self.update_curvature)
-        self.showCutPointCandidate_checkBox.toggled.connect(self.update_cut_point)
         self.showTangent_checkBox.toggled.connect(self.update_tangent)
-        self.cut_point_button.clicked.connect(self.get_cut_point)
         
     
     def fragment_range_change(self,value):
@@ -293,9 +276,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.range_label.setVisible(False)
             self.range_slider.setVisible(False)
             self.manualJ_mode_radioButton.setVisible(True)
-            self.cut_point_button.setVisible(False)
-            self.cut_point_label.setVisible(False)
-            self.cut_point_lineEdit.setVisible(False)
         elif text=='2 symmetrical halves':
             self.canvas.symmetry_mode=True
             self.canvas.single_piece_mode=False
@@ -304,9 +284,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.range_label.setVisible(False)
             self.range_slider.setVisible(False)
             self.manualJ_mode_radioButton.setVisible(True)
-            self.cut_point_button.setVisible(False)
-            self.cut_point_label.setVisible(False)
-            self.cut_point_lineEdit.setVisible(False)
         elif text=='fragment':
             self.canvas.symmetry_mode = False
             self.canvas.single_piece_mode = False
@@ -316,9 +293,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.range_label.setVisible(True)
             self.range_slider.setVisible(True)
             self.manualJ_mode_radioButton.setVisible(True)
-            self.cut_point_button.setVisible(False)
-            self.cut_point_label.setVisible(False)
-            self.cut_point_lineEdit.setVisible(False)
         elif text == 'composite':
             self.canvas.symmetry_mode=False
             self.canvas.single_piece_mode=False
@@ -328,9 +302,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             self.range_slider.setVisible(False)
             self.manualJ_mode_radioButton.setVisible(True)
             self.showTangent_checkBox.setVisible(True)
-            self.cut_point_button.setVisible(True)
-            self.cut_point_label.setVisible(True)
-            self.cut_point_lineEdit.setVisible(True)
 
             
         self.canvas.update()
@@ -372,11 +343,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
 
     def update_curvature(self,checked):
         self.canvas.activateCurvature=checked
-        self.canvas.repaint()
-
-
-    def update_cut_point(self,checked):
-        self.canvas.activateCutPoint=checked
         self.canvas.repaint()
 
 
@@ -527,13 +493,6 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
         self.showCurvature_checkBox.setVisible(checked)
         self.showTangent_checkBox.setVisible(checked)
         self.showCutPointCandidate_checkBox.setVisible(checked)
-
-
-    def get_cut_point(self):
-        str = self.cut_point_lineEdit.text()
-        list = str.split(' ')
-        cut_points = [int(i) for i in list]
-        self.canvas.cut_curve(cut_points)
             
               
 class Canvas(QtWidgets.QDialog):
@@ -576,29 +535,6 @@ class Canvas(QtWidgets.QDialog):
         self.update()
 
 
-    def cut_curve(self,cut_points):
-        self.cut_points = cut_points
-        # split data for N segments
-        N = len(self.cut_points)
-        self.vertices_matrix = []
-        self.angles_matrix = []
-        self.segment_center_list = []
-        for i in range(N):
-            if self.cut_points[i]<self.cut_points[(i+1)%N]:
-                tmp_vertices = self.vertices[self.cut_points[i]:self.cut_points[(i+1)%N]+1]
-                tmp_angles = self.angles[self.cut_points[i]:self.cut_points[(i+1)%N]+1]
-            else:
-                tmp_vertices = self.vertices[self.cut_points[i]:self.numPt]
-                tmp_vertices.extend(self.vertices[0:self.cut_points[(i + 1) % N]+1])
-                tmp_angles = self.angles[self.cut_points[i]:self.numPt]
-                tmp_angles.extend(self.angles[0:self.cut_points[(i + 1) % N]+1])
-            self.vertices_matrix.append(tmp_vertices)
-            self.angles_matrix.append(tmp_angles)
-            tmp_center = curve_fitting.getCenter(tmp_vertices)
-            self.segment_center_list.append(tmp_center)
-        self.update()
-
-
     def readFile(self,file_path):
         self.vertices = []
         self.angles = []
@@ -614,21 +550,77 @@ class Canvas(QtWidgets.QDialog):
         self.a=[]
         self.b=[]
         self.generalisedEllipseVertices=[]
-        self.cut_points = []
-        self.composite_vertices = []
-        self.composite_a = []
-        self.composite_b = []
         f = open(file_path,'r')
         content = f.readlines()
         for line in content:
             p=line.split()
-            self.numPt+=1
-            self.vertices.append(om.MVector(float(p[0]),float(p[1]),float(p[2])))
+            self.vertices.append(om.MVector(float(p[0]), float(p[1]), float(p[2])))
         f.close()
 
         self.center = curve_fitting.getCenter(self.vertices)
+
+        def sort():
+            if self.vertices[0][0] > self.center.x() and self.vertices[-1][0] < self.center.x():
+                return
+            elif self.vertices[0][0] < self.center.x():
+                i = 0
+                while self.vertices[i][0] < self.center.x():
+                    i += 1
+                for d in range(i):
+                    b = self.vertices.pop(0)
+                    self.vertices.append(b)
+                return
+            elif self.vertices[-1][0] > self.center.x():
+                i = -1
+                while self.vertices[i][0] > self.center.x():
+                    i += 1
+                for d in range(i):
+                    self.vertices.insert(self.numPt, self.vertices[0])
+                    self.vertices.remove(self.vertices[0])
+                    print 'case 3'
+                return
+
+        sort()
+        def modify_first_and_middle_vertices():
+            N = self.vertices[-1]
+            O = self.vertices[0]
+            C = self.center
+            if N[0] != O[0]:
+                k = (O[2] - N[2]) / (O[0] - N[0])
+                b = N[2] - k * N[0]
+                new_z = k * C.x() + b
+                k = (O[1] - N[1]) / (O[0] - N[0])
+                b = N[1] - k * N[0]
+                new_y = k * C.x() + b
+                first_vertex = om.MVector(C.x(), new_y, new_z)
+                self.vertices.insert(0, first_vertex)
+                self.vertices.pop(len(self.vertices)-1)
+            else:
+                raise ValueError('the first and last vertex x position is the same')
+
+            e = 1
+            for i in range(1, len(self.vertices)):
+                if self.vertices[i][0] > C.x() and self.vertices[i+1][0] < C.x():
+                    e = i
+                    break
+            E = self.vertices[e]
+            F = self.vertices[e+1]
+            if E[0] != F[0]:
+                k = (E[2] - F[2]) / (E[0] - F[0])
+                b = F[2] - k * F[0]
+                new_z = k * C.x() + b
+                k = (E[1] - F[1]) / (E[0] - F[0])
+                b = E[1] - k * E[0]
+                new_y = k * C.x() + b
+                middle_vertex = om.MVector(C.x(), new_y, new_z)
+                self.vertices.insert(e+1, middle_vertex)
+                self.vertices.pop(e+2)
+            else:
+                raise ValueError('two vertices in the middle have same x position')
+
+        modify_first_and_middle_vertices()
+        self.numPt = len(self.vertices)
         self.d_bar = curve_fitting.get_d_bar(self.vertices, self.center)
-        
         self.angles = curve_fitting.calculateAngle(self.vertices, self.center)
         self.tangents = curve_fitting.calculateTangent(self.vertices, self.angles)
         self.normals = curve_fitting.calculateNormal(self.tangents)
@@ -647,9 +639,6 @@ class Canvas(QtWidgets.QDialog):
         self.center_first_half = curve_fitting.getCenter(self.vertices_first_half)
         self.center_second_half = curve_fitting.getCenter(self.vertices_second_half)
 
-        self.vertices_matrix = []
-        self.angles_matrix = []
-        self.segment_center_list = []
             
     
     def setLineWidth(self,width):
@@ -737,7 +726,7 @@ class Canvas(QtWidgets.QDialog):
                 J = self.manualJ
 
             elif self.autoJ_mode==True:
-                J = curve_fitting.findJ(self.vertices_first_half,self.angles_first_half,self.d_bar,self.center_first_half,self.Ea_criteria,self.Em_criteria)
+                J = curve_fitting.findJ(self.vertices_first_half, self.angles_first_half,self.d_bar,self.center_first_half,self.Ea_criteria,self.Em_criteria)
                 self.autoJ_value=J
 
             if self.manualJ_mode==True or self.autoJ_mode==True:
@@ -774,85 +763,36 @@ class Canvas(QtWidgets.QDialog):
                                      segmented_ellipse_vertices[(i + 1) % self.numPt][0] * 300 + self.width() / 2.,
                                      segmented_ellipse_vertices[(i + 1) % self.numPt][1] * 300 + self.height() / 2.)
 
+        elif self.composite_mode == True:
+            if not self.vertices_first_half:
+                self.split_data()
+            if self.manualJ_mode == True:
+                # for the first segment
+                J1 = curve_fitting.findJ(self.vertices_first_half, self.angles_first_half, self.d_bar, self.center_first_half, self.Ea_criteria, self.Em_criteria)
+                a_first_half, b_first_half = curve_fitting.getCoefficients_for_first_generalized_elliptic_segment(self.vertices_first_half, self.angles_first_half, self.center_first_half, J1)
+
+                J2 = self.manualJ
+                a_second_half, b_second_half = curve_fitting.getCoefficients_for_second_half_of_composite_segment(J2, self.vertices_second_half, self.angles_second_half, self.center_first_half, self.center_second_half, a_first_half, b_first_half)
+
+                vertices, self.Ea, self.Em =curve_fitting.form_vertices_of_segmented_ellipse(self.vertices_first_half, self.vertices_second_half, self.center_first_half, self.center_second_half,
+                                       self.angles_first_half, self.angles_second_half, self.d_bar, a_first_half, b_first_half, a_second_half, b_second_half)
+                for i in range(len(vertices)):
+                    painter.drawLine(vertices[i][0] * 300 + self.width() / 2.,
+                                     vertices[i][1] * 300 + self.height() / 2.,
+                                     vertices[(i + 1) % len(vertices)][0] * 300 + self.width() / 2.,
+                                     vertices[(i + 1) % len(vertices)][1] * 300 + self.height() / 2.)
 
         elif self.fragment_mode==True:
             if self.manualJ_mode==True:
                 J = self.manualJ
                 angles, vertices, center, self.start_index, self.end_index = curve_fitting.extract_fragment_data(self.vertices, self.angles, self.fragment_range)
-                a, b=curve_fitting.getCoefficients_for_fragmented_ellipse(J,angles,vertices,center)
+                a, b = curve_fitting.getCoefficients_for_fragmented_ellipse(J,angles,vertices,center)
                 fragment_vertices, Ea, Em = curve_fitting.form_vertices_of_fragment(a, b, vertices, center, angles, self.d_bar, self.start_index)
                 self.Ea = Ea
                 self.Em = Em
                 for i in range(len(fragment_vertices)-1):
                     painter.drawLine(fragment_vertices[i][0]*300+self.width()/2., fragment_vertices[i][1]*300+self.height()/2., fragment_vertices[i+1][0]*300+self.width()/2., fragment_vertices[i+1][1]*300+self.height()/2.)
                 #maya_polygon_plane(self.generalisedEllipseVertices)
-
-        elif self.composite_mode == True:
-            #if self.autoJ_mode == True:
-                #self.composite_vertices, self.Ea, self.Em = curve_fitting.composite_auto_mode(self.vertices_matrix, self.angles_matrix, self.segment_center_list, self.cut_points, self.d_bar, self.Ea_criteria, self.Em_criteria)
-            if self.manualJ_mode == True:
-                # for the first segment
-                self.composite_vertices = []
-                self.composite_a = []
-                self.composite_b = []
-
-                J1 = curve_fitting.findJ(self.vertices_matrix[0], self.angles_matrix[0], self.d_bar, self.segment_center_list[0], self.Ea_criteria, self.Em_criteria)
-                a, b = curve_fitting.getCoefficients_for_first_generalized_elliptic_segment(self.vertices_matrix[0], self.angles_matrix[0], self.segment_center_list[0], J1)
-                vertices, self.Ea, self.Em = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[0], self.segment_center_list[0], self.angles_matrix[0], self.d_bar, self.cut_points[0])
-                self.composite_vertices.append(vertices)
-                self.composite_a.append(a)
-                self.composite_b.append(b)
-
-                # for the end segment that links the first segment
-                x0_tan, y0_tan, x0, y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[0], self.composite_b[0], self.angles_matrix[0][-1])
-                x0 += self.segment_center_list[0].x()
-                y0 += self.segment_center_list[0].y()
-                previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan, 'cut point index': self.cut_points[1]}
-                x1_tan, y1_tan, x1, y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[0], self.composite_b[0], self.angles_matrix[0][0])
-                x1 += self.segment_center_list[0].x()
-                y1 += self.segment_center_list[0].y()
-                next = {'position x': x1, 'position y': y1, 'tangent x': x1_tan, 'tangent y': y1_tan, 'cut point index': self.cut_points[0]}
-                Jn = self.manualJ
-                a, b = curve_fitting.getCoefficients_for_end_composite(Jn, self.vertices_matrix[-1], self.segment_center_list[-1], self.angles_matrix[-1], previous, next)
-                composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[1], self.segment_center_list[1], self.angles_matrix[1], self.d_bar, self.cut_points[1])
-                self.composite_a.append(a)
-                self.composite_b.append(b)
-                self.composite_vertices.append(composite_vertices_n)
-
-                self.Ea = (self.Ea * len(self.vertices_matrix[0]) + Ean * len(self.vertices_matrix[1]))/(len(self.vertices_matrix[0])+len(self.vertices_matrix[1]))
-                if self.Em < Emn:
-                    self.Em = Emn
-
-                def draw_meet_points_tangent():
-                    pen1 = QtGui.QPen()
-                    pen1.setColor(QtCore.Qt.magenta)
-                    painter.setPen(pen1)
-                    painter.drawLine(x0 * 300 + self.width() / 2., y0 * 300 + self.height() / 2., x0 * 300 + x0_tan * 10 + self.width() / 2., y0 * 300 + y0_tan * 10 + self.height() / 2.)
-                    painter.drawLine(x1 * 300 + self.width() / 2., y1 * 300 + self.height() / 2., x1 * 300 + x1_tan * 10 + self.width() / 2., y1 * 300 + y1_tan * 10 + self.height() / 2.)
-                    painter.setPen(pen)
-
-                draw_meet_points_tangent()
-
-                test_x0_tan, test_y0_tan, test_x0, test_y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][0])
-                test_x1_tan, test_y1_tan, test_x1, test_y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][-1])
-                test_x0 += self.segment_center_list[1].x()
-                test_y0 += self.segment_center_list[1].y()
-                test_x1 += self.segment_center_list[1].x()
-                test_y1 += self.segment_center_list[1].y()
-
-                def test_meet_points_tangent():
-                    pen1 = QtGui.QPen()
-                    pen1.setColor(QtCore.Qt.black)
-                    painter.setPen(pen1)
-                    painter.drawLine(test_x0 * 300 + self.width() / 2., test_y0 * 300 + self.height() / 2., test_x0 * 300 + test_x0_tan * 10 + self.width() / 2., test_y0 * 300 + test_y0_tan * 10 + self.height() / 2.)
-                    painter.drawLine(test_x1 * 300 + self.width() / 2., test_y1 * 300 + self.height() / 2., test_x1 * 300 + test_x1_tan * 10 + self.width() / 2., test_y1 * 300 + test_y1_tan * 10 + self.height() / 2.)
-                    painter.setPen(pen)
-
-                test_meet_points_tangent()
-
-            for row in self.composite_vertices:
-                for i in xrange(len(row)-1):
-                    painter.drawLine(row[i][0] * 300 + self.width() / 2., row[i][1] * 300 + self.height() / 2., row[i + 1][0] * 300 + self.width() / 2., row[i + 1][1] * 300 + self.height() / 2.)
 
 
     def draw_originalEllipse(self,painter):
