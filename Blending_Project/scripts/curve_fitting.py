@@ -151,7 +151,7 @@ def sortCurvature(curvatures):
 
 def getCoefficients(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
     if J<3:
-        raise IllegalArgumentError('J must be bigger than 3, you input {}'.format(J))
+        raise IllegalArgumentError('J must be bigger than 3, you input {0}'.format(J))
     I = len(vertices)
     aConstArray = np.zeros(2 * J + 1)
     aCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')  # row-major
@@ -446,96 +446,6 @@ def getCoefficients_for_second_half_of_composite_segment(J, vertices_second_half
     b = np.insert(b, 3, b3)
     b = np.insert(b, 4, b4)
 
-    """
-    J1 = (len(a_first_half) - 1)/2
-    I = len(vertices_second_half)
-
-    Ca = np.zeros((I, 1), order='C')  # order='C' means row-major
-    Cb = np.zeros((I, 1), order='C')
-
-    Ma = np.zeros((2 * J - 3, I), order='C')
-    Mb = np.zeros((2 * J - 3, I), order='C')
-
-    for i in range(I):
-        v_i = angles_second_half[i]
-        tmp = 1 - math.cos(2 * v_i)
-        Ma[0][i] = tmp
-        Mb[0][i] = tmp
-        x_i = vertices_second_half[i][0]
-        y_i = vertices_second_half[i][2]
-        Ca[i][0] = x_i - (center_first_half.x() + a_first_half[0]) * math.cos(
-            2 * v_i) - center_second_half.x() * (1 - math.cos(2 * v_i))
-        Cb[i][0] = y_i - (center_first_half.y() + b_first_half[0]) * math.cos(
-            2 * v_i) - center_second_half.y() * (1 - math.cos(2 * v_i))
-        for j in range(1, J1 + 1):
-            D1 = (1 - pow(-1, j)) * math.cos(v_i) + (1 + pow(-1, j)) * math.cos(2 * v_i)
-            D2 = (1 - pow(-1, j)) * math.sin(v_i) + 1 / 2.0 * (1 + pow(-1, j)) * math.sin(2 * v_i)
-            Ca[i][0] -= 1 / 2.0 * (D1 * a_first_half[2 * j - 1] + j * D2 * a_first_half[2 * j])
-            Cb[i][0] -= 1 / 2.0 * (j * D2 * b_first_half[2 * j - 1] + D1 * b_first_half[2 * j])
-        for j in range(3, J + 1):
-            D1 = (1 - pow(-1, j)) * math.cos(v_i) + (1 + pow(-1, j)) * math.cos(2 * v_i)
-            tmp = math.cos(j * v_i) - 1 / 2.0 * D1
-            Ma[j * 2 - 5][i] = tmp
-            Mb[j * 2 - 4][i] = tmp
-            D2 = (1 - pow(-1, j)) * math.sin(v_i) + 1 / 2.0 * (1 + pow(-1, j)) * math.sin(2 * v_i)
-            tmp = math.sin(j * v_i) - j / 2.0 * D2
-            Ma[j * 2 - 4][i] = tmp
-            Mb[j * 2 - 5][i] = tmp
-
-    A = Ma.dot(Ma.transpose())
-    aConstArray = Ma.dot(Ca)
-    a_tmp = np.linalg.solve(A, aConstArray)
-    B = np.dot(Mb, Mb.transpose())
-    bConstArray = np.dot(Mb, Cb)
-    b_tmp = np.linalg.solve(B, bConstArray)
-
-    # get a1,a2,a3,a4 and b1,b2,b3,b4
-    a1 = 0
-    a2 = 0
-    a3 = center_first_half.x() - center_second_half.x() + a_first_half[0] - a_tmp[0]
-    a4 = 0
-    b1 = 0
-    b2 = 0
-    b3 = 0
-    b4 = center_first_half.y() - center_second_half.y() + b_first_half[0] - b_tmp[0]
-
-    for j in range(1, J1 + 1):
-        a1 += 0.5 * (1 - pow(-1, j)) * a_first_half[2 * j - 1]
-        a2 += 0.5 * (1 - pow(-1, j)) * j * a_first_half[2 * j]
-        a3 += 0.5 * (1 + pow(-1, j)) * a_first_half[2 * j - 1]
-        a4 += 0.25 * (1 + pow(-1, j)) * j * a_first_half[2 * j - 1]
-        b1 += 0.5 * (1 - pow(-1, j)) * b_first_half[2 * j - 1]
-        b2 += 0.5 * (1 - pow(-1, j)) * j * b_first_half[2 * j]
-        b3 += 0.25 * (1 + pow(-1, j)) * j * b_first_half[2 * j - 1]
-        b4 += 0.5 * (1 + pow(-1, j)) * b_first_half[2 * j - 1]
-    for j in range(3, J + 1):
-        a1 -= 0.5 * (1 - pow(-1, j)) * a_tmp[2 * j - 5]
-        a2 -= 0.5 * (1 - pow(-1, j)) * j * a_tmp[2 * j - 4]
-        a3 -= 0.5 * (1 + pow(-1, j)) * a_tmp[2 * j - 5]
-        a4 -= 0.25 * (1 + pow(-1, j)) * j * a_tmp[2 * j - 4]
-        b1 -= 0.5 * (1 - pow(-1, j)) * j * b_tmp[2 * j - 5]
-        b2 -= 0.5 * (1 - pow(-1, j)) * b_tmp[2 * j - 4]
-        b3 -= 0.25 * (1 + pow(-1, j)) * j * a_tmp[2 * j - 5]
-        b4 -= 0.5 * (1 + pow(-1, j)) * b_tmp[2 * j - 4]
-
-    a = np.zeros(2 * J + 1)
-    b = np.zeros(2 * J + 1)
-    a[0] = a_tmp[0]
-    a[1] = a1
-    a[2] = a2
-    a[3] = a3
-    a[4] = a4
-    b[0] = b_tmp[0]
-    b[1] = b1
-    b[2] = b2
-    b[3] = b3
-    b[4] = b4
-    for j in range(3, J + 1):
-        a[2 * j - 1] = a_tmp[2 * j - 5]
-        a[2 * j] = a_tmp[2 * j - 4]
-        b[2 * j - 1] = b_tmp[2 * j - 5]
-        b[2 * j] = b_tmp[2 * j - 4]
-    """
     return a, b
 
 
@@ -633,7 +543,7 @@ def form_vertices_of_composite_ellipse(vertices_first_half, vertices_second_half
             composite_ellipse_vertices[I -1 + i][1] = new_second_half_vertex[1]
             di2 = math.sqrt(pow(vertices_second_half[i][0] - new_second_half_vertex[0], 2) + pow(vertices_second_half[i][2] - new_second_half_vertex[1], 2))
             d[numPt - i] = di2
-            Ea += (di2 / d_bar[I -1 + i])
+            Ea += (di2 / d_bar[I - 1 + i])
 
             if Em < di2 / d_bar[I - 1 + i]:
                 Em = di2 / d_bar[I - 1 + i]
@@ -714,16 +624,16 @@ def form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index
 
 def findJ(vertices,angles,d_bar,center,Ea_criteria,Em_criteria):
     J=0
-    a3,b3=getCoefficients(3,vertices,center,angles)
+    a3,b3=getCoefficients(3, vertices, center, angles)
     v3,Ea3,Em3=formGeneralizedEllipse(a3, b3, vertices, center, angles, d_bar)
-    a10,b10=getCoefficients(10,vertices,center,angles)
+    a10,b10=getCoefficients(10, vertices, center, angles)
     v10,Ea10,Em10=formGeneralizedEllipse(a10, b10, vertices, center, angles, d_bar)
     if Ea3<Ea_criteria and Em3<Em_criteria:
-        J=find_smaller_J(vertices, angles, d_bar, center,3,10, Ea3, Ea10, Ea_criteria, Em_criteria)
+        J=find_smaller_J(vertices, angles, d_bar, center, 3, 10, Ea3, Ea10, Ea_criteria, Em_criteria)
     elif Ea10>=Ea_criteria or Em10>=Em_criteria:
-        J=find_bigger_J(vertices, angles, d_bar, center,3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria)
+        J=find_bigger_J(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria)
     elif Ea3>=Ea_criteria or Em3>=Em_criteria:
-        J=find_inbetween_J(vertices, angles, d_bar, center,3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria,Em_criteria)
+        J=find_inbetween_J(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria,Em_criteria)
     return J
 
 
@@ -742,7 +652,7 @@ def find_inbetween_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Em
         J = J_big - int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ))
 
     if J < J_small:
-        raise ValueError('J({}) is smaller than J_small({})'.format(J,J_small))
+        raise ValueError('J({}) is smaller than J_small({})'.format(J, J_small))
     if J > J_big:
         raise ValueError('J({}) is bigger than J_big({})'.format(J, J_big))
 
@@ -773,6 +683,8 @@ def find_bigger_J(vertices, angles, d_bar, center,J_small, J_big, Ea_smallJ, Em_
         J = int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ)) + J_small
     if J == J_big:
         J = J + 1
+    if J < J_big:
+        J = J_big + 1
     a, b = getCoefficients(J, vertices, center, angles)
     v, Ea, Em = formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
     if Ea >= Ea_criteria or Em >= Em_criteria:
