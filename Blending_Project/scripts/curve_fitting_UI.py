@@ -612,8 +612,10 @@ class Canvas(QtWidgets.QDialog):
                     break
             E = self.vertices[e]
             F = self.vertices[e+1]
+
             if e + 1 != len(self.vertices)/2:
                 cmds.confirmDialog(message="bad photo, center is not in the middle, don't use symmetry function", button=["ok"])
+
             if E[0] != F[0]:
                 k = (E[2] - F[2]) / (E[0] - F[0])
                 b = F[2] - k * F[0]
@@ -788,6 +790,7 @@ class Canvas(QtWidgets.QDialog):
 
                 vertices, self.Ea, self.Em =curve_fitting.form_vertices_of_composite_ellipse(self.vertices_first_half, self.vertices_second_half, self.center_first_half, self.center_second_half,
                                        self.angles_first_half, self.angles_second_half, self.d_bar, a_first_half, b_first_half, a_second_half, b_second_half)
+
                 pen3 = QtGui.QPen()
                 pen3.setColor(QtCore.Qt.blue)
                 painter.setPen(pen3)
@@ -804,7 +807,21 @@ class Canvas(QtWidgets.QDialog):
                                      vertices[i][1] * 300 + self.height() / 2.,
                                      vertices[(i + 1) % len(vertices)][0] * 300 + self.width() / 2.,
                                      vertices[(i + 1) % len(vertices)][1] * 300 + self.height() / 2.)
+
                 painter.setPen(pen)
+
+                """
+                for i in range(len(self.vertices_first_half)):
+                    painter.drawLine(self.vertices_first_half[i][0] * 300 + self.width() / 2.,
+                                     self.vertices_first_half[i][2] * 300 + self.height() / 2.,
+                                     self.vertices_first_half[(i + 1) % len(self.vertices_first_half)][0] * 300 + self.width() / 2.,
+                                     self.vertices_first_half[(i + 1) % len(self.vertices_first_half)][2] * 300 + self.height() / 2.)
+                for i in range(len(self.vertices_second_half)):
+                    painter.drawLine(self.vertices_second_half[i][0] * 300 + self.width() / 2.,
+                                     self.vertices_second_half[i][2] * 300 + self.height() / 2.,
+                                     self.vertices_second_half[(i + 1) % len(self.vertices_second_half)][0] * 300 + self.width() / 2.,
+                                     self.vertices_second_half[(i + 1) % len(self.vertices_second_half)][2] * 300 + self.height() / 2.)
+                """
         elif self.fragment_mode==True:
             if self.manualJ_mode==True:
                 J = self.manualJ_value
