@@ -865,7 +865,7 @@ if __name__ == "__main__":
         'Source_LeftLeg_cross_section_u_at_90_percentage_worldspace.dat',
         'Source_LeftLeg_cross_section_u_at_95_percentage_worldspace.dat'
     ]
-    """
+
     file_paths = [
         'Source_RightLeg_cross_section_u_at_10_percentage_worldspace.dat',
         'Source_RightLeg_cross_section_u_at_20_percentage_worldspace.dat',
@@ -878,7 +878,7 @@ if __name__ == "__main__":
         'Source_RightLeg_cross_section_u_at_90_percentage_worldspace.dat',
         'Source_RightLeg_cross_section_u_at_95_percentage_worldspace.dat'
     ]
-    """
+
     file_paths = [
         'Source_LeftArm_cross_section_u_at_16_percentage.dat',
         'Source_LeftArm_cross_section_u_at_20_percentage.dat',
@@ -891,6 +891,37 @@ if __name__ == "__main__":
         'Source_LeftArm_cross_section_u_at_90_percentage.dat',
         'Source_LeftArm_cross_section_u_at_95_percentage.dat',
         'Source_LeftArm_cross_section_u_at_100_percentage.dat'
+    ]
+    file_paths = [
+        'Source_Chest_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Chest_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Chest_cross_section_u_at_22_percentage_worldspace.dat'
+    ]
+    """
+    file_paths = [
+        'Source_Belly_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_18_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_25_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+    """
+    file_paths = [
+        'Source_Hip_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_25_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_75_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_100_percentage_worldspace.dat'
     ]
     """
     dirPath = cmds.workspace(fn=True)+'/data/'

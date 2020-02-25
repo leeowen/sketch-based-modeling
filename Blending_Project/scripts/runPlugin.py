@@ -46,7 +46,7 @@ for i in leg:
         
 head=[0.9,0.62,0.22]    
 for i in head:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Head",md=80)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Head",md=80,mw=True)
     cmds.parent( tmp, grp )
 
     
@@ -63,15 +63,15 @@ for i in chest:
 
 #cmds.crossSectionExtract(mu=0.42,mmn="source_male_mesh",mbn="Source_Chest")
 #cmds.crossSectionExtract(mu=0.3,mmn="source_male_mesh",mbn="Source_Chest")
-belly=[0.7,0.3,0.18]
+belly=[1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.25,0.18,0.1,0]
 for i in belly:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Belly",md=120)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Belly",md=120,mw=True)
     cmds.parent( tmp, grp )
 
 
 hip=[0.75,0.5,0.25,0.0]
 for i in hip:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Hip",md=120)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Hip",md=120,mw=True)
     cmds.parent( tmp, grp )
 
     

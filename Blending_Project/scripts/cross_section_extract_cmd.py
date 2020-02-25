@@ -286,7 +286,11 @@ def getQuaternion(UAxis,VAxis,WAxis):
     qy=om.MVector.kYaxisVector.rotateTo(VAxis)
     q=qy
     xRotated=om.MVector.kXaxisVector.rotateBy(q)
-    angle=math.acos(xRotated*UAxis)
+    angle = 0.0
+    if not abs(xRotated*UAxis - 1.0) <= 1e-6:
+        print xRotated*UAxis, angle
+        angle=math.acos(xRotated*UAxis)
+        print angle
     qx=om.MQuaternion(angle,VAxis)
     if not UAxis.isEquivalent(xRotated.rotateBy(qx),1.0e-5):
         angle=2*math.pi-angle
