@@ -897,7 +897,7 @@ if __name__ == "__main__":
         'Source_Chest_cross_section_u_at_10_percentage_worldspace.dat',
         'Source_Chest_cross_section_u_at_22_percentage_worldspace.dat'
     ]
-    """
+
     file_paths = [
         'Source_Belly_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_Belly_cross_section_u_at_10_percentage_worldspace.dat',
@@ -911,7 +911,7 @@ if __name__ == "__main__":
         'Source_Belly_cross_section_u_at_90_percentage_worldspace.dat',
         'Source_Belly_cross_section_u_at_100_percentage_worldspace.dat'
     ]
-    """
+
     file_paths = [
         'Source_Hip_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_Hip_cross_section_u_at_10_percentage_worldspace.dat',
@@ -924,6 +924,21 @@ if __name__ == "__main__":
         'Source_Hip_cross_section_u_at_100_percentage_worldspace.dat'
     ]
     """
+    file_paths = [
+        'Source_Head_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_5_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+    
     dirPath = cmds.workspace(fn=True)+'/data/'
     for file_path in file_paths:
         vertices = []
