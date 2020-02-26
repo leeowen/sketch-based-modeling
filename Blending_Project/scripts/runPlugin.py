@@ -50,7 +50,7 @@ for i in head:
     cmds.parent( tmp, grp )
 
     
-neck=[0.8,0.3]
+neck=[1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0]
 for i in neck:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Neck",md=80,mw=True)
     cmds.parent( tmp, grp )

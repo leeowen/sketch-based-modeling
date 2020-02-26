@@ -164,9 +164,8 @@ def getCoefficients(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
         bCoefficientMatrix[0, i] = 1.
 
     for i in range(I):  # for aCoefficientMatrix's column
+        vi = angles[i]
         for j in range(1, J + 1):  # for aCoefficientMatrix's row
-            vi = angles[i]
-
             aCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
             aCoefficientMatrix[2 * j, i] = math.sin(vi * j)
 
@@ -193,8 +192,9 @@ def getCoefficients3(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
     aConstArray = np.zeros(2 * J + 1)
     aCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')  # row-major
 
-    bConstArray = np.zeros(2 * J + 1)
-    bCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')
+    Jy = 3
+    bConstArray = np.zeros(2 * Jy + 1)
+    bCoefficientMatrix = np.ndarray(shape=(2 * Jy + 1, I), dtype=float, order='C')
 
     cConstArray = np.zeros(2 * J + 1)
     cCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')
@@ -205,9 +205,8 @@ def getCoefficients3(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
         cCoefficientMatrix[0, i] = 1.
 
     for i in range(I):  # for aCoefficientMatrix's column
+        vi = angles[i]
         for j in range(1, J + 1):  # for aCoefficientMatrix's row
-            vi = angles[i]
-
             aCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
             aCoefficientMatrix[2 * j, i] = math.sin(vi * j)
 
@@ -215,17 +214,17 @@ def getCoefficients3(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
             aConstArray[2 * j - 1] += (vertices[i][0] - center[0]) * math.cos(vi * j)
             aConstArray[2 * j] += (vertices[i][0] - center[0]) * math.sin(vi * j)
 
-            bCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
-            bCoefficientMatrix[2 * j, i] = math.sin(vi * j)
-
-            bConstArray[2 * j - 1] += (vertices[i][1] - center[1]) * math.cos(vi * j)
-            bConstArray[2 * j] += (vertices[i][1] - center[1]) * math.sin(vi * j)
-
             cCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
             cCoefficientMatrix[2 * j, i] = math.sin(vi * j)
 
             cConstArray[2 * j - 1] += (vertices[i][2] - center[2]) * math.cos(vi * j)
             cConstArray[2 * j] += (vertices[i][2] - center[2]) * math.sin(vi * j)
+        for j in range(1, Jy + 1):
+            bCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
+            bCoefficientMatrix[2 * j, i] = math.sin(vi * j)
+
+            bConstArray[2 * j - 1] += (vertices[i][1] - center[1]) * math.cos(vi * j)
+            bConstArray[2 * j] += (vertices[i][1] - center[1]) * math.sin(vi * j)
 
     A = np.dot(aCoefficientMatrix, aCoefficientMatrix.transpose())
     a = np.linalg.solve(A, aConstArray)
@@ -271,6 +270,7 @@ def formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar):
     Em = 0.0
     d = []
     J = len(a) / 2
+    Jy = len(b) / 2
     for i in range(I):
         generalisedEllipseVertices[i][0] = center[0] + a[0]
         generalisedEllipseVertices[i][1] = center[1] + b[0]
@@ -278,8 +278,9 @@ def formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar):
         v = angles[i]
         for j in range(1, J + 1):
             generalisedEllipseVertices[i][0] += a[2 * j - 1] * math.cos(j * v) + a[2 * j] * math.sin(j * v)
-            generalisedEllipseVertices[i][1] += b[2 * j - 1] * math.sin(j * v) + b[2 * j] * math.cos(j * v)
             generalisedEllipseVertices[i][2] += c[2 * j - 1] * math.cos(j * v) + c[2 * j] * math.sin(j * v)
+        for j in range(1, Jy + 1):
+            generalisedEllipseVertices[i][1] += b[2 * j - 1] * math.sin(j * v) + b[2 * j] * math.cos(j * v)
 
         di = math.sqrt((vertices[i][0] - generalisedEllipseVertices[i][0]) ** 2 + (
                     vertices[i][1] - generalisedEllipseVertices[i][1]) ** 2 + (
@@ -897,7 +898,7 @@ if __name__ == "__main__":
         'Source_Chest_cross_section_u_at_10_percentage_worldspace.dat',
         'Source_Chest_cross_section_u_at_22_percentage_worldspace.dat'
     ]
-
+    """ 
     file_paths = [
         'Source_Belly_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_Belly_cross_section_u_at_10_percentage_worldspace.dat',
@@ -911,7 +912,7 @@ if __name__ == "__main__":
         'Source_Belly_cross_section_u_at_90_percentage_worldspace.dat',
         'Source_Belly_cross_section_u_at_100_percentage_worldspace.dat'
     ]
-
+    """ 
     file_paths = [
         'Source_Hip_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_Hip_cross_section_u_at_10_percentage_worldspace.dat',
@@ -923,7 +924,7 @@ if __name__ == "__main__":
         'Source_Hip_cross_section_u_at_90_percentage_worldspace.dat',
         'Source_Hip_cross_section_u_at_100_percentage_worldspace.dat'
     ]
-    """
+
     file_paths = [
         'Source_Head_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_Head_cross_section_u_at_5_percentage_worldspace.dat',
@@ -938,7 +939,21 @@ if __name__ == "__main__":
         'Source_Head_cross_section_u_at_90_percentage_worldspace.dat',
         'Source_Head_cross_section_u_at_100_percentage_worldspace.dat'
     ]
-    
+ 
+    file_paths = [
+        'Source_Neck_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_100_percentage_worldspace.dat'
+    ]  
+    """ 
     dirPath = cmds.workspace(fn=True)+'/data/'
     for file_path in file_paths:
         vertices = []
