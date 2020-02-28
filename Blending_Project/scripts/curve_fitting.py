@@ -192,7 +192,7 @@ def getCoefficients3(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
     aConstArray = np.zeros(2 * J + 1)
     aCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')  # row-major
 
-    Jy = 3
+    Jy = 2
     bConstArray = np.zeros(2 * Jy + 1)
     bCoefficientMatrix = np.ndarray(shape=(2 * Jy + 1, I), dtype=float, order='C')
 
@@ -839,32 +839,6 @@ def find_smaller_J_for_end_composite(vertices, angles, d_bar, center, J_small, J
 
 if __name__ == "__main__":
     """    
-        file_paths = [
-        'Source_LeftLeg_cross_section_u_at_10_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_20_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_30_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_40_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_50_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_60_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_70_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_80_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_90_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_95_percentage_worldspace.dat'
-    ]
-
-    file_paths = [
-        'Source_RightLeg_cross_section_u_at_10_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_20_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_30_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_40_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_50_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_60_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_70_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_80_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_90_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_95_percentage_worldspace.dat'
-    ]
-
     file_paths = [
         'Source_Chest_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_Chest_cross_section_u_at_10_percentage_worldspace.dat',
@@ -981,20 +955,33 @@ if __name__ == "__main__":
         'Source_LeftForeArm_cross_section_u_at_90_percentage_worldspace.dat',
         'Source_LeftForeArm_cross_section_u_at_100_percentage_worldspace.dat'
     ]
-    
+
     file_paths = [
-        'Source_LeftThigh_cross_section_u_at_30_percentage_worldspace.dat',
-        'Source_LeftThigh_cross_section_u_at_40_percentage_worldspace.dat',
-        'Source_LeftThigh_cross_section_u_at_50_percentage_worldspace.dat',
-        'Source_LeftThigh_cross_section_u_at_60_percentage_worldspace.dat',
-        'Source_LeftThigh_cross_section_u_at_70_percentage_worldspace.dat',
-        'Source_LeftThigh_cross_section_u_at_80_percentage_worldspace.dat',
-        'Source_LeftThigh_cross_section_u_at_85_percentage_worldspace.dat',
-        'Source_LeftThigh_cross_section_u_at_90_percentage_worldspace.dat',
-        'Source_LeftThigh_cross_section_u_at_95_percentage_worldspace.dat',
-        'Source_LeftThigh_cross_section_u_at_100_percentage_worldspace.dat'
+        'Source_RightLeg_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_RightLeg_cross_section_u_at_90_percentage_worldspace.dat'
     ]
-    """
+
+    file_paths = [
+        'Source_LeftLeg_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_LeftLeg_cross_section_u_at_90_percentage_worldspace.dat'
+    ]
+
     file_paths = [
         'Source_RightThigh_cross_section_u_at_30_percentage_worldspace.dat',
         'Source_RightThigh_cross_section_u_at_40_percentage_worldspace.dat',
@@ -1002,10 +989,43 @@ if __name__ == "__main__":
         'Source_RightThigh_cross_section_u_at_60_percentage_worldspace.dat',
         'Source_RightThigh_cross_section_u_at_70_percentage_worldspace.dat',
         'Source_RightThigh_cross_section_u_at_80_percentage_worldspace.dat',
-        'Source_RightThigh_cross_section_u_at_85_percentage_worldspace.dat',
         'Source_RightThigh_cross_section_u_at_90_percentage_worldspace.dat',
-        'Source_RightThigh_cross_section_u_at_95_percentage_worldspace.dat',
         'Source_RightThigh_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_LeftThigh_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_LeftKnee_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_90_percentage_worldspace.dat'
+    ]
+    """
+    file_paths = [
+        'Source_RightKnee_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_90_percentage_worldspace.dat'
     ]
     dirPath = cmds.workspace(fn=True)+'/data/'
     for file_path in file_paths:
