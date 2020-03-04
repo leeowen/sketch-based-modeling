@@ -8,6 +8,24 @@ if not grp:
     grp=cmds.group( em=True, name='source_cross_section_group' )
     
 
+ankle = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
+for i in ankle:
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_RightAnkle",md=40,mw=True)
+    cmds.parent( tmp, grp )
+    
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_LeftAnkle",md=40,mw=True)
+    cmds.parent( tmp, grp )
+    
+
+foot = [0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+for i in ankle:
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_RightFoot",md=40,mw=True)
+    cmds.parent( tmp, grp )
+    
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_LeftFoot",md=40,mw=True)
+    cmds.parent( tmp, grp )
+    
+    
 thigh=[0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
 for i in thigh:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_RightThigh",md=40,mw=True)
@@ -26,7 +44,7 @@ for i in knee:
     cmds.parent( tmp, grp )  
       
       
-leg=[0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+leg=[0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
 #data_dir = cmds.workspace(q=True, rootDirectory=True )+'data/'
 #myfile = open(data_dir+"LeftLeg_16_cross_section_curves.mel", "w")
 #myfile.write("// cross-section curves of a leg\n")
