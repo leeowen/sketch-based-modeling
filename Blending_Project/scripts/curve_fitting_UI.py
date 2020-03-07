@@ -585,8 +585,8 @@ class Canvas(QtWidgets.QDialog):
         self.segment_center_list = []
         for i in range(N):
             if self.cut_points[i]<self.cut_points[(i+1)%N]:
-                tmp_vertices = self.vertices[self.cut_points[i]:self.cut_points[(i+1)%N]+1]
-                tmp_angles = self.angles[self.cut_points[i]:self.cut_points[(i+1)%N]+1]
+                tmp_vertices = self.vertices[self.cut_points[i]:self.cut_points[(i+1) % N]+1]
+                tmp_angles = self.angles[self.cut_points[i]:self.cut_points[(i+1) % N]+1]
             else:
                 tmp_vertices = self.vertices[self.cut_points[i]:self.numPt]
                 tmp_vertices.extend(self.vertices[0:self.cut_points[(i + 1) % N]+1])
@@ -814,7 +814,9 @@ class Canvas(QtWidgets.QDialog):
                 next = {'position x': x1, 'position y': y1, 'tangent x': x1_tan, 'tangent y': y1_tan, 'cut point index': self.cut_points[0]}
                 Jn = self.manualJ
                 a, b = curve_fitting.getCoefficients_for_end_composite(Jn, self.vertices_matrix[-1], self.segment_center_list[-1], self.angles_matrix[-1], previous, next)
-                composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[1], self.segment_center_list[1], self.angles_matrix[1], self.d_bar, self.cut_points[1])
+
+                composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[-1], self.segment_center_list[-1], self.angles_matrix[-1], self.d_bar, self.cut_points[-1])
+
                 self.composite_a.append(a)
                 self.composite_b.append(b)
                 self.composite_vertices.append(composite_vertices_n)

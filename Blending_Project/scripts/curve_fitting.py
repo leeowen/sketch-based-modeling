@@ -473,24 +473,29 @@ def form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index
     Em = 0.0
     d = []
     J = (len(a) - 1) / 2
-
+    #print a
+    #print b
     for i in range(I):
         v_i = angles[i]
         x_i = center.x() + a[0]
         y_i = center.y() + b[0]
 
         for j in range(1, J + 1):
-            x_i += a[2 * j - 1] * math.cos(j * v_i) + a[2 * j] * math.sin(j * v_i)
-            y_i += b[2 * j - 1] * math.sin(j * v_i) + b[2 * j] * math.cos(j * v_i)
+            x_i += (a[2 * j - 1] * math.cos(j * v_i) + a[2 * j] * math.sin(j * v_i))
+            y_i += (b[2 * j - 1] * math.sin(j * v_i) + b[2 * j] * math.cos(j * v_i))
 
         fragment_vertices[i][0] = x_i
         fragment_vertices[i][1] = y_i
-        d_i = math.sqrt(pow(vertices[i][0] - x_i, 2) + pow(vertices[i][2] - y_i, 2))
+        if start_index == 87:
+            pass
+            #print i, x_i, y_i
+        d_i = math.sqrt((vertices[i][0] - x_i)**2 + (vertices[i][2] - y_i)**2)
         d.append(d_i)
         index = (i + start_index) % numPt
         Ea += (d_i / d_bar[index])
         if Em < d_i / d_bar[index]:
             Em = d_i / d_bar[index]
+
 
     Ea = Ea / I
 
@@ -662,10 +667,10 @@ def getCoefficients_for_end_composite(J, vertices, center, angles, previous, nex
     I = len(vertices)
     if len(angles)!= I:
         raise ValueError('the size of vertices is not the same as that of angles')
-    aConstArray = np.zeros(2 * J + 5)
+    aConstArray = np.zeros(2 * J + 3)
     aCoefficientMatrix = np.zeros(shape=(2 * J + 5, 2 * J + 1), dtype=float, order='C')  # row-major
 
-    bConstArray = np.zeros(2 * J + 5)
+    bConstArray = np.zeros(2 * J + 3)
     bCoefficientMatrix = np.zeros(shape=(2 * J + 5, 2 * J + 1), dtype=float, order='C')
 
     for i in range(I):
@@ -749,14 +754,10 @@ def getCoefficients_for_end_composite(J, vertices, center, angles, previous, nex
         bCoefficientMatrix[2 * J + 4, 2 * j - 1] = j * math.cos(j * angles[-1])
         bCoefficientMatrix[2 * J + 4, 2 * j] = -j * math.sin(j * angles[-1])
 
-    A = np.dot(aCoefficientMatrix.transpose(), aCoefficientMatrix)
-    aConstArray = np.dot(aCoefficientMatrix.transpose(), aConstArray)
-    a = np.linalg.solve(A, aConstArray)
-    B = np.dot(bCoefficientMatrix.transpose(), bCoefficientMatrix)
-    bConstArray = np.dot(bCoefficientMatrix.transpose(), bConstArray)
-    b = np.linalg.solve(B, bConstArray)
+    a, residuals_a, rangk_a, s_a = np.linalg.lstsq(aCoefficientMatrix, aConstArray)
+    b, residuals_b, rangk_b, s_b = np.linalg.lstsq(bCoefficientMatrix, bConstArray)
 
-    return a, b
+    return a,b
 
 
 def findJ_for_non_end_composite(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous):
