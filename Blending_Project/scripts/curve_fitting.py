@@ -6,8 +6,8 @@ import maya.api.OpenMaya as om
 sys.path.append('/usr/lib64/python2.7/site-packages')
 sys.path.append('./.local/lib/python2.7/site-packages')
 import numpy as np
-from scipy import optimize
 import matplotlib.pyplot as plt
+from scipy.optimize import minimize
 
 
 def maya_useNewAPI():
@@ -598,24 +598,29 @@ def form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index
     Em = 0.0
     d = []
     J = (len(a) - 1) / 2
-
+    #print a
+    #print b
     for i in range(I):
         v_i = angles[i]
         x_i = center.x() + a[0]
         y_i = center.y() + b[0]
 
         for j in range(1, J + 1):
-            x_i += a[2 * j - 1] * math.cos(j * v_i) + a[2 * j] * math.sin(j * v_i)
-            y_i += b[2 * j - 1] * math.sin(j * v_i) + b[2 * j] * math.cos(j * v_i)
+            x_i += (a[2 * j - 1] * math.cos(j * v_i) + a[2 * j] * math.sin(j * v_i))
+            y_i += (b[2 * j - 1] * math.sin(j * v_i) + b[2 * j] * math.cos(j * v_i))
 
         fragment_vertices[i][0] = x_i
         fragment_vertices[i][1] = y_i
-        d_i = math.sqrt(pow(vertices[i][0] - x_i, 2) + pow(vertices[i][2] - y_i, 2))
+        if start_index == 87:
+            pass
+            #print i, x_i, y_i
+        d_i = math.sqrt((vertices[i][0] - x_i)**2 + (vertices[i][2] - y_i)**2)
         d.append(d_i)
         index = (i + start_index) % numPt
         Ea += (d_i / d_bar[index])
         if Em < d_i / d_bar[index]:
             Em = d_i / d_bar[index]
+
 
     Ea = Ea / I
 
@@ -720,6 +725,193 @@ def find_smaller_J(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, E
             a, b = getCoefficients(J, vertices, center, angles)
 
         return J
+
+
+def position_and_tangent_of_parametric_point(a_adjacent, b_adjacent, angle):
+    x_tan = 0
+    y_tan = 0
+    x = a_adjacent[0]
+    y = b_adjacent[0]
+    J = (len(a_adjacent)-1)/2
+    for j in range(1, J+1):
+        x_tan = x_tan + a_adjacent[2 * j] * j * math.cos(j * angle) - a_adjacent[2 * j - 1] * j * math.sin(j * angle)
+        y_tan = y_tan + b_adjacent[2 * j - 1] * j * math.cos(j * angle) - b_adjacent[2 * j] * j * math.sin(j * angle)
+        x += a_adjacent[2 * j - 1] * math.cos(j * angle) + a_adjacent[2 * j] * math.sin(j * angle)
+        y += b_adjacent[2 * j - 1] * math.sin(j * angle) + b_adjacent[2 * j] * math.cos(j * angle)
+
+    return x_tan, y_tan, x, y
+
+
+def composite_auto_mode(vertices_matrix, angles_matrix, segment_center_list, cut_points, d_bar, Ea_criteria, Em_criteria):
+    composite_vertices = []
+    composite_a = []
+    composite_b = []
+    # for the first segment
+    J1 = findJ(vertices_matrix[0], angles_matrix[0], d_bar, segment_center_list[0], Ea_criteria, Em_criteria)
+    a, b = getCoefficients_for_first_generalized_elliptic_segment(vertices_matrix[0],angles_matrix[0], segment_center_list[0], J1)
+    vertices, Ea, Em = form_vertices_of_fragment(a, b, vertices_matrix[0],segment_center_list[0], angles_matrix[0], d_bar, cut_points[0])
+    composite_vertices.append(vertices)
+    composite_a.append(a)
+    composite_b.append(b)
+
+
+    # for the segments in-between
+    if len(cut_points)>2:
+        for i in range(1, len(cut_points)):
+            x_tan, y_tan = position_and_tangent_of_parametric_point(composite_a[-1], composite_b[-1], angles_matrix[i-1][-1])
+            previous = {'position x':composite_vertices[-1][-1][0], 'position y': composite_vertices[-1][-1][1], 'tangent x':x_tan, 'tangent y': y_tan, 'cut point index': cut_points[i]}
+            Ji = findJ_for_non_end_composite(vertices_matrix[i], angles_matrix[i], d_bar, segment_center_list[i], Ea_criteria, Em_criteria, previous)
+            a, b = getCoefficients_for_non_end_composite(Ji, vertices_matrix[i], segment_center_list[i], angles_matrix[i], previous)
+            start_index = cut_points[i]
+            composite_vertices_i, Eai, Emi = form_vertices_of_fragment(a, b, vertices_matrix[i], segment_center_list[i], angles_matrix[i], d_bar, start_index)
+            composite_vertices.append(composite_vertices_i)
+            if Ea < Eai:
+                Ea = Eai
+            if Em < Emi:
+                Em = Emi
+
+    # for the end segment that links the first segment
+    x_tan, y_tan = position_and_tangent_of_parametric_point(composite_a[-1], composite_b[-1], angles_matrix[-2][-1])
+    previous = {'position x': composite_vertices[-1][-1][0], 'position y': composite_vertices[-1][-1][1], 'tangent x': x_tan,
+                'tangent y': y_tan, 'cut point index': cut_points[-2]}
+    x_tan, y_tan = position_and_tangent_of_parametric_point(composite_a[0], composite_b[0], angles_matrix[0][0])
+    next = {'position x': composite_vertices[0][0][0], 'position y': composite_vertices[0][0][1], 'tangent x': x_tan,
+            'tangent y': y_tan, 'cut point index': cut_points[0]}
+    Jn = findJ_for_end_segment(vertices_matrix[-1], angles_matrix[-1], d_bar, segment_center_list[-1], Ea_criteria, Em_criteria, previous, next)
+    a,b = getCoefficients_for_end_composite(Jn, vertices_matrix[-1], segment_center_list[-1], angles_matrix[-1], previous, next)
+    start_index = cut_points[-1]
+    composite_vertices_n, Ean, Emn = form_vertices_of_fragment(a, b, vertices_matrix[-1], segment_center_list[-1], angles_matrix[-1], d_bar, start_index)
+    composite_vertices.append(composite_vertices_n)
+    if Ea < Ean:
+        Ea = Ean
+    if Em < Emn:
+        Em = Emn
+
+    return composite_vertices, Ea, Em
+
+
+def getCoefficients_for_end_composite(J, vertices, center, angles, previous, next):
+    I = len(vertices)
+    e = 1e-10  # a value that is very close to zero
+    def fun_x(x, *args):  # function to be minimized
+        Ex = 0
+        vertices = args[0]
+        center = args[1]
+        angles = args[2]
+        J = args[3]
+        for i in range(1, I - 1):
+            xi = center.x() + x[0]
+            for j in range(1, J + 1):
+                xi += (x[2 * j - 1] * math.cos(j * angles[i]) + x[2 * j] * math.sin(j * angles[i]))
+            Ex += (vertices[i][0] - xi)**2
+        return Ex
+
+    def fun_y(x, *args):  # function to be minimized
+        Ey = 0
+        vertices = args[0]
+        center = args[1]
+        angles = args[2]
+        J = args[3]
+        for i in range(1, I - 1):
+            yi = center.y() + x[0]
+            for j in range(1, J + 1):
+                yi += (x[2 * j - 1] * math.sin(j * angles[i]) + x[2 * j] * math.cos(j * angles[i]))
+            Ey += (vertices[i][2] - yi)**2
+        return Ey
+
+    def position_constraint_x(x, *args):
+        vertex = args[0]
+        center = args[1]
+        angle = args[2]
+        J = args[3]
+        xi = center.x() + x[0]
+        for j in range(1, J + 1):
+            xi += (x[2 * j - 1] * math.cos(j * angle) + x[2 * j] * math.sin(j * angle))
+        xi -= vertex['position x']
+        return xi
+
+    def position_constraint_y(x, *args):
+        vertex = args[0]
+        center = args[1]
+        angle = args[2]
+        J = args[3]
+        yi = center.y() + x[0]
+        for j in range(1, J + 1):
+            yi += (x[2 * j - 1] * math.sin(j * angle) + x[2 * j] * math.cos(j * angle))
+        yi -= vertex['position y']
+        return yi
+
+    def tangential_constraint_x(x, *args):
+        vertex = args[0]
+        angle = args[2]
+        J = args[3]
+        ti = 0
+        for j in range(1, J+1):
+            ti += (x[2 * j - 1] * (-j) * math.sin(j * angle) + x[2 * j] * j * math.cos(j * angle))
+        ti -= vertex['tangent x']
+        return ti
+
+    def tangential_constraint_y(x, *args):
+        vertex = args[0]
+        angle = args[2]
+        J = args[3]
+        ti = 0
+        for j in range(1, J+1):
+            ti += (x[2 * j - 1] * j * math.cos(j * angle) - x[2 * j] * j * math.sin(j * angle))
+        ti -= vertex['tangent y']
+        return ti
+
+
+    args1 = (previous, center, angles[0], J)
+    args2 = (next, center, angles[-1], J)
+    cons = ({'type': 'eq', 'fun': position_constraint_x, 'args': args1},
+            {'type': 'eq', 'fun': position_constraint_x, 'args': args2},
+            {'type': 'eq', 'fun': tangential_constraint_x, 'args': args1},
+            {'type': 'eq', 'fun': tangential_constraint_x, 'args': args2}
+            )
+    x0 = np.ones((2 * J + 1))  # initialize value
+    res_x = minimize(fun_x, x0, args = (vertices, center, angles, J), method='SLSQP', constraints=cons)
+    print 'minimum value:'
+    print res_x.fun
+    print 'optimal resolution:'
+    print res_x.x
+    print 'is iteration sucessful:'
+    print res_x.success
+    print 'the reason for the termination of iteration:'
+    print res_x.message
+    cons = ({'type': 'eq', 'fun': position_constraint_y, 'args': args1},
+            {'type': 'eq', 'fun': position_constraint_y, 'args': args2},
+            {'type': 'eq', 'fun': tangential_constraint_y, 'args': args1},
+            {'type': 'eq', 'fun': tangential_constraint_y, 'args': args2}
+            )
+    y0 = np.zeros((2 * J + 1))  # initialize value
+    res_y = minimize(fun_y, y0, args = (vertices, center, angles, J), method='SLSQP', constraints=cons)
+    print 'minimum value:'
+    print res_y.fun
+    print 'optimal resolution:'
+    print res_y.x
+    print 'is iteration sucessful:'
+    print res_y.success
+    print 'the reason for the termination of iteration:'
+    print res_y.message
+    return res_x.x, res_y.x
+
+
+def findJ_for_non_end_composite(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous):
+    J = 0
+    start_index = previous['cut point index']
+    a3, b3 = getCoefficients_for_non_end_composite(3, vertices, center, angles, previous)
+    v3, Ea3, Em3 = form_vertices_of_fragment(a3, b3, vertices, center, angles, d_bar, start_index)
+    a10, b10 = getCoefficients_for_non_end_composite(10, vertices, center, angles, previous)
+    v10, Ea10, Em10 = form_vertices_of_fragment(a10, b10, vertices, center, angles, d_bar, start_index)
+
+    if Ea3 < Ea_criteria and Em3 < Em_criteria:
+        J = find_smaller_J_for_non_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Ea10, Ea_criteria, Em_criteria, previous)
+    elif Ea10 >= Ea_criteria or Em10 >= Em_criteria:
+        J = find_bigger_J_for_non_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria, previous)
+    elif Ea3 >= Ea_criteria or Em3 >= Em_criteria:
+        J = find_inbetween_J_for_non_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria, previous)
+    return J
 
 
 def findJ_for_end_segment(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous, next):
@@ -834,6 +1026,79 @@ def find_smaller_J_for_end_composite(vertices, angles, d_bar, center, J_small, J
 
         return J
     return J
+
+
+
+def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous):
+    I = len(vertices)
+    aConstArray = np.zeros(2 * J + 1)
+    aCoefficientMatrix = np.zeros(shape=(2 * J + 1, 2 * J + 1), dtype=float, order='C')  # row-major
+
+    bConstArray = np.zeros(2 * J + 1)
+    bCoefficientMatrix = np.zeros(shape=(2 * J + 1, 2 * J + 1), dtype=float, order='C')
+
+    Pv0_x = previous['position x']
+    Pv0_y = previous['position y']
+    Tv0_x = previous['tangent x']
+    Tv0_y = previous['tangent y']
+    v0 = angles[0]
+
+    if v0 != 0.0 or v0 != math.pi:
+        aConstArray[0] = Pv0_x - center.x() + Tv0_x * math.cos(v0) / math.sin(v0)
+        aConstArray[1] = -Tv0_x / math.sin(v0)
+
+        aCoefficientMatrix[0, 0] = 1.
+        aCoefficientMatrix[0, 1] = 0.
+
+        aCoefficientMatrix[1, 0] = 0.
+        aCoefficientMatrix[1, 1] = 1.
+
+        M_x = lambda j, v: j * math.sin(j * v0) * math.cos(v0) / math.sin(v0) - math.cos(j * v0) - j * math.cos(v) * math.sin(j * v0) / math.sin(v0) + math.cos(j * v)
+        N_x = lambda j, v: -j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) - math.sin(j * v0) + j * math.cos(j * v0) * math.cos(v) / math.sin(v0) + math.sin(j * v)
+        M_y = lambda j, v: j * math.cos(j * v0) * math.sin(v0) / math.cos(v0) - math.sin(j * v0) - j * math.cos(j * v0) * math.sin(v) / math.cos(v0) + math.sin(j * v)
+        N_y = lambda j, v: -j * math.sin(j * v0) *math.sin(v0) / math.cos(v0) - math.cos(j * v0) + j * math.sin(j * v0) * math.sin(v) /math.cos(v0) + math.cos(j * v)
+
+        for j in range(2, J + 1):
+            aCoefficientMatrix[0, 2 * j - 1] = -j * math.sin(j * v0) / math.sin(v0) * math.cos(v0) - math.cos(j * v0)
+            aCoefficientMatrix[1, 2 * j - 1] = j * math.sin(j * v0) / math.sin(v0)
+
+        for j in range(1, J + 2):
+            aCoefficientMatrix[0, 2 * j] = j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) + math.sin(j * v0)
+            aCoefficientMatrix[1, 2 * j] = - j * math.cos(j * v0) / math.sin(v0)
+
+        for i in range(1, I):
+            vi = angles[i]
+
+            G_x = Pv0_x + Tv0_x / math.sin(v0) * (math.cos(v0) - math.cos(vi)) - vertices[i][0]
+            G_y = Pv0_y + Tv0_y / math.cos(v0) * (math.sin(vi) - math.sin(v0)) - vertices[i][2]
+            for k in range(2, 2 * J + 1):
+                if k % 2 == 1:
+                    mx = M_x((k + 1) / 2, vi)
+                    my = M_y((k + 1) / 2, vi)
+                    aConstArray[k] += -G_x * mx
+                    bConstArray[k] += -G_y * my
+                    for j in range(2, J + 1):
+                        aCoefficientMatrix[k, 2 * j - 1] += M_x(j, vi) * mx
+                        bCoefficientMatrix[k, 2 * j - 1] += M_y(j, vi) * my
+                    for j in range(1, J + 1):
+                        aCoefficientMatrix[k, 2 * j] += N_x(j, vi) * mx
+                        bCoefficientMatrix[k, 2 * j] += N_y(j, vi) * my
+                else:
+                    nx = N_x(k / 2, vi)
+                    ny = N_y(k / 2, vi)
+                    aConstArray[k] += -G_x * nx
+                    bConstArray[k] += -G_y * nx
+                    for j in range(2, J + 1):
+                        aCoefficientMatrix[k, 2 * j - 1] += M_x(j, vi) * nx
+                        bCoefficientMatrix[k, 2 * j - 1] += M_y(j, vi) * ny
+                    for j in range(1, J + 1):
+                        aCoefficientMatrix[k, 2 * j] += N_x(j, vi) * nx
+                        bCoefficientMatrix[k, 2 * j] += N_y(j, vi) * ny
+
+    a = np.linalg.solve(aCoefficientMatrix, aConstArray)
+    b = np.linalg.solve(bCoefficientMatrix, bConstArray)
+
+    return a, b
 
 
 if __name__ == "__main__":

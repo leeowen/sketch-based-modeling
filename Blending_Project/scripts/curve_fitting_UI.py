@@ -544,6 +544,28 @@ class Canvas(QtWidgets.QDialog):
         self.update()
 
 
+    def cut_curve(self,cut_points):
+        self.cut_points = cut_points
+        # split data for N segments
+        N = len(self.cut_points)
+        self.vertices_matrix = []
+        self.angles_matrix = []
+        self.segment_center_list = []
+        for i in range(N):
+            if self.cut_points[i]<self.cut_points[(i+1)%N]:
+                tmp_vertices = self.vertices[self.cut_points[i]:self.cut_points[(i+1) % N]+1]
+                tmp_angles = self.angles[self.cut_points[i]:self.cut_points[(i+1) % N]+1]
+            else:
+                tmp_vertices = self.vertices[self.cut_points[i]:self.numPt]
+                tmp_vertices.extend(self.vertices[0:self.cut_points[(i + 1) % N]+1])
+                tmp_angles = self.angles[self.cut_points[i]:self.numPt]
+                tmp_angles.extend(self.angles[0:self.cut_points[(i + 1) % N]+1])
+            self.vertices_matrix.append(tmp_vertices)
+            self.angles_matrix.append(tmp_angles)
+            tmp_center = curve_fitting.getCenter(tmp_vertices)
+            self.segment_center_list.append(tmp_center)
+
+
     def readFile(self,file_path):
         self.vertices = []
         self.angles = []
@@ -833,6 +855,74 @@ class Canvas(QtWidgets.QDialog):
                 for i in range(len(fragment_vertices)-1):
                     painter.drawLine(fragment_vertices[i][0]*300+self.width()/2., fragment_vertices[i][1]*300+self.height()/2., fragment_vertices[i+1][0]*300+self.width()/2., fragment_vertices[i+1][1]*300+self.height()/2.)
                 #maya_polygon_plane(self.generalisedEllipseVertices)
+
+        elif self.composite_mode == True:
+            #if self.autoJ_mode == True:
+                #self.composite_vertices, self.Ea, self.Em = curve_fitting.composite_auto_mode(self.vertices_matrix, self.angles_matrix, self.segment_center_list, self.cut_points, self.d_bar, self.Ea_criteria, self.Em_criteria)
+            if self.manualJ_mode == True:
+                # for the first segment
+                self.composite_vertices = []
+                self.composite_a = []
+                self.composite_b = []
+
+                J1 = curve_fitting.findJ(self.vertices_matrix[0], self.angles_matrix[0], self.d_bar, self.segment_center_list[0], self.Ea_criteria, self.Em_criteria)
+                a, b = curve_fitting.getCoefficients_for_first_generalized_elliptic_segment(self.vertices_matrix[0], self.angles_matrix[0], self.segment_center_list[0], J1)
+                vertices, self.Ea, self.Em = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[0], self.segment_center_list[0], self.angles_matrix[0], self.d_bar, self.cut_points[0])
+                self.composite_vertices.append(vertices)
+                self.composite_a.append(a)
+                self.composite_b.append(b)
+
+                # for the end segment that links the first segment
+                x0_tan, y0_tan, x0, y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[0], self.composite_b[0], self.angles_matrix[0][-1])
+                x0 += self.segment_center_list[0].x()
+                y0 += self.segment_center_list[0].y()
+                previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan, 'cut point index': self.cut_points[1]}
+                x1_tan, y1_tan, x1, y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[0], self.composite_b[0], self.angles_matrix[0][0])
+                x1 += self.segment_center_list[0].x()
+                y1 += self.segment_center_list[0].y()
+                next = {'position x': x1, 'position y': y1, 'tangent x': x1_tan, 'tangent y': y1_tan, 'cut point index': self.cut_points[0]}
+                Jn = self.manualJ
+                a, b = curve_fitting.getCoefficients_for_end_composite(Jn, self.vertices_matrix[-1], self.segment_center_list[-1], self.angles_matrix[-1], previous, next)
+                composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[1], self.segment_center_list[1], self.angles_matrix[1], self.d_bar, self.cut_points[1])
+                self.composite_a.append(a)
+                self.composite_b.append(b)
+                self.composite_vertices.append(composite_vertices_n)
+
+                self.Ea = (self.Ea * len(self.vertices_matrix[0]) + Ean * len(self.vertices_matrix[1]))/(len(self.vertices_matrix[0])+len(self.vertices_matrix[1]))
+                if self.Em < Emn:
+                    self.Em = Emn
+
+                def draw_meet_points_tangent():
+                    pen1 = QtGui.QPen()
+                    pen1.setColor(QtCore.Qt.magenta)
+                    painter.setPen(pen1)
+                    painter.drawLine(x0 * 300 + self.width() / 2., y0 * 300 + self.height() / 2., x0 * 300 + x0_tan * 10 + self.width() / 2., y0 * 300 + y0_tan * 10 + self.height() / 2.)
+                    painter.drawLine(x1 * 300 + self.width() / 2., y1 * 300 + self.height() / 2., x1 * 300 + x1_tan * 10 + self.width() / 2., y1 * 300 + y1_tan * 10 + self.height() / 2.)
+                    painter.setPen(pen)
+
+                #draw_meet_points_tangent()
+
+                test_x0_tan, test_y0_tan, test_x0, test_y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][0])
+                test_x1_tan, test_y1_tan, test_x1, test_y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][-1])
+                test_x0 += self.segment_center_list[1].x()
+                test_y0 += self.segment_center_list[1].y()
+                test_x1 += self.segment_center_list[1].x()
+                test_y1 += self.segment_center_list[1].y()
+
+                def test_meet_points_tangent():
+                    pen1 = QtGui.QPen()
+                    pen1.setColor(QtCore.Qt.black)
+                    painter.setPen(pen1)
+                    painter.drawLine(test_x0 * 300 + self.width() / 2., test_y0 * 300 + self.height() / 2., test_x0 * 300 + test_x0_tan * 10 + self.width() / 2., test_y0 * 300 + test_y0_tan * 10 + self.height() / 2.)
+                    painter.drawLine(test_x1 * 300 + self.width() / 2., test_y1 * 300 + self.height() / 2., test_x1 * 300 + test_x1_tan * 10 + self.width() / 2., test_y1 * 300 + test_y1_tan * 10 + self.height() / 2.)
+                    painter.setPen(pen)
+
+                #test_meet_points_tangent()
+
+            for row in self.composite_vertices:
+                for i in xrange(len(row)-1):
+                    painter.drawLine(row[i][0] * 300 + self.width() / 2., row[i][1] * 300 + self.height() / 2., row[i + 1][0] * 300 + self.width() / 2., row[i + 1][1] * 300 + self.height() / 2.)
+
 
 
     def draw_originalEllipse(self,painter):
