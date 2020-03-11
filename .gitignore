@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ignore objects and archives, anywhere in the tree.
 dont_git
 PythonOnXcode
@@ -10,6 +9,7 @@ OpenGLDemo
 /backup
 /Human_Models
 /ifds
+/Blending_Project/backup/
 =====================================================
 # ignore objects and archives, anywhere in the tree.
 *.DS_Store
@@ -17,4 +17,3 @@ OpenGLDemo
 *.pages
 *.docx
 *.pyc
->>>>>>> ca78ccc092842b09ddeb24fcfae00578ce5e0150
