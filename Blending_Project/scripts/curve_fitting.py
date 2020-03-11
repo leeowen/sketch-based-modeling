@@ -869,7 +869,7 @@ def getCoefficients_for_end_composite(J, vertices, center, angles, previous, nex
             {'type': 'eq', 'fun': tangential_constraint_x, 'args': args1},
             {'type': 'eq', 'fun': tangential_constraint_x, 'args': args2}
             )
-    x0 = np.ones((2 * J + 1))  # initialize value
+    x0 = np.zeros((2 * J + 1))  # initialize value
     res_x = minimize(fun_x, x0, args = (vertices, center, angles, J), method='SLSQP', constraints=cons)
     print 'minimum value:'
     print res_x.fun
