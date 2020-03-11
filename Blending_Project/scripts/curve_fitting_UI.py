@@ -833,7 +833,7 @@ class Canvas(QtWidgets.QDialog):
                     painter.drawLine(x1 * 300 + self.width() / 2., y1 * 300 + self.height() / 2., x1 * 300 + x1_tan * 10 + self.width() / 2., y1 * 300 + y1_tan * 10 + self.height() / 2.)
                     painter.setPen(pen)
 
-                draw_meet_points_tangent()
+                #draw_meet_points_tangent()
 
                 test_x0_tan, test_y0_tan, test_x0, test_y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][0])
                 test_x1_tan, test_y1_tan, test_x1, test_y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][-1])
@@ -850,7 +850,7 @@ class Canvas(QtWidgets.QDialog):
                     painter.drawLine(test_x1 * 300 + self.width() / 2., test_y1 * 300 + self.height() / 2., test_x1 * 300 + test_x1_tan * 10 + self.width() / 2., test_y1 * 300 + test_y1_tan * 10 + self.height() / 2.)
                     painter.setPen(pen)
 
-                test_meet_points_tangent()
+                #test_meet_points_tangent()
 
             for row in self.composite_vertices:
                 for i in xrange(len(row)-1):

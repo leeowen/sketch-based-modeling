@@ -6,8 +6,8 @@ import maya.api.OpenMaya as om
 sys.path.append('/usr/lib64/python2.7/site-packages')
 sys.path.append('./.local/lib/python2.7/site-packages')
 import numpy as np
-from scipy import optimize
 import matplotlib.pyplot as plt
+from scipy.optimize import minimize
 
 
 def maya_useNewAPI():
@@ -665,99 +665,109 @@ def composite_auto_mode(vertices_matrix, angles_matrix, segment_center_list, cut
 
 def getCoefficients_for_end_composite(J, vertices, center, angles, previous, next):
     I = len(vertices)
-    if len(angles)!= I:
-        raise ValueError('the size of vertices is not the same as that of angles')
-    aConstArray = np.zeros(2 * J + 3)
-    aCoefficientMatrix = np.zeros(shape=(2 * J + 5, 2 * J + 1), dtype=float, order='C')  # row-major
-
-    bConstArray = np.zeros(2 * J + 3)
-    bCoefficientMatrix = np.zeros(shape=(2 * J + 5, 2 * J + 1), dtype=float, order='C')
-
-    for i in range(I):
-        vi = angles[i]
-
-        # the first row of coefficients matrix
-        aConstArray[0] += vertices[i][0] - center.x()
-        bConstArray[0] += vertices[i][1] - center.y()
-
-        aCoefficientMatrix[0, 0] += 1.
-        bCoefficientMatrix[0, 0] += 1.
-
-        for j in range(1, J + 1):
-            aCoefficientMatrix[0, 2 * j - 1] += math.cos(j * vi)
-            aCoefficientMatrix[0, 2 * j] += math.sin(j * vi)
-
-        # the second to No.2J+2 row of coefficients matrix
-        for k in range(1, J + 1):
-            aConstArray[2 * k - 1] += (vertices[i][0] - center.x()) * math.cos(vi * k)
-            aConstArray[2 * k] += (vertices[i][0] - center.x()) * math.sin(vi * k)
-            bConstArray[2 * k - 1] += (vertices[i][2] - center.y()) * math.sin(vi * k)
-            bConstArray[2 * k] += (vertices[i][2] - center.y()) * math.cos(vi * k)
-
-            aCoefficientMatrix[2 * k - 1, 0] += math.cos(vi * k)
-            aCoefficientMatrix[2 * k, 0] += math.sin(vi * k)
-            bCoefficientMatrix[2 * k - 1, 0] = math.sin(vi * k)
-            bCoefficientMatrix[2 * k, 0] = math.cos(vi * k)
-
+    e = 1e-10  # a value that is very close to zero
+    def fun_x(x, *args):  # function to be minimized
+        Ex = 0
+        vertices = args[0]
+        center = args[1]
+        angles = args[2]
+        J = args[3]
+        for i in range(1, I - 1):
+            xi = center.x() + x[0]
             for j in range(1, J + 1):
-                aCoefficientMatrix[2 * k - 1, 2 * j - 1] += math.cos(j * vi) * math.cos(k * vi)
-                aCoefficientMatrix[2 * k - 1, 2 * j] += math.sin(j * vi) * math.cos(k * vi)
-                aCoefficientMatrix[2 * k, 2 * j - 1] += math.cos(j * vi) * math.sin(k * vi)
-                aCoefficientMatrix[2 * k, 2 * j] += math.sin(j * vi) * math.sin(k * vi)
+                xi += (x[2 * j - 1] * math.cos(j * angles[i]) + x[2 * j] * math.sin(j * angles[i]))
+            Ex += (vertices[i][0] - xi)**2
+        return Ex
 
-                bCoefficientMatrix[2 * k - 1, 2 * j - 1] += math.sin(j * vi) * math.sin(k * vi)
-                bCoefficientMatrix[2 * k - 1, 2 * j] += math.cos(j * vi) * math.sin(k * vi)
-                bCoefficientMatrix[2 * k, 2 * j - 1] += math.sin(j * vi) * math.cos(k * vi)
-                bCoefficientMatrix[2 * k, 2 * j] += math.cos(j * vi) * math.cos(k * vi)
+    def fun_y(x, *args):  # function to be minimized
+        Ey = 0
+        vertices = args[0]
+        center = args[1]
+        angles = args[2]
+        J = args[3]
+        for i in range(1, I - 1):
+            yi = center.y() + x[0]
+            for j in range(1, J + 1):
+                yi += (x[2 * j - 1] * math.sin(j * angles[i]) + x[2 * j] * math.cos(j * angles[i]))
+            Ey += (vertices[i][2] - yi)**2
+        return Ey
 
-    # the No.2J+2 row of coefficients matrix, which is positional continuity
-    aConstArray[2 * J + 1] = previous['position x'] - center.x()
-    bConstArray[2 * J + 1] = previous['position y'] - center.y()
-    aCoefficientMatrix[2 * J + 1, 0] = 1.
-    bCoefficientMatrix[2 * J + 1, 0] = 1.
-    for j in range(1, J + 1):
-        aCoefficientMatrix[2 * J + 1, 2 * j - 1] = math.cos(j * angles[0])
-        aCoefficientMatrix[2 * J + 1, 2 * j] = math.sin(j * angles[0])
-        bCoefficientMatrix[2 * J + 1, 2 * j - 1] = math.sin(j * angles[0])
-        bCoefficientMatrix[2 * J + 1, 2 * j] = math.cos(j * angles[0])
+    def position_constraint_x(x, *args):
+        vertex = args[0]
+        center = args[1]
+        angle = args[2]
+        J = args[3]
+        xi = center.x() + x[0]
+        for j in range(1, J + 1):
+            xi += (x[2 * j - 1] * math.cos(j * angle) + x[2 * j] * math.sin(j * angle))
+        xi -= vertex['position x']
+        return xi
 
-    # the No.2J+3 row of coefficients matrix, which is tangential continuity
-    aConstArray[2 * J + 2] = previous['tangent x']
-    bConstArray[2 * J + 2] = previous['tangent y']
-    aCoefficientMatrix[2 * J + 2, 0] = 0.
-    bCoefficientMatrix[2 * J + 2, 0] = 0.
-    for j in range(1, J + 1):
-        aCoefficientMatrix[2 * J + 2, 2 * j - 1] = -j * math.sin(j * angles[0])
-        aCoefficientMatrix[2 * J + 2, 2 * j] = j * math.cos(j * angles[0])
-        bCoefficientMatrix[2 * J + 2, 2 * j - 1] = j * math.cos(j * angles[0])
-        bCoefficientMatrix[2 * J + 2, 2 * j] = -j * math.sin(j * angles[0])
+    def position_constraint_y(x, *args):
+        vertex = args[0]
+        center = args[1]
+        angle = args[2]
+        J = args[3]
+        yi = center.y() + x[0]
+        for j in range(1, J + 1):
+            yi += (x[2 * j - 1] * math.sin(j * angle) + x[2 * j] * math.cos(j * angle))
+        yi -= vertex['position y']
+        return yi
 
-    # the No.2J+4 row of coefficients matrix, which is another positional continuity
-    aConstArray[2 * J + 3] = next['position x'] - center.x()
-    bConstArray[2 * J + 3] = next['position y'] - center.y()
-    aCoefficientMatrix[2 * J + 3, 0] = 1.
-    bCoefficientMatrix[2 * J + 3, 0] = 1.
-    for j in range(1, J + 1):
-        aCoefficientMatrix[2 * J + 3, 2 * j - 1] = math.cos(j * angles[-1])
-        aCoefficientMatrix[2 * J + 3, 2 * j] = math.sin(j * angles[-1])
-        bCoefficientMatrix[2 * J + 3, 2 * j - 1] = math.sin(j * angles[-1])
-        bCoefficientMatrix[2 * J + 3, 2 * j] = math.cos(j * angles[-1])
+    def tangential_constraint_x(x, *args):
+        vertex = args[0]
+        angle = args[2]
+        J = args[3]
+        ti = 0
+        for j in range(1, J+1):
+            ti += (x[2 * j - 1] * (-j) * math.sin(j * angle) + x[2 * j] * j * math.cos(j * angle))
+        ti -= vertex['tangent x']
+        return ti
 
-    # the No.2J+5 row of coefficients matrix, which is another tangential continuity
-    aConstArray[2 * J + 4] = next['tangent x']
-    bConstArray[2 * J + 4] = next['tangent y']
-    aCoefficientMatrix[2 * J + 4, 0] = 0.
-    bCoefficientMatrix[2 * J + 4, 0] = 0.
-    for j in range(1, J + 1):
-        aCoefficientMatrix[2 * J + 4, 2 * j - 1] = -j * math.sin(j * angles[-1])
-        aCoefficientMatrix[2 * J + 4, 2 * j] = j * math.cos(j * angles[-1])
-        bCoefficientMatrix[2 * J + 4, 2 * j - 1] = j * math.cos(j * angles[-1])
-        bCoefficientMatrix[2 * J + 4, 2 * j] = -j * math.sin(j * angles[-1])
+    def tangential_constraint_y(x, *args):
+        vertex = args[0]
+        angle = args[2]
+        J = args[3]
+        ti = 0
+        for j in range(1, J+1):
+            ti += (x[2 * j - 1] * j * math.cos(j * angle) - x[2 * j] * j * math.sin(j * angle))
+        ti -= vertex['tangent y']
+        return ti
 
-    a, residuals_a, rangk_a, s_a = np.linalg.lstsq(aCoefficientMatrix, aConstArray)
-    b, residuals_b, rangk_b, s_b = np.linalg.lstsq(bCoefficientMatrix, bConstArray)
 
-    return a,b
+    args1 = (previous, center, angles[0], J)
+    args2 = (next, center, angles[-1], J)
+    cons = ({'type': 'eq', 'fun': position_constraint_x, 'args': args1},
+            {'type': 'eq', 'fun': position_constraint_x, 'args': args2},
+            {'type': 'eq', 'fun': tangential_constraint_x, 'args': args1},
+            {'type': 'eq', 'fun': tangential_constraint_x, 'args': args2}
+            )
+    x0 = np.ones((2 * J + 1))  # initialize value
+    res_x = minimize(fun_x, x0, args = (vertices, center, angles, J), method='SLSQP', constraints=cons)
+    print 'minimum value:'
+    print res_x.fun
+    print 'optimal resolution:'
+    print res_x.x
+    print 'is iteration sucessful:'
+    print res_x.success
+    print 'the reason for the termination of iteration:'
+    print res_x.message
+    cons = ({'type': 'eq', 'fun': position_constraint_y, 'args': args1},
+            {'type': 'eq', 'fun': position_constraint_y, 'args': args2},
+            {'type': 'eq', 'fun': tangential_constraint_y, 'args': args1},
+            {'type': 'eq', 'fun': tangential_constraint_y, 'args': args2}
+            )
+    y0 = np.zeros((2 * J + 1))  # initialize value
+    res_y = minimize(fun_y, y0, args = (vertices, center, angles, J), method='SLSQP', constraints=cons)
+    print 'minimum value:'
+    print res_y.fun
+    print 'optimal resolution:'
+    print res_y.x
+    print 'is iteration sucessful:'
+    print res_y.success
+    print 'the reason for the termination of iteration:'
+    print res_y.message
+    return res_x.x, res_y.x
 
 
 def findJ_for_non_end_composite(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous):
@@ -985,80 +995,72 @@ def find_smaller_J_for_end_composite(vertices, angles, d_bar, center, J_small, J
 
 def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous):
     I = len(vertices)
-    aConstArray = np.zeros(2 * J + 3)
-    aCoefficientMatrix = np.zeros(shape=(2 * J + 3, 2 * J + 1), dtype=float, order='C')  # row-major
+    aConstArray = np.zeros(2 * J + 1)
+    aCoefficientMatrix = np.zeros(shape=(2 * J + 1, 2 * J + 1), dtype=float, order='C')  # row-major
 
-    bConstArray = np.zeros(2 * J + 3)
-    bCoefficientMatrix = np.zeros(shape=(2 * J + 3, 2 * J + 1), dtype=float, order='C')
+    bConstArray = np.zeros(2 * J + 1)
+    bCoefficientMatrix = np.zeros(shape=(2 * J + 1, 2 * J + 1), dtype=float, order='C')
 
-    for i in range(1, I):
-        vi = angles[i]
+    Pv0_x = previous['position x']
+    Pv0_y = previous['position y']
+    Tv0_x = previous['tangent x']
+    Tv0_y = previous['tangent y']
+    v0 = angles[0]
 
-        # the first row of coefficients matrix
-        aConstArray[0] += vertices[i][0] - center.x()
-        bConstArray[0] += vertices[i][1] - center.y()
+    if v0 != 0.0 or v0 != math.pi:
+        aConstArray[0] = Pv0_x - center.x() + Tv0_x * math.cos(v0) / math.sin(v0)
+        aConstArray[1] = -Tv0_x / math.sin(v0)
 
-        aCoefficientMatrix[0, 0] += 1.
-        bCoefficientMatrix[0, 0] += 1.
+        aCoefficientMatrix[0, 0] = 1.
+        aCoefficientMatrix[0, 1] = 0.
 
-        for j in range(1, J + 1):
-            aCoefficientMatrix[0, 2 * j - 1] += math.cos(j * vi)
-            aCoefficientMatrix[0, 2 * j] += math.sin(j * vi)
+        aCoefficientMatrix[1, 0] = 0.
+        aCoefficientMatrix[1, 1] = 1.
 
-        # the second to No.2J+1 row of coefficients matrix
-        for k in range(1, J + 1):
-            aConstArray[2 * k - 1] += (vertices[i][0] - center.x()) * math.cos(vi * k)
-            aConstArray[2 * k] += (vertices[i][0] - center.x()) * math.sin(vi * k)
-            bConstArray[2 * k - 1] += (vertices[i][2] - center.y()) * math.sin(vi * k)
-            bConstArray[2 * k] += (vertices[i][2] - center.y()) * math.cos(vi * k)
+        M_x = lambda j, v: j * math.sin(j * v0) * math.cos(v0) / math.sin(v0) - math.cos(j * v0) - j * math.cos(v) * math.sin(j * v0) / math.sin(v0) + math.cos(j * v)
+        N_x = lambda j, v: -j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) - math.sin(j * v0) + j * math.cos(j * v0) * math.cos(v) / math.sin(v0) + math.sin(j * v)
+        M_y = lambda j, v: j * math.cos(j * v0) * math.sin(v0) / math.cos(v0) - math.sin(j * v0) - j * math.cos(j * v0) * math.sin(v) / math.cos(v0) + math.sin(j * v)
+        N_y = lambda j, v: -j * math.sin(j * v0) *math.sin(v0) / math.cos(v0) - math.cos(j * v0) + j * math.sin(j * v0) * math.sin(v) /math.cos(v0) + math.cos(j * v)
 
-            aCoefficientMatrix[2 * k - 1, 0] += math.cos(vi * k)
-            aCoefficientMatrix[2 * k, 0] += math.sin(vi * k)
-            bCoefficientMatrix[2 * k - 1, 0] = math.sin(vi * k)
-            bCoefficientMatrix[2 * k, 0] = math.cos(vi * k)
+        for j in range(2, J + 1):
+            aCoefficientMatrix[0, 2 * j - 1] = -j * math.sin(j * v0) / math.sin(v0) * math.cos(v0) - math.cos(j * v0)
+            aCoefficientMatrix[1, 2 * j - 1] = j * math.sin(j * v0) / math.sin(v0)
 
-            for j in range(1, J + 1):
-                aCoefficientMatrix[2 * k - 1, 2 * j - 1] += math.cos(j * vi) * math.cos(k * vi)
-                aCoefficientMatrix[2 * k - 1, 2 * j] += math.sin(j * vi) * math.cos(k * vi)
-                aCoefficientMatrix[2 * k, 2 * j - 1] += math.cos(j * vi) * math.sin(k * vi)
-                aCoefficientMatrix[2 * k, 2 * j] += math.sin(j * vi)*math.sin(k * vi)
+        for j in range(1, J + 2):
+            aCoefficientMatrix[0, 2 * j] = j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) + math.sin(j * v0)
+            aCoefficientMatrix[1, 2 * j] = - j * math.cos(j * v0) / math.sin(v0)
 
-                bCoefficientMatrix[2 * k - 1, 2 * j - 1] += math.sin(j * vi) * math.sin(k * vi)
-                bCoefficientMatrix[2 * k - 1, 2 * j] += math.cos(j * vi) * math.sin(k * vi)
-                bCoefficientMatrix[2 * k, 2 * j - 1] += math.sin(j * vi) * math.cos(k * vi)
-                bCoefficientMatrix[2 * k, 2 * j] += math.cos(j * vi) * math.cos(k * vi)
+        for i in range(1, I):
+            vi = angles[i]
 
-    # the No.2J+2 row of coefficients matrix, which is positional continuity
-    aConstArray[2 * J + 1] = previous['position x'] - center.x()
-    bConstArray[2 * J + 1] = previous['position y'] - center.y()
-    aCoefficientMatrix[2 * J + 1, 0] = 1.
-    bCoefficientMatrix[2 * J + 1, 0] = 1.
-    for j in range(1, J + 1):
-        aCoefficientMatrix[2 * J + 1, 2 * j - 1] = math.cos(j * angles[0])
-        aCoefficientMatrix[2 * J + 1, 2 * j] = math.sin(j * angles[0])
-        bCoefficientMatrix[2 * J + 1, 2 * j - 1] = math.sin(j * angles[0])
-        bCoefficientMatrix[2 * J + 1, 2 * j] = math.cos(j * angles[0])
+            G_x = Pv0_x + Tv0_x / math.sin(v0) * (math.cos(v0) - math.cos(vi)) - vertices[i][0]
+            G_y = Pv0_y + Tv0_y / math.cos(v0) * (math.sin(vi) - math.sin(v0)) - vertices[i][2]
+            for k in range(2, 2 * J + 1):
+                if k % 2 == 1:
+                    mx = M_x((k + 1) / 2, vi)
+                    my = M_y((k + 1) / 2, vi)
+                    aConstArray[k] += -G_x * mx
+                    bConstArray[k] += -G_y * my
+                    for j in range(2, J + 1):
+                        aCoefficientMatrix[k, 2 * j - 1] += M_x(j, vi) * mx
+                        bCoefficientMatrix[k, 2 * j - 1] += M_y(j, vi) * my
+                    for j in range(1, J + 1):
+                        aCoefficientMatrix[k, 2 * j] += N_x(j, vi) * mx
+                        bCoefficientMatrix[k, 2 * j] += N_y(j, vi) * my
+                else:
+                    nx = N_x(k / 2, vi)
+                    ny = N_y(k / 2, vi)
+                    aConstArray[k] += -G_x * nx
+                    bConstArray[k] += -G_y * nx
+                    for j in range(2, J + 1):
+                        aCoefficientMatrix[k, 2 * j - 1] += M_x(j, vi) * nx
+                        bCoefficientMatrix[k, 2 * j - 1] += M_y(j, vi) * ny
+                    for j in range(1, J + 1):
+                        aCoefficientMatrix[k, 2 * j] += N_x(j, vi) * nx
+                        bCoefficientMatrix[k, 2 * j] += N_y(j, vi) * ny
 
-    # the No.2J+3 row of coefficients matrix, which is tangential continuity
-    aConstArray[2 * J + 2] = previous['tangent x']
-    bConstArray[2 * J + 2] = previous['tangent y']
-    aCoefficientMatrix[2 * J + 2, 0] = 0.
-    bCoefficientMatrix[2 * J + 2, 0] = 0.
-
-    for j in range(1, J + 1):
-        aCoefficientMatrix[2 * J + 2, 2 * j - 1] = -j * math.sin(j * angles[0])
-        aCoefficientMatrix[2 * J + 2, 2 * j] = j * math.cos(j * angles[0])
-        bCoefficientMatrix[2 * J + 2, 2 * j - 1] = j * math.cos(j * angles[0])
-        bCoefficientMatrix[2 * J + 2, 2 * j] = -j * math.sin(j * angles[0])
-
-
-
-    A = np.dot(aCoefficientMatrix.transpose(), aCoefficientMatrix)
-    aConstArray = np.dot(aCoefficientMatrix.transpose(),aConstArray)
-    a = np.linalg.solve(A, aConstArray)
-    B = np.dot(bCoefficientMatrix.transpose(), bCoefficientMatrix)
-    bConstArray = np.dot(bCoefficientMatrix.transpose(), bCoefficientMatrix)
-    b = np.linalg.solve(B, bConstArray)
+    a = np.linalg.solve(aCoefficientMatrix, aConstArray)
+    b = np.linalg.solve(bCoefficientMatrix, bConstArray)
 
     return a, b
 
