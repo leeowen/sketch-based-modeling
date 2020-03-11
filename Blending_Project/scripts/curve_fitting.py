@@ -164,9 +164,8 @@ def getCoefficients(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
         bCoefficientMatrix[0, i] = 1.
 
     for i in range(I):  # for aCoefficientMatrix's column
+        vi = angles[i]
         for j in range(1, J + 1):  # for aCoefficientMatrix's row
-            vi = angles[i]
-
             aCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
             aCoefficientMatrix[2 * j, i] = math.sin(vi * j)
 
@@ -193,8 +192,9 @@ def getCoefficients3(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
     aConstArray = np.zeros(2 * J + 1)
     aCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')  # row-major
 
-    bConstArray = np.zeros(2 * J + 1)
-    bCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')
+    Jy = 2
+    bConstArray = np.zeros(2 * Jy + 1)
+    bCoefficientMatrix = np.ndarray(shape=(2 * Jy + 1, I), dtype=float, order='C')
 
     cConstArray = np.zeros(2 * J + 1)
     cCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')
@@ -205,9 +205,57 @@ def getCoefficients3(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
         cCoefficientMatrix[0, i] = 1.
 
     for i in range(I):  # for aCoefficientMatrix's column
+        vi = angles[i]
         for j in range(1, J + 1):  # for aCoefficientMatrix's row
-            vi = angles[i]
+            aCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
+            aCoefficientMatrix[2 * j, i] = math.sin(vi * j)
 
+            # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
+            aConstArray[2 * j - 1] += (vertices[i][0] - center[0]) * math.cos(vi * j)
+            aConstArray[2 * j] += (vertices[i][0] - center[0]) * math.sin(vi * j)
+
+            cCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
+            cCoefficientMatrix[2 * j, i] = math.sin(vi * j)
+
+            cConstArray[2 * j - 1] += (vertices[i][2] - center[2]) * math.cos(vi * j)
+            cConstArray[2 * j] += (vertices[i][2] - center[2]) * math.sin(vi * j)
+        for j in range(1, Jy + 1):
+            bCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
+            bCoefficientMatrix[2 * j, i] = math.sin(vi * j)
+
+            bConstArray[2 * j - 1] += (vertices[i][1] - center[1]) * math.cos(vi * j)
+            bConstArray[2 * j] += (vertices[i][1] - center[1]) * math.sin(vi * j)
+
+    A = np.dot(aCoefficientMatrix, aCoefficientMatrix.transpose())
+    a = np.linalg.solve(A, aConstArray)
+    B = np.dot(bCoefficientMatrix, bCoefficientMatrix.transpose())
+    b = np.linalg.solve(B, bConstArray)
+    C = np.dot(cCoefficientMatrix, cCoefficientMatrix.transpose())
+    c = np.linalg.solve(C, cConstArray)
+
+    return a, b, c
+
+
+def getCoefficients3_swap_yz(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
+    I = len(vertices)
+    aConstArray = np.zeros(2 * J + 1)
+    aCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')  # row-major
+
+    bConstArray = np.zeros(2 * J + 1)
+    bCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')
+
+    Jz = 1
+    cConstArray = np.zeros(2 * Jz + 1)
+    cCoefficientMatrix = np.ndarray(shape=(2 * Jz + 1, I), dtype=float, order='C')
+
+    for i in range(I):
+        aCoefficientMatrix[0, i] = 1.
+        bCoefficientMatrix[0, i] = 1.
+        cCoefficientMatrix[0, i] = 1.
+
+    for i in range(I):  # for aCoefficientMatrix's column
+        vi = angles[i]
+        for j in range(1, J + 1):  # for aCoefficientMatrix's row
             aCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
             aCoefficientMatrix[2 * j, i] = math.sin(vi * j)
 
@@ -220,7 +268,7 @@ def getCoefficients3(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
 
             bConstArray[2 * j - 1] += (vertices[i][1] - center[1]) * math.cos(vi * j)
             bConstArray[2 * j] += (vertices[i][1] - center[1]) * math.sin(vi * j)
-
+        for j in range(1, Jz + 1):
             cCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
             cCoefficientMatrix[2 * j, i] = math.sin(vi * j)
 
@@ -271,6 +319,7 @@ def formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar):
     Em = 0.0
     d = []
     J = len(a) / 2
+    Jy = len(b) / 2
     for i in range(I):
         generalisedEllipseVertices[i][0] = center[0] + a[0]
         generalisedEllipseVertices[i][1] = center[1] + b[0]
@@ -278,7 +327,39 @@ def formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar):
         v = angles[i]
         for j in range(1, J + 1):
             generalisedEllipseVertices[i][0] += a[2 * j - 1] * math.cos(j * v) + a[2 * j] * math.sin(j * v)
-            generalisedEllipseVertices[i][1] += b[2 * j - 1] * math.sin(j * v) + b[2 * j] * math.cos(j * v)
+            generalisedEllipseVertices[i][2] += c[2 * j - 1] * math.cos(j * v) + c[2 * j] * math.sin(j * v)
+        for j in range(1, Jy + 1):
+            generalisedEllipseVertices[i][1] += b[2 * j - 1] * math.cos(j * v) + b[2 * j] * math.sin(j * v)
+
+        di = math.sqrt((vertices[i][0] - generalisedEllipseVertices[i][0]) ** 2 + (
+                    vertices[i][1] - generalisedEllipseVertices[i][1]) ** 2 + (
+                    vertices[i][2] - generalisedEllipseVertices[i][2]) ** 2)
+        d.append(di)
+        Ea += (di / d_bar[i])
+        if Em < di / d_bar[i]:
+            Em = di / d_bar[i]
+    Ea = Ea / I
+    return generalisedEllipseVertices, Ea, Em
+
+
+def formGeneralizedEllipse3_swap_yz(a, b, c, vertices, center, angles, d_bar):
+    # CoefficientMatrix
+    I = len(vertices)
+    generalisedEllipseVertices = [[0 for i in range(3)] for j in range(I)]
+    Ea = 0.0
+    Em = 0.0
+    d = []
+    J = len(a) / 2
+    Jz = len(c) / 2
+    for i in range(I):
+        generalisedEllipseVertices[i][0] = center[0] + a[0]
+        generalisedEllipseVertices[i][1] = center[1] + b[0]
+        generalisedEllipseVertices[i][2] = center[2] + c[0]
+        v = angles[i]
+        for j in range(1, J + 1):
+            generalisedEllipseVertices[i][0] += a[2 * j - 1] * math.cos(j * v) + a[2 * j] * math.sin(j * v)
+            generalisedEllipseVertices[i][1] += b[2 * j - 1] * math.cos(j * v) + b[2 * j] * math.sin(j * v)
+        for j in range(1, Jz + 1):
             generalisedEllipseVertices[i][2] += c[2 * j - 1] * math.cos(j * v) + c[2 * j] * math.sin(j * v)
 
         di = math.sqrt((vertices[i][0] - generalisedEllipseVertices[i][0]) ** 2 + (
@@ -1102,23 +1183,43 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
 
 
 if __name__ == "__main__":
-    """
+    """    
     file_paths = [
-        'Source_LeftForeArm_cross_section_u_at_0_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_10_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_20_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_30_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_35_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_40_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_50_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_60_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_70_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_80_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_90_percentage.dat',
-        'Source_LeftForeArm_cross_section_u_at_100_percentage.dat'
+        'Source_Chest_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Chest_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Chest_cross_section_u_at_22_percentage_worldspace.dat'
     ]
-    
-        file_paths = [
+   
+    file_paths = [
+        'Source_RightArm_cross_section_u_at_35_percentage_worldspace.dat',
+        'Source_RightArm_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_RightArm_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_RightArm_cross_section_u_at_55_percentage_worldspace.dat',
+        'Source_RightArm_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_RightArm_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_RightArm_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_RightArm_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_RightArm_cross_section_u_at_95_percentage_worldspace.dat',
+        'Source_RightArm_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_RightForeArm_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_35_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_RightForeArm_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_LeftLeg_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_LeftLeg_cross_section_u_at_10_percentage_worldspace.dat',
         'Source_LeftLeg_cross_section_u_at_20_percentage_worldspace.dat',
         'Source_LeftLeg_cross_section_u_at_30_percentage_worldspace.dat',
@@ -1127,11 +1228,185 @@ if __name__ == "__main__":
         'Source_LeftLeg_cross_section_u_at_60_percentage_worldspace.dat',
         'Source_LeftLeg_cross_section_u_at_70_percentage_worldspace.dat',
         'Source_LeftLeg_cross_section_u_at_80_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_90_percentage_worldspace.dat',
-        'Source_LeftLeg_cross_section_u_at_95_percentage_worldspace.dat'
+        'Source_LeftLeg_cross_section_u_at_90_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_RightThigh_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_RightThigh_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_RightThigh_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_RightThigh_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_RightThigh_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_RightThigh_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_RightThigh_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_RightThigh_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_LeftThigh_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_LeftThigh_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_LeftKnee_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_LeftKnee_cross_section_u_at_90_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_RightKnee_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_RightKnee_cross_section_u_at_90_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_RightAnkle_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_RightAnkle_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_RightAnkle_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_RightAnkle_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_RightAnkle_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_RightAnkle_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_RightAnkle_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_RightAnkle_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_RightAnkle_cross_section_u_at_90_percentage_worldspace.dat'
+    ]
+    
+    file_paths = [
+        'Source_LeftAnkle_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_LeftAnkle_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_LeftAnkle_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_LeftAnkle_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_LeftAnkle_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_LeftAnkle_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_LeftAnkle_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_LeftAnkle_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_LeftAnkle_cross_section_u_at_90_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_LeftFoot_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_LeftFoot_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_LeftFoot_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_LeftFoot_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_LeftFoot_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_LeftFoot_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_LeftFoot_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_LeftFoot_cross_section_u_at_90_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_RightFoot_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_RightFoot_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_RightFoot_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_RightFoot_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_RightFoot_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_RightFoot_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_RightFoot_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_RightFoot_cross_section_u_at_90_percentage_worldspace.dat'
+    ]   
+    
+    file_paths = [
+        'Source_Head_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_5_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_Neck_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_Neck_cross_section_u_at_98_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_Hip_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_25_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_75_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_Hip_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_Belly_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_18_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_25_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_Belly_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_LeftForeArm_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_35_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_LeftForeArm_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
+    file_paths = [
+        'Source_LeftArm_cross_section_u_at_35_percentage_worldspace.dat',
+        'Source_LeftArm_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_LeftArm_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_LeftArm_cross_section_u_at_55_percentage_worldspace.dat',
+        'Source_LeftArm_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_LeftArm_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_LeftArm_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_LeftArm_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_LeftArm_cross_section_u_at_100_percentage_worldspace.dat'
     ]
     """
     file_paths = [
+        'Source_RightLeg_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_RightLeg_cross_section_u_at_10_percentage_worldspace.dat',
         'Source_RightLeg_cross_section_u_at_20_percentage_worldspace.dat',
         'Source_RightLeg_cross_section_u_at_30_percentage_worldspace.dat',
@@ -1140,24 +1415,9 @@ if __name__ == "__main__":
         'Source_RightLeg_cross_section_u_at_60_percentage_worldspace.dat',
         'Source_RightLeg_cross_section_u_at_70_percentage_worldspace.dat',
         'Source_RightLeg_cross_section_u_at_80_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_90_percentage_worldspace.dat',
-        'Source_RightLeg_cross_section_u_at_95_percentage_worldspace.dat'
+        'Source_RightLeg_cross_section_u_at_90_percentage_worldspace.dat'
     ]
-    """
-    file_paths = [
-        'Source_LeftArm_cross_section_u_at_16_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_20_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_30_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_40_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_50_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_60_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_70_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_80_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_90_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_95_percentage.dat',
-        'Source_LeftArm_cross_section_u_at_100_percentage.dat'
-    ]
-    """
+    
     dirPath = cmds.workspace(fn=True)+'/data/'
     for file_path in file_paths:
         vertices = []
@@ -1208,8 +1468,19 @@ if __name__ == "__main__":
             center = getCenter3(vertices)
             d_bar = get_d_bar3(vertices, center)
             angles = calculateAngle3(vertices, center)
-            a, b, c = getCoefficients3(J, vertices, center, angles)
-            generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar)
+            if 'Foot' in file_path:
+                J = 2
+                a, b, c = getCoefficients3_swap_yz(J, vertices, center, angles)
+                generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse3_swap_yz(a, b, c, vertices, center, angles, d_bar)
+            else:
+                if 'Neck' in file_path:
+                    J = 8
+                if 'Hip' or 'Belly' in file_path:
+                    J = 18
+                if 'Arm' in file_path:
+                    J = 8
+                a, b, c = getCoefficients3(J, vertices, center, angles)
+                generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar)
 
             with open(save_file_path, "w+") as f:
                 f.write('range:')
