@@ -698,6 +698,9 @@ class Canvas(QtWidgets.QDialog):
         self.tangents = curve_fitting.calculateTangent(self.vertices, self.angles)
         self.normals = curve_fitting.calculateNormal(self.tangents)
         self.curvatures = curve_fitting.calculateCurvature(self.tangents, self.angles)
+        self.isClosed = True
+        if abs(self.angles[-1] - self.angles[0]) > 2 * math.pi / self.numPt:
+            self.isClosed = False
         
         # split data for 2 symmetrical segments respectively
         self.a_first_half = []
@@ -749,6 +752,9 @@ class Canvas(QtWidgets.QDialog):
              
 
     def draw_point_index(self,painter):
+        font = QtGui.QFont()
+        font.setPointSize(5)
+        painter.setFont(font)
         for i in range(self.numPt):
             p = self.vertices[i]
             painter.drawText(p[0] * 300 + self.width() / 2., p[2] * 300 + self.height() / 2., str(i))
@@ -863,25 +869,57 @@ class Canvas(QtWidgets.QDialog):
                 self.composite_a.append(a)
                 self.composite_b.append(b)
 
-                # for the end segment that links the first segment
-                x0_tan, y0_tan, x0, y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[0], self.composite_b[0], self.angles_matrix[0][-1])
-                x0 += self.segment_center_list[0].x()
-                y0 += self.segment_center_list[0].y()
-                previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan, 'cut point index': self.cut_points[1]}
-                x1_tan, y1_tan, x1, y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[0], self.composite_b[0], self.angles_matrix[0][0])
-                x1 += self.segment_center_list[0].x()
-                y1 += self.segment_center_list[0].y()
-                next = {'position x': x1, 'position y': y1, 'tangent x': x1_tan, 'tangent y': y1_tan, 'cut point index': self.cut_points[0]}
-                Jn = self.manualJ_value
-                a, b = curve_fitting.getCoefficients_for_end_composite(Jn, self.vertices_matrix[-1], self.segment_center_list[-1], self.angles_matrix[-1], previous, next)
-                composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[1], self.segment_center_list[1], self.angles_matrix[1], self.d_bar, self.cut_points[1])
-                self.composite_a.append(a)
-                self.composite_b.append(b)
-                self.composite_vertices.append(composite_vertices_n)
+                def compisite_segment_with_one_end_shared(index):
+                    x0_tan, y0_tan, x0, y0 = curve_fitting.position_and_tangent_of_parametric_point(
+                        self.composite_a[index - 1], self.composite_b[index - 1], self.angles_matrix[index - 1][-1])
+                    x0 += self.segment_center_list[index - 1].x()
+                    y0 += self.segment_center_list[index - 1].y()
+                    previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan,
+                                'cut point index': self.cut_points[index]}
+                    curve_fitting.findJ_for_non_end_composite(self.vertices_matrix[index], self.angles_matrix[index],
+                                                              self.d_bar, self.segment_center_list[index], self.Ea_criteria,
+                                                              self.Em_criteria, previous)
+                    a, b = curve_fitting.getCoefficients_for_non_end_composite(J, self.vertices_matrix[index], self.segment_center_list[index], self.angles_matrix[index], previous)
+                    vertices, Ea, Em = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[index],
+                                                                                         self.segment_center_list[index],
+                                                                                         self.angles_matrix[index],
+                                                                                         self.d_bar, self.cut_points[index])
+                    self.Ea = (self.Ea * (self.cut_points[index]) + Ea * len(vertices)) / (self.cut_points[index] + len(vertices))
+                    self.Em = max(self.Em, Em)
+                    self.composite_vertices.append(vertices)
+                    self.composite_a.append(a)
+                    self.composite_b.append(b)
+                    return
 
-                self.Ea = (self.Ea * len(self.vertices_matrix[0]) + Ean * len(self.vertices_matrix[1]))/(len(self.vertices_matrix[0])+len(self.vertices_matrix[1]))
-                if self.Em < Emn:
-                    self.Em = Emn
+                if self.isClosed == False:# curve is open
+                    for i in range(1, len(self.cut_points)):
+                        compisite_segment_with_one_end_shared(i)
+                else: # curve is closed
+                    for i in range(1, len(self.cut_points) - 1):
+                        compisite_segment_with_one_end_shared(i)
+                    # for the end segment that links the first segment
+                    x0_tan, y0_tan, x0, y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[-1], self.composite_b[-1], self.angles_matrix[-2][-1])
+                    x0 += self.segment_center_list[-2].x()
+                    y0 += self.segment_center_list[-2].y()
+                    previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan, 'cut point index': self.cut_points[-1]}
+                    x1_tan, y1_tan, x1, y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[-1], self.composite_b[-1], self.angles_matrix[-2][0])
+                    x1 += self.segment_center_list[-2].x()
+                    y1 += self.segment_center_list[-2].y()
+                    next = {'position x': x1, 'position y': y1, 'tangent x': x1_tan, 'tangent y': y1_tan, 'cut point index': self.cut_points[-2]}
+                    if self.manualJ_value - J1 < 3:
+                        Jn = 3
+                        self.manualJ_value + 3
+                    else:
+                        Jn = self.manualJ_value - J1
+                    a, b = curve_fitting.getCoefficients_for_end_composite(Jn, self.vertices_matrix[-1], self.segment_center_list[-1], self.angles_matrix[-1], previous, next)
+                    composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[-1], self.segment_center_list[-1], self.angles_matrix[-1], self.d_bar, self.cut_points[-1])
+                    self.composite_a.append(a)
+                    self.composite_b.append(b)
+                    self.composite_vertices.append(composite_vertices_n)
+
+                    self.Ea = (self.Ea * (self.numPt - len(self.vertices_matrix[-1])) + Ean * len(self.vertices_matrix[-1])) / self.numPt
+                    if self.Em < Emn:
+                        self.Em = Emn
 
                 def draw_meet_points_tangent():
                     pen1 = QtGui.QPen()
@@ -915,7 +953,6 @@ class Canvas(QtWidgets.QDialog):
                     painter.drawLine(row[i][0] * 300 + self.width() / 2., row[i][1] * 300 + self.height() / 2., row[i + 1][0] * 300 + self.width() / 2., row[i + 1][1] * 300 + self.height() / 2.)
 
 
-
     def draw_originalEllipse(self,painter):
         penColor=QtCore.Qt.red   
         pen=QtGui.QPen()
@@ -930,44 +967,50 @@ class Canvas(QtWidgets.QDialog):
             error_dialog.showMessage('Please choose a data file first')
         else:
             def draw_whole_curve():
-                for i in range(self.numPt):
+                start = 0
+                end = self.numPt
+                if self.isClosed == False:
+                    start = 1
+                for i in range(start, end):
                     p1 = QtCore.QPointF(self.vertices[i - 1][0] * 300 + self.width() / 2.,
                                         self.vertices[i - 1][2] * 300 + self.height() / 2.)
                     p2 = QtCore.QPointF(self.vertices[i][0] * 300 + self.width() / 2.,
                                         self.vertices[i][2] * 300 + self.height() / 2.)
                     painter.drawLine(p1, p2)
 
-                    if self.activateTangent == True:
-                        t = QtGui.QVector2D(self.tangents[i][0], self.tangents[i][1]).normalized() * 20.0
-                        p3 = QtCore.QPointF(t.x() + p2.x(), t.y() + p2.y())
-                        pen1 = QtGui.QPen()
-                        pen1.setColor(QtCore.Qt.blue)
-                        painter.setPen(pen1)
-                        painter.drawLine(p2, p3)
-                    if self.activateCurvature == True:
-                        normal = self.normals[i]
-                        p4 = QtCore.QPointF(normal.x() * self.curvatures[i] + p2.x(),
-                                            normal.y() * self.curvatures[i] + p2.y())
-                        pen2 = QtGui.QPen()
-                        pen2.setColor(QtCore.Qt.green)
-                        painter.setPen(pen2)
-                        painter.drawLine(p2, p4)
+            def draw_composite_curve():
+                if self.cut_points:
+                    for i in range(len(self.cut_points)):
+                        a = self.cut_points[i]
+                        b = self.cut_points[(i + 1) % len(self.cut_points)]
+                        if a < b:
+                            for j in range(a, b):
+                                p1 = QtCore.QPointF(self.vertices[j][0] * 300 + self.width() / 2.,
+                                                    self.vertices[j][2] * 300 + self.height() / 2.)
+                                p2 = QtCore.QPointF(self.vertices[j+1][0] * 300 + self.width() / 2.,
+                                                self.vertices[j+1][2] * 300 + self.height() / 2.)
+                                painter.drawLine(p1, p2)
+                        else:
+                            for j in range(b, self.numPt):
+                                p1 = QtCore.QPointF(self.vertices[j][0] * 300 + self.width() / 2.,
+                                                    self.vertices[j][2] * 300 + self.height() / 2.)
+                                p2 = QtCore.QPointF(self.vertices[(j+1) % self.numPt][0] * 300 + self.width() / 2.,
+                                                self.vertices[(j+1) % self.numPt][2] * 300 + self.height() / 2.)
+                                painter.drawLine(p1, p2)
+                            for j in range(0, a):
+                                p1 = QtCore.QPointF(self.vertices[j][0] * 300 + self.width() / 2.,
+                                                    self.vertices[j][2] * 300 + self.height() / 2.)
+                                p2 = QtCore.QPointF(self.vertices[(j+1) % self.numPt][0] * 300 + self.width() / 2.,
+                                                self.vertices[(j+1) % self.numPt][2] * 300 + self.height() / 2.)
+                                painter.drawLine(p1, p2)
+                else:
+                    draw_whole_curve()
 
-                    painter.setPen(pen)
 
-            if self.fragment_mode==False and self.composite_mode==False:
+            if self.single_piece_mode==True:
                 draw_whole_curve()
 
-                if self.activateCutPoint == True:
-                    od = curve_fitting.sortCurvature(self.curvatures)
-                    # show first 5 cut point candidates based on curvatures on original curve
-                    for i in range(20):
-                        index = od[-i][0]
-                        p = self.vertices[index]
-                        painter.drawText (p[0]*300+self.width()/2., p[2]*300+self.height()/2., str(index))
-
             elif self.fragment_mode==True:
-                print 'fragment mode'
                 if self.start_index<self.end_index:
                     for i in range(self.start_index+1,self.end_index+1):   
                         p1=QtCore.QPointF(self.vertices[i-1][0]*300+self.width()/2.,self.vertices[i-1][2]*300+self.height()/2.)
@@ -982,10 +1025,32 @@ class Canvas(QtWidgets.QDialog):
                         p1=QtCore.QPointF(self.vertices[i-1][0]*300+self.width()/2.,self.vertices[i-1][2]*300+self.height()/2.)
                         p2=QtCore.QPointF(self.vertices[i][0]*300+self.width()/2.,self.vertices[i][2]*300+self.height()/2.)
                         painter.drawLine(p1,p2)
+            elif self.composite_mode==True:
+                draw_composite_curve()
 
-            else:
-                draw_whole_curve()
-
+            if self.activateTangent == True:
+                t = QtGui.QVector2D(self.tangents[i][0], self.tangents[i][1]).normalized() * 20.0
+                p3 = QtCore.QPointF(t.x() + p2.x(), t.y() + p2.y())
+                pen1 = QtGui.QPen()
+                pen1.setColor(QtCore.Qt.blue)
+                painter.setPen(pen1)
+                painter.drawLine(p2, p3)
+            if self.activateCurvature == True:
+                normal = self.normals[i]
+                p4 = QtCore.QPointF(normal.x() * self.curvatures[i] + p2.x(),
+                                    normal.y() * self.curvatures[i] + p2.y())
+                pen2 = QtGui.QPen()
+                pen2.setColor(QtCore.Qt.green)
+                painter.setPen(pen2)
+                painter.drawLine(p2, p4)
+            if self.activateCutPoint == True:  # just candidate cut points
+                od = curve_fitting.sortCurvature(self.curvatures)
+                # show first 5 cut point candidates based on curvatures on original curve
+                for i in range(20):
+                    index = od[-i][0]
+                    p = self.vertices[index]
+                    painter.drawText(p[0] * 300 + self.width() / 2., p[2] * 300 + self.height() / 2., str(index))
+            painter.setPen(pen)
 
     def draw_standardEllipse(self,painter):
         penColor=QtCore.Qt.blue        
