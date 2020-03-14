@@ -124,6 +124,7 @@ def calculateNormal(tangents):
         normals.append(normal)
     return normals
 
+
 def calculateCurvature(tangents, angles):
     curvatures = []
     numPt = len(tangents)
@@ -1083,6 +1084,35 @@ def find_bigger_J_for_end_composite(vertices, angles, d_bar, center, J_small, J_
         return J + 1
 
 
+def find_bigger_J_for_non_end_composite(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria, previous):
+    # Linear extrapolate to find bigger J>J_small
+    print 'find bigger J. J_small is {} and J_big is {}'.format(J_small, J_big)
+    start_index = previous['cut point index']
+    J = J_big
+    if Ea_bigJ >= Ea_criteria:
+        J = int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ)) + J_small
+    elif Em_bigJ >= Em_criteria:
+        J = int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ)) + J_small
+    if J <= J_big:
+        print 'weird, J({}) is smaller than J_big({})'.format(J, J_big)
+        J = J_big + 1
+        return J
+
+    a, b = getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
+    v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
+
+    if Ea >= Ea_criteria or Em >= Em_criteria:
+        find_bigger_J_for_non_end_composite(vertices, angles, d_bar, center, J_big, J, Ea_bigJ, Em_bigJ, Ea, Em, Ea_criteria, Em_criteria, previous)
+    else:
+        # we are close to the solution, hence, a while function will suffice
+        while Ea < Ea_criteria and Em < Em_criteria and J > J_small:
+            J -= 1
+            a, b = getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
+            v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
+
+        return J + 1
+
+
 def find_smaller_J_for_end_composite(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Ea_bigJ, Ea_criteria, Em_criteria, previous, next):
     # Linear extrapolate to find smaller J<J_small<J_big,
     # The criteria is always Ea_criteria,
@@ -1134,6 +1164,15 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
         aCoefficientMatrix[1, 0] = 0.
         aCoefficientMatrix[1, 1] = 1.
 
+        bConstArray[0] = Pv0_y - center.y() - Tv0_y * math.sin(v0) / math.cos(v0)
+        bConstArray[1] = -Tv0_y / math.cos(v0)
+
+        bCoefficientMatrix[0, 0] = 1.
+        bCoefficientMatrix[0, 1] = 0.
+
+        bCoefficientMatrix[1, 0] = 0.
+        bCoefficientMatrix[1, 1] = 1.
+
         M_x = lambda j, v: j * math.sin(j * v0) * math.cos(v0) / math.sin(v0) - math.cos(j * v0) - j * math.cos(v) * math.sin(j * v0) / math.sin(v0) + math.cos(j * v)
         N_x = lambda j, v: -j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) - math.sin(j * v0) + j * math.cos(j * v0) * math.cos(v) / math.sin(v0) + math.sin(j * v)
         M_y = lambda j, v: j * math.cos(j * v0) * math.sin(v0) / math.cos(v0) - math.sin(j * v0) - j * math.cos(j * v0) * math.sin(v) / math.cos(v0) + math.sin(j * v)
@@ -1143,7 +1182,7 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
             aCoefficientMatrix[0, 2 * j - 1] = -j * math.sin(j * v0) / math.sin(v0) * math.cos(v0) - math.cos(j * v0)
             aCoefficientMatrix[1, 2 * j - 1] = j * math.sin(j * v0) / math.sin(v0)
 
-        for j in range(1, J + 2):
+        for j in range(1, J + 1):
             aCoefficientMatrix[0, 2 * j] = j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) + math.sin(j * v0)
             aCoefficientMatrix[1, 2 * j] = - j * math.cos(j * v0) / math.sin(v0)
 
@@ -1156,8 +1195,8 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
                 if k % 2 == 1:
                     mx = M_x((k + 1) / 2, vi)
                     my = M_y((k + 1) / 2, vi)
-                    aConstArray[k] += -G_x * mx
-                    bConstArray[k] += -G_y * my
+                    aConstArray[k] -= G_x * mx
+                    bConstArray[k] -= G_y * my
                     for j in range(2, J + 1):
                         aCoefficientMatrix[k, 2 * j - 1] += M_x(j, vi) * mx
                         bCoefficientMatrix[k, 2 * j - 1] += M_y(j, vi) * my
@@ -1167,8 +1206,8 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
                 else:
                     nx = N_x(k / 2, vi)
                     ny = N_y(k / 2, vi)
-                    aConstArray[k] += -G_x * nx
-                    bConstArray[k] += -G_y * nx
+                    aConstArray[k] -= G_x * nx
+                    bConstArray[k] -= G_y * ny
                     for j in range(2, J + 1):
                         aCoefficientMatrix[k, 2 * j - 1] += M_x(j, vi) * nx
                         bCoefficientMatrix[k, 2 * j - 1] += M_y(j, vi) * ny
