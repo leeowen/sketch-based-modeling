@@ -543,6 +543,8 @@ class Canvas(QtWidgets.QDialog):
     backgroundColor=QtCore.Qt.white
     Ea_criteria=0.01
     Em_criteria=0.025
+    color_list = [QtCore.Qt.cyan, QtCore.Qt.magenta, QtCore.Qt.blue, QtCore.Qt.darkYellow, QtCore.Qt.darkRed,
+                  QtCore.Qt.black, QtCore.Qt.darkMagenta, QtCore.Qt.darkCyan]
     
     def __init__(self,parent=None):
         super(Canvas,self).__init__(parent)
@@ -564,6 +566,7 @@ class Canvas(QtWidgets.QDialog):
         self.activateCurvature=False
         self.activateCutPoint=False
         self.show_point_index=False
+        self.isClosed=True
 
         
     def sizeHint(self):
@@ -580,6 +583,13 @@ class Canvas(QtWidgets.QDialog):
 
 
     def cut_curve(self,cut_points):
+        if self.isClosed == True:
+            try:
+                if len(cut_points)<2:
+                    raise ValueError('for closed curve, at least 2 cut points are required')
+            except ValueError:
+                error_dialog = QtWidgets.QErrorMessage(self)
+                error_dialog.showMessage('Please choose at least 2 cut points for closed curve segmentation')
         cut_points.sort() #ascend
         self.cut_points = cut_points
         # split data for N segments
@@ -619,8 +629,8 @@ class Canvas(QtWidgets.QDialog):
                     tmp_center = curve_fitting.getCenter(tmp_vertices)
                     self.segment_center_list.append(tmp_center)
 
-            tmp_vertices = self.vertices[self.cut_points[N - 1]: self.numPt - 1]
-            tmp_angles = self.angles[self.cut_points[N - 1]: self.numPt - 1]
+            tmp_vertices = self.vertices[self.cut_points[N - 1]: self.numPt]
+            tmp_angles = self.angles[self.cut_points[N - 1]: self.numPt]
             self.vertices_matrix.append(tmp_vertices)
             self.angles_matrix.append(tmp_angles)
             tmp_center = curve_fitting.getCenter(tmp_vertices)
@@ -883,6 +893,11 @@ class Canvas(QtWidgets.QDialog):
             #if self.autoJ_mode == True:
                 #self.composite_vertices, self.Ea, self.Em = curve_fitting.composite_auto_mode(self.vertices_matrix, self.angles_matrix, self.segment_center_list, self.cut_points, self.d_bar, self.Ea_criteria, self.Em_criteria)
             if self.manualJ_mode == True:
+                if self.cut_points:
+                    pass
+                else:
+                    return
+
                 # for the first segment
                 self.composite_vertices = []
                 self.composite_a = []
@@ -905,9 +920,9 @@ class Canvas(QtWidgets.QDialog):
                         cut_pt_index = self.cut_points[index]
                     previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan,
                                     'cut point index': cut_pt_index}
-                    J = curve_fitting.findJ_for_non_end_composite(self.vertices_matrix[index], self.angles_matrix[index],
-                                                              self.d_bar, self.segment_center_list[index], self.Ea_criteria,
-                                                              self.Em_criteria, previous)
+                    J = self.manualJ_value - J1#curve_fitting.findJ_for_non_end_composite(self.vertices_matrix[index], self.angles_matrix[index],
+                                                              #self.d_bar, self.segment_center_list[index], self.Ea_criteria,
+                                                              #self.Em_criteria, previous)
                     a, b = curve_fitting.getCoefficients_for_non_end_composite(J, self.vertices_matrix[index], self.segment_center_list[index], self.angles_matrix[index], previous)
                     vertices, Ea, Em = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[index],
                                                                                          self.segment_center_list[index],
@@ -921,8 +936,8 @@ class Canvas(QtWidgets.QDialog):
                     return
 
                 if self.isClosed == False:# curve is open
-                    for i in range(1, len(self.cut_points) + 1):
-                        compisite_segment_with_one_end_shared(i)
+                    for i in range(len(self.cut_points)):
+                        compisite_segment_with_one_end_shared(i + 1)
                 else: # curve is closed
                     for i in range(1, len(self.cut_points) - 1):
                         compisite_segment_with_one_end_shared(i)
@@ -976,10 +991,9 @@ class Canvas(QtWidgets.QDialog):
                     painter.setPen(pen)
 
                 #test_meet_points_tangent()
-            color_list=[QtCore.Qt.cyan, QtCore.Qt.magenta, QtCore.Qt.blue, QtCore.Qt.darkYellow, QtCore.Qt.darkRed, QtCore.Qt.black, QtCore.Qt.darkMagenta, QtCore.Qt.darkCyan]
             for i in range(0, len(self.composite_vertices)):
                 penx = QtGui.QPen()
-                penx.setColor(color_list[i])
+                penx.setColor(aelf.color_list[i])
                 painter.setPen(penx)
                 row = self.composite_vertices[i]
                 for j in xrange(len(row)-1):
@@ -1014,29 +1028,55 @@ class Canvas(QtWidgets.QDialog):
 
             def draw_composite_curve():
                 if self.cut_points:
-                    for i in range(len(self.cut_points)):
-                        a = self.cut_points[i]
-                        b = self.cut_points[(i + 1) % len(self.cut_points)]
-                        if a < b:
+                    if self.isClosed == True:
+                        for i in range(len(self.cut_points)):
+                            penx = QtGui.QPen()
+                            penx.setColor(self.color_list[i])
+                            painter.setPen(penx)
+                            a = self.cut_points[i]
+                            b = self.cut_points[(i + 1) % len(self.cut_points)]
+                            if a < b:
+                                for j in range(a, b):
+                                    p1 = QtCore.QPointF(self.vertices[j][0] * 300 + self.width() / 2.,
+                                                        self.vertices[j][2] * 300 + self.height() / 2.)
+                                    p2 = QtCore.QPointF(self.vertices[(j+1)% self.numPt][0] * 300 + self.width() / 2.,
+                                                    self.vertices[(j+1)% self.numPt][2] * 300 + self.height() / 2.)
+                                    painter.drawLine(p1, p2)
+                            else:
+                                for j in range(b, self.numPt):
+                                    p1 = QtCore.QPointF(self.vertices[j][0] * 300 + self.width() / 2.,
+                                                        self.vertices[j][2] * 300 + self.height() / 2.)
+                                    p2 = QtCore.QPointF(self.vertices[(j+1) % self.numPt][0] * 300 + self.width() / 2.,
+                                                    self.vertices[(j+1) % self.numPt][2] * 300 + self.height() / 2.)
+                                    painter.drawLine(p1, p2)
+                                for j in range(0, a):
+                                    p1 = QtCore.QPointF(self.vertices[j][0] * 300 + self.width() / 2.,
+                                                        self.vertices[j][2] * 300 + self.height() / 2.)
+                                    p2 = QtCore.QPointF(self.vertices[(j+1) % self.numPt][0] * 300 + self.width() / 2.,
+                                                    self.vertices[(j+1) % self.numPt][2] * 300 + self.height() / 2.)
+                                    painter.drawLine(p1, p2)
+                    else:
+                        for i in range(len(self.cut_points) + 1):
+                            penx = QtGui.QPen()
+                            penx.setColor(self.color_list[i])
+                            painter.setPen(penx)
+                            a = 0
+                            b = self.numPt - 1
+                            if i == 0:
+                                b = self.cut_points[i]
+                            elif i == len(self.cut_points):
+                                a = self.cut_points[i - 1]
+                            else:
+                                a = self.cut_points[i - 1]
+                                b = self.cut_points[i]
                             for j in range(a, b):
                                 p1 = QtCore.QPointF(self.vertices[j][0] * 300 + self.width() / 2.,
                                                     self.vertices[j][2] * 300 + self.height() / 2.)
-                                p2 = QtCore.QPointF(self.vertices[(j+1)% self.numPt][0] * 300 + self.width() / 2.,
-                                                self.vertices[(j+1)% self.numPt][2] * 300 + self.height() / 2.)
+                                p2 = QtCore.QPointF(self.vertices[j + 1][0] * 300 + self.width() / 2.,
+                                                    self.vertices[j + 1][2] * 300 + self.height() / 2.)
                                 painter.drawLine(p1, p2)
-                        else:
-                            for j in range(b, self.numPt):
-                                p1 = QtCore.QPointF(self.vertices[j][0] * 300 + self.width() / 2.,
-                                                    self.vertices[j][2] * 300 + self.height() / 2.)
-                                p2 = QtCore.QPointF(self.vertices[(j+1) % self.numPt][0] * 300 + self.width() / 2.,
-                                                self.vertices[(j+1) % self.numPt][2] * 300 + self.height() / 2.)
-                                painter.drawLine(p1, p2)
-                            for j in range(0, a):
-                                p1 = QtCore.QPointF(self.vertices[j][0] * 300 + self.width() / 2.,
-                                                    self.vertices[j][2] * 300 + self.height() / 2.)
-                                p2 = QtCore.QPointF(self.vertices[(j+1) % self.numPt][0] * 300 + self.width() / 2.,
-                                                self.vertices[(j+1) % self.numPt][2] * 300 + self.height() / 2.)
-                                painter.drawLine(p1, p2)
+
+                    painter.setPen(pen)
                 else:
                     draw_whole_curve()
 

@@ -292,7 +292,6 @@ def formGeneralizedEllipse(a, b, vertices, center, angles, d_bar):
     generalisedEllipseVertices = [[0 for i in range(2)] for j in range(I)]
     Ea = 0.0
     Em = 0.0
-    d = []
     J = len(a) / 2
     for i in range(I):
         generalisedEllipseVertices[i][0] = center.x() + a[0]
@@ -304,7 +303,6 @@ def formGeneralizedEllipse(a, b, vertices, center, angles, d_bar):
 
         di = math.sqrt((vertices[i][0] - generalisedEllipseVertices[i][0]) ** 2 + (
                     vertices[i][2] - generalisedEllipseVertices[i][1]) ** 2)
-        d.append(di)
         Ea += (di / d_bar[i])
         if Em < di / d_bar[i]:
             Em = di / d_bar[i]
@@ -318,7 +316,6 @@ def formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar):
     generalisedEllipseVertices = [[0 for i in range(3)] for j in range(I)]
     Ea = 0.0
     Em = 0.0
-    d = []
     J = len(a) / 2
     Jy = len(b) / 2
     for i in range(I):
@@ -335,7 +332,6 @@ def formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar):
         di = math.sqrt((vertices[i][0] - generalisedEllipseVertices[i][0]) ** 2 + (
                     vertices[i][1] - generalisedEllipseVertices[i][1]) ** 2 + (
                     vertices[i][2] - generalisedEllipseVertices[i][2]) ** 2)
-        d.append(di)
         Ea += (di / d_bar[i])
         if Em < di / d_bar[i]:
             Em = di / d_bar[i]
@@ -693,16 +689,13 @@ def form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index
 
         fragment_vertices[i][0] = x_i
         fragment_vertices[i][1] = y_i
-        if start_index == 87:
-            pass
-            #print i, x_i, y_i
+
         d_i = math.sqrt((vertices[i][0] - x_i)**2 + (vertices[i][2] - y_i)**2)
         d.append(d_i)
         index = (i + start_index) % numPt
         Ea += (d_i / d_bar[index])
         if Em < d_i / d_bar[index]:
             Em = d_i / d_bar[index]
-
 
     Ea = Ea / I
 
@@ -1096,7 +1089,6 @@ def find_bigger_J_for_non_end_composite(vertices, angles, d_bar, center, J_small
     if J <= J_big:
         print 'weird, J({}) is smaller than J_big({})'.format(J, J_big)
         J = J_big + 1
-        return J
 
     a, b = getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
     v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
@@ -1173,18 +1165,22 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
         bCoefficientMatrix[1, 0] = 0.
         bCoefficientMatrix[1, 1] = 1.
 
-        M_x = lambda j, v: j * math.sin(j * v0) * math.cos(v0) / math.sin(v0) - math.cos(j * v0) - j * math.cos(v) * math.sin(j * v0) / math.sin(v0) + math.cos(j * v)
-        N_x = lambda j, v: -j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) - math.sin(j * v0) + j * math.cos(j * v0) * math.cos(v) / math.sin(v0) + math.sin(j * v)
-        M_y = lambda j, v: j * math.cos(j * v0) * math.sin(v0) / math.cos(v0) - math.sin(j * v0) - j * math.cos(j * v0) * math.sin(v) / math.cos(v0) + math.sin(j * v)
-        N_y = lambda j, v: -j * math.sin(j * v0) *math.sin(v0) / math.cos(v0) - math.cos(j * v0) + j * math.sin(j * v0) * math.sin(v) /math.cos(v0) + math.cos(j * v)
-
         for j in range(2, J + 1):
             aCoefficientMatrix[0, 2 * j - 1] = -j * math.sin(j * v0) / math.sin(v0) * math.cos(v0) - math.cos(j * v0)
             aCoefficientMatrix[1, 2 * j - 1] = j * math.sin(j * v0) / math.sin(v0)
+            bCoefficientMatrix[0, 2 * j - 1] = - j * math.cos(j * v0) * math.sin(v0) / math.cos(v0) + math.sin(j * v0)
+            bCoefficientMatrix[1, 2 * j - 1] = j * math.cos(j * v0) / math.cos(v0)
 
         for j in range(1, J + 1):
             aCoefficientMatrix[0, 2 * j] = j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) + math.sin(j * v0)
             aCoefficientMatrix[1, 2 * j] = - j * math.cos(j * v0) / math.sin(v0)
+            bCoefficientMatrix[0, 2 * j] = j * math.sin(j * v0) * math.sin(v0) / math.cos(v0) + math.cos(j * v0)
+            bCoefficientMatrix[1, 2 * j] = - j * math.sin(j * v0) / math.cos(v0)
+
+        M_x = lambda j, v: j * math.sin(j * v0) * math.cos(v0) / math.sin(v0) - math.cos(j * v0) - j * math.cos(v) * math.sin(j * v0) / math.sin(v0) + math.cos(j * v)
+        N_x = lambda j, v: -j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) - math.sin(j * v0) + j * math.cos(j * v0) * math.cos(v) / math.sin(v0) + math.sin(j * v)
+        M_y = lambda j, v: j * math.cos(j * v0) * math.sin(v0) / math.cos(v0) - math.sin(j * v0) - j * math.cos(j * v0) * math.sin(v) / math.cos(v0) + math.sin(j * v)
+        N_y = lambda j, v: -j * math.sin(j * v0) * math.sin(v0) / math.cos(v0) - math.cos(j * v0) + j * math.sin(j * v0) * math.sin(v) / math.cos(v0) + math.cos(j * v)
 
         for i in range(1, I):
             vi = angles[i]
@@ -1217,6 +1213,9 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
 
     a = np.linalg.solve(aCoefficientMatrix, aConstArray)
     b = np.linalg.solve(bCoefficientMatrix, bConstArray)
+
+    print a
+    print b
 
     return a, b
 
