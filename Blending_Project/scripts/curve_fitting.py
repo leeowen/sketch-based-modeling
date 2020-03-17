@@ -676,8 +676,7 @@ def form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index
     Em = 0.0
     d = []
     J = (len(a) - 1) / 2
-    #print a
-    #print b
+
     for i in range(I):
         v_i = angles[i]
         x_i = center.x() + a[0]
@@ -1157,7 +1156,7 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
         aCoefficientMatrix[1, 1] = 1.
 
         bConstArray[0] = Pv0_y - center.y() - Tv0_y * math.sin(v0) / math.cos(v0)
-        bConstArray[1] = -Tv0_y / math.cos(v0)
+        bConstArray[1] = Tv0_y / math.cos(v0)
 
         bCoefficientMatrix[0, 0] = 1.
         bCoefficientMatrix[0, 1] = 0.
@@ -1166,7 +1165,7 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
         bCoefficientMatrix[1, 1] = 1.
 
         for j in range(2, J + 1):
-            aCoefficientMatrix[0, 2 * j - 1] = -j * math.sin(j * v0) / math.sin(v0) * math.cos(v0) - math.cos(j * v0)
+            aCoefficientMatrix[0, 2 * j - 1] = -j * math.sin(j * v0) * math.cos(v0) / math.sin(v0) + math.cos(j * v0)
             aCoefficientMatrix[1, 2 * j - 1] = j * math.sin(j * v0) / math.sin(v0)
             bCoefficientMatrix[0, 2 * j - 1] = - j * math.cos(j * v0) * math.sin(v0) / math.cos(v0) + math.sin(j * v0)
             bCoefficientMatrix[1, 2 * j - 1] = j * math.cos(j * v0) / math.cos(v0)

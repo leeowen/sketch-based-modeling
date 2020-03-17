@@ -993,7 +993,7 @@ class Canvas(QtWidgets.QDialog):
                 #test_meet_points_tangent()
             for i in range(0, len(self.composite_vertices)):
                 penx = QtGui.QPen()
-                penx.setColor(aelf.color_list[i])
+                penx.setColor(self.color_list[i])
                 painter.setPen(penx)
                 row = self.composite_vertices[i]
                 for j in xrange(len(row)-1):
