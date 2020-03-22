@@ -972,19 +972,16 @@ def getCoefficients_for_end_composite(J, vertices, center, angles, previous, nex
 
 
 def findJ_for_non_end_composite(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous):
-    J = 0
+    J = 3
     start_index = previous['cut point index']
-    a3, b3 = getCoefficients_for_non_end_composite(3, vertices, center, angles, previous)
-    v3, Ea3, Em3 = form_vertices_of_fragment(a3, b3, vertices, center, angles, d_bar, start_index)
-    a10, b10 = getCoefficients_for_non_end_composite(10, vertices, center, angles, previous)
-    v10, Ea10, Em10 = form_vertices_of_fragment(a10, b10, vertices, center, angles, d_bar, start_index)
+    a, b = getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
+    v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
 
-    if Ea3 < Ea_criteria and Em3 < Em_criteria:
-        J = find_smaller_J_for_non_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Ea10, Ea_criteria, Em_criteria, previous)
-    elif Ea10 >= Ea_criteria or Em10 >= Em_criteria:
-        J = find_bigger_J_for_non_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria, previous)
-    elif Ea3 >= Ea_criteria or Em3 >= Em_criteria:
-        J = find_inbetween_J_for_non_end_composite(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria, previous)
+    while Ea >= Ea_criteria or Em >= Em_criteria:
+        J += 1
+        a, b = getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
+        v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
+
     return J
 
 
@@ -1071,34 +1068,6 @@ def find_bigger_J_for_end_composite(vertices, angles, d_bar, center, J_small, J_
         while Ea < Ea_criteria and Em < Em_criteria and J > J_small:
             J -= 1
             a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
-            v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
-
-        return J + 1
-
-
-def find_bigger_J_for_non_end_composite(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria, previous):
-    # Linear extrapolate to find bigger J>J_small
-    print 'find bigger J. J_small is {} and J_big is {}'.format(J_small, J_big)
-    start_index = previous['cut point index']
-    J = J_big
-    if Ea_bigJ >= Ea_criteria:
-        J = int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ)) + J_small
-    elif Em_bigJ >= Em_criteria:
-        J = int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ)) + J_small
-    if J <= J_big:
-        print 'weird, J({}) is smaller than J_big({})'.format(J, J_big)
-        J = J_big + 1
-
-    a, b = getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
-    v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
-
-    if Ea >= Ea_criteria or Em >= Em_criteria:
-        find_bigger_J_for_non_end_composite(vertices, angles, d_bar, center, J_big, J, Ea_bigJ, Em_bigJ, Ea, Em, Ea_criteria, Em_criteria, previous)
-    else:
-        # we are close to the solution, hence, a while function will suffice
-        while Ea < Ea_criteria and Em < Em_criteria and J > J_small:
-            J -= 1
-            a, b = getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
             v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
 
         return J + 1
@@ -1212,9 +1181,6 @@ def getCoefficients_for_non_end_composite(J, vertices, center, angles, previous)
 
     a = np.linalg.solve(aCoefficientMatrix, aConstArray)
     b = np.linalg.solve(bCoefficientMatrix, bConstArray)
-
-    print a
-    print b
 
     return a, b
 
