@@ -542,11 +542,11 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             
               
 class Canvas(QtWidgets.QDialog):
-    backgroundColor=QtCore.Qt.white
-    Ea_criteria=0.01
-    Em_criteria=0.025
-    color_list = [QtCore.Qt.cyan, QtCore.Qt.magenta, QtCore.Qt.darkYellow, QtCore.Qt.darkRed,
-                  QtCore.Qt.black, QtCore.Qt.darkMagenta, QtCore.Qt.darkCyan]
+    backgroundColor = QtCore.Qt.white
+    Ea_criteria = 0.01
+    Em_criteria = 0.025
+    color_list = [QtCore.Qt.darkCyan, QtCore.Qt.magenta, QtCore.Qt.darkYellow, QtCore.Qt.darkRed,
+                  QtCore.Qt.black, QtCore.Qt.darkMagenta]
     
     def __init__(self,parent=None):
         super(Canvas,self).__init__(parent)
@@ -741,7 +741,10 @@ class Canvas(QtWidgets.QDialog):
         self.normals = curve_fitting.calculateNormal(self.tangents)
         self.curvatures = curve_fitting.calculateCurvature(self.tangents, self.angles)
         self.isClosed = True
-        if abs(self.angles[-1] - self.angles[0]) > 4 * math.pi / self.numPt:
+        angle_difference = abs(self.angles[-1] - self.angles[0] - 2 * math.pi)
+        if angle_difference > math.pi * 2.0:
+            angle_difference -= math.pi * 2.0
+        if angle_difference > 3 * math.pi / self.numPt:
             self.isClosed = False
         
         # split data for 2 symmetrical segments respectively

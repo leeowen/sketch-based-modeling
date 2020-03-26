@@ -791,7 +791,7 @@ def find_smaller_J(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, E
     a, b = getCoefficients(J, vertices, center, angles)
     v, Ea, Em = formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
     if Ea < Ea_criteria and Em < Em_criteria:
-        return fingSmallerJ(vertices, angles, d_bar, center, J, J_small, Ea, Ea_smallJ, Ea_criteria, Em_criteria)
+        return find_smaller_J(vertices, angles, d_bar, center, J, J_small, Ea, Ea_smallJ, Ea_criteria, Em_criteria)
     else:
         # we are close to the solution, hence, a while function will suffice
         while Ea >= Ea_criteria or Em >= Em_criteria and J < J_small:
