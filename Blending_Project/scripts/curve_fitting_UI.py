@@ -833,6 +833,7 @@ class Canvas(QtWidgets.QDialog):
                 if self.activateTangent == True:
                     pen1 = QtGui.QPen()
                     pen1.setColor(QtCore.Qt.blue)
+                    pen1.setWidthF(self.lineWidth)
                     painter.setPen(pen1)
                     for i in range(I):
                         x_tan, y_tan, x, y = curve_fitting.position_and_tangent_of_parametric_point(self.a, self.b, self.angles[i])
@@ -877,6 +878,7 @@ class Canvas(QtWidgets.QDialog):
                 second_half_color = QtGui.QColor(127, 0, 255)
                 pen2 = QtGui.QPen()
                 pen2.setColor(second_half_color)
+                pen2.setWidthF(self.lineWidth)
                 painter.setPen(pen2)
                 for i in range(self.numPt / 2, self.numPt):
                     painter.drawLine(symmetry_ellipse_vertices[i][0] * 300 + self.width() / 2.,
@@ -1013,6 +1015,7 @@ class Canvas(QtWidgets.QDialog):
             for i in range(0, len(self.composite_vertices)):
                 penx = QtGui.QPen()
                 penx.setColor(self.color_list[i])
+                penx.setWidthF(self.lineWidth)
                 painter.setPen(penx)
                 row = self.composite_vertices[i]
                 for j in xrange(len(row)-1):

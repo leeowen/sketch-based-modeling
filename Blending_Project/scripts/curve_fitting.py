@@ -1327,21 +1327,6 @@ if __name__ == "__main__":
     ]   
     
     file_paths = [
-        'Source_Head_cross_section_u_at_0_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_5_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_10_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_20_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_30_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_40_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_50_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_60_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_70_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_80_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_90_percentage_worldspace.dat',
-        'Source_Head_cross_section_u_at_100_percentage_worldspace.dat'
-    ]
-
-    file_paths = [
         'Source_Neck_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_Neck_cross_section_u_at_10_percentage_worldspace.dat',
         'Source_Neck_cross_section_u_at_20_percentage_worldspace.dat',
@@ -1407,7 +1392,7 @@ if __name__ == "__main__":
         'Source_LeftArm_cross_section_u_at_90_percentage_worldspace.dat',
         'Source_LeftArm_cross_section_u_at_100_percentage_worldspace.dat'
     ]
-    """
+    
     file_paths = [
         'Source_RightLeg_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_RightLeg_cross_section_u_at_10_percentage_worldspace.dat',
@@ -1420,6 +1405,22 @@ if __name__ == "__main__":
         'Source_RightLeg_cross_section_u_at_80_percentage_worldspace.dat',
         'Source_RightLeg_cross_section_u_at_90_percentage_worldspace.dat'
     ]
+    """
+    file_paths = [
+        'Source_Head_cross_section_u_at_0_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_5_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_10_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_20_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_30_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_40_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_50_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_60_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_70_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_80_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_90_percentage_worldspace.dat',
+        'Source_Head_cross_section_u_at_100_percentage_worldspace.dat'
+    ]
+
     
     dirPath = cmds.workspace(fn=True)+'/data/'
     for file_path in file_paths:
@@ -1468,43 +1469,43 @@ if __name__ == "__main__":
                    f.write(str(i)+' ')
                 f.write('\n')
         else:
-            center = getCenter3(vertices)
-            d_bar = get_d_bar3(vertices, center)
-            angles = calculateAngle3(vertices, center)
-            if 'Foot' in file_path:
-                J = 2
-                a, b, c = getCoefficients3_swap_yz(J, vertices, center, angles)
-                generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse3_swap_yz(a, b, c, vertices, center, angles, d_bar)
-            else:
-                if 'Neck' in file_path:
-                    J = 8
-                if 'Hip' or 'Belly' in file_path:
-                    J = 18
-                if 'Arm' in file_path:
-                    J = 8
-                a, b, c = getCoefficients3(J, vertices, center, angles)
-                generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar)
+                center = getCenter3(vertices)
+                d_bar = get_d_bar3(vertices, center)
+                angles = calculateAngle3(vertices, center)
+                if 'Foot' in file_path:
+                    J = 2
+                    a, b, c = getCoefficients3_swap_yz(J, vertices, center, angles)
+                    generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse3_swap_yz(a, b, c, vertices, center, angles, d_bar)
+                else:
+                    if 'Neck' in file_path:
+                        J = 8
+                    if 'Hip' or 'Belly' in file_path:
+                        J = 18
+                    if 'Arm' in file_path:
+                        J = 8
+                    a, b, c = getCoefficients3(J, vertices, center, angles)
+                    generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse3(a, b, c, vertices, center, angles, d_bar)
 
-            with open(save_file_path, "w+") as f:
-                f.write('range:')
-                f.write('0-360 \n')
-                f.write('center: {} {} {}\n'.format(center[0], center[1], center[2]))
-                f.write('a: ')
-                for i in a:
-                    f.write(str(i) + ' ')
-                f.write('\n')
-                f.write('b: ')
-                for i in b:
-                    f.write(str(i) + ' ')
-                f.write('\n')
-                f.write('c: ')
-                for i in c:
-                    f.write(str(i) + ' ')
-                f.write('\n')
-                f.write('angles: ')
-                for i in angles:
-                   f.write(str(i)+' ')
-                f.write('\n')
+                with open(save_file_path, "w+") as f:
+                    f.write('range:')
+                    f.write('0-360 \n')
+                    f.write('center: {} {} {}\n'.format(center[0], center[1], center[2]))
+                    f.write('a: ')
+                    for i in a:
+                        f.write(str(i) + ' ')
+                    f.write('\n')
+                    f.write('b: ')
+                    for i in b:
+                        f.write(str(i) + ' ')
+                    f.write('\n')
+                    f.write('c: ')
+                    for i in c:
+                        f.write(str(i) + ' ')
+                    f.write('\n')
+                    f.write('angles: ')
+                    for i in angles:
+                       f.write(str(i)+' ')
+                    f.write('\n')
         """
         image_name = file_name.split('.dat')[0] + '_generalised_ellipse.png'
         image_dir = cmds.workspace(fn=True)+'/images/'+file_name.split('_cross_section_')[0]+ '/'
