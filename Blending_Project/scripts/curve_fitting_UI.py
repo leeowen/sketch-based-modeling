@@ -819,7 +819,7 @@ class Canvas(QtWidgets.QDialog):
                 J = self.manualJ_value
             
             elif self.autoJ_mode==True:
-                J = curve_fitting.findJ(self.vertices, self.angles, self.d_bar, self.center, self.Ea_criteria, self.Em_criteria)
+                J = curve_fitting.findJ(self.vertices, self.angles, self.d_bar, self.center, self.Ea_criteria, self.Em_criteria, curve_fitting.getCoefficients, curve_fitting.formGeneralizedEllipse)
                 self.autoJ_value = J
             
             if self.manualJ_mode == True or self.autoJ_mode == True:
@@ -929,7 +929,7 @@ class Canvas(QtWidgets.QDialog):
                         J = compisite_segment_with_one_end_shared(i + 1)
                         J_total += J
                 self.autoJ_value = J_total
-                #self.composite_vertices, self.Ea, self.Em = curve_fitting.composite_auto_mode(self.vertices_matrix, self.angles_matrix, self.segment_center_list, self.cut_points, self.d_bar, self.Ea_criteria, self.Em_criteria)
+
             if self.manualJ_mode == True:
                 if self.isClosed == True: # curve is closed
                     for i in range(1, len(self.cut_points) - 1):
