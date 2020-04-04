@@ -150,44 +150,6 @@ def sortCurvature(curvatures):
     return sorted_d
 
 
-def getCoefficients(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
-    if J<3:
-        raise IllegalArgumentError('J must be bigger than 3, you input {0}'.format(J))
-    I = len(vertices)
-    aConstArray = np.zeros(2 * J + 1)
-    aCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')  # row-major
-
-    bConstArray = np.zeros(2 * J + 1)
-    bCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')
-
-    for i in range(I):
-        aCoefficientMatrix[0, i] = 1.
-        bCoefficientMatrix[0, i] = 1.
-
-    for i in range(I):  # for aCoefficientMatrix's column
-        vi = angles[i]
-        for j in range(1, J + 1):  # for aCoefficientMatrix's row
-            aCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
-            aCoefficientMatrix[2 * j, i] = math.sin(vi * j)
-
-            # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
-            aConstArray[2 * j - 1] += (vertices[i][0] - center.x()) * math.cos(vi * j)
-            aConstArray[2 * j] += (vertices[i][0] - center.x()) * math.sin(vi * j)
-
-            bCoefficientMatrix[2 * j - 1, i] = math.sin(vi * j)
-            bCoefficientMatrix[2 * j, i] = math.cos(vi * j)
-
-            bConstArray[2 * j - 1] += (vertices[i][2] - center.y()) * math.sin(vi * j)
-            bConstArray[2 * j] += (vertices[i][2] - center.y()) * math.cos(vi * j)
-
-    A = np.dot(aCoefficientMatrix, aCoefficientMatrix.transpose())
-    a = np.linalg.solve(A, aConstArray)
-    B = np.dot(bCoefficientMatrix, bCoefficientMatrix.transpose())
-    b = np.linalg.solve(B, bConstArray)
-
-    return a, b
-
-
 def getCoefficients3(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
     I = len(vertices)
     aConstArray = np.zeros(2 * J + 1)
@@ -286,7 +248,7 @@ def getCoefficients3_swap_yz(J,vertices,center,angles):# abtain a[2j+1] and b[2j
     return a, b, c
 
 
-def formGeneralizedEllipse(a, b, vertices, center, angles, d_bar):
+def formGeneralizedEllipse(a, b, vertices, center, angles, d_bar,index=0):
     # CoefficientMatrix
     I = len(vertices)
     generalisedEllipseVertices = [[0 for i in range(2)] for j in range(I)]
@@ -303,9 +265,9 @@ def formGeneralizedEllipse(a, b, vertices, center, angles, d_bar):
 
         di = math.sqrt((vertices[i][0] - generalisedEllipseVertices[i][0]) ** 2 + (
                     vertices[i][2] - generalisedEllipseVertices[i][1]) ** 2)
-        Ea += (di / d_bar[i])
-        if Em < di / d_bar[i]:
-            Em = di / d_bar[i]
+        Ea += (di / d_bar[(i+index)%I])
+        if Em < di / d_bar[(i+index)%I]:
+            Em = di / d_bar[(i+index)%I]
     Ea = Ea / I
     return generalisedEllipseVertices, Ea, Em
 
@@ -401,6 +363,44 @@ def extract_fragment_data(vertices, angles, fragment_range):
     center_fragment.setY(center_fragment.y() / len(vertices_fragment))
 
     return angles_fragment, vertices_fragment, center_fragment, start_index, end_index
+
+
+def getCoefficients(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
+    if J<3:
+        raise IllegalArgumentError('J must be bigger than 3, you input {0}'.format(J))
+    I = len(vertices)
+    aConstArray = np.zeros(2 * J + 1)
+    aCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')  # row-major
+
+    bConstArray = np.zeros(2 * J + 1)
+    bCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')
+
+    for i in range(I):
+        aCoefficientMatrix[0, i] = 1.
+        bCoefficientMatrix[0, i] = 1.
+
+    for i in range(I):  # for aCoefficientMatrix's column
+        vi = angles[i]
+        for j in range(1, J + 1):  # for aCoefficientMatrix's row
+            aCoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
+            aCoefficientMatrix[2 * j, i] = math.sin(vi * j)
+
+            # aConstAtrray[0] and bConstAtrray[0] always equal to 0 by definition!
+            aConstArray[2 * j - 1] += (vertices[i][0] - center.x()) * math.cos(vi * j)
+            aConstArray[2 * j] += (vertices[i][0] - center.x()) * math.sin(vi * j)
+
+            bCoefficientMatrix[2 * j - 1, i] = math.sin(vi * j)
+            bCoefficientMatrix[2 * j, i] = math.cos(vi * j)
+
+            bConstArray[2 * j - 1] += (vertices[i][2] - center.y()) * math.sin(vi * j)
+            bConstArray[2 * j] += (vertices[i][2] - center.y()) * math.cos(vi * j)
+
+    A = np.dot(aCoefficientMatrix, aCoefficientMatrix.transpose())
+    a = np.linalg.solve(A, aConstArray)
+    B = np.dot(bCoefficientMatrix, bCoefficientMatrix.transpose())
+    b = np.linalg.solve(B, bConstArray)
+
+    return a, b
 
 
 def getCoefficients_for_first_generalized_elliptic_segment(vertices_first_segment, angles_first_segment, center_first_segment, J):
@@ -701,22 +701,22 @@ def form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index
     return fragment_vertices, Ea, Em
 
 
-def findJ(vertices,angles,d_bar,center,Ea_criteria,Em_criteria,func_getCoefficients,func_formGeneralizedEllipse):
+def findJ(vertices,angles,d_bar,center,Ea_criteria,Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index):
     J=0
     a3,b3=func_getCoefficients(3, vertices, center, angles)
-    v3,Ea3,Em3=func_formGeneralizedEllipse(a3, b3, vertices, center, angles, d_bar)
+    v3,Ea3,Em3=func_formGeneralizedEllipse(a3, b3, vertices, center, angles, d_bar,index)
     a10,b10=func_getCoefficients(10, vertices, center, angles)
-    v10,Ea10,Em10=func_formGeneralizedEllipse(a10, b10, vertices, center, angles, d_bar)
+    v10,Ea10,Em10=func_formGeneralizedEllipse(a10, b10, vertices, center, angles, d_bar,index)
     if Ea3<Ea_criteria and Em3<Em_criteria:
-        J=find_smaller_J(vertices, angles, d_bar, center, 3, 10, Ea3, Ea10, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse)
+        J=find_smaller_J(vertices, angles, d_bar, center, 3, 10, Ea3, Ea10, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index)
     elif Ea10>=Ea_criteria or Em10>=Em_criteria:
-        J=find_bigger_J(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse)
+        J=find_bigger_J(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index)
     elif Ea3>=Ea_criteria or Em3>=Em_criteria:
-        J=find_inbetween_J(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria,Em_criteria,func_getCoefficients,func_formGeneralizedEllipse)
+        J=find_inbetween_J(vertices, angles, d_bar, center, 3, 10, Ea3, Em3, Ea10, Em10, Ea_criteria,Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index)
     return J
 
 
-def find_inbetween_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria,Em_criteria,func_getCoefficients,func_formGeneralizedEllipse):
+def find_inbetween_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria,Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index):
     # Linear interpolate to find J_small<J<J_big
     if J_small > J_big or J_small == J_big:
         raise ValueError('J_small({}) is no smaller than J_big({})'.format(J_small, J_big))
@@ -754,7 +754,7 @@ def find_inbetween_J(vertices,angles,d_bar, center,J_small, J_big, Ea_smallJ, Em
             return find_inbetween_J(vertices, angles, d_bar, center, J, J_big, Ea, Em, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse)
 
 
-def find_bigger_J(vertices, angles, d_bar, center,J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse):
+def find_bigger_J(vertices, angles, d_bar, center,J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index):
     # Linear extrapolate to find bigger J>J_small
     if Ea_bigJ >= Ea_criteria:
         J = int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ)) + J_small
@@ -765,20 +765,20 @@ def find_bigger_J(vertices, angles, d_bar, center,J_small, J_big, Ea_smallJ, Em_
     if J < J_big:
         J = J_big + 1
     a, b = func_getCoefficients(J, vertices, center, angles)
-    v, Ea, Em = func_formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
+    v, Ea, Em = func_formGeneralizedEllipse(a, b, vertices, center, angles, d_bar,index)
     if Ea >= Ea_criteria or Em >= Em_criteria:
-        return find_bigger_J(vertices,angles,d_bar, center, J_big, J, Ea_bigJ, Em_bigJ, Ea, Em, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse)
+        return find_bigger_J(vertices,angles,d_bar, center, J_big, J, Ea_bigJ, Em_bigJ, Ea, Em, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index)
     else:
         # we are close to the solution, hence, a while function will suffice
         while Ea < Ea_criteria and Em < Em_criteria and J > J_small:
             J -= 1
             a, b = func_getCoefficients(J, vertices, center, angles)
-            v, Ea, Em = func_formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
+            v, Ea, Em = func_formGeneralizedEllipse(a, b, vertices, center, angles, d_bar,index)
 
         return J + 1
 
 
-def find_smaller_J(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Ea_bigJ, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse):
+def find_smaller_J(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Ea_bigJ, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index):
     # Linear extrapolate to find smaller J<J_small<J_big,
     # The criteria is always Ea_criteria,
     # because both (Ea_smallJ,Em_smallJ) and (Ea_bigJ,Em_bigJ) meet criteria.
@@ -789,9 +789,9 @@ def find_smaller_J(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, E
         J = 3
         return J
     a, b = func_getCoefficients(J, vertices, center, angles)
-    v, Ea, Em = func_formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
+    v, Ea, Em = func_formGeneralizedEllipse(a, b, vertices, center, angles, d_bar,index)
     if Ea < Ea_criteria and Em < Em_criteria:
-        return find_smaller_J(vertices, angles, d_bar, center, J, J_small, Ea, Ea_smallJ, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse)
+        return find_smaller_J(vertices, angles, d_bar, center, J, J_small, Ea, Ea_smallJ, Ea_criteria, Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index)
     else:
         # we are close to the solution, hence, a while function will suffice
         while Ea >= Ea_criteria or Em >= Em_criteria and J < J_small:
@@ -817,10 +817,11 @@ def position_and_tangent_of_parametric_point(a_adjacent, b_adjacent, angle):
 
 
 def compisite_segment_with_one_end_shared(index,vertices_matrix,angles_matrix,composite_a,composite_b,segment_center_list,
-                                          d_bar,Ea_criteria, Em_criteria,cut_pt_index,isClosed):
+                                          d_bar,Ea_criteria, Em_criteria,cut_points,isClosed):
     x0_tan, y0_tan, x0, y0 = position_and_tangent_of_parametric_point(composite_a[index - 1], composite_b[index - 1], angles_matrix[index - 1][-1])
     x0 += segment_center_list[index - 1].x()
     y0 += segment_center_list[index - 1].y()
+    cut_pt_index = cut_points[index - 1]
     if isClosed == True:
         cut_pt_index = cut_points[index]
     previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan,
@@ -1419,7 +1420,7 @@ if __name__ == "__main__":
             d_bar = get_d_bar(vertices, center)
             angles = calculateAngle(vertices, center)
             a, b = getCoefficients(J, vertices, center, angles)
-            generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse(a, b, vertices, center, angles, d_bar)
+            generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse(a, b, vertices, center, angles, d_bar,0)
 
             with open(save_file_path, "w+") as f:
                 f.write('range:')
@@ -1469,7 +1470,7 @@ if __name__ == "__main__":
                 composite_a = []
                 composite_b = []
 
-                J1 = findJ(vertices_matrix[0], angles_matrix[0], d_bar, segment_center_list[0], Ea_criteria, Em_criteria)
+                J1 = findJ(vertices_matrix[0], angles_matrix[0], d_bar, segment_center_list[0], Ea_criteria, Em_criteria,getCoefficients_for_first_generalized_elliptic_segment,form_vertices_of_fragment)
                 a, b = getCoefficients_for_first_generalized_elliptic_segment(vertices_matrix[0],angles_matrix[0],segment_center_list[0],J1)
                 vertices, Ea, Em = form_vertices_of_fragment(a, b, vertices_matrix[0],segment_center_list[0],angles_matrix[0], d_bar, cut_points[0])
                 composite_vertices.append(vertices)
