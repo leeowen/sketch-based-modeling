@@ -864,6 +864,23 @@ def composite_auto_mode(vertices_matrix, angles_matrix, segment_center_list, cut
     return composite_vertices, Ea, Em
 
 
+def compisite_segment_with_one_end_shared(index,vertices_matrix,angles_matrix,composite_a,composite_b,segment_center_list,
+                                          d_bar,Ea_criteria, Em_criteria,cut_pt_index,isClosed):
+    x0_tan, y0_tan, x0, y0 = position_and_tangent_of_parametric_point(composite_a[index - 1], composite_b[index - 1], angles_matrix[index - 1][-1])
+    x0 += segment_center_list[index - 1].x()
+    y0 += segment_center_list[index - 1].y()
+    if isClosed == True:
+        cut_pt_index = cut_points[index]
+    previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan,
+                'cut point index': cut_pt_index}
+    J = findJ_for_non_end_composite(vertices_matrix[index], angles_matrix[index],d_bar, segment_center_list[index],
+                                                  Ea_criteria, Em_criteria, previous)
+    a, b = getCoefficients_for_non_end_composite(J, vertices_matrix[index],segment_center_list[index],angles_matrix[index], previous)
+    vertices, Ea, Em = form_vertices_of_fragment(a, b, vertices_matrix[index],segment_center_list[index],angles_matrix[index],d_bar, cut_pt_index)
+
+    return J,vertices,a,b,Ea,Em
+
+
 def getCoefficients_for_end_composite(J, vertices, center, angles, previous, next):
     I = len(vertices)
     e = 1e-10  # a value that is very close to zero
@@ -1469,6 +1486,48 @@ if __name__ == "__main__":
                    f.write(str(i)+' ')
                 f.write('\n')
         else:
+            if 'Head' in file_path:
+                for i in range(1, len(self.cut_points) - 1):
+                    J_total += compisite_segment_with_one_end_shared(i)
+                # for the end segment that links the first segment
+                x0_tan, y0_tan, x0, y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[-1],
+                                                                                                self.composite_b[-1],
+                                                                                                self.angles_matrix[-2][
+                                                                                                    -1])
+                x0 += self.segment_center_list[-2].x()
+                y0 += self.segment_center_list[-2].y()
+                previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan,
+                            'cut point index': self.cut_points[-1]}
+                x1_tan, y1_tan, x1, y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[0],
+                                                                                                self.composite_b[0],
+                                                                                                self.angles_matrix[0][
+                                                                                                    0])
+                x1 += self.segment_center_list[0].x()
+                y1 += self.segment_center_list[0].y()
+                next = {'position x': x1, 'position y': y1, 'tangent x': x1_tan, 'tangent y': y1_tan,
+                        'cut point index': self.cut_points[0]}
+                if self.manualJ_value - J_total < 3:
+                    Jn = 3
+                else:
+                    Jn = self.manualJ_value - J_total
+                a, b = curve_fitting.getCoefficients_for_end_composite(Jn, self.vertices_matrix[-1],
+                                                                       self.segment_center_list[-1],
+                                                                       self.angles_matrix[-1], previous, next)
+                composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[-1],
+                                                                                         self.segment_center_list[-1],
+                                                                                         self.angles_matrix[-1],
+                                                                                         self.d_bar,
+                                                                                         self.cut_points[-1])
+                self.composite_a.append(a)
+                self.composite_b.append(b)
+                self.composite_vertices.append(composite_vertices_n)
+
+                self.Ea = (self.Ea * (self.numPt - len(self.vertices_matrix[-1])) + Ean * len(
+                    self.vertices_matrix[-1])) / self.numPt
+                if self.Em < Emn:
+                    self.Em = Emn
+                self.manualJ_value = J_total + Jn
+            else:
                 center = getCenter3(vertices)
                 d_bar = get_d_bar3(vertices, center)
                 angles = calculateAngle3(vertices, center)

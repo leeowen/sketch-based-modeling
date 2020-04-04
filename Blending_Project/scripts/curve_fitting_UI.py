@@ -922,33 +922,6 @@ class Canvas(QtWidgets.QDialog):
             else:
                 return
 
-            def compisite_segment_with_one_end_shared(index):
-                x0_tan, y0_tan, x0, y0 = curve_fitting.position_and_tangent_of_parametric_point(
-                    self.composite_a[index - 1], self.composite_b[index - 1], self.angles_matrix[index - 1][-1])
-                x0 += self.segment_center_list[index - 1].x()
-                y0 += self.segment_center_list[index - 1].y()
-                cut_pt_index = self.cut_points[index - 1]
-                if self.isClosed == True:
-                    cut_pt_index = self.cut_points[index]
-                previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan,
-                            'cut point index': cut_pt_index}
-                J = curve_fitting.findJ_for_non_end_composite(self.vertices_matrix[index], self.angles_matrix[index],
-                                                              self.d_bar, self.segment_center_list[index],
-                                                              self.Ea_criteria, self.Em_criteria, previous)
-                a, b = curve_fitting.getCoefficients_for_non_end_composite(J, self.vertices_matrix[index],
-                                                                           self.segment_center_list[index],
-                                                                           self.angles_matrix[index], previous)
-                vertices, Ea, Em = curve_fitting.form_vertices_of_fragment(a, b, self.vertices_matrix[index],
-                                                                           self.segment_center_list[index],
-                                                                           self.angles_matrix[index],
-                                                                           self.d_bar, cut_pt_index)
-                self.Ea = (self.Ea * cut_pt_index + Ea * len(vertices)) / (cut_pt_index + len(vertices))
-                self.Em = max(self.Em, Em)
-                self.composite_vertices.append(vertices)
-                self.composite_a.append(a)
-                self.composite_b.append(b)
-                return J
-
             J_total = J1
             if self.autoJ_mode == True:
                 if self.isClosed == False:# curve is open
@@ -960,7 +933,15 @@ class Canvas(QtWidgets.QDialog):
             if self.manualJ_mode == True:
                 if self.isClosed == True: # curve is closed
                     for i in range(1, len(self.cut_points) - 1):
-                        J_total += compisite_segment_with_one_end_shared(i)
+                        cut_pt_index = self.cut_points[i - 1]
+                        J, vertices, a, b, Ea, Em = curve_fitting.compisite_segment_with_one_end_shared(i,self.vertices_matrix,self.angles_matrix,self.composite_a,self.composite_b,self.segment_center_list,
+                                          self.d_bar,self.Ea_criteria, self.Em_criteria,self.isClosed)
+                        self.Ea = (self.Ea * cut_pt_index + Ea * len(vertices)) / (cut_pt_index + len(vertices))
+                        self.Em = max(self.Em, Em)
+                        self.composite_vertices.append(vertices)
+                        self.composite_a.append(a)
+                        self.composite_b.append(b)
+                        J_total += J
                     # for the end segment that links the first segment
                     x0_tan, y0_tan, x0, y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[-1], self.composite_b[-1], self.angles_matrix[-2][-1])
                     x0 += self.segment_center_list[-2].x()
