@@ -736,10 +736,10 @@ class Canvas(QtWidgets.QDialog):
         #I = modify_first_and_middle_vertices()
         self.numPt = len(self.vertices)
         self.d_bar = curve_fitting.get_d_bar(self.vertices, self.center)
-        self.angles = curve_fitting.calculateAngle(self.vertices, self.center)
-        self.tangents = curve_fitting.calculateTangent(self.vertices, self.angles)
-        self.normals = curve_fitting.calculateNormal(self.tangents)
-        self.curvatures = curve_fitting.calculateCurvature(self.tangents, self.angles)
+        self.angles = curve_fitting.calculateAngle_2D(self.vertices, self.center)
+        self.tangents = curve_fitting.calculateTangent_2D(self.vertices, self.angles)
+        self.normals = curve_fitting.calculateNormal_2D(self.tangents)
+        self.curvatures = curve_fitting.calculateCurvature_2D(self.tangents, self.angles)
         self.isClosed = True
         angle_difference = abs(self.angles[-1] - self.angles[0] - 2 * math.pi)
         if angle_difference > math.pi * 2.0:
@@ -819,12 +819,12 @@ class Canvas(QtWidgets.QDialog):
                 J = self.manualJ_value
             
             elif self.autoJ_mode==True:
-                J = curve_fitting.findJ(self.vertices, self.angles, self.d_bar, self.center, self.Ea_criteria, self.Em_criteria, curve_fitting.getCoefficients, curve_fitting.formGeneralizedEllipse,0)
+                J = curve_fitting.findJ(self.vertices, self.angles, self.d_bar, self.center, self.Ea_criteria, self.Em_criteria, curve_fitting.getCoefficients_2D, curve_fitting.formGeneralizedEllipse_2D,0)
                 self.autoJ_value = J
             
             if self.manualJ_mode == True or self.autoJ_mode == True:
-                self.a, self.b = curve_fitting.getCoefficients(J, self.vertices, self.center, self.angles)
-                self.generalisedEllipseVertices, self.Ea, self.Em = curve_fitting.formGeneralizedEllipse(self.a, self.b, self.vertices, self.center, self.angles, self.d_bar)
+                self.a, self.b = curve_fitting.getCoefficients_2D(J, self.vertices, self.center, self.angles)
+                self.generalisedEllipseVertices, self.Ea, self.Em = curve_fitting.formGeneralizedEllipse_2D(self.a, self.b, self.vertices, self.center, self.angles, self.d_bar)
      
                 for i in range(I):
                     painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2., self.generalisedEllipseVertices[i][1]*300+self.height()/2.,
@@ -855,7 +855,7 @@ class Canvas(QtWidgets.QDialog):
                 self.autoJ_value=J
 
             if self.manualJ_mode==True or self.autoJ_mode==True:
-                a_first_half, b_first_half = curve_fitting.getCoefficients(
+                a_first_half, b_first_half = curve_fitting.getCoefficients_2D(
                     J,self.vertices_first_half,self.center_first_half,self.angles_first_half)
                 a_second_half, b_second_half = curve_fitting.getCoefficients_for_second_half_of_symmetrical_ellipse(
                     a_first_half, b_first_half)
@@ -908,8 +908,8 @@ class Canvas(QtWidgets.QDialog):
                 self.composite_b = []
 
                 J1 = curve_fitting.findJ(self.vertices_matrix[0], self.angles_matrix[0], self.d_bar,
-                                         self.segment_center_list[0], self.Ea_criteria, self.Em_criteria,curve_fitting.getCoefficients,curve_fitting.form_vertices_of_fragment_2D,self.cut_points[0])
-                a, b = curve_fitting.getCoefficients(J1,self.vertices_matrix[0],self.segment_center_list[0],self.angles_matrix[0])
+                                         self.segment_center_list[0], self.Ea_criteria, self.Em_criteria,curve_fitting.getCoefficients_2D,curve_fitting.form_vertices_of_fragment_2D,self.cut_points[0])
+                a, b = curve_fitting.getCoefficients_2D(J1,self.vertices_matrix[0],self.segment_center_list[0],self.angles_matrix[0])
                 vertices, self.Ea, self.Em = curve_fitting.form_vertices_of_fragment_2D(a, b, self.vertices_matrix[0],
                                                                                      self.segment_center_list[0],
                                                                                      self.angles_matrix[0], self.d_bar,
@@ -918,7 +918,7 @@ class Canvas(QtWidgets.QDialog):
                 self.composite_a.append(a)
                 self.composite_b.append(b)
             else:
-                pass
+                return
 
             def inbetween_2D_open_curve_auto_mode():
                 for i in range(len(self.cut_points)):
@@ -984,14 +984,14 @@ class Canvas(QtWidgets.QDialog):
                         'cut point index': self.cut_points[0]}
 
                 # if self.manualJ_mode == True:
-                if self.manualJ_value - J_total < 3:
+                if self.manualJ_value - self.J_total < 3:
                     Jn = 3
                 else:
-                    Jn = self.manualJ_value - J_total
-                a, b = curve_fitting.getCoefficients_for_end_composite(Jn, self.vertices_matrix[-1],
+                    Jn = self.manualJ_value - self.J_total
+                a, b = curve_fitting.getCoefficients_for_end_composite_2D(Jn, self.vertices_matrix[-1],
                                                                        self.segment_center_list[-1],
                                                                        self.angles_matrix[-1], previous, next)
-                composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment(a, b,
+                composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment_2D(a, b,
                                                                                          self.vertices_matrix[-1],
                                                                                          self.segment_center_list[
                                                                                              -1],

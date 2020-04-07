@@ -48,7 +48,7 @@ def get_d_bar_3D(vertices,center):
     return d_bar
 
 
-def calculateAngle(vertices,center):
+def calculateAngle_2D(vertices,center):
     angles = []
     for v in vertices:
         anglem = (v[2] - center[1]) / math.sqrt(
@@ -91,7 +91,7 @@ def calculateAngle_3D(vertices,center):
     return angles
 
 
-def calculateArcLength(vertices):
+def calculateArcLength_3D(vertices):
     totalArcLength = 0.0
     arcLength = []
     numPt = len(vertices)
@@ -103,7 +103,7 @@ def calculateArcLength(vertices):
     return totalArcLength, arcLength
 
 
-def calculateTangent(vertices, angles):
+def calculateTangent_2D(vertices, angles):
     tangents = []
     numPt = len(vertices)
     for i in range(0, numPt):
@@ -117,7 +117,7 @@ def calculateTangent(vertices, angles):
     return tangents
 
 
-def calculateNormal(tangents):
+def calculateNormal_2D(tangents):
     normals=[]
     for t in tangents:
         normal = QtGui.QVector2D(-t[1], t[0]).normalized()
@@ -125,7 +125,7 @@ def calculateNormal(tangents):
     return normals
 
 
-def calculateCurvature(tangents, angles):
+def calculateCurvature_2D(tangents, angles):
     curvatures = []
     numPt = len(tangents)
     for i in range(0, numPt):
@@ -150,7 +150,7 @@ def sortCurvature(curvatures):
     return sorted_d
 
 
-def getCoefficients3(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
+def getCoefficients_3D(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
     I = len(vertices)
     aConstArray = np.zeros(2 * J + 1)
     aCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')  # row-major
@@ -248,7 +248,7 @@ def getCoefficients3_swap_yz(J,vertices,center,angles):# abtain a[2j+1] and b[2j
     return a, b, c
 
 
-def formGeneralizedEllipse(a, b, vertices, center, angles, d_bar,index=0):
+def formGeneralizedEllipse_2D(a, b, vertices, center, angles, d_bar,index=0):
     # CoefficientMatrix
     I = len(vertices)
     generalisedEllipseVertices = [[0 for i in range(2)] for j in range(I)]
@@ -365,7 +365,7 @@ def extract_fragment_data(vertices, angles, fragment_range):
     return angles_fragment, vertices_fragment, center_fragment, start_index, end_index
 
 
-def getCoefficients(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
+def getCoefficients_2D(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
     if J<3:
         raise IllegalArgumentError('J must be bigger than 3, you input {0}'.format(J))
     I = len(vertices)
@@ -958,7 +958,7 @@ def compisite_segment_with_one_end_shared_3D(index,vertices_matrix,angles_matrix
     return J,vertices,a,b,Ea,Em
 
 
-def getCoefficients_for_end_composite(J, vertices, center, angles, previous, next):
+def getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, next):
     I = len(vertices)
     e = 1e-10  # a value that is very close to zero
     def fun_x(x, *args):  # function to be minimized
@@ -1627,9 +1627,9 @@ if __name__ == "__main__":
         if 'worldspace' not in file_path:
             center = getCenter(vertices)
             d_bar = get_d_bar(vertices, center)
-            angles = calculateAngle(vertices, center)
-            a, b = getCoefficients(J, vertices, center, angles)
-            generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse(a, b, vertices, center, angles, d_bar,0)
+            angles = calculateAngle_2D(vertices, center)
+            a, b = getCoefficients_2D(J, vertices, center, angles)
+            generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse_2D(a, b, vertices, center, angles, d_bar,0)
 
             with open(save_file_path, "w+") as f:
                 f.write('range:')
@@ -1744,7 +1744,7 @@ if __name__ == "__main__":
                         J = 18
                     if 'Arm' in file_path:
                         J = 8
-                    a, b, c = getCoefficients3(J, vertices, center, angles)
+                    a, b, c = getCoefficients_3D(J, vertices, center, angles)
                     generalisedEllipseVertices, Ea, Em = formGeneralizedEllipse_3D(a, b, c, vertices, center, angles, d_bar)
 
                 with open(save_file_path, "w+") as f:
