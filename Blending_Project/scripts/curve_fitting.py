@@ -748,8 +748,8 @@ def form_vertices_of_fragment_single(coe,vertices, center, angles, d_bar, start_
 
     return fragment_vertices, Ea, Em
 
-
-def findJ(vertices,angles,d_bar,center,Ea_criteria,Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index):
+# whole single curve, first segment, curve fragment
+def findJ_2D(vertices,angles,d_bar,center,Ea_criteria,Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index):
     J=0
     a3,b3=func_getCoefficients(3, vertices, center, angles)
     v3,Ea3,Em3=func_formGeneralizedEllipse(a3, b3, vertices, center, angles, d_bar,index)
@@ -764,7 +764,8 @@ def findJ(vertices,angles,d_bar,center,Ea_criteria,Em_criteria,func_getCoefficie
     return J
 
 
-def findJ3(vertices,angles,d_bar,center,Ea_criteria,Em_criteria,func_getCoefficients_single,func_formGeneralizedEllipse_single,index):
+# whole single curve, first segment, inbetween segmet, last segment
+def findJ_3D(vertices,angles,d_bar,center,Ea_criteria,Em_criteria,func_getCoefficients_single,func_formGeneralizedEllipse_single,index):
     J=[0,0,0]
     for axis in [0,1,2]:# x,y,z axis
         J[axis]=3
@@ -1680,7 +1681,7 @@ if __name__ == "__main__":
                 composite_b = []
                 composite_c = []
                 getCoefficients_for_first_generalized_elliptic_segment = getCoefficients_single_3D
-                J1 = findJ3(vertices_matrix[0], angles_matrix[0], d_bar, segment_center_list[0], Ea_criteria, Em_criteria,getCoefficients_for_first_generalized_elliptic_segment,form_vertices_of_fragment_single_3D)
+                J1 = findJ_3D(vertices_matrix[0], angles_matrix[0], d_bar, segment_center_list[0], Ea_criteria, Em_criteria,getCoefficients_for_first_generalized_elliptic_segment,form_vertices_of_fragment_single_3D)
                 for i in range(3):
                     coe[i] = getCoefficients_for_first_generalized_elliptic_segment(vertices_matrix[0],angles_matrix[0],segment_center_list[0],J1,i)
 
