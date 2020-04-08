@@ -404,8 +404,8 @@ def getCoefficients_2D(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
 
 
 def getCoefficients_single(J,vertices,center,angles,axis):# abtain a[2j+1] and b[2j+1]
-    if J[axis]<3:
-        raise IllegalArgumentError('J must be bigger than 3, you input {0}'.format(J))
+    if J[axis]<0:
+        raise IllegalArgumentError('J must be no smaller than 0, you input {0}'.format(J))
     I = len(vertices)
     ConstArray = np.zeros(2 * J[axis] + 1)
     CoefficientMatrix = np.ndarray(shape=(2 * J[axis] + 1, I), dtype=float, order='C')  # row-major
@@ -685,7 +685,7 @@ def form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_in
     return fragment_vertices, Ea, Em
 
 
-def form_vertices_of_fragment3(coe, vertices, center, angles, d_bar, start_index):
+def form_vertices_of_fragment_3D(coe, vertices, center, angles, d_bar, start_index):
     I = len(vertices)
     numPt = len(d_bar)
     fragment_vertices = [[0 for i in range(len(coe))] for j in range(I)]
@@ -745,8 +745,8 @@ def form_vertices_of_fragment_single(coe,vertices, center, angles, d_bar, start_
             Em = d_i / d_bar[index]
 
     Ea = Ea / I
-
     return fragment_vertices, Ea, Em
+
 
 # whole single curve, first segment, curve fragment
 def findJ_2D(vertices,angles,d_bar,center,Ea_criteria,Em_criteria,func_getCoefficients,func_formGeneralizedEllipse,index):
@@ -1685,7 +1685,7 @@ if __name__ == "__main__":
                 for i in range(3):
                     coe[i] = getCoefficients_for_first_generalized_elliptic_segment(vertices_matrix[0],angles_matrix[0],segment_center_list[0],J1,i)
 
-                vertices, Ea, Em = form_vertices_of_fragment3(coe, vertices_matrix[0],segment_center_list[0],angles_matrix[0], d_bar, cut_points[0])
+                vertices, Ea, Em = form_vertices_of_fragment_3D(coe, vertices_matrix[0],segment_center_list[0],angles_matrix[0], d_bar, cut_points[0])
                 composite_vertices.append(vertices)
                 composite_a.append(coe[0])
                 composite_b.append(coe[1])
