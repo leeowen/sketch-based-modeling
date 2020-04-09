@@ -860,7 +860,7 @@ class Canvas(QtWidgets.QDialog):
                 a_second_half, b_second_half = curve_fitting.getCoefficients_for_second_half_of_symmetrical_ellipse(
                     a_first_half, b_first_half)
 
-                symmetry_ellipse_vertices, Ea, Em = curve_fitting.form_vertices_of_symmetry_ellipse(
+                symmetry_ellipse_vertices, Ea, Em = curve_fitting.form_vertices_of_symmetry_ellipse_2D(
                     self.vertices_first_half,
                     self.center_first_half,
                     self.angles_first_half,
