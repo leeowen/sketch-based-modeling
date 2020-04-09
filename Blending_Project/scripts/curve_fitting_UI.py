@@ -400,7 +400,7 @@ class CurveFittingWindowUI(QtWidgets.QWidget):
             f.write('range:')
             if self.canvas.single_piece_mode==True:
                 f.write('0-360 \n')
-            f.write('center: {} {}\n'.format(self.canvas.center[0],self.canvas.center[0]))
+            f.write('center: {} {}\n'.format(self.canvas.center[0],self.canvas.center[2]))
             f.write('a: ')
             for i in self.canvas.a:
                 f.write(str(i)+' ')
@@ -607,7 +607,7 @@ class Canvas(QtWidgets.QDialog):
 
                 self.vertices_matrix.append(tmp_vertices)
                 self.angles_matrix.append(tmp_angles)
-                tmp_center = curve_fitting.getCenter(tmp_vertices)
+                tmp_center = curve_fitting.getCenter_2D(tmp_vertices)
                 self.segment_center_list.append(tmp_center)
 
             tmp_vertices = self.vertices[self.cut_points[N-1]:self.numPt]
@@ -616,14 +616,14 @@ class Canvas(QtWidgets.QDialog):
             tmp_angles.extend(self.angles[0:self.cut_points[0] + 1])
             self.vertices_matrix.append(tmp_vertices)
             self.angles_matrix.append(tmp_angles)
-            tmp_center = curve_fitting.getCenter(tmp_vertices)
+            tmp_center = curve_fitting.getCenter_2D(tmp_vertices)
             self.segment_center_list.append(tmp_center)
         else:
             tmp_vertices = self.vertices[0:self.cut_points[0] + 1]
             tmp_angles = self.angles[0:self.cut_points[0] + 1]
             self.vertices_matrix.append(tmp_vertices)
             self.angles_matrix.append(tmp_angles)
-            tmp_center = curve_fitting.getCenter(tmp_vertices)
+            tmp_center = curve_fitting.getCenter_2D(tmp_vertices)
             self.segment_center_list.append(tmp_center)
 
             if N > 1:
@@ -632,14 +632,14 @@ class Canvas(QtWidgets.QDialog):
                     tmp_angles = self.angles[self.cut_points[i]:self.cut_points[i + 1] + 1]
                     self.vertices_matrix.append(tmp_vertices)
                     self.angles_matrix.append(tmp_angles)
-                    tmp_center = curve_fitting.getCenter(tmp_vertices)
+                    tmp_center = curve_fitting.getCenter_2D(tmp_vertices)
                     self.segment_center_list.append(tmp_center)
 
             tmp_vertices = self.vertices[self.cut_points[N - 1]: self.numPt]
             tmp_angles = self.angles[self.cut_points[N - 1]: self.numPt]
             self.vertices_matrix.append(tmp_vertices)
             self.angles_matrix.append(tmp_angles)
-            tmp_center = curve_fitting.getCenter(tmp_vertices)
+            tmp_center = curve_fitting.getCenter_2D(tmp_vertices)
             self.segment_center_list.append(tmp_center)
 
 
@@ -668,7 +668,7 @@ class Canvas(QtWidgets.QDialog):
             p=line.split()
             self.vertices.append(om.MVector(float(p[0]), float(p[1]), float(p[2])))
         f.close()
-        self.center = curve_fitting.getCenter(self.vertices)
+        self.center = curve_fitting.getCenter_2D(self.vertices)
 
         def sort():
             if self.vertices[0][0] > self.center[0] and self.vertices[-1][0] < self.center[0]:
@@ -735,7 +735,7 @@ class Canvas(QtWidgets.QDialog):
         #sort()
         #I = modify_first_and_middle_vertices()
         self.numPt = len(self.vertices)
-        self.d_bar = curve_fitting.get_d_bar(self.vertices, self.center)
+        self.d_bar = curve_fitting.get_d_bar_2D(self.vertices, self.center)
         self.angles = curve_fitting.calculateAngle_2D(self.vertices, self.center)
         self.tangents = curve_fitting.calculateTangent_2D(self.vertices, self.angles)
         self.normals = curve_fitting.calculateNormal_2D(self.tangents)
@@ -757,8 +757,8 @@ class Canvas(QtWidgets.QDialog):
         self.vertices_second_half.append(self.vertices[0])
         self.angles_second_half = self.angles[I:self.numPt]
         self.angles_second_half.append(self.angles[0])
-        self.center_first_half = curve_fitting.getCenter(self.vertices_first_half)
-        self.center_second_half = curve_fitting.getCenter(self.vertices_second_half)
+        self.center_first_half = curve_fitting.getCenter_2D(self.vertices_first_half)
+        self.center_second_half = curve_fitting.getCenter_2D(self.vertices_second_half)
 
     
     def setLineWidth(self,width):
@@ -838,7 +838,7 @@ class Canvas(QtWidgets.QDialog):
                     for i in range(I):
                         x_tan, y_tan, x, y = curve_fitting.position_and_tangent_of_parametric_point(self.a, self.b, self.angles[i])
                         x += self.center[0]
-                        y += self.center[1]
+                        y += self.center[2]
                         t = QtGui.QVector2D(x_tan, y_tan).normalized() * 20.0
                         p0 = QtCore.QPointF(x * 300 + self.width()/2., y * 300 + self.height()/2.)
                         p1 = QtCore.QPointF(x * 300 + self.width()/2. + t.x(), y * 300 + self.height()/2. + t.y())
@@ -970,7 +970,7 @@ class Canvas(QtWidgets.QDialog):
                     self.angles_matrix[-2][
                         -1])
                 x0 += self.segment_center_list[-2][0]
-                y0 += self.segment_center_list[-2][1]
+                y0 += self.segment_center_list[-2][2]
                 previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan,
                             'cut point index': self.cut_points[-1]}
                 x1_tan, y1_tan, x1, y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[0],
@@ -979,7 +979,7 @@ class Canvas(QtWidgets.QDialog):
                                                                                                     0][
                                                                                                     0])
                 x1 += self.segment_center_list[0][0]
-                y1 += self.segment_center_list[0][1]
+                y1 += self.segment_center_list[0][2]
                 next = {'position x': x1, 'position y': y1, 'tangent x': x1_tan, 'tangent y': y1_tan,
                         'cut point index': self.cut_points[0]}
 
@@ -993,8 +993,7 @@ class Canvas(QtWidgets.QDialog):
                                                                        self.angles_matrix[-1], previous, next)
                 composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment_2D(a, b,
                                                                                          self.vertices_matrix[-1],
-                                                                                         self.segment_center_list[
-                                                                                             -1],
+                                                                                         self.segment_center_list[-1],
                                                                                          self.angles_matrix[-1],
                                                                                          self.d_bar,
                                                                                          self.cut_points[-1])
@@ -1021,9 +1020,9 @@ class Canvas(QtWidgets.QDialog):
                 #test_x0_tan, test_y0_tan, test_x0, test_y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][0])
                 #test_x1_tan, test_y1_tan, test_x1, test_y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][-1])
                 #test_x0 += self.segment_center_list[1][0]
-                #test_y0 += self.segment_center_list[1][1]
+                #test_y0 += self.segment_center_list[1][2]
                 #test_x1 += self.segment_center_list[1][0]
-                #test_y1 += self.segment_center_list[1][1]
+                #test_y1 += self.segment_center_list[1][2]
 
                 def test_meet_points_tangent():
                     pen1 = QtGui.QPen()
@@ -1174,7 +1173,7 @@ class Canvas(QtWidgets.QDialog):
                 angle=self.angles[i]
                 a0u=a0u+(self.vertices[i][0]-self.center[0])*math.sin(angle)
                 a0b=a0b+math.sin(angle)*math.sin(angle)
-                b0u=b0u+(self.vertices[i][2]-self.center[1])*math.cos(angle)
+                b0u=b0u+(self.vertices[i][2]-self.center[2])*math.cos(angle)
                 b0b=b0b+math.cos(angle)*math.cos(angle)
                 
         except IndexError:
@@ -1183,7 +1182,7 @@ class Canvas(QtWidgets.QDialog):
         else:
             width=a0u/a0b
             height=b0u/b0b
-            center = QtCore.QPointF(self.center[0], self.center[1])
+            center = QtCore.QPointF(self.center[0], self.center[2])
             painter.drawEllipse(QtCore.QPointF(self.width()/2., self.height()/2.), width*300, height*300)
 
 
