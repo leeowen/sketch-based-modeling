@@ -827,8 +827,8 @@ class Canvas(QtWidgets.QDialog):
                 self.generalisedEllipseVertices, self.Ea, self.Em = curve_fitting.formGeneralizedEllipse_2D(self.a, self.b, self.vertices, self.center, self.angles, self.d_bar)
      
                 for i in range(I):
-                    painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2., self.generalisedEllipseVertices[i][1]*300+self.height()/2.,
-                                     self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2., self.generalisedEllipseVertices[(i+1) % I][1]*300+self.height()/2.)
+                    painter.drawLine(self.generalisedEllipseVertices[i][0]*300+self.width()/2., self.generalisedEllipseVertices[i][2]*300+self.height()/2.,
+                                     self.generalisedEllipseVertices[(i+1)%I][0]*300+self.width()/2., self.generalisedEllipseVertices[(i+1) % I][2]*300+self.height()/2.)
 
                 if self.activateTangent == True:
                     pen1 = QtGui.QPen()
@@ -871,9 +871,9 @@ class Canvas(QtWidgets.QDialog):
                 self.Em = Em
                 for i in range(self.numPt / 2):
                     painter.drawLine(symmetry_ellipse_vertices[i][0] * 300 + self.width() / 2.,
-                                     symmetry_ellipse_vertices[i][1] * 300 + self.height() / 2.,
+                                     symmetry_ellipse_vertices[i][2] * 300 + self.height() / 2.,
                                      symmetry_ellipse_vertices[(i + 1) % self.numPt][0] * 300 + self.width() / 2.,
-                                     symmetry_ellipse_vertices[(i + 1) % self.numPt][1] * 300 + self.height() / 2.)
+                                     symmetry_ellipse_vertices[(i + 1) % self.numPt][2] * 300 + self.height() / 2.)
                 second_half_color = QtGui.QColor(127, 0, 255)
                 pen2 = QtGui.QPen()
                 pen2.setColor(second_half_color)
@@ -881,9 +881,9 @@ class Canvas(QtWidgets.QDialog):
                 painter.setPen(pen2)
                 for i in range(self.numPt / 2, self.numPt):
                     painter.drawLine(symmetry_ellipse_vertices[i][0] * 300 + self.width() / 2.,
-                                     symmetry_ellipse_vertices[i][1] * 300 + self.height() / 2.,
+                                     symmetry_ellipse_vertices[i][2] * 300 + self.height() / 2.,
                                      symmetry_ellipse_vertices[(i + 1) % self.numPt][0] * 300 + self.width() / 2.,
-                                     symmetry_ellipse_vertices[(i + 1) % self.numPt][1] * 300 + self.height() / 2.)
+                                     symmetry_ellipse_vertices[(i + 1) % self.numPt][2] * 300 + self.height() / 2.)
                 painter.setPen(pen)
 
         elif self.fragment_mode==True:
@@ -895,7 +895,7 @@ class Canvas(QtWidgets.QDialog):
                 self.Ea = Ea
                 self.Em = Em
                 for i in range(len(fragment_vertices)-1):
-                    painter.drawLine(fragment_vertices[i][0]*300+self.width()/2., fragment_vertices[i][1]*300+self.height()/2., fragment_vertices[i+1][0]*300+self.width()/2., fragment_vertices[i+1][1]*300+self.height()/2.)
+                    painter.drawLine(fragment_vertices[i][0]*300+self.width()/2., fragment_vertices[i][2]*300+self.height()/2., fragment_vertices[i+1][0]*300+self.width()/2., fragment_vertices[i+1][2]*300+self.height()/2.)
                 #maya_polygon_plane(self.generalisedEllipseVertices)
 
         elif self.composite_mode == True:
@@ -1040,7 +1040,7 @@ class Canvas(QtWidgets.QDialog):
                 painter.setPen(penx)
                 row = self.composite_vertices[i]
                 for j in xrange(len(row)-1):
-                    painter.drawLine(row[j][0] * 300 + self.width() / 2., row[j][1] * 300 + self.height() / 2., row[j + 1][0] * 300 + self.width() / 2., row[j + 1][1] * 300 + self.height() / 2.)
+                    painter.drawLine(row[j][0] * 300 + self.width() / 2., row[j][2] * 300 + self.height() / 2., row[j + 1][0] * 300 + self.width() / 2., row[j + 1][2] * 300 + self.height() / 2.)
             painter.setPen(pen)
 
 

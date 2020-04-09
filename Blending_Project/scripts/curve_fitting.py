@@ -71,6 +71,7 @@ def calculateAngle_2D(vertices,center):
     return angles
 
 
+# need to be improved
 def calculateArcLength_3D(vertices):
     totalArcLength = 0.0
     arcLength = []
@@ -231,20 +232,20 @@ def getCoefficients3_swap_yz(J,vertices,center,angles):# abtain a[2j+1] and b[2j
 def formGeneralizedEllipse_2D(a, b, vertices, center, angles, d_bar,index=0):
     # CoefficientMatrix
     I = len(vertices)
-    generalisedEllipseVertices = [[0 for i in range(2)] for j in range(I)]
+    generalisedEllipseVertices = [[0 for i in range(3)] for j in range(I)]
     Ea = 0.0
     Em = 0.0
     J = len(a) / 2
     for i in range(I):
         generalisedEllipseVertices[i][0] = center[0] + a[0]
-        generalisedEllipseVertices[i][1] = center[2] + b[0]
+        generalisedEllipseVertices[i][2] = center[2] + b[0]
         v = angles[i]
         for j in range(1, J + 1):
             generalisedEllipseVertices[i][0] += a[2 * j - 1] * math.cos(j * v) + a[2 * j] * math.sin(j * v)
-            generalisedEllipseVertices[i][1] += b[2 * j - 1] * math.sin(j * v) + b[2 * j] * math.cos(j * v)
+            generalisedEllipseVertices[i][2] += b[2 * j - 1] * math.sin(j * v) + b[2 * j] * math.cos(j * v)
 
         di = math.sqrt((vertices[i][0] - generalisedEllipseVertices[i][0]) ** 2 + (
-                    vertices[i][2] - generalisedEllipseVertices[i][1]) ** 2)
+                    vertices[i][2] - generalisedEllipseVertices[i][2]) ** 2)
         Ea += (di / d_bar[(i+index) % I])
         if Em < di / d_bar[(i+index) % I]:
             Em = di / d_bar[(i+index) % I]
@@ -492,110 +493,6 @@ def getCoefficients_for_second_half_of_composite_segment(J, vertices_second_half
     return a, b
 
 
-def form_vertices_of_symmetry_ellipse(vertices_first_half, center_first_half, angles_first_half, d_bar, a1, b1, a2, b2):
-    I = len(vertices_first_half)
-    numPt = len(d_bar)
-    symmetry_ellipse_vertices = [[0 for i in range(2)] for j in range(numPt)]
-    Ea = 0.0
-    Em = 0.0
-    d = [0.0] * numPt
-    J1 = (len(a1) - 1) / 2
-    J2 = (len(a2) - 1) / 2
-
-    for i in range(I):
-        new_first_half_vertex = [0.0] * 2
-        new_second_half_vertex = [0.0] * 2
-
-        new_first_half_vertex[0] = center_first_half[0] + a1[0]
-        new_first_half_vertex[1] = center_first_half[2] + b1[0]
-        v1 = angles_first_half[i]
-
-        v2 = -angles_first_half[i]
-        new_second_half_vertex[0] = -center_first_half[0] + a2[0]
-        new_second_half_vertex[1] = center_first_half[2] + b2[0]
-
-        for j in range(1, J1 + 1):
-            new_first_half_vertex[0] += a1[2 * j - 1] * math.cos(j * v1) + a1[2 * j] * math.sin(j * v1)
-            new_first_half_vertex[1] += b1[2 * j - 1] * math.sin(j * v1) + b1[2 * j] * math.cos(j * v1)
-        for j in range(1, J2 + 1):
-            new_second_half_vertex[0] += a2[2 * j - 1] * math.cos(j * v2) + a2[2 * j] * math.sin(j * v2)
-            new_second_half_vertex[1] += b2[2 * j - 1] * math.sin(j * v2) + b2[2 * j] * math.cos(j * v2)
-
-        symmetry_ellipse_vertices[i][0] = new_first_half_vertex[0]
-        symmetry_ellipse_vertices[i][1] = new_first_half_vertex[1]
-        di1 = math.sqrt((vertices_first_half[i][0] - new_first_half_vertex[0]) ** 2 + (vertices_first_half[i][2] - new_first_half_vertex[1]) ** 2)
-        d[i] = di1
-        Ea += (di1 / d_bar[i])
-        if Em < di1 / d_bar[i]:
-            Em = di1 / d_bar[i]
-
-        if i != 0 and i != (I - 1):
-            symmetry_ellipse_vertices[numPt - i][0] = new_second_half_vertex[0]
-            symmetry_ellipse_vertices[numPt - i][1] = new_second_half_vertex[1]
-            di2 = math.sqrt(pow(-vertices_first_half[i][0] - new_second_half_vertex[0], 2) + pow(vertices_first_half[i][2] - new_second_half_vertex[1], 2))
-            d[numPt - i] = di2
-            Ea += (di2 / d_bar[numPt - i])
-
-            if Em < di2 / d_bar[numPt - i]:
-                Em = di2 / d_bar[numPt - i]
-
-    Ea = Ea / numPt
-
-    return symmetry_ellipse_vertices, Ea, Em
-
-
-def form_vertices_of_composite_ellipse(vertices_first_half, vertices_second_half, center_first_half, center_second_half, angles_first_half, angles_second_half, d_bar, a1, b1, a2, b2):
-    I = len(vertices_first_half)
-    numPt = len(d_bar)
-    composite_ellipse_vertices = [[0 for i in range(2)] for j in range(numPt)]
-    Ea = 0.0
-    Em = 0.0
-    d = [0.0] * numPt
-    J1 = (len(a1) - 1) / 2
-    J2 = (len(a2) - 1) / 2
-
-    for i in range(I):
-        new_first_half_vertex = [0.0] * 2
-        new_second_half_vertex = [0.0] * 2
-
-        new_first_half_vertex[0] = center_first_half[0] + a1[0]
-        new_first_half_vertex[1] = center_first_half[2] + b1[0]
-        v1 = angles_first_half[i]
-
-        v2 = angles_second_half[i]
-        new_second_half_vertex[0] = center_second_half[0] + a2[0]
-        new_second_half_vertex[1] = center_second_half[2] + b2[0]
-
-        for j in range(1, J1 + 1):
-            new_first_half_vertex[0] += a1[2 * j - 1] * math.cos(j * v1) + a1[2 * j] * math.sin(j * v1)
-            new_first_half_vertex[1] += b1[2 * j - 1] * math.sin(j * v1) + b1[2 * j] * math.cos(j * v1)
-        for j in range(1, J2 + 1):
-            new_second_half_vertex[0] += a2[2 * j - 1] * math.cos(j * v2) + a2[2 * j] * math.sin(j * v2)
-            new_second_half_vertex[1] += b2[2 * j - 1] * math.sin(j * v2) + b2[2 * j] * math.cos(j * v2)
-
-        composite_ellipse_vertices[i][0] = new_first_half_vertex[0]
-        composite_ellipse_vertices[i][1] = new_first_half_vertex[1]
-        di1 = math.sqrt((vertices_first_half[i][0] - new_first_half_vertex[0]) ** 2 + (vertices_first_half[i][2] - new_first_half_vertex[1]) ** 2)
-        d[i] = di1
-        Ea += (di1 / d_bar[i])
-        if Em < di1 / d_bar[i]:
-            Em = di1 / d_bar[i]
-
-        if i != 0 and i != (I - 1):
-            composite_ellipse_vertices[I -1 + i][0] = new_second_half_vertex[0]
-            composite_ellipse_vertices[I -1 + i][1] = new_second_half_vertex[1]
-            di2 = math.sqrt(pow(vertices_second_half[i][0] - new_second_half_vertex[0], 2) + pow(vertices_second_half[i][2] - new_second_half_vertex[1], 2))
-            d[numPt - i] = di2
-            Ea += (di2 / d_bar[I - 1 + i])
-
-            if Em < di2 / d_bar[I - 1 + i]:
-                Em = di2 / d_bar[I - 1 + i]
-
-    Ea = Ea / numPt
-
-    return composite_ellipse_vertices, Ea, Em
-
-
 def getCoefficients_for_fragmented_ellipse( J, angles, vertices, center):
     I = len(angles)
     aConstArray = np.zeros(2 * J + 1)
@@ -633,10 +530,114 @@ def getCoefficients_for_fragmented_ellipse( J, angles, vertices, center):
     return a, b
 
 
+def form_vertices_of_symmetry_ellipse(vertices_first_half, center_first_half, angles_first_half, d_bar, a1, b1, a2, b2):
+    I = len(vertices_first_half)
+    numPt = len(d_bar)
+    symmetry_ellipse_vertices = [[0 for i in range(3)] for j in range(numPt)]
+    Ea = 0.0
+    Em = 0.0
+    d = [0.0] * numPt
+    J1 = (len(a1) - 1) / 2
+    J2 = (len(a2) - 1) / 2
+
+    for i in range(I):
+        new_first_half_vertex = [0.0] * 3
+        new_second_half_vertex = [0.0] * 3
+
+        new_first_half_vertex[0] = center_first_half[0] + a1[0]
+        new_first_half_vertex[2] = center_first_half[2] + b1[0]
+        v1 = angles_first_half[i]
+
+        v2 = -angles_first_half[i]
+        new_second_half_vertex[0] = -center_first_half[0] + a2[0]
+        new_second_half_vertex[2] = center_first_half[2] + b2[0]
+
+        for j in range(1, J1 + 1):
+            new_first_half_vertex[0] += a1[2 * j - 1] * math.cos(j * v1) + a1[2 * j] * math.sin(j * v1)
+            new_first_half_vertex[2] += b1[2 * j - 1] * math.sin(j * v1) + b1[2 * j] * math.cos(j * v1)
+        for j in range(1, J2 + 1):
+            new_second_half_vertex[0] += a2[2 * j - 1] * math.cos(j * v2) + a2[2 * j] * math.sin(j * v2)
+            new_second_half_vertex[2] += b2[2 * j - 1] * math.sin(j * v2) + b2[2 * j] * math.cos(j * v2)
+
+        symmetry_ellipse_vertices[i][0] = new_first_half_vertex[0]
+        symmetry_ellipse_vertices[i][2] = new_first_half_vertex[2]
+        di1 = math.sqrt((vertices_first_half[i][0] - new_first_half_vertex[0]) ** 2 + (vertices_first_half[i][2] - new_first_half_vertex[2]) ** 2)
+        d[i] = di1
+        Ea += (di1 / d_bar[i])
+        if Em < di1 / d_bar[i]:
+            Em = di1 / d_bar[i]
+
+        if i != 0 and i != (I - 1):
+            symmetry_ellipse_vertices[numPt - i][0] = new_second_half_vertex[0]
+            symmetry_ellipse_vertices[numPt - i][2] = new_second_half_vertex[2]
+            di2 = math.sqrt(pow(-vertices_first_half[i][0] - new_second_half_vertex[0], 2) + pow(vertices_first_half[i][2] - new_second_half_vertex[2], 2))
+            d[numPt - i] = di2
+            Ea += (di2 / d_bar[numPt - i])
+
+            if Em < di2 / d_bar[numPt - i]:
+                Em = di2 / d_bar[numPt - i]
+
+    Ea = Ea / numPt
+
+    return symmetry_ellipse_vertices, Ea, Em
+
+
+def form_vertices_of_composite_ellipse(vertices_first_half, vertices_second_half, center_first_half, center_second_half, angles_first_half, angles_second_half, d_bar, a1, b1, a2, b2):
+    I = len(vertices_first_half)
+    numPt = len(d_bar)
+    composite_ellipse_vertices = [[0 for i in range(3)] for j in range(numPt)]
+    Ea = 0.0
+    Em = 0.0
+    d = [0.0] * numPt
+    J1 = (len(a1) - 1) / 2
+    J2 = (len(a2) - 1) / 2
+
+    for i in range(I):
+        new_first_half_vertex = [0.0] * 2
+        new_second_half_vertex = [0.0] * 2
+
+        new_first_half_vertex[0] = center_first_half[0] + a1[0]
+        new_first_half_vertex[2] = center_first_half[2] + b1[0]
+        v1 = angles_first_half[i]
+
+        v2 = angles_second_half[i]
+        new_second_half_vertex[0] = center_second_half[0] + a2[0]
+        new_second_half_vertex[2] = center_second_half[2] + b2[0]
+
+        for j in range(1, J1 + 1):
+            new_first_half_vertex[0] += a1[2 * j - 1] * math.cos(j * v1) + a1[2 * j] * math.sin(j * v1)
+            new_first_half_vertex[2] += b1[2 * j - 1] * math.sin(j * v1) + b1[2 * j] * math.cos(j * v1)
+        for j in range(1, J2 + 1):
+            new_second_half_vertex[0] += a2[2 * j - 1] * math.cos(j * v2) + a2[2 * j] * math.sin(j * v2)
+            new_second_half_vertex[2] += b2[2 * j - 1] * math.sin(j * v2) + b2[2 * j] * math.cos(j * v2)
+
+        composite_ellipse_vertices[i][0] = new_first_half_vertex[0]
+        composite_ellipse_vertices[i][2] = new_first_half_vertex[1]
+        di1 = math.sqrt((vertices_first_half[i][0] - new_first_half_vertex[0]) ** 2 + (vertices_first_half[i][2] - new_first_half_vertex[2]) ** 2)
+        d[i] = di1
+        Ea += (di1 / d_bar[i])
+        if Em < di1 / d_bar[i]:
+            Em = di1 / d_bar[i]
+
+        if i != 0 and i != (I - 1):
+            composite_ellipse_vertices[I - 1 + i][0] = new_second_half_vertex[0]
+            composite_ellipse_vertices[I - 1 + i][2] = new_second_half_vertex[2]
+            di2 = math.sqrt(pow(vertices_second_half[i][0] - new_second_half_vertex[0], 2) + pow(vertices_second_half[i][2] - new_second_half_vertex[2], 2))
+            d[numPt - i] = di2
+            Ea += (di2 / d_bar[I - 1 + i])
+
+            if Em < di2 / d_bar[I - 1 + i]:
+                Em = di2 / d_bar[I - 1 + i]
+
+    Ea = Ea / numPt
+
+    return composite_ellipse_vertices, Ea, Em
+
+
 def form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index):
     I = len(vertices)
     numPt = len(d_bar)
-    fragment_vertices = [[0 for i in range(2)] for j in range(I)]
+    fragment_vertices = [[0 for i in range(3)] for j in range(I)]
     Ea = 0.0
     Em = 0.0
     d = []
@@ -652,7 +653,7 @@ def form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_in
             y_i += (b[2 * j - 1] * math.sin(j * v_i) + b[2 * j] * math.cos(j * v_i))
 
         fragment_vertices[i][0] = x_i
-        fragment_vertices[i][1] = y_i
+        fragment_vertices[i][2] = y_i
 
         d_i = math.sqrt((vertices[i][0] - x_i)**2 + (vertices[i][2] - y_i)**2)
         d.append(d_i)
@@ -849,6 +850,153 @@ def find_smaller_J(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, E
         return J
 
 
+def findJ_for_non_end_composite_2D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous):
+    J = 3
+    start_index = previous['cut point index']
+    a, b = getCoefficients_for_non_end_composite_2D(J, vertices, center, angles, previous)
+    v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
+
+    while Ea >= Ea_criteria or Em >= Em_criteria:
+        J += 1
+        a, b = getCoefficients_for_non_end_composite_2D(J, vertices, center, angles, previous)
+        v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
+
+    return J
+
+
+def findJ_for_end_segment_2D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous, next):
+    # for the end segment that links the first segment
+    J = 5
+    start_index = previous['cut point index']
+    a3, b3 = getCoefficients_for_end_composite_2D(3, vertices, center, angles, previous, next)
+    v3, Ea3, Em3 = form_vertices_of_fragment_2D(a3, b3, vertices, center, angles, d_bar, start_index)
+    a10, b10 = getCoefficients_for_end_composite_2D(10, vertices, center, angles, previous, next)
+    v10, Ea10, Em10 = form_vertices_of_fragment_2D(a10, b10, vertices, center, angles, d_bar, start_index)
+    if Ea3 < Ea_criteria and Em3 < Em_criteria:
+        J = 3
+        Ea = Ea3
+        Em = Em3
+        while Ea < Ea_criteria and Em < Em_criteria and J > 1:
+            J -= 1
+            a, b = getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, next)
+            v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
+    elif Ea10 >= Ea_criteria or Em10 >= Em_criteria:
+        J = 10
+        Ea = Ea10
+        Em = Em10
+        while Ea >= Ea_criteria or Em >= Em_criteria:
+            J += 1
+            a, b = getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, next)
+            v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
+    elif Ea3 >= Ea_criteria or Em3 >= Em_criteria:
+        J = 3
+        Ea = Ea3
+        Em = Em3
+        while Ea >= Ea_criteria or Em >= Em_criteria:
+            J += 1
+            a, b = getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, next)
+            v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
+    return J
+
+
+def find_inbetween_J_for_end_composite(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ,
+                                                   Ea_criteria, Em_criteria, previous, next):
+    # Linear interpolate to find J_small<J<J_big
+    if J_small > J_big or J_small == J_big:
+        raise ValueError('J_small({}) is no smaller than J_big({})'.format(J_small, J_big))
+
+    if J_small == J_big - 1:
+        return J_big
+
+    J = 0
+    if Ea_smallJ >= Ea_criteria:
+        J = J_big - int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ))
+    elif Em_smallJ >= Em_criteria:
+        J = J_big - int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ))
+
+    if J < J_small:
+        raise ValueError('J({}) is smaller than J_small({})'.format(J, J_small))
+    if J > J_big:
+        raise ValueError('J({}) is bigger than J_big({})'.format(J, J_big))
+
+    if J == J_small:
+        J = J_small + 1
+    if J == J_big:
+        J = J_big - 1
+
+    start_index = previous['cut point index']
+    a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
+    v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
+    if Ea < Ea_criteria and Em < Em_criteria:  # J meets the criteria
+        if J == J_small + 1:
+            return J
+        else:
+            return find_inbetween_J_for_end_composite(vertices, angles, d_bar, center, J_small, J, Ea_smallJ, Em_smallJ, Ea, Em,
+                                    Ea_criteria, Em_criteria, previous, next)
+    else:  # J doesn't meet the criteria
+        if J == J_big - 1:
+            return J_big
+        else:
+            return find_inbetween_J_for_end_composite(vertices, angles, d_bar, center, J, J_big, Ea, Em, Ea_bigJ, Em_bigJ, Ea_criteria,
+                                    Em_criteria, previous, next)
+
+
+def find_bigger_J_for_end_composite(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria, previous, next):
+    # Linear extrapolate to find bigger J>J_small
+    print 'find bigger J. J_small is {} and J_big is {}'.format(J_small, J_big)
+    start_index = previous['cut point index']
+    J = J_big
+    if Ea_bigJ >= Ea_criteria:
+        J = int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ)) + J_small
+    elif Em_bigJ >= Em_criteria:
+        J = int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ)) + J_small
+    if J <= J_big:
+        print 'weird, J({}) is smaller than J_big({})'.format(J, J_big)
+        J = J_big + 1
+        return J
+
+    a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
+    v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
+
+    if Ea >= Ea_criteria or Em >= Em_criteria:
+        find_bigger_J_for_end_composite(vertices, angles, d_bar, center, J_big, J, Ea_bigJ, Em_bigJ, Ea, Em, Ea_criteria, Em_criteria, previous, next)
+
+    else:
+        # we are close to the solution, hence, a while function will suffice
+        while Ea < Ea_criteria and Em < Em_criteria and J > J_small:
+            J -= 1
+            a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
+            v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
+
+        return J + 1
+
+
+def find_smaller_J_for_end_composite(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Ea_bigJ, Ea_criteria, Em_criteria, previous, next):
+    # Linear extrapolate to find smaller J<J_small<J_big,
+    # The criteria is always Ea_criteria,
+    # because both (Ea_smallJ,Em_smallJ) and (Ea_bigJ,Em_bigJ) meet criteria.
+    # In this case, we will always use the average error Ea for the extrapolation since the average error is a global measurement.
+
+    J = int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ)) + J_small
+    if J < 3:
+        J = 3
+        return J
+
+    start_index = previous['cut point index']
+    a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
+    v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
+    if Ea < Ea_criteria and Em < Em_criteria:
+        return fing_smallerJ_for_end_composite(vertices, angles, d_bar, center, J, J_small, Ea, Ea_smallJ, Ea_criteria, Em_criteria, previous, next)
+    else:
+        # we are close to the solution, hence, a while function will suffice
+        while Ea >= Ea_criteria or Em >= Em_criteria and J < J_small:
+            J += 1
+            a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
+
+        return J
+    return J
+
+
 def position_and_tangent_of_parametric_point(a_adjacent, b_adjacent, angle):
     x_tan = 0
     y_tan = 0
@@ -995,7 +1143,6 @@ def getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, 
         ti -= vertex['tangent y']
         return ti
 
-
     args1 = (previous, center, angles[0], J)
     args2 = (next, center, angles[-1], J)
     cons = ({'type': 'eq', 'fun': position_constraint_x, 'args': args1},
@@ -1030,152 +1177,6 @@ def getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, 
     print res_y.message
     return res_x.x, res_y.x
 
-
-def findJ_for_non_end_composite_2D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous):
-    J = 3
-    start_index = previous['cut point index']
-    a, b = getCoefficients_for_non_end_composite_2D(J, vertices, center, angles, previous)
-    v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
-
-    while Ea >= Ea_criteria or Em >= Em_criteria:
-        J += 1
-        a, b = getCoefficients_for_non_end_composite_2D(J, vertices, center, angles, previous)
-        v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
-
-    return J
-
-
-def findJ_for_end_segment_2D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous, next):
-    # for the end segment that links the first segment
-    J = 5
-    start_index = previous['cut point index']
-    a3, b3 = getCoefficients_for_end_composite_2D(3, vertices, center, angles, previous, next)
-    v3, Ea3, Em3 = form_vertices_of_fragment_2D(a3, b3, vertices, center, angles, d_bar, start_index)
-    a10, b10 = getCoefficients_for_end_composite_2D(10, vertices, center, angles, previous, next)
-    v10, Ea10, Em10 = form_vertices_of_fragment_2D(a10, b10, vertices, center, angles, d_bar, start_index)
-    if Ea3 < Ea_criteria and Em3 < Em_criteria:
-        J = 3
-        Ea = Ea3
-        Em = Em3
-        while Ea < Ea_criteria and Em < Em_criteria and J > 1:
-            J -= 1
-            a, b = getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, next)
-            v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
-    elif Ea10 >= Ea_criteria or Em10 >= Em_criteria:
-        J = 10
-        Ea = Ea10
-        Em = Em10
-        while Ea >= Ea_criteria or Em >= Em_criteria:
-            J += 1
-            a, b = getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, next)
-            v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
-    elif Ea3 >= Ea_criteria or Em3 >= Em_criteria:
-        J = 3
-        Ea = Ea3
-        Em = Em3
-        while Ea >= Ea_criteria or Em >= Em_criteria:
-            J += 1
-            a, b = getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, next)
-            v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
-    return J
-
-
-def find_inbetween_J_for_end_composite(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ,
-                                                   Ea_criteria, Em_criteria, previous, next):
-    # Linear interpolate to find J_small<J<J_big
-    if J_small > J_big or J_small == J_big:
-        raise ValueError('J_small({}) is no smaller than J_big({})'.format(J_small, J_big))
-
-    if J_small == J_big - 1:
-        return J_big
-
-    J = 0
-    if Ea_smallJ >= Ea_criteria:
-        J = J_big - int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ))
-    elif Em_smallJ >= Em_criteria:
-        J = J_big - int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ))
-
-    if J < J_small:
-        raise ValueError('J({}) is smaller than J_small({})'.format(J, J_small))
-    if J > J_big:
-        raise ValueError('J({}) is bigger than J_big({})'.format(J, J_big))
-
-    if J == J_small:
-        J = J_small + 1
-    if J == J_big:
-        J = J_big - 1
-
-    start_index = previous['cut point index']
-    a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
-    v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
-    if Ea < Ea_criteria and Em < Em_criteria:  # J meets the criteria
-        if J == J_small + 1:
-            return J
-        else:
-            return find_inbetween_J_for_end_composite(vertices, angles, d_bar, center, J_small, J, Ea_smallJ, Em_smallJ, Ea, Em,
-                                    Ea_criteria, Em_criteria, previous, next)
-    else:  # J doesn't meet the criteria
-        if J == J_big - 1:
-            return J_big
-        else:
-            return find_inbetween_J_for_end_composite(vertices, angles, d_bar, center, J, J_big, Ea, Em, Ea_bigJ, Em_bigJ, Ea_criteria,
-                                    Em_criteria, previous, next)
-
-
-def find_bigger_J_for_end_composite(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Em_smallJ, Ea_bigJ, Em_bigJ, Ea_criteria, Em_criteria, previous, next):
-    # Linear extrapolate to find bigger J>J_small
-    print 'find bigger J. J_small is {} and J_big is {}'.format(J_small, J_big)
-    start_index = previous['cut point index']
-    J = J_big
-    if Ea_bigJ >= Ea_criteria:
-        J = int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ)) + J_small
-    elif Em_bigJ >= Em_criteria:
-        J = int((Em_criteria - Em_smallJ) * (J_big - J_small) / (Em_bigJ - Em_smallJ)) + J_small
-    if J <= J_big:
-        print 'weird, J({}) is smaller than J_big({})'.format(J, J_big)
-        J = J_big + 1
-        return J
-
-    a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
-    v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
-
-    if Ea >= Ea_criteria or Em >= Em_criteria:
-        find_bigger_J_for_end_composite(vertices, angles, d_bar, center, J_big, J, Ea_bigJ, Em_bigJ, Ea, Em, Ea_criteria, Em_criteria, previous, next)
-
-    else:
-        # we are close to the solution, hence, a while function will suffice
-        while Ea < Ea_criteria and Em < Em_criteria and J > J_small:
-            J -= 1
-            a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
-            v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
-
-        return J + 1
-
-
-def find_smaller_J_for_end_composite(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, Ea_bigJ, Ea_criteria, Em_criteria, previous, next):
-    # Linear extrapolate to find smaller J<J_small<J_big,
-    # The criteria is always Ea_criteria,
-    # because both (Ea_smallJ,Em_smallJ) and (Ea_bigJ,Em_bigJ) meet criteria.
-    # In this case, we will always use the average error Ea for the extrapolation since the average error is a global measurement.
-
-    J = int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ)) + J_small
-    if J < 3:
-        J = 3
-        return J
-
-    start_index = previous['cut point index']
-    a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
-    v, Ea, Em = form_vertices_of_fragment(a, b, vertices, center, angles, d_bar, start_index)
-    if Ea < Ea_criteria and Em < Em_criteria:
-        return fing_smallerJ_for_end_composite(vertices, angles, d_bar, center, J, J_small, Ea, Ea_smallJ, Ea_criteria, Em_criteria, previous, next)
-    else:
-        # we are close to the solution, hence, a while function will suffice
-        while Ea >= Ea_criteria or Em >= Em_criteria and J < J_small:
-            J += 1
-            a, b = getCoefficients_for_end_composite(J, vertices, center, angles, previous, next)
-
-        return J
-    return J
 
 def getCoefficients_for_non_end_composite_single(J, vertices, center, angles, previous, axis):
     I = len(vertices)
