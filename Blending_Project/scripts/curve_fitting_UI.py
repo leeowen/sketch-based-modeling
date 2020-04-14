@@ -917,9 +917,10 @@ class Canvas(QtWidgets.QDialog):
                 self.composite_vertices.append(vertices)
                 self.composite_a.append(a)
                 self.composite_b.append(b)
-            else:
+            else:# do nothing because cut points haven't been provided
                 return
 
+            # in-between segments
             def inbetween_2D_open_curve_auto_mode():
                 for i in range(len(self.cut_points)):
                     J, vertices, a, b, Ea, Em = curve_fitting.compisite_segment_with_one_end_shared_2D(i + 1,self.vertices_matrix,self.angles_matrix,self.composite_a,self.composite_b,self.segment_center_list,
@@ -935,8 +936,7 @@ class Canvas(QtWidgets.QDialog):
             def inbetween_2D_closed_curve_auto_mode():
                 for i in range(1, len(self.cut_points) - 1):
                     cut_pt_index = self.cut_points[i - 1]
-                    J, vertices, a, b, Ea, Em = curve_fitting.compisite_segment_with_one_end_shared_2D(i,
-                                                                                                       self.vertices_matrix,
+                    J, vertices, a, b, Ea, Em = curve_fitting.compisite_segment_with_one_end_shared_2D(i, self.vertices_matrix,
                                                                                                        self.angles_matrix,
                                                                                                        self.composite_a,
                                                                                                        self.composite_b,
@@ -953,7 +953,6 @@ class Canvas(QtWidgets.QDialog):
                     self.composite_b.append(b)
                     self.J_total += J
 
-            # in-between segments
             if self.isClosed == False:  # curve is open
                 inbetween_2D_open_curve_auto_mode()
             else:
@@ -983,11 +982,14 @@ class Canvas(QtWidgets.QDialog):
                 next = {'position x': x1, 'position y': y1, 'tangent x': x1_tan, 'tangent y': y1_tan,
                         'cut point index': self.cut_points[0]}
 
-                # if self.manualJ_mode == True:
-                if self.manualJ_value - self.J_total < 3:
-                    Jn = 3
-                else:
-                    Jn = self.manualJ_value - self.J_total
+                if self.manualJ_mode == True:
+                    if self.manualJ_value - self.J_total < 3:
+                        Jn = 3
+                    else:
+                        Jn = self.manualJ_value - self.J_total
+                elif self.autoJ_mode == True:
+                    Jn = curve_fitting.findJ_for_end_segment_2D(self.vertices_matrix[-1],self.angles_matrix[-1], self.d_bar, self.segment_center_list[-1], self.Ea_criteria, self.Em_criteria, previous, next)
+
                 a, b = curve_fitting.getCoefficients_for_end_composite_2D(Jn, self.vertices_matrix[-1],
                                                                        self.segment_center_list[-1],
                                                                        self.angles_matrix[-1], previous, next)
