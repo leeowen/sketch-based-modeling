@@ -551,18 +551,18 @@ def getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, 
     return res_x.x, res_y.x
 
 
-def getCoefficients_for_end_composite_single(J, vertices, center, angles, previous, next, axis):
-    I = len(vertices)
+def getCoefficients_for_end_composite_single(J, Vertices, Center, Angles, previous, next, axis): # J is a scalar, not a vector
+    I = len(Vertices)
     e = 1e-10  # a value that is very close to zero
     def fun_s(s, *args):  # function to be minimized
         Es = 0
         vertices = args[0]
         center = args[1]
         angles = args[2]
-        J = args[3]
+        JJ = args[3]
         for i in range(1, I - 1):
             si = center[axis] + s[0]
-            for j in range(1, J + 1):
+            for j in range(1, JJ + 1):
                 si += (s[2 * j - 1] * math.cos(j * angles[i]) + s[2 * j] * math.sin(j * angles[i]))
             Es += (vertices[i][axis] - si)**2
         return Es
@@ -571,9 +571,9 @@ def getCoefficients_for_end_composite_single(J, vertices, center, angles, previo
         vertex = args[0]
         center = args[1]
         angle = args[2]
-        J = args[3]
+        JJ = args[3]
         si = center[axis] + s[0]
-        for j in range(1, J + 1):
+        for j in range(1, JJ + 1):
             si += (s[2 * j - 1] * math.cos(j * angle) + s[2 * j] * math.sin(j * angle))
         if axis == 0:
             si -= vertex['position x']
@@ -586,9 +586,9 @@ def getCoefficients_for_end_composite_single(J, vertices, center, angles, previo
     def tangential_constraint_s(s, *args):
         vertex = args[0]
         angle = args[2]
-        J = args[3]
+        JJ = args[3]
         ti = 0
-        for j in range(1, J+1):
+        for j in range(1, JJ+1):
             ti += (s[2 * j - 1] * (-j) * math.sin(j * angle) + s[2 * j] * j * math.cos(j * angle))
         if axis == 0:
             ti -= vertex['tangent x']
@@ -598,20 +598,20 @@ def getCoefficients_for_end_composite_single(J, vertices, center, angles, previo
             ti -= vertex['tangent z']
         return ti
 
-    args1 = (previous, center, angles[0], J)
-    args2 = (next, center, angles[-1], J)
+    args1 = (previous, Center, Angles[0], J)
+    args2 = (next, Center, Angles[-1], J)
     cons = ({'type': 'eq', 'fun': position_constraint_s, 'args': args1},
             {'type': 'eq', 'fun': position_constraint_s, 'args': args2},
             {'type': 'eq', 'fun': tangential_constraint_s, 'args': args1},
             {'type': 'eq', 'fun': tangential_constraint_s, 'args': args2}
             )
     s0 = np.zeros((2 * J + 1))  # initialize value
-    res_s = minimize(fun_s, s0, args = (vertices, center, angles, J), method='SLSQP', constraints=cons)
+    res_s = minimize(fun_s, s0, args=(Vertices, Center, Angles, J), method='SLSQP', constraints=cons)
     print 'minimum value:'
     print res_s.fun
     print 'optimal resolution:'
     print res_s.x
-    print 'is iteration sucessful:'
+    print 'is iteration successful:'
     print res_s.success
     print 'the reason for the termination of iteration:'
     print res_s.message
@@ -619,17 +619,17 @@ def getCoefficients_for_end_composite_single(J, vertices, center, angles, previo
     return res_s
 
 
-def getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, next):
+def getCoefficients_for_end_composite_3D(J, vertices, center, angles, previous, next):
     res = []
     for axis in [0, 1, 2]:
-        res[axis] = getCoefficients_for_end_composite_single(J[axis], vertices, center, angles, previous, next, axis)
+        res.append(getCoefficients_for_end_composite_single(J[axis], vertices, center, angles, previous, next, axis))
     return res
 
 
-def getCoefficients_for_non_end_composite_single(J, vertices, center, angles, previous, axis):
+def getCoefficients_for_non_end_composite_single(J, vertices, center, angles, previous, axis): # J is a scalar, not a vector
     I = len(vertices)
-    ConstArray = np.zeros(2 * J[axis] + 1)
-    CoefficientMatrix = np.zeros(shape=(2 * J[axis] + 1, 2 * J[axis] + 1), dtype=float, order='C')  # row-major
+    ConstArray = np.zeros(2 * J + 1)
+    CoefficientMatrix = np.zeros(shape=(2 * J + 1, 2 * J + 1), dtype=float, order='C')  # row-major
     Pv0 = previous['position x']
     Tv0 = previous['tangent x']
     if axis == 1:
@@ -649,38 +649,38 @@ def getCoefficients_for_non_end_composite_single(J, vertices, center, angles, pr
         CoefficientMatrix[1, 0] = 0.
         CoefficientMatrix[1, 1] = 1.
 
-        for j in range(2, J[axis] + 1):
+        for j in range(2, J + 1):
             CoefficientMatrix[0, 2 * j - 1] = -j * math.sin(j * v0) * math.cos(v0) / math.sin(v0) + math.cos(j * v0)
             CoefficientMatrix[1, 2 * j - 1] = j * math.sin(j * v0) / math.sin(v0)
 
-        for j in range(1, J[axis] + 1):
+        for j in range(1, J + 1):
             CoefficientMatrix[0, 2 * j] = j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) + math.sin(j * v0)
             CoefficientMatrix[1, 2 * j] = - j * math.cos(j * v0) / math.sin(v0)
 
-        M = lambda j, v: j * math.sin(j * v0) * math.cos(v0) / math.sin(v0) - math.cos(j * v0) - j * math.cos(
-            v) * math.sin(j * v0) / math.sin(v0) + math.cos(j * v)
-        N = lambda j, v: -j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) - math.sin(j * v0) + j * math.cos(
-            j * v0) * math.cos(v) / math.sin(v0) + math.sin(j * v)
+        M = lambda jjj, v: jjj * math.sin(jjj * v0) * math.cos(v0) / math.sin(v0) - math.cos(jjj * v0) - jjj * math.cos(
+            v) * math.sin(jjj * v0) / math.sin(v0) + math.cos(jjj * v)
+        N = lambda jjj, v: -jjj * math.cos(jjj * v0) * math.cos(v0) / math.sin(v0) - math.sin(jjj * v0) + jjj * math.cos(
+            jjj * v0) * math.cos(v) / math.sin(v0) + math.sin(jjj * v)
 
         for i in range(1, I):
             vi = angles[i]
 
             G = Pv0 + Tv0 / math.sin(v0) * (math.cos(v0) - math.cos(vi)) - vertices[i][axis]
-            for k in range(2, 2 * J[axis] + 1):
+            for k in range(2, 2 * J + 1):
                 if k % 2 == 1:
                     m = M((k + 1) / 2, vi)
                     ConstArray[k] -= G * m
-                    for j in range(2, J[axis] + 1):
-                        CoefficientMatrix[k, 2 * j - 1] += M_x(j, vi) * m
-                    for j in range(1, J[axis] + 1):
-                        CoefficientMatrix[k, 2 * j] += N_x(j, vi) * m
+                    for jj in range(2, J + 1):
+                        CoefficientMatrix[k, 2 * jj - 1] += M(jj, vi) * m
+                    for jj in range(1, J + 1):
+                        CoefficientMatrix[k, 2 * jj] += N(jj, vi) * m
                 else:
                     n = N(k / 2, vi)
                     ConstArray[k] -= G * n
-                    for j in range(2, J[axis] + 1):
-                        CoefficientMatrix[k, 2 * j - 1] += M(j, vi) * n
-                    for j in range(1, J[axis] + 1):
-                        CoefficientMatrix[k, 2 * j] += N(j, vi) * n
+                    for jj in range(2, J + 1):
+                        CoefficientMatrix[k, 2 * jj - 1] += M(jj, vi) * n
+                    for jj in range(1, J + 1):
+                        CoefficientMatrix[k, 2 * jj] += N(jj, vi) * n
 
     coe = np.linalg.solve(CoefficientMatrix, ConstArray)
 
@@ -689,35 +689,22 @@ def getCoefficients_for_non_end_composite_single(J, vertices, center, angles, pr
 
 def getCoefficients_for_non_end_composite_3D(J, vertices, center, angles, previous):
     coe=[]
-    for i in range(3):
-        coe.append(getCoefficients_for_non_end_composite_single(J, vertices, center, angles, previous, i))
+    for axis in range(3):
+        coe.append(getCoefficients_for_non_end_composite_single(J[axis], vertices, center, angles, previous, axis))
     return coe
 
 
 def getCoefficients_for_non_end_composite_2D(J, vertices, center, angles, previous):
     I = len(vertices)
-    aConstArray = np.zeros(2 * J + 1)
-    aCoefficientMatrix = np.zeros(shape=(2 * J + 1, 2 * J + 1), dtype=float, order='C')  # row-major
 
     bConstArray = np.zeros(2 * J + 1)
     bCoefficientMatrix = np.zeros(shape=(2 * J + 1, 2 * J + 1), dtype=float, order='C')
 
-    Pv0_x = previous['position x']
     Pv0_y = previous['position y']
-    Tv0_x = previous['tangent x']
     Tv0_y = previous['tangent y']
     v0 = angles[0]
 
     if v0 != 0.0 or v0 != math.pi:
-        aConstArray[0] = Pv0_x - center[0] + Tv0_x * math.cos(v0) / math.sin(v0)
-        aConstArray[1] = -Tv0_x / math.sin(v0)
-
-        aCoefficientMatrix[0, 0] = 1.
-        aCoefficientMatrix[0, 1] = 0.
-
-        aCoefficientMatrix[1, 0] = 0.
-        aCoefficientMatrix[1, 1] = 1.
-
         bConstArray[0] = Pv0_y - center[2] - Tv0_y * math.sin(v0) / math.cos(v0)
         bConstArray[1] = Tv0_y / math.cos(v0)
 
@@ -728,53 +715,38 @@ def getCoefficients_for_non_end_composite_2D(J, vertices, center, angles, previo
         bCoefficientMatrix[1, 1] = 1.
 
         for j in range(2, J + 1):
-            aCoefficientMatrix[0, 2 * j - 1] = -j * math.sin(j * v0) * math.cos(v0) / math.sin(v0) + math.cos(j * v0)
-            aCoefficientMatrix[1, 2 * j - 1] = j * math.sin(j * v0) / math.sin(v0)
             bCoefficientMatrix[0, 2 * j - 1] = - j * math.cos(j * v0) * math.sin(v0) / math.cos(v0) + math.sin(j * v0)
             bCoefficientMatrix[1, 2 * j - 1] = j * math.cos(j * v0) / math.cos(v0)
 
         for j in range(1, J + 1):
-            aCoefficientMatrix[0, 2 * j] = j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) + math.sin(j * v0)
-            aCoefficientMatrix[1, 2 * j] = - j * math.cos(j * v0) / math.sin(v0)
             bCoefficientMatrix[0, 2 * j] = j * math.sin(j * v0) * math.sin(v0) / math.cos(v0) + math.cos(j * v0)
             bCoefficientMatrix[1, 2 * j] = - j * math.sin(j * v0) / math.cos(v0)
 
-        M_x = lambda j, v: j * math.sin(j * v0) * math.cos(v0) / math.sin(v0) - math.cos(j * v0) - j * math.cos(v) * math.sin(j * v0) / math.sin(v0) + math.cos(j * v)
-        N_x = lambda j, v: -j * math.cos(j * v0) * math.cos(v0) / math.sin(v0) - math.sin(j * v0) + j * math.cos(j * v0) * math.cos(v) / math.sin(v0) + math.sin(j * v)
         M_y = lambda j, v: j * math.cos(j * v0) * math.sin(v0) / math.cos(v0) - math.sin(j * v0) - j * math.cos(j * v0) * math.sin(v) / math.cos(v0) + math.sin(j * v)
         N_y = lambda j, v: -j * math.sin(j * v0) * math.sin(v0) / math.cos(v0) - math.cos(j * v0) + j * math.sin(j * v0) * math.sin(v) / math.cos(v0) + math.cos(j * v)
 
         for i in range(1, I):
             vi = angles[i]
-
-            G_x = Pv0_x + Tv0_x / math.sin(v0) * (math.cos(v0) - math.cos(vi)) - vertices[i][0]
             G_y = Pv0_y + Tv0_y / math.cos(v0) * (math.sin(vi) - math.sin(v0)) - vertices[i][2]
             for k in range(2, 2 * J + 1):
                 if k % 2 == 1:
-                    mx = M_x((k + 1) / 2, vi)
                     my = M_y((k + 1) / 2, vi)
-                    aConstArray[k] -= G_x * mx
                     bConstArray[k] -= G_y * my
                     for j in range(2, J + 1):
-                        aCoefficientMatrix[k, 2 * j - 1] += M_x(j, vi) * mx
                         bCoefficientMatrix[k, 2 * j - 1] += M_y(j, vi) * my
                     for j in range(1, J + 1):
-                        aCoefficientMatrix[k, 2 * j] += N_x(j, vi) * mx
                         bCoefficientMatrix[k, 2 * j] += N_y(j, vi) * my
                 else:
-                    nx = N_x(k / 2, vi)
                     ny = N_y(k / 2, vi)
-                    aConstArray[k] -= G_x * nx
                     bConstArray[k] -= G_y * ny
                     for j in range(2, J + 1):
-                        aCoefficientMatrix[k, 2 * j - 1] += M_x(j, vi) * nx
                         bCoefficientMatrix[k, 2 * j - 1] += M_y(j, vi) * ny
                     for j in range(1, J + 1):
-                        aCoefficientMatrix[k, 2 * j] += N_x(j, vi) * nx
                         bCoefficientMatrix[k, 2 * j] += N_y(j, vi) * ny
 
-    a = np.linalg.solve(aCoefficientMatrix, aConstArray)
     b = np.linalg.solve(bCoefficientMatrix, bConstArray)
+
+    a = getCoefficients_for_non_end_composite_single(J, vertices, center, angles, previous, axis=0)
 
     return a, b
 
@@ -1057,12 +1029,12 @@ def findJ_for_non_end_composite_3D(vertices, angles, d_bar, segment_center, Ea_c
     J = [1,1,1]
     coe = []
     for axis in [0, 1, 2]:  # x,y,z axis
-        coe.append(func_getCoefficients_for_non_end_composite_single_3D(J, vertices, center, angles, previous, axis))
+        coe.append(func_getCoefficients_for_non_end_composite_single_3D(J, vertices, segment_center, angles, previous, axis))
         Ea = 0
         Em = 0
 
         def f():
-            fragment_vertices_i = form_vertices_of_fragment_single_3D(coe[axis], vertices, center, angles, start_index,
+            fragment_vertices_i = form_vertices_of_fragment_single_3D(coe[axis], vertices, segment_center, angles, start_index,
                                                                       axis)
             for i in range(len(vertices)):
                 d_i = math.abs(vertices[i][axis] - fragment_vertices_i[i][axis])
@@ -1075,7 +1047,7 @@ def findJ_for_non_end_composite_3D(vertices, angles, d_bar, segment_center, Ea_c
         tmp = []
         while Ea >= (Ea_criteria/2.0) or Em >= (Em_criteria/2.0):
             J[axis] += 1
-            tmp = func_getCoefficients_for_non_end_composite_single_3D(J, vertices, center, angles, previous, axis)
+            tmp = func_getCoefficients_for_non_end_composite_single_3D(J, vertices, segment_center, angles, previous, axis)
             f()
 
         coe[axis] = tmp
@@ -1487,7 +1459,7 @@ if __name__ == "__main__":
             d_bar = get_d_bar_3D(vertices, center)
             if 'Head' in file_path:
                 isClosed = True
-                cut_points=[0, 30, 60, 90]
+                cut_points = [0, 30, 60, 90]
                 # split data for N segments
                 N = len(cut_points)
                 vertices_matrix = []
@@ -1525,9 +1497,10 @@ if __name__ == "__main__":
                 coefficients.append(coe)
                 Ea = Ea + Ea0
                 Em = Em + Em0
+
                 # for the segment(s) in-between
                 for i in range(1, len(cut_points) - 1):
-                    [x0_tan, y0_tan, z0_tan], [x0, y0, z0] = position_and_tangent_of_parametric_point_3D(coefficients[i-1],angles_matrix[i - 1][-1])
+                    [x0_tan, y0_tan, z0_tan], [x0, y0, z0] = position_and_tangent_of_parametric_point_3D(coefficients[i - 1], angles_matrix[i - 1][-1])
                     x0 += segment_center_list[i - 1][0]
                     y0 += segment_center_list[i - 1][1]
                     z0 += segment_center_list[i - 1][2]
@@ -1547,7 +1520,10 @@ if __name__ == "__main__":
                     coefficients.append(coe)
                     composite_vertices.append(composite_vertices_n)
 
-                    Ea = (Ea * cut_points[i] + Ean * len(vertices_matrix[-1])) / numPt
+                    previous_count = 0
+                    for j in range(i):
+                        previous_count += len(vertices_matrix[j])
+                    Ea = (Ea * previous_count + Ean * len(vertices_matrix[-1])) / numPt
                     if Em < Emn:
                         Em = Emn
                 """
@@ -1578,25 +1554,26 @@ if __name__ == "__main__":
                 manualJ_value = J_total + Jn
                 """
                 with open(save_file_path, "w+") as f:
-                    f.write('range:')
-                    f.write('{}-{} \n'.format(cut_points[0],cut_points[1]))
-                    f.write('center: {} {} {}\n'.format(segment_center_list[0][0], segment_center_list[0][1], segment_center_list[0][2]))
-                    f.write('a: ')
-                    for i in coefficients[0][0]:
-                        f.write(str(i) + ' ')
-                    f.write('\n')
-                    f.write('b: ')
-                    for i in coefficients[0][1]:
-                        f.write(str(i) + ' ')
-                    f.write('\n')
-                    f.write('c: ')
-                    for i in coefficients[0][2]:
-                        f.write(str(i) + ' ')
-                    f.write('\n')
-                    f.write('angles: ')
-                    for i in angles:
-                       f.write(str(i)+' ')
-                    f.write('\n')
+                    for i in range(N - 1):
+                        f.write('range:')
+                        f.write('{}-{} \n'.format(cut_points[i],cut_points[(i+1) % N]))
+                        f.write('center: {} {} {}\n'.format(segment_center_list[i][0], segment_center_list[i][1], segment_center_list[i][2]))
+                        f.write('a: ')
+                        for j in coefficients[i][0]:
+                            f.write(str(j) + ' ')
+                        f.write('\n')
+                        f.write('b: ')
+                        for j in coefficients[i][1]:
+                            f.write(str(j) + ' ')
+                        f.write('\n')
+                        f.write('c: ')
+                        for j in coefficients[i][2]:
+                            f.write(str(j) + ' ')
+                        f.write('\n')
+                        #f.write('angles: ')
+                        #for j in angles:
+                           #f.write(str(j)+' ')
+                        #f.write('\n')
             else:
                 if 'Foot' in file_path:
                     J = 2
