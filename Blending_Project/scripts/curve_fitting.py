@@ -539,6 +539,7 @@ def getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, 
             )
     y0 = np.zeros((2 * J + 1))  # initialize value
     res_y = minimize(fun_y, y0, args = (vertices, center, angles, J), method='SLSQP', constraints=cons)
+    """
     print 'minimum value:'
     print res_y.fun
     print 'optimal resolution:'
@@ -547,6 +548,7 @@ def getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, 
     print res_y.success
     print 'the reason for the termination of iteration:'
     print res_y.message
+    """
     res_x = getCoefficients_for_end_composite_single(J, vertices, center, angles, previous, next, 0)
     return res_x.x, res_y.x
 
@@ -607,6 +609,7 @@ def getCoefficients_for_end_composite_single(J, Vertices, Center, Angles, previo
             )
     s0 = np.zeros((2 * J + 1))  # initialize value
     res_s = minimize(fun_s, s0, args=(Vertices, Center, Angles, J), method='SLSQP', constraints=cons)
+    """
     print 'minimum value:'
     print res_s.fun
     print 'optimal resolution:'
@@ -615,6 +618,7 @@ def getCoefficients_for_end_composite_single(J, Vertices, Center, Angles, previo
     print res_s.success
     print 'the reason for the termination of iteration:'
     print res_s.message
+    """
 
     return res_s
 
@@ -1028,8 +1032,9 @@ def findJ_for_non_end_composite_2D(vertices, angles, d_bar, center, Ea_criteria,
 def findJ_for_non_end_composite_3D(vertices, angles, d_bar, segment_center, Ea_criteria, Em_criteria, previous, func_getCoefficients_for_non_end_composite_single_3D):
     J = [1,1,1]
     coe = []
+    numPt = len(d_bar)
     for axis in [0, 1, 2]:  # x,y,z axis
-        coe.append(func_getCoefficients_for_non_end_composite_single_3D(J, vertices, segment_center, angles, previous, axis))
+        coe.append(func_getCoefficients_for_non_end_composite_single_3D(J[axis], vertices, segment_center, angles, previous, axis))
         Ea = 0
         Em = 0
 
@@ -1057,7 +1062,6 @@ def findJ_for_non_end_composite_3D(vertices, angles, d_bar, segment_center, Ea_c
 
 def findJ_for_end_segment_2D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous, next):
     # for the end segment that links the first segment
-    print Ea_criteria, Em_criteria
     J = 3
     start_index = previous['cut point index']
     a, b = getCoefficients_for_end_composite_2D(3, vertices, center, angles, previous, next)
@@ -1100,7 +1104,7 @@ def findJ_for_end_segment_3D(vertices, angles, d_bar, center, Ea_criteria, Em_cr
     return J
 
 
-def position_and_tangent_of_parametric_point(a_adjacent, b_adjacent, angle):
+def position_and_tangent_of_parametric_point_2D(a_adjacent, b_adjacent, angle):
     x_tan = 0
     y_tan = 0
     x = a_adjacent[0]
@@ -1127,29 +1131,6 @@ def position_and_tangent_of_parametric_point_3D(coe_adjacent, angle):
     return tan, pos
 
 
-def position_and_tangent_of_parametric_point3(a_adjacent, b_adjacent, c_adjacent, angle):
-    x_tan = 0
-    y_tan = 0
-    z_tan = 0
-    x = a_adjacent[0]
-    y = b_adjacent[0]
-    z = c_adjacent[0]
-    Ja = (len(a_adjacent) - 1) / 2
-    Jb = (len(b_adjacent) - 1) / 2
-    Jc = (len(c_adjacent) - 1) / 2
-    for j in range(1, Ja + 1):
-        x_tan = x_tan + a_adjacent[2 * j] * j * math.cos(j * angle) - a_adjacent[2 * j - 1] * j * math.sin(j * angle)
-        x += a_adjacent[2 * j - 1] * math.cos(j * angle) + a_adjacent[2 * j] * math.sin(j * angle)
-    for j in range(1, Jb + 1):
-        y_tan = y_tan + b_adjacent[2 * j] * j * math.cos(j * angle) - b_adjacent[2 * j - 1] * j * math.sin(j * angle)
-        y += b_adjacent[2 * j - 1] * math.cos(j * angle) + b_adjacent[2 * j] * math.sin(j * angle)
-    for j in range(1, Jc + 1):
-        z_tan = z_tan + c_adjacent[2 * j] * j * math.cos(j * angle) - c_adjacent[2 * j - 1] * j * math.sin(j * angle)
-        z += c_adjacent[2 * j - 1] * math.cos(j * angle) + c_adjacent[2 * j] * math.sin(j * angle)
-
-    return x_tan, y_tan, z_tan, x, y, z
-
-
 def compisite_segment_with_one_end_shared_2D(index,vertices_matrix,angles_matrix,composite_a,composite_b,segment_center_list,
                                           d_bar,Ea_criteria, Em_criteria,cut_points,isClosed):
     x0_tan, y0_tan, x0, y0 = position_and_tangent_of_parametric_point(composite_a[index - 1], composite_b[index - 1], angles_matrix[index - 1][-1])
@@ -1166,6 +1147,35 @@ def compisite_segment_with_one_end_shared_2D(index,vertices_matrix,angles_matrix
     vertices, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices_matrix[index],segment_center_list[index],angles_matrix[index],d_bar, cut_pt_index)
 
     return J,vertices,a,b,Ea,Em
+
+def maya_polygon_plane(generalisedEllipseVertices):
+    """
+    test the plane in Maya
+    """
+    width = 10.0
+    length = 10.0
+    face_count = 1
+    vertex_count = len(generalisedEllipseVertices)
+    # Create vertex positions
+    vertices = om.MFloatPointArray()
+    for v in generalisedEllipseVertices:
+        vertices.append(om.MFloatPoint(v[0] * 300, v[1] * 300, v[2] * 300))
+
+    # Vertex count for this polygon face
+    face_vertexes = om.MIntArray()
+    face_vertexes.append(vertex_count)
+
+    # Vertex indexes for this polygon face
+    vertex_indexes = om.MIntArray()
+    vertex_indexes.copy([i for i in range(vertex_count)])
+
+    # Create mesh
+    mesh_object = om.MObject()
+    mesh = om.MFnMesh()
+    mesh_object = mesh.create(vertices, face_vertexes, vertex_indexes)
+    mesh.updateSurface()
+    # Assign default shading
+    cmds.sets(mesh.name(), edit=True, forceElement="initialShadingGroup")
 
 
 if __name__ == "__main__":
@@ -1390,7 +1400,6 @@ if __name__ == "__main__":
     ]
     """
     file_paths = [
-        'Source_Head_cross_section_u_at_0_percentage_worldspace.dat',
         'Source_Head_cross_section_u_at_5_percentage_worldspace.dat',
         'Source_Head_cross_section_u_at_10_percentage_worldspace.dat',
         'Source_Head_cross_section_u_at_20_percentage_worldspace.dat',
@@ -1512,11 +1521,9 @@ if __name__ == "__main__":
                     J = findJ_for_non_end_composite_3D(vertices_matrix[i], angles_matrix[i], d_bar, segment_center_list[i],
                                                      Ea_criteria, Em_criteria, previous, getCoefficients_for_non_end_composite_single)
                     coe = getCoefficients_for_non_end_composite_3D(J, vertices_matrix[i],
-                                                                     segment_center_list[i], angles_matrix[i],
-                                                                     previous)
+                                                                     segment_center_list[i], angles_matrix[i], previous)
                     composite_vertices_n, Ean, Emn = form_vertices_of_fragment_3D(coe, vertices_matrix[i],
-                                                                 segment_center_list[i], angles_matrix[i],
-                                                                 d_bar, cut_pt_index)
+                                                                 segment_center_list[i], angles_matrix[i],d_bar, cut_pt_index)
                     coefficients.append(coe)
                     composite_vertices.append(composite_vertices_n)
 
@@ -1526,6 +1533,9 @@ if __name__ == "__main__":
                     Ea = (Ea * previous_count + Ean * len(vertices_matrix[-1])) / numPt
                     if Em < Emn:
                         Em = Emn
+
+                    maya_polygon_plane(composite_vertices_n)
+                    maya_polygon_plane(vertices_matrix[i])
                 """
                 # for the end segment that links the first segment
                 tan0, pos0 = position_and_tangent_of_parametric_point_3D(coefficients, angles_matrix[-2][-1])
@@ -1556,7 +1566,7 @@ if __name__ == "__main__":
                 with open(save_file_path, "w+") as f:
                     for i in range(N - 1):
                         f.write('range:')
-                        f.write('{}-{} \n'.format(cut_points[i],cut_points[(i+1) % N]))
+                        f.write('{} to {} \n'.format(angles_matrix[i][0], angles_matrix[i][-1]))
                         f.write('center: {} {} {}\n'.format(segment_center_list[i][0], segment_center_list[i][1], segment_center_list[i][2]))
                         f.write('a: ')
                         for j in coefficients[i][0]:
@@ -1570,10 +1580,10 @@ if __name__ == "__main__":
                         for j in coefficients[i][2]:
                             f.write(str(j) + ' ')
                         f.write('\n')
-                        #f.write('angles: ')
-                        #for j in angles:
-                           #f.write(str(j)+' ')
-                        #f.write('\n')
+                        f.write('angles: ')
+                        for j in angles_matrix[i]:
+                           f.write(str(j)+' ')
+                        f.write('\n')
             else:
                 if 'Foot' in file_path:
                     J = 2
@@ -1625,6 +1635,7 @@ if __name__ == "__main__":
             self.canvas.render(pixmap)
             pixmap.save(file,"PNG")
             file.close()
-        """        
+        """
+
 
 

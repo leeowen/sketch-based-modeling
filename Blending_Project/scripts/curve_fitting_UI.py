@@ -836,7 +836,7 @@ class Canvas(QtWidgets.QDialog):
                     pen1.setWidthF(self.lineWidth)
                     painter.setPen(pen1)
                     for i in range(I):
-                        x_tan, y_tan, x, y = curve_fitting.position_and_tangent_of_parametric_point(self.a, self.b, self.angles[i])
+                        x_tan, y_tan, x, y = curve_fitting.position_and_tangent_of_parametric_point_2D(self.a, self.b, self.angles[i])
                         x += self.center[0]
                         y += self.center[2]
                         t = QtGui.QVector2D(x_tan, y_tan).normalized() * 20.0
@@ -896,7 +896,6 @@ class Canvas(QtWidgets.QDialog):
                 self.Em = Em
                 for i in range(len(fragment_vertices)-1):
                     painter.drawLine(fragment_vertices[i][0]*300+self.width()/2., fragment_vertices[i][2]*300+self.height()/2., fragment_vertices[i+1][0]*300+self.width()/2., fragment_vertices[i+1][2]*300+self.height()/2.)
-                #maya_polygon_plane(self.generalisedEllipseVertices)
 
         elif self.composite_mode == True:
             J1 = 0
@@ -909,6 +908,7 @@ class Canvas(QtWidgets.QDialog):
 
                 J1 = curve_fitting.findJ_2D(self.vertices_matrix[0], self.angles_matrix[0], self.d_bar,
                                          self.segment_center_list[0], self.Ea_criteria, self.Em_criteria,curve_fitting.getCoefficients_2D,curve_fitting.form_vertices_of_fragment_2D,self.cut_points[0])
+                print 0, J1
                 a, b = curve_fitting.getCoefficients_2D(J1,self.vertices_matrix[0],self.segment_center_list[0],self.angles_matrix[0])
                 vertices, self.Ea, self.Em = curve_fitting.form_vertices_of_fragment_2D(a, b, self.vertices_matrix[0],
                                                                                      self.segment_center_list[0],
@@ -952,6 +952,7 @@ class Canvas(QtWidgets.QDialog):
                     self.composite_a.append(a)
                     self.composite_b.append(b)
                     self.J_total += J
+                    print i, J
 
             if self.isClosed == False:  # curve is open
                 inbetween_2D_open_curve_auto_mode()
@@ -963,7 +964,7 @@ class Canvas(QtWidgets.QDialog):
                 self.autoJ_value = self.J_total
                 self.manualJ_value = self.J_total
             else:
-                x0_tan, y0_tan, x0, y0 = curve_fitting.position_and_tangent_of_parametric_point(
+                x0_tan, y0_tan, x0, y0 = curve_fitting.position_and_tangent_of_parametric_point_2D(
                     self.composite_a[-1],
                     self.composite_b[-1],
                     self.angles_matrix[-2][
@@ -972,7 +973,7 @@ class Canvas(QtWidgets.QDialog):
                 y0 += self.segment_center_list[-2][2]
                 previous = {'position x': x0, 'position y': y0, 'tangent x': x0_tan, 'tangent y': y0_tan,
                             'cut point index': self.cut_points[-1]}
-                x1_tan, y1_tan, x1, y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[0],
+                x1_tan, y1_tan, x1, y1 = curve_fitting.position_and_tangent_of_parametric_point_2D(self.composite_a[0],
                                                                                                 self.composite_b[0],
                                                                                                 self.angles_matrix[
                                                                                                     0][
@@ -1019,8 +1020,8 @@ class Canvas(QtWidgets.QDialog):
 
                 #draw_meet_points_tangent()
 
-                #test_x0_tan, test_y0_tan, test_x0, test_y0 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][0])
-                #test_x1_tan, test_y1_tan, test_x1, test_y1 = curve_fitting.position_and_tangent_of_parametric_point(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][-1])
+                #test_x0_tan, test_y0_tan, test_x0, test_y0 = curve_fitting.position_and_tangent_of_parametric_point_2D(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][0])
+                #test_x1_tan, test_y1_tan, test_x1, test_y1 = curve_fitting.position_and_tangent_of_parametric_point_2D(self.composite_a[1], self.composite_b[1], self.angles_matrix[1][-1])
                 #test_x0 += self.segment_center_list[1][0]
                 #test_y0 += self.segment_center_list[1][2]
                 #test_x1 += self.segment_center_list[1][0]
@@ -1194,36 +1195,6 @@ class Canvas(QtWidgets.QDialog):
         
     def getEa(self):
         return self.Ea
-
-
-def maya_polygon_plane(generalisedEllipseVertices):
-    """
-    test the plane in Maya
-    """
-    width = 10.0
-    length = 10.0
-    face_count = 1
-    vertex_count = len(generalisedEllipseVertices)
-    # Create vertex positions
-    vertices = OpenMaya.MFloatPointArray()
-    for v in generalisedEllipseVertices:
-        vertices.append(OpenMaya.MFloatPoint(v[0]*300, 0.0, v[1]*300))
-
-    # Vertex count for this polygon face
-    face_vertexes = OpenMaya.MIntArray()
-    face_vertexes.append(vertex_count)
-
-    # Vertex indexes for this polygon face
-    vertex_indexes = OpenMaya.MIntArray()
-    vertex_indexes.copy([i for i in range(vertex_count)])
-
-    # Create mesh
-    mesh_object = OpenMaya.MObject()
-    mesh = OpenMaya.MFnMesh()
-    mesh_object = mesh.create(vertices, face_vertexes, vertex_indexes)
-    mesh.updateSurface()
-    # Assign default shading
-    cmds.sets(mesh.name(), edit=True, forceElement="initialShadingGroup")
     
     
 if __name__=="__main__":

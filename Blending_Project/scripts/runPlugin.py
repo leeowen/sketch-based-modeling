@@ -71,9 +71,9 @@ for i in leg:
     #myfile.close()
         
         
-head=[1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.05,0.0]    
+head=[1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.05]    
 for i in head:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Head",md=120,mw=True)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Head",md=120,mw=False)
     cmds.parent( tmp, grp )
 
     
