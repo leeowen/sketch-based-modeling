@@ -69,29 +69,66 @@ for i in leg:
         #myfile.write(s)
     #myfile.write(";\n")
     #myfile.close()
-        
-        
-head=[1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.05]    
-for i in head:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Head",md=120,mw=False)
-    cmds.parent( tmp, grp )
 
     
 neck=[0.98,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0]
 for i in neck:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Neck",md=80,mw=True)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Neck",md=80,mw=False)
     cmds.parent( tmp, grp )
 
 
 chest=[0.96,0.86,0.66,0.22]
 for i in chest:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Chest",md=120,mw=True)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Chest",md=120,mw=False)
     cmds.parent( tmp, grp )
+file_paths = [
+'Source_Chest_cross_section_u_at_22_percentage.dat',
+'Source_Chest_cross_section_u_at_66_percentage.dat',
+'Source_Chest_cross_section_u_at_86_percentage.dat',
+'Source_Chest_cross_section_u_at_96_percentage.dat'
+]
+delete_points_list = {'Source_Chest_cross_section_u_at_22_percentage.dat':[34,37,83,86],
+                      'Source_Chest_cross_section_u_at_66_percentage.dat':[30,39,81,90],
+                      'Source_Chest_cross_section_u_at_86_percentage.dat':[28,40,80,92],
+                      'Source_Chest_cross_section_u_at_96_percentage.dat':[28,40,80,92]
+                     }
+                                    
+dir_path = cmds.workspace(fn=True)+'/data/'
+for file_path in file_paths:
+    vertices = []
+    numPt = 0
+    with open(dir_path + file_path, 'r') as f:
+        content = f.readlines()
+        for line in content:
+            p = line.split()
+            numPt += 1
+            vertices.append(om.MVector(float(p[0]), float(p[1]), float(p[2])))
+    # To rebuild the curve:
+    # delete the unnecessary points
+    # approximate the new list of points with trigonometric functions
+    del vertices[delete_points_list.get(file_path)[2]+1:delete_points_list.get(file_path)[3]]
+    del vertices[delete_points_list.get(file_path)[0]+1:delete_points_list.get(file_path)[1]]
 
+    with open(dir_path + 'removed_' + file_path, "w") as f:
+        for v in vertices:
+            f.write('{} {} {}\n'.format(v[0],v[1],v[2]))
+        # rebuild the curve for every cross-section
+        center = curve_fitting.getCenter_2D(vertices)
+        angles = curve_fitting.calculateAngle_2D(vertices, center)
+        d_bar = curve_fitting.get_d_bar_2D(vertices, center)
+        J, coe = curve_fitting.findJ_2D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, start_index=0)
 
-belly=[1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.25,0.18,0.1,0]
+        # add points to replace the deleted points
+        delta_angle = 2 * math.pi / numPt
+        for index in range(delete_points_list.get(file_path)[0], delete_points_list.get(file_path)[1]):
+            angles.insert(index, delta_angle + angles[index])
+        for index in range(delete_points_list.get(file_path)[2], delete_points_list.get(file_path)[3]):
+            angles.insert(index, delta_angle + angles[index])
+        curve_fitting.form_vertices_of_fragment_3D()
+
+belly = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.25, 0.18, 0.1, 0]
 for i in belly:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Belly",md=120,mw=True)
+    tmp=cmds.crossSectionExtract(mu=i, mmn="source_male_mesh", mbn="Source_Belly", md=120, mw=True)
     cmds.parent( tmp, grp )
 
 
