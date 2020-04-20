@@ -29,7 +29,7 @@ def getCenter_2D(vertices):
 def getCenter_3D(vertices):
     center = om.MVector(0.0, 0.0, 0.0)
     for v in vertices:
-        center += v
+        center = center + v
     center = center / len(vertices)
     return center
 
@@ -64,8 +64,10 @@ def calculateAngle_2D(vertices,center):
         elif v[0] < center[0] and v[2] < center[2]:
             anglem = 2 * math.pi - anglem
 
-        if anglem > 2 * math.pi:
+        while anglem > 2 * math.pi:
             anglem = anglem - 2 * math.pi
+        while anglem < 0:
+            anglem = anglem + 2 * math.pi
 
         angles.append(anglem)
     return angles
@@ -133,6 +135,67 @@ def sortCurvature(curvatures):
 
     sorted_d = sorted(dict.items(), key = operator.itemgetter(1))
     return sorted_d
+
+
+def cut_curve(vertices, angles, cut_points, isClosed):
+    N = len(cut_points)
+    numPt = len(vertices)
+    if isClosed == True:
+        if N < 2:
+            raise ValueError('for closed curve, at least 2 cut points are required')
+    else:
+        if N < 1:
+            raise ValueError('for open curve, at least 1 cut point is required')
+    cut_points.sort()  # ascend
+    # split data for N segments
+
+    vertices_matrix = []
+    angles_matrix = []
+    segment_center_list = []
+
+    if isClosed == True:
+        for i in range(N - 1):
+            tmp_vertices = vertices[cut_points[i]:cut_points[(i + 1) % N] + 1]
+            tmp_angles = angles[cut_points[i]:cut_points[(i + 1) % N] + 1]
+
+            vertices_matrix.append(tmp_vertices)
+            angles_matrix.append(tmp_angles)
+            tmp_center = getCenter_2D(tmp_vertices)
+            segment_center_list.append(tmp_center)
+
+        tmp_vertices = vertices[cut_points[N - 1]:numPt]
+        tmp_vertices.extend(vertices[0:cut_points[0] + 1])
+        tmp_angles = angles[cut_points[N - 1]:numPt]
+        tmp_angles.extend(angles[0:cut_points[0] + 1])
+        vertices_matrix.append(tmp_vertices)
+        angles_matrix.append(tmp_angles)
+        tmp_center = getCenter_2D(tmp_vertices)
+        segment_center_list.append(tmp_center)
+    else:
+        tmp_vertices = vertices[0:cut_points[0] + 1]
+        tmp_angles = angles[0:cut_points[0] + 1]
+        vertices_matrix.append(tmp_vertices)
+        angles_matrix.append(tmp_angles)
+        tmp_center = getCenter_2D(tmp_vertices)
+        segment_center_list.append(tmp_center)
+
+        if N > 1:
+            for i in range(N - 1):
+                tmp_vertices = vertices[cut_points[i]:cut_points[i + 1] + 1]
+                tmp_angles = angles[cut_points[i]:cut_points[i + 1] + 1]
+                vertices_matrix.append(tmp_vertices)
+                angles_matrix.append(tmp_angles)
+                tmp_center = getCenter_2D(tmp_vertices)
+                segment_center_list.append(tmp_center)
+
+        tmp_vertices = vertices[cut_points[N - 1]: numPt]
+        tmp_angles = angles[cut_points[N - 1]: numPt]
+        vertices_matrix.append(tmp_vertices)
+        angles_matrix.append(tmp_angles)
+        tmp_center = getCenter_2D(tmp_vertices)
+        segment_center_list.append(tmp_center)
+
+    return vertices_matrix, angles_matrix, segment_center_list
 
 
 def formGeneralizedEllipse_2D(a, b, vertices, center, angles, d_bar,index=0):
@@ -819,11 +882,9 @@ def form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_in
 
     for i in range(I):
         v_i = angles[i]
-        #x_i = center[0] + a[0]
         y_i = center[2] + b[0]
 
         for j in range(1, J + 1):
-            #x_i += (a[2 * j - 1] * math.cos(j * v_i) + a[2 * j] * math.sin(j * v_i))
             y_i += (b[2 * j - 1] * math.sin(j * v_i) + b[2 * j] * math.cos(j * v_i))
 
         x_i = tmp[i]
@@ -852,7 +913,7 @@ def form_vertices_of_fragment_3D(coe, vertices, center, angles, d_bar, start_ind
     for axis in range(len(coe)):
         s = form_vertices_of_fragment_single(coe[axis], center, angles, axis)
         for i in range(I):
-            fragment_vertices[i][k] = s[i]
+            fragment_vertices[i][axis] = s[i]
 
     for i in range(I):
         d_i = 0
@@ -870,8 +931,8 @@ def form_vertices_of_fragment_3D(coe, vertices, center, angles, d_bar, start_ind
     return fragment_vertices, Ea, Em
 
 
-# for both 2D abd 3D
-def form_vertices_of_fragment_single(coe, center, angles, axis):
+# for both 2D and 3D
+def form_vertices_of_fragment_single(coe, center, angles, axis): # coe is 1-dimensional
     I = len(angles)
     fragment_vertices = []
 
@@ -909,11 +970,11 @@ def findJ_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, start_in
     J = [3, 2, 3]
     coe = []
     for axis in [0, 1, 2]:# x,y,z axis
-        coe.append(getCoefficients_single(J, vertices, center, angles, axis))
+        tmp = getCoefficients_single(J, vertices, center, angles, axis)
         Ea = 0
         Em = 0
         def f():
-            fragment_vertices_i = form_vertices_of_fragment_single(coe[axis],center, angles, axis)
+            fragment_vertices_i = form_vertices_of_fragment_single(tmp,center, angles, axis)
             for i in range(len(vertices)):
                 d_i = math.abs(vertices[i][axis]-fragment_vertices_i[i][axis])
                 index = (i + start_index) % numPt
@@ -921,12 +982,11 @@ def findJ_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, start_in
                 if Em < d_i / d_bar[index]:
                     Em = d_i / d_bar[index]
             Ea = Ea / len(vertices)
-        tmp=[]
         while Ea >= (Ea_criteria/2.0) or Em >= (Em_criteria/2.0):
             J[axis] += 1
             tmp = getCoefficients_single(J, vertices, center, angles, axis)
             f()
-        coe[axis] = tmp
+        coe.append(tmp)
     return J, coe
 
 
@@ -1024,7 +1084,7 @@ def findJ_for_non_end_composite_2D(vertices, angles, d_bar, center, Ea_criteria,
     a, b = getCoefficients_for_non_end_composite_2D(J, vertices, center, angles, previous)
     v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
 
-    while Ea >= Ea_criteria or Em >= Em_criteria:
+    while Ea >= Ea_criteria/1.5 or Em >= Em_criteria/1.5:
         J += 1
         a, b = getCoefficients_for_non_end_composite_2D(J, vertices, center, angles, previous)
         v, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_index)
