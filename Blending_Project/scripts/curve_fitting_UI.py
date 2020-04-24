@@ -871,9 +871,11 @@ class Canvas(QtWidgets.QDialog):
 
                 J0 = curve_fitting.findJ_2D(self.vertices_matrix[0], self.angles_matrix[0], self.d_bar,
                                          self.segment_center_list[0], self.Ea_criteria, self.Em_criteria,curve_fitting.getCoefficients_2D,curve_fitting.form_vertices_of_fragment_2D,self.cut_points[0])
+
                 self.J_total += J0
                 print "J0 = {}".format(J0)
                 a, b = curve_fitting.getCoefficients_2D(J0,self.vertices_matrix[0],self.segment_center_list[0],self.angles_matrix[0])
+
                 vertices, self.Ea, self.Em = curve_fitting.form_vertices_of_fragment_2D(a, b, self.vertices_matrix[0],
                                                                                      self.segment_center_list[0],
                                                                                      self.angles_matrix[0], self.d_bar,
@@ -917,6 +919,7 @@ class Canvas(QtWidgets.QDialog):
                     self.composite_a.append(a)
                     self.composite_b.append(b)
                     self.J_total += J
+
                     print "J{} = {}".format(i, J)
 
             if self.isClosed == False:  # curve is open

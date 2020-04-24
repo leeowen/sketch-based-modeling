@@ -897,6 +897,7 @@ def form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_in
     Em = 0.0
     d = []
     J = (len(a) - 1) / 2
+
     tmp = form_vertices_of_fragment_single(a, center, angles, 0)
 
     for i in range(I):
@@ -948,6 +949,7 @@ def form_vertices_of_fragment_3D(coe, vertices, center, angles, d_bar, start_ind
     Ea = Ea / I
 
     return fragment_vertices, Ea, Em
+
 
 
 # for both 2D and 3D
@@ -1010,6 +1012,7 @@ def calculate_Ea_Em(before_vertices, after_vertices, d_bar, start_index, axis):
 
 
 # whole single curve, and first segment
+<<<<<<< HEAD
 def findJ_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, start_index):
     J = [3, 1, 3]
     coe = []
@@ -1017,7 +1020,7 @@ def findJ_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, start_in
     for axis in [0, 1, 2]:# x,y,z axis
         Ea = 99999.9
         Em = 99999.9
-        while Ea >= Ea_criteria/1.4 or Em >= Em_criteria:
+        while Ea >= Ea_criteria/2.5 or Em >= Em_criteria/2.5:
             tmp = getCoefficients_single(J, vertices, center, angles, axis)
             fragment_vertices_i = form_vertices_of_fragment_single(tmp, center, angles, axis)
             Ea, Em = calculate_Ea_Em(vertices, fragment_vertices_i, d_bar, start_index, axis)
@@ -1276,4 +1279,5 @@ def rebuild_curve(file_path, vertices, delete_points_list):
 
 if __name__ == "__main__":
     pass
+
 
