@@ -584,65 +584,6 @@ class Canvas(QtWidgets.QDialog):
         self.manualJ_value=j
         self.update()
 
-    """
-    def cut_curve(self,cut_points):
-        if self.isClosed == True:
-            try:
-                if len(cut_points)<2:
-                    raise ValueError('for closed curve, at least 2 cut points are required')
-            except ValueError:
-                error_dialog = QtWidgets.QErrorMessage(self)
-                error_dialog.showMessage('Please choose at least 2 cut points for closed curve segmentation')
-        cut_points.sort() #ascend
-        self.cut_points = cut_points
-        # split data for N segments
-        N = len(self.cut_points)
-        self.vertices_matrix = []
-        self.angles_matrix = []
-        self.segment_center_list = []
-
-        if self.isClosed == True:
-            for i in range(N - 1):
-                tmp_vertices = self.vertices[self.cut_points[i]:self.cut_points[(i+1) % N]+1]
-                tmp_angles = self.angles[self.cut_points[i]:self.cut_points[(i+1) % N]+1]
-
-                self.vertices_matrix.append(tmp_vertices)
-                self.angles_matrix.append(tmp_angles)
-                tmp_center = curve_fitting.getCenter_2D(tmp_vertices)
-                self.segment_center_list.append(tmp_center)
-
-            tmp_vertices = self.vertices[self.cut_points[N-1]:self.numPt]
-            tmp_vertices.extend(self.vertices[0:self.cut_points[0] + 1])
-            tmp_angles = self.angles[self.cut_points[N-1]:self.numPt]
-            tmp_angles.extend(self.angles[0:self.cut_points[0] + 1])
-            self.vertices_matrix.append(tmp_vertices)
-            self.angles_matrix.append(tmp_angles)
-            tmp_center = curve_fitting.getCenter_2D(tmp_vertices)
-            self.segment_center_list.append(tmp_center)
-        else:
-            tmp_vertices = self.vertices[0:self.cut_points[0] + 1]
-            tmp_angles = self.angles[0:self.cut_points[0] + 1]
-            self.vertices_matrix.append(tmp_vertices)
-            self.angles_matrix.append(tmp_angles)
-            tmp_center = curve_fitting.getCenter_2D(tmp_vertices)
-            self.segment_center_list.append(tmp_center)
-
-            if N > 1:
-                for i in range(N - 1):
-                    tmp_vertices = self.vertices[self.cut_points[i]:self.cut_points[i + 1] + 1]
-                    tmp_angles = self.angles[self.cut_points[i]:self.cut_points[i + 1] + 1]
-                    self.vertices_matrix.append(tmp_vertices)
-                    self.angles_matrix.append(tmp_angles)
-                    tmp_center = curve_fitting.getCenter_2D(tmp_vertices)
-                    self.segment_center_list.append(tmp_center)
-
-            tmp_vertices = self.vertices[self.cut_points[N - 1]: self.numPt]
-            tmp_angles = self.angles[self.cut_points[N - 1]: self.numPt]
-            self.vertices_matrix.append(tmp_vertices)
-            self.angles_matrix.append(tmp_angles)
-            tmp_center = curve_fitting.getCenter_2D(tmp_vertices)
-            self.segment_center_list.append(tmp_center)
-    """
 
     def readFile(self,file_path):
         self.vertices = []
@@ -771,61 +712,30 @@ class Canvas(QtWidgets.QDialog):
                                   'Source_Chest_cross_section_u_at_66_percentage.dat': [30, 39, 81, 90],
                                   'Source_Chest_cross_section_u_at_86_percentage.dat': [28, 40, 80, 92],
                                   'Source_Chest_cross_section_u_at_96_percentage.dat': [28, 40, 80, 92]}
-            dir_path = cmds.workspace(fn=True) + '/data/'
 
-            # To rebuild the curve:
-            # delete the unnecessary points
-            # approximate the new list of points with trigonometric functions
-            file_path = file_path.split('/')[-1]
-            del self.vertices[delete_points_list.get(file_path)[2] + 1:delete_points_list.get(file_path)[3]]
-            del self.vertices[delete_points_list.get(file_path)[0] + 1:delete_points_list.get(file_path)[1]]
-            with open(dir_path + 'removed_' + file_path, "w") as f:
-                for v in self.vertices:
-                    f.write('{} {} {}\n'.format(v[0], v[1], v[2]))
-            # rebuild the curve for every cross-section
+            self.vertices = curve_fitting.rebuild_curve(file_path, self.vertices, delete_points_list)
             self.center = curve_fitting.getCenter_3D(self.vertices)
             self.angles = curve_fitting.calculateAngle_3D(self.vertices, self.center)
             self.d_bar = curve_fitting.get_d_bar_3D(self.vertices, self.center)
-            J = [20, 2, 20]
-            coe = curve_fitting.getCoefficients_3D(J, self.vertices, self.center, self.angles)
-            a = coe[0]
-            b = coe[2]
-            # add points to replace the deleted points
-            delta_angle = (self.angles[delete_points_list.get(file_path)[0] + 1] - self.angles[
-                delete_points_list.get(file_path)[0]]) / (
-                                  delete_points_list.get(file_path)[1] - delete_points_list.get(file_path)[0])
-            for index in range(delete_points_list.get(file_path)[0],
-                               delete_points_list.get(file_path)[1] - 1):
-                self.angles.insert(index + 1, delta_angle + self.angles[index])
-            for index in range(delete_points_list.get(file_path)[2],
-                               delete_points_list.get(file_path)[3] - 1):
-                self.angles.insert(index + 1, delta_angle + self.angles[index])
-            tmp_x = curve_fitting.form_vertices_of_fragment_single(coe[0], self.center, self.angles, 0)
-            tmp_y = curve_fitting.form_vertices_of_fragment_single(coe[1], self.center, self.angles, 1)
-            tmp_z = curve_fitting.form_vertices_of_fragment_single(coe[2], self.center, self.angles, 2)
-            new_vertices = []
-            for i in range(len(tmp_x)):
-                new_vertices.append(om.MVector(tmp_x[i], tmp_y[i], tmp_z[i]))
-            self.vertices = new_vertices
-            self.numPt = len(new_vertices)
+            self.numPt = len(self.vertices)
 
             self.cut_points = [28, 40, 80, 92]
             self.vertices_matrix, self.angles_matrix, self.segment_center_list = curve_fitting.cut_curve(self.vertices, self.angles, self.cut_points, self.isClosed)
 
 
     def setLineWidth(self,width):
-        self.lineWidth=width
+        self.lineWidth = width
         self.update()
         
     
     def set_fragment_range(self,value):   
-        self.fragment_range=value
+        self.fragment_range = value
         self.update()
         
          
-    def paintEvent(self,evt):
-        painter=QtGui.QPainter(self)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing,True)
+    def paintEvent(self, evt):
+        painter = QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
         # Draw the background
         painter.setBrush(Canvas.backgroundColor)
         painter.drawRect(self.rect())
@@ -1242,7 +1152,6 @@ class Canvas(QtWidgets.QDialog):
         else:
             width=a0u/a0b
             height=b0u/b0b
-            center = QtCore.QPointF(self.center[0], self.center[2])
             painter.drawEllipse(QtCore.QPointF(self.width()/2., self.height()/2.), width*300, height*300)
 
 

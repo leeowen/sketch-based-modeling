@@ -2,6 +2,7 @@ import math,sys, os
 import operator
 from PySide2 import QtCore, QtGui
 import maya.api.OpenMaya as om
+import maya.cmds as cmds
 
 sys.path.append('/usr/lib64/python2.7/site-packages')
 sys.path.append('./.local/lib/python2.7/site-packages')
@@ -160,7 +161,7 @@ def cut_curve(vertices, angles, cut_points, isClosed):
 
             vertices_matrix.append(tmp_vertices)
             angles_matrix.append(tmp_angles)
-            tmp_center = getCenter_2D(tmp_vertices)
+            tmp_center = getCenter_3D(tmp_vertices)
             segment_center_list.append(tmp_center)
 
         tmp_vertices = vertices[cut_points[N - 1]:numPt]
@@ -169,14 +170,15 @@ def cut_curve(vertices, angles, cut_points, isClosed):
         tmp_angles.extend(angles[0:cut_points[0] + 1])
         vertices_matrix.append(tmp_vertices)
         angles_matrix.append(tmp_angles)
-        tmp_center = getCenter_2D(tmp_vertices)
+        tmp_center = getCenter_3D(tmp_vertices)
         segment_center_list.append(tmp_center)
+
     else:
         tmp_vertices = vertices[0:cut_points[0] + 1]
         tmp_angles = angles[0:cut_points[0] + 1]
         vertices_matrix.append(tmp_vertices)
         angles_matrix.append(tmp_angles)
-        tmp_center = getCenter_2D(tmp_vertices)
+        tmp_center = getCenter_3D(tmp_vertices)
         segment_center_list.append(tmp_center)
 
         if N > 1:
@@ -185,14 +187,14 @@ def cut_curve(vertices, angles, cut_points, isClosed):
                 tmp_angles = angles[cut_points[i]:cut_points[i + 1] + 1]
                 vertices_matrix.append(tmp_vertices)
                 angles_matrix.append(tmp_angles)
-                tmp_center = getCenter_2D(tmp_vertices)
+                tmp_center = getCenter_3D(tmp_vertices)
                 segment_center_list.append(tmp_center)
 
         tmp_vertices = vertices[cut_points[N - 1]: numPt]
         tmp_angles = angles[cut_points[N - 1]: numPt]
         vertices_matrix.append(tmp_vertices)
         angles_matrix.append(tmp_angles)
-        tmp_center = getCenter_2D(tmp_vertices)
+        tmp_center = getCenter_3D(tmp_vertices)
         segment_center_list.append(tmp_center)
 
     return vertices_matrix, angles_matrix, segment_center_list
@@ -398,19 +400,25 @@ def getCoefficients3_swap_yz(J,vertices,center,angles):# abtain a[2j+1] and b[2j
     return a, b, c
 
 
-def getCoefficients_single(J,vertices,center,angles,axis):
-    if J[axis]<0:
-        raise IllegalArgumentError('J must be no smaller than 0, you input {0}'.format(J))
+def getCoefficients_single(J, vertices, center, angles, axis):
+    JJ = 0
+    if isinstance(J,list):
+        JJ = J[axis]
+    elif isinstance(J,int):
+        JJ = J
+
+    if JJ < 0:
+        raise IllegalArgumentError('J must be no smaller than 0, you input {0}'.format(JJ))
     I = len(vertices)
-    ConstArray = np.zeros(2 * J[axis] + 1)
-    CoefficientMatrix = np.ndarray(shape=(2 * J[axis] + 1, I), dtype=float, order='C')  # row-major
+    ConstArray = np.zeros(2 * JJ + 1)
+    CoefficientMatrix = np.ndarray(shape=(2 * JJ + 1, I), dtype=float, order='C')  # row-major
 
     for i in range(I):
         CoefficientMatrix[0, i] = 1.
 
     for i in range(I):  # for CoefficientMatrix's column
         vi = angles[i]
-        for j in range(1, J[axis] + 1):  # for aCoefficientMatrix's row
+        for j in range(1, JJ + 1):  # for aCoefficientMatrix's row
             CoefficientMatrix[2 * j - 1, i] = math.cos(vi * j)
             CoefficientMatrix[2 * j, i] = math.sin(vi * j)
 
@@ -695,6 +703,16 @@ def getCoefficients_for_end_composite_3D(J, vertices, center, angles, previous, 
 
 def getCoefficients_for_non_end_composite_single(J, vertices, center, angles, previous, axis): # J is a scalar, not a vector
     I = len(vertices)
+    if len(center) != 3:
+        raise ValueError("bad center, you input {}".format(center))
+    if len(angles) != I:
+        raise ValueError("the number of angles({}) does not equal to that of vertices{}".format(len(angles), I))
+    if not axis in [0,1,2]:
+        raise ValueError("axis should be one of 0,1,2")
+    if isinstance(J, list):
+        J = J[axis]
+    elif isinstance(J, int):
+        pass
     ConstArray = np.zeros(2 * J + 1)
     CoefficientMatrix = np.zeros(shape=(2 * J + 1, 2 * J + 1), dtype=float, order='C')  # row-major
     Pv0 = previous['position x']
@@ -906,19 +924,19 @@ def form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_in
 def form_vertices_of_fragment_3D(coe, vertices, center, angles, d_bar, start_index):
     I = len(vertices)
     numPt = len(d_bar)
-    fragment_vertices = [[0 for i in range(len(coe))] for j in range(I)]
+    fragment_vertices = [[0 for i in range(3)] for j in range(I)]
     Ea = 0.0
     Em = 0.0
     d = []
-    for axis in range(len(coe)):
+    for axis in range(3):
         s = form_vertices_of_fragment_single(coe[axis], center, angles, axis)
         for i in range(I):
             fragment_vertices[i][axis] = s[i]
 
     for i in range(I):
         d_i = 0
-        for k in range(len(coe)):
-            d_i = d_i + (vertices[i][k] - fragment_vertices[i][k])**2
+        for axis in range(3):
+            d_i = d_i + (vertices[i][axis] - fragment_vertices[i][axis])**2
         d_i = math.sqrt(d_i)
         d.append(d_i)
         index = (i + start_index) % numPt
@@ -936,6 +954,10 @@ def form_vertices_of_fragment_single(coe, center, angles, axis): # coe is 1-dime
     I = len(angles)
     fragment_vertices = []
 
+    if isinstance(coe[0], float):
+        pass
+    elif isinstance(coe[0], list):
+        coe = coe[axis]
     J = (len(coe) - 1) / 2
     for i in range(I):
         v_i = angles[i]
@@ -965,28 +987,43 @@ def findJ_2D(vertices,angles,d_bar,center,Ea_criteria,Em_criteria,func_getCoeffi
     return J
 
 
+def calculate_Ea_Em(before_vertices, after_vertices, d_bar, start_index, axis):
+    Ea = 0
+    Em = 0
+    numPt = len(d_bar)
+    for i in range(len(after_vertices)):
+        d_i = 0
+        N = 0
+        if isinstance(after_vertices[0], float):
+            d_i = abs(before_vertices[i][axis] - after_vertices[i])
+            N = len(after_vertices)
+        elif isinstance(after_vertices[0], om.MVector):
+            d_i = abs(before_vertices[i][axis] - after_vertices[i][axis])
+            N = len(after_vertices[0])
+        index = (i + start_index) % numPt
+        Ea += (d_i / d_bar[index])
+        if Em < d_i / d_bar[index]:
+            Em = d_i / d_bar[index]
+    Ea = Ea / N
+    return Ea, Em
+
+
 # whole single curve, and first segment
 def findJ_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, start_index):
-    J = [3, 2, 3]
+    J = [3, 1, 3]
     coe = []
+
     for axis in [0, 1, 2]:# x,y,z axis
-        tmp = getCoefficients_single(J, vertices, center, angles, axis)
-        Ea = 0
-        Em = 0
-        def f():
-            fragment_vertices_i = form_vertices_of_fragment_single(tmp,center, angles, axis)
-            for i in range(len(vertices)):
-                d_i = math.abs(vertices[i][axis]-fragment_vertices_i[i][axis])
-                index = (i + start_index) % numPt
-                Ea += (d_i / d_bar[index])
-                if Em < d_i / d_bar[index]:
-                    Em = d_i / d_bar[index]
-            Ea = Ea / len(vertices)
-        while Ea >= (Ea_criteria/2.0) or Em >= (Em_criteria/2.0):
-            J[axis] += 1
+        Ea = 99999.9
+        Em = 99999.9
+        while Ea >= Ea_criteria/1.4 or Em >= Em_criteria:
             tmp = getCoefficients_single(J, vertices, center, angles, axis)
-            f()
+            fragment_vertices_i = form_vertices_of_fragment_single(tmp, center, angles, axis)
+            Ea, Em = calculate_Ea_Em(vertices, fragment_vertices_i, d_bar, start_index, axis)
+            J[axis] += 1
+
         coe.append(tmp)
+
     return J, coe
 
 
@@ -1092,34 +1129,25 @@ def findJ_for_non_end_composite_2D(vertices, angles, d_bar, center, Ea_criteria,
     return J
 
 
-def findJ_for_non_end_composite_3D(vertices, angles, d_bar, segment_center, Ea_criteria, Em_criteria, previous, func_getCoefficients_for_non_end_composite_single_3D):
+def findJ_for_non_end_composite_3D(vertices_one_segment, angles, d_bar, segment_center, Ea_criteria, Em_criteria, previous, func_getCoefficients_for_non_end_composite_single_3D):
     J = [1,1,1]
     coe = []
-    numPt = len(d_bar)
+    start_index = previous['cut point index']
     for axis in [0, 1, 2]:  # x,y,z axis
-        coe.append(func_getCoefficients_for_non_end_composite_single_3D(J[axis], vertices, segment_center, angles, previous, axis))
-        Ea = 0
+        Ea = 99999.9
         Em = 0
-
-        def f():
-            fragment_vertices_i = form_vertices_of_fragment_single(coe[axis], segment_center, angles, axis)
-            for i in range(len(vertices)):
-                d_i = math.abs(vertices[i][axis] - fragment_vertices_i[i][axis])
-                index = (i + start_index) % numPt
-                Ea += (d_i / d_bar[index])
-                if Em < d_i / d_bar[index]:
-                    Em = d_i / d_bar[index]
-            Ea = Ea / len(vertices)
-
         tmp = []
-        while Ea >= (Ea_criteria/2.0) or Em >= (Em_criteria/2.0):
-            J[axis] += 1
-            tmp = func_getCoefficients_for_non_end_composite_single_3D(J, vertices, segment_center, angles, previous, axis)
-            f()
+        for iterate in range(10):#while Ea >= (Ea_criteria/1.5) or Em >= (Em_criteria/1.5):
+            tmp = func_getCoefficients_for_non_end_composite_single_3D(J, vertices_one_segment, segment_center, angles, previous, axis)
+            fragment_vertices_i = form_vertices_of_fragment_single(tmp, segment_center, angles, axis)
+            Ea, Em = calculate_Ea_Em(vertices_one_segment, fragment_vertices_i, d_bar, start_index, axis)
+            if Ea <= (Ea_criteria/1.5) and Em <= (Em_criteria/1.5):
+                break
+            else:
+                J[axis] += 1
+        coe.append(tmp)
 
-        coe[axis] = tmp
-
-    return J
+    return J, coe
 
 
 def findJ_for_end_segment_2D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous, next):
@@ -1145,11 +1173,10 @@ def findJ_for_end_segment_2D(vertices, angles, d_bar, center, Ea_criteria, Em_cr
         return J
 
 
-def findJ_for_end_segment_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous, next):
+def findJ_for_end_segment_3D(vertices, angles, center, Ea_criteria, Em_criteria, previous, next):
     # for the end segment that links the first segment
     J = [3,3,3]
     for axis in [0,1,2]:
-        start_index = previous['cut point index']
         coe = getCoefficients_for_end_composite_single(J[axis], vertices, center, angles, previous, next, axis)
         v, Ea, Em = form_vertices_of_fragment_single(coe, center, angles, axis)
         if Ea < Ea_criteria/2.0 and Em < Em_criteria/2.0:
@@ -1183,13 +1210,16 @@ def position_and_tangent_of_parametric_point_2D(a_adjacent, b_adjacent, angle):
 
 def position_and_tangent_of_parametric_point_3D(coe_adjacent, angle):
     tan = [0, 0, 0]
+    if len(coe_adjacent) != 3:
+        raise ValueError("coe_adjacent should be a 3XN 2 dimentional list")
+    if not isinstance(coe_adjacent[0][0], float):
+        raise ValueError("bad coe_adjacent")
     pos = [coe_adjacent[0][0], coe_adjacent[1][0], coe_adjacent[2][0]]
     J = [(len(coe_adjacent[0])-1)/2, (len(coe_adjacent[1])-1)/2, (len(coe_adjacent[2])-1)/2]
     for axis in range(3):
         for j in range(1, J[axis]+1):
-            tan[axis] = tan[axis] + coe_adjacent[axis][2 * j] * j * math.cos(j * angle) - coe_adjacent[axis][2 * j - 1] * j * math.sin(j * angle)
-            pos[axis] = pos[axis] + coe_adjacent[axis][2 * j - 1] * math.cos(j * angle) + coe_adjacent[axis][2 * j] * math.sin(j * angle)
-
+            tan[axis] += coe_adjacent[axis][2 * j] * j * math.cos(j * angle) - coe_adjacent[axis][2 * j - 1] * j * math.sin(j * angle)
+            pos[axis] += coe_adjacent[axis][2 * j - 1] * math.cos(j * angle) + coe_adjacent[axis][2 * j] * math.sin(j * angle)
     return tan, pos
 
 
@@ -1209,6 +1239,42 @@ def compisite_segment_with_one_end_shared_2D(index,vertices_matrix,angles_matrix
     vertices, Ea, Em = form_vertices_of_fragment_2D(a, b, vertices_matrix[index],segment_center_list[index],angles_matrix[index],d_bar, cut_pt_index)
 
     return J,vertices,a,b,Ea,Em
+
+
+def rebuild_curve(file_path, vertices, delete_points_list):
+    # To rebuild the curve:
+    # delete the unnecessary points
+    # approximate the new list of points with trigonometric functions
+    dir_path = cmds.workspace(fn=True) + '/data/'
+    file_path = file_path.split('/')[-1]
+    del vertices[delete_points_list.get(file_path)[2] + 1:delete_points_list.get(file_path)[3]]
+    del vertices[delete_points_list.get(file_path)[0] + 1:delete_points_list.get(file_path)[1]]
+    with open(dir_path + 'removed_' + file_path, "w") as f:
+        for v in vertices:
+            f.write('{} {} {}\n'.format(v[0], v[1], v[2]))
+    # rebuild the curve for every cross-section
+    center = getCenter_3D(vertices)
+    angles = calculateAngle_3D(vertices, center)
+    J = [20, 2, 20]
+    coe = getCoefficients_3D(J, vertices, center, angles)
+    # add points to replace the deleted points
+    delta_angle = (angles[delete_points_list.get(file_path)[0] + 1] - angles[delete_points_list.get(file_path)[0]]) / (
+                          delete_points_list.get(file_path)[1] - delete_points_list.get(file_path)[0])
+    for index in range(delete_points_list.get(file_path)[0],
+                       delete_points_list.get(file_path)[1] - 1):
+        angles.insert(index + 1, delta_angle + angles[index])
+    for index in range(delete_points_list.get(file_path)[2],
+                       delete_points_list.get(file_path)[3] - 1):
+        angles.insert(index + 1, delta_angle + angles[index])
+    tmp_x = form_vertices_of_fragment_single(coe[0], center, angles, 0)
+    tmp_y = form_vertices_of_fragment_single(coe[1], center, angles, 1)
+    tmp_z = form_vertices_of_fragment_single(coe[2], center, angles, 2)
+    new_vertices = []
+    for i in range(len(tmp_x)):
+        new_vertices.append(om.MVector(tmp_x[i], tmp_y[i], tmp_z[i]))
+    vertices = new_vertices
+
+    return vertices
 
 
 if __name__ == "__main__":

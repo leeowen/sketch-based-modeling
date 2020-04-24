@@ -79,7 +79,7 @@ for i in neck:
 
 chest=[0.96,0.86,0.66,0.22]
 for i in chest:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Chest",md=120,mw=False)
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Chest",md=120,mw=True)
     cmds.parent( tmp, grp )
 
 
