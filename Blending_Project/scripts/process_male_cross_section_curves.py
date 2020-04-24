@@ -356,28 +356,23 @@ for file_path in file_paths:
             composite_coefficients.append(coe)
             Ea = Ea + Ea0
             Em = Em + Em0
-
+            maya_polygon_plane(composite_vertices_0)
 
             # for in-between segment(s)
             for i in range(1, len(cut_points) - 1):
                 cut_pt_index = cut_points[i - 1]
-                tan0, p0 = curve_fitting.position_and_tangent_of_parametric_point_3D(composite_coefficients[- 1],
+                tan0, p0 = curve_fitting.position_and_tangent_of_parametric_point_3D(composite_coefficients[-1],
                                                                        angles_matrix[i - 1][-1])
                 p0[0] += segment_center_list[i - 1][0]
                 p0[1] += segment_center_list[i - 1][1]
                 p0[2] += segment_center_list[i - 1][2]
-                print i
-                print p0
-                print composite_vertices[-1][-1]
+
                 cut_pt_index = cut_points[i]
                 previous = {'position x': p0[0], 'position y': p0[1], 'position z': p0[2], 'tangent x': tan0[0],
                             'tangent y': tan0[1], 'tangent z': tan0[2],
                             'cut point index': cut_pt_index}
-                # J, coe = findJ_for_non_end_composite_3D(vertices_matrix[index], angles_matrix[index], d_bar, segment_center_list[index],
-                # Ea_criteria, Em_criteria, previous, getCoefficients_for_non_end_composite_single)
-                J = [3, 2, 3]
-                coen = curve_fitting.getCoefficients_for_non_end_composite_3D(J, vertices_matrix[i], segment_center_list[i],
-                                                               angles_matrix[i], previous)
+                J, coen = curve_fitting.findJ_for_non_end_composite_3D(vertices_matrix[i], angles_matrix[i], d_bar, segment_center_list[i], Ea_criteria, Em_criteria, previous, curve_fitting.getCoefficients_for_non_end_composite_single)
+                #coen = curve_fitting.getCoefficients_for_non_end_composite_3D(J, vertices_matrix[i], segment_center_list[i], angles_matrix[i], previous)
 
                 composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment_3D(coen, vertices_matrix[i], segment_center_list[i],
                                                                 angles_matrix[i], d_bar, cut_pt_index)
@@ -386,33 +381,33 @@ for file_path in file_paths:
                 Em = max(Em, Emn)
                 composite_vertices.append(composite_vertices_n)
                 composite_coefficients.append(coen)
-                #print "J{} = {}".format(i, J)
+                print "J{} = {}".format(i, J)
                 maya_polygon_plane(composite_vertices_n)
 
             # for the end segment that links the first segment
-            #x0_tan, y0_tan, z0_tan, x0, y0, z0 = curve_fitting.position_and_tangent_of_parametric_point_3D(composite_coefficients, angles_matrix[-2][-1])
-            #x0 += segment_center_list[-2][0]
-            #y0 += segment_center_list[-2][1]
-            #z0 += segment_center_list[-2][2]
-            #previous = {'position x': x0, 'position y': y0, 'position z': z0, 'tangent x': x0_tan, 'tangent y': y0_tan,'tangent z': z0_tan, 'cut point index': cut_points[-1]}
-            #x1_tan, y1_tan, z1_tan, x1, y1, z1 = curve_fitting.position_and_tangent_of_parametric_point_3D(composite_coefficients, angles_matrix[0][0])
-            #x1 += segment_center_list[0][0]
-            #y1 += segment_center_list[0][1]
-            #z1 += segment_center_list[0][2]
-            #next = {'position x': x1, 'position y': y1, 'position z': z1, 'tangent x': x1_tan, 'tangent y': y1_tan, 'tangent z': z1_tan, 'cut point index': cut_points[0]}
+            tan0, p0 = curve_fitting.position_and_tangent_of_parametric_point_3D(composite_coefficients[-1], angles_matrix[-2][-1])
+            p0[0] += segment_center_list[-2][0]
+            p0[1] += segment_center_list[-2][1]
+            p0[2] += segment_center_list[-2][2]
+            previous = {'position x': p0[0], 'position y': p0[1], 'position z': p0[2], 'tangent x': tan0[0], 'tangent y': tan0[1], 'tangent z': tan0[2], 'cut point index': cut_points[-1]}
+            tan1, p1 = curve_fitting.position_and_tangent_of_parametric_point_3D(composite_coefficients[0], angles_matrix[0][0])
+            p1[0] += segment_center_list[0][0]
+            p1[1] += segment_center_list[0][1]
+            p1[2] += segment_center_list[0][2]
+            next = {'position x': p1[0], 'position y': p1[1], 'position z': p1[2], 'tangent x': tan1[0], 'tangent y': tan1[1], 'tangent z': tan1[2], 'cut point index': cut_points[0]}
 
+            Jn = curve_fitting.findJ_for_end_segment_3D(vertices_matrix[-1], angles_matrix[-1], d_bar, segment_center_list[-1], Ea_criteria, Em_criteria, previous, next)
+            print "J{} = {}".format(len(cut_points) - 1, Jn)
+            coen = curve_fitting.getCoefficients_for_end_composite_3D(Jn, vertices_matrix[-1], segment_center_list[-1], angles_matrix[-1], previous, next)
+            composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment_3D(coen, vertices_matrix[-1], segment_center_list[-1], angles_matrix[-1], d_bar, cut_points[-1])
+            composite_coefficients.append(coen)
+            composite_vertices.append(composite_vertices_n)
 
-            #Jn = curve_fitting.findJ_for_end_segment_3D(vertices_matrix[-1], angles_matrix[-1], d_bar, segment_center_list[-1], Ea_criteria, Em_criteria, previous, next)
-            #coen = curve_fitting.getCoefficients_for_end_composite_3D(Jn, vertices_matrix[-1], segment_center_list[-1], angles_matrix[-1], previous, next)
-            #composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment_3D(coen, vertices_matrix[-1], segment_center_list[-1], angles_matrix[-1], d_bar, cut_points[-1])
-            #composite_coefficients.append(coen)
-            #composite_vertices.append(composite_vertices_n)
+            Ea = (Ea * (numPt - len(vertices_matrix[-1])) + Ean * len(vertices_matrix[-1])) / numPt
+            if Em < Emn:
+                Em = Emn
 
-            #Ea = (Ea * (numPt - len(vertices_matrix[-1])) + Ean * len(vertices_matrix[-1])) / numPt
-            #if Em < Emn:
-                #Em = Emn
-            #print "J{} = {}".format(len(cut_points) - 1, Jn)
-
+            maya_polygon_plane(composite_vertices_n)
         """
                 # for the segment(s) in-between
                 for i in range(1, len(cut_points) - 1):

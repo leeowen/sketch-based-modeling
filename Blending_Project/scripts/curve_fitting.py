@@ -691,14 +691,15 @@ def getCoefficients_for_end_composite_single(J, Vertices, Center, Angles, previo
     print res_s.message
     """
 
-    return res_s
+    return res_s.x
 
 
 def getCoefficients_for_end_composite_3D(J, vertices, center, angles, previous, next):
-    res = []
+    coe = []
     for axis in [0, 1, 2]:
-        res.append(getCoefficients_for_end_composite_single(J[axis], vertices, center, angles, previous, next, axis))
-    return res
+        res = getCoefficients_for_end_composite_single(J[axis], vertices, center, angles, previous, next, axis)
+        coe.append(res)
+    return coe
 
 
 def getCoefficients_for_non_end_composite_single(J, vertices, center, angles, previous, axis): # J is a scalar, not a vector
@@ -1141,7 +1142,7 @@ def findJ_for_non_end_composite_3D(vertices_one_segment, angles, d_bar, segment_
             tmp = func_getCoefficients_for_non_end_composite_single_3D(J, vertices_one_segment, segment_center, angles, previous, axis)
             fragment_vertices_i = form_vertices_of_fragment_single(tmp, segment_center, angles, axis)
             Ea, Em = calculate_Ea_Em(vertices_one_segment, fragment_vertices_i, d_bar, start_index, axis)
-            if Ea <= (Ea_criteria/1.5) and Em <= (Em_criteria/1.5):
+            if Ea <= (Ea_criteria/2.5) and Em <= (Em_criteria/2.5):
                 break
             else:
                 J[axis] += 1
@@ -1173,23 +1174,19 @@ def findJ_for_end_segment_2D(vertices, angles, d_bar, center, Ea_criteria, Em_cr
         return J
 
 
-def findJ_for_end_segment_3D(vertices, angles, center, Ea_criteria, Em_criteria, previous, next):
+def findJ_for_end_segment_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous, next):
     # for the end segment that links the first segment
-    J = [3,3,3]
+    J = [1,1,1]
+    start_index = previous['cut point index']
     for axis in [0,1,2]:
-        coe = getCoefficients_for_end_composite_single(J[axis], vertices, center, angles, previous, next, axis)
-        v, Ea, Em = form_vertices_of_fragment_single(coe, center, angles, axis)
-        if Ea < Ea_criteria/2.0 and Em < Em_criteria/2.0:
-            while Ea < Ea_criteria/2.0 and Em < Em_criteria/2.0 and J > 1:
-                J[axis] -= 1
-                coe = getCoefficients_for_end_composite_single(J[axis], vertices, center, angles, previous, next)
-                v, Ea, Em = form_vertices_of_fragment_single(coe, center, angles, axis)
-            J[axis]+=1
-        elif Ea >= Ea_criteria/2.0 or Em >= Em_criteria/2.0:
-            while Ea >= Ea_criteria/2.0 or Em >= Em_criteria/2.0:
-                J[axis] += 1
-                coe = getCoefficients_for_end_composite_single(J[axis], vertices, center, angles, previous, next)
-                v, Ea, Em = form_vertices_of_fragment_single(coe, center, angles, axis)
+        Ea = 99999.9
+        Em = 99999.9
+
+        while Ea >= Ea_criteria/2.5 or Em >= Em_criteria/2.5:
+            J[axis] += 1
+            coe = getCoefficients_for_end_composite_single(J[axis], vertices, center, angles, previous, next, axis)
+            v = form_vertices_of_fragment_single(coe, center, angles, axis)
+            Ea, Em = calculate_Ea_Em(vertices, v, d_bar, start_index, axis)
     return J
 
 
@@ -1213,7 +1210,7 @@ def position_and_tangent_of_parametric_point_3D(coe_adjacent, angle):
     if len(coe_adjacent) != 3:
         raise ValueError("coe_adjacent should be a 3XN 2 dimentional list")
     if not isinstance(coe_adjacent[0][0], float):
-        raise ValueError("bad coe_adjacent")
+        raise ValueError("coe_adjacent should be a 3XN 2 dimentional list of float")
     pos = [coe_adjacent[0][0], coe_adjacent[1][0], coe_adjacent[2][0]]
     J = [(len(coe_adjacent[0])-1)/2, (len(coe_adjacent[1])-1)/2, (len(coe_adjacent[2])-1)/2]
     for axis in range(3):
