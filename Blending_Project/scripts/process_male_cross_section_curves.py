@@ -286,9 +286,8 @@ for file_path in file_paths:
 
     save_file_path = directory + '/' + file_name
 
-    J = 6
-
     if 'worldspace' not in file_path:
+        J = 6
         center = curve_fitting.getCenter(vertices)
         d_bar = curve_fitting.get_d_bar(vertices, center)
         angles = curve_fitting.calculateAngle_2D(vertices, center)
@@ -350,13 +349,15 @@ for file_path in file_paths:
             # for the first segment
             composite_vertices = []
             composite_coefficients = []
+
             J0, coe = curve_fitting.findJ_3D(vertices_matrix[0], angles_matrix[0], d_bar, segment_center_list[0], Ea_criteria, Em_criteria, cut_points[0])
             composite_vertices_0, Ea0, Em0 = curve_fitting.form_vertices_of_fragment_3D(coe, vertices_matrix[0], segment_center_list[0], angles_matrix[0], d_bar, cut_points[0])
             composite_vertices.append(composite_vertices_0)
             composite_coefficients.append(coe)
             Ea = Ea + Ea0
             Em = Em + Em0
-            maya_polygon_plane(composite_vertices_0)
+            #maya_polygon_plane(composite_vertices_0)
+            print "J0 = {}".format(J0)
 
             # for in-between segment(s)
             for i in range(1, len(cut_points) - 1):
@@ -372,8 +373,6 @@ for file_path in file_paths:
                             'tangent y': tan0[1], 'tangent z': tan0[2],
                             'cut point index': cut_pt_index}
                 J, coen = curve_fitting.findJ_for_non_end_composite_3D(vertices_matrix[i], angles_matrix[i], d_bar, segment_center_list[i], Ea_criteria, Em_criteria, previous, curve_fitting.getCoefficients_for_non_end_composite_single)
-                #coen = curve_fitting.getCoefficients_for_non_end_composite_3D(J, vertices_matrix[i], segment_center_list[i], angles_matrix[i], previous)
-
                 composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment_3D(coen, vertices_matrix[i], segment_center_list[i],
                                                                 angles_matrix[i], d_bar, cut_pt_index)
 
@@ -382,7 +381,7 @@ for file_path in file_paths:
                 composite_vertices.append(composite_vertices_n)
                 composite_coefficients.append(coen)
                 print "J{} = {}".format(i, J)
-                maya_polygon_plane(composite_vertices_n)
+                #maya_polygon_plane(composite_vertices_n)
 
             # for the end segment that links the first segment
             tan0, p0 = curve_fitting.position_and_tangent_of_parametric_point_3D(composite_coefficients[-1], angles_matrix[-2][-1])
@@ -407,4 +406,31 @@ for file_path in file_paths:
             if Em < Emn:
                 Em = Emn
 
-            maya_polygon_plane(composite_vertices_n)
+            #maya_polygon_plane(composite_vertices_n)
+            for i in range(len(cut_points)):
+                if i == 0:
+                    f = open(save_file_path, "w+")
+                else:
+                    f = open(save_file_path, "a+")
+
+                f.write('range:')
+                f.write('{} to {} \n'.format(angles_matrix[i][0],angles_matrix[i][-1]))
+                f.write('center: {} {} {}\n'.format(segment_center_list[i][0], segment_center_list[i][1], segment_center_list[i][2]))
+                f.write('a: ')
+                for a in composite_coefficients[i][0]:
+                    f.write(str(a) + ' ')
+                f.write('\n')
+                f.write('b: ')
+                for b in composite_coefficients[i][1]:
+                    f.write(str(b) + ' ')
+                f.write('\n')
+                f.write('c: ')
+                for c in composite_coefficients[i][2]:
+                    f.write(str(c) + ' ')
+                f.write('\n')
+                f.write('angles: ')
+                for angle in angles:
+                    f.write(str(angle) + ' ')
+                f.write('\n')
+
+                f.close()

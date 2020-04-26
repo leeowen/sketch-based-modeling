@@ -1179,7 +1179,7 @@ def findJ_for_end_segment_2D(vertices, angles, d_bar, center, Ea_criteria, Em_cr
 
 def findJ_for_end_segment_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, previous, next):
     # for the end segment that links the first segment
-    J = [1,1,1]
+    J = [3,1,3]
     start_index = previous['cut point index']
     for axis in [0,1,2]:
         Ea = 99999.9

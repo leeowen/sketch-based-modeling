@@ -18,8 +18,8 @@ def maya_main_window():
              
 class CurveFittingWindowUI(QtWidgets.QWidget):
     
-    def __init__(self,parent=maya_main_window()):
-        super(CurveFittingWindowUI,self).__init__(parent)
+    def __init__(self, parent=maya_main_window()):
+        super(CurveFittingWindowUI, self).__init__(parent)
         
         self.setWindowTitle("Generalized Ellipse")
         self.setMinimumSize(900, 700)
