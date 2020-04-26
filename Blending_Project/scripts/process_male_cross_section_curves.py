@@ -1,7 +1,7 @@
-sys.path.append(cmds.workspace(fn=True)+'/scripts/')
-import curve_fitting
 import maya.api.OpenMaya as om
 import os
+sys.path.append(cmds.workspace(fn=True)+'/scripts/')
+import curve_fitting
 
 
 def maya_polygon_plane(generalisedEllipseVertices):
@@ -315,10 +315,10 @@ for file_path in file_paths:
             # delete the unnecessary points
             delete_points_list = {'Source_Chest_cross_section_u_at_22_percentage_worldspace.dat': [34, 37, 83, 86],
                                   'Source_Chest_cross_section_u_at_66_percentage_worldspace.dat': [30, 39, 81, 90],
-                                  'Source_Chest_cross_section_u_at_86_percentage_worldspace.dat': [28, 40, 80, 92],
-                                  'Source_Chest_cross_section_u_at_96_percentage_worldspace.dat': [28, 40, 80, 92]
+                                  'Source_Chest_cross_section_u_at_86_percentage_worldspace.dat': [27, 42, 78, 93],
+                                  'Source_Chest_cross_section_u_at_96_percentage_worldspace.dat': [27, 42, 78, 93]
                                   }
-            cut_points = [28, 40, 80, 92]
+            cut_points = [27, 42, 78, 93]
             Ea_criteria = 0.01
             Em_criteria = 0.025
             dir_path = cmds.workspace(fn=True) + '/data/'
@@ -343,7 +343,6 @@ for file_path in file_paths:
             numPt = len(vertices)
 
             # cut curve
-            cut_points = [28, 40, 80, 92]
             vertices_matrix, angles_matrix, segment_center_list = curve_fitting.cut_curve(vertices, angles, cut_points, isClosed)
 
             # for the first segment

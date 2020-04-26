@@ -1012,7 +1012,6 @@ def calculate_Ea_Em(before_vertices, after_vertices, d_bar, start_index, axis):
 
 
 # whole single curve, and first segment
-<<<<<<< HEAD
 def findJ_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, start_index):
     J = [3, 1, 3]
     coe = []
@@ -1255,7 +1254,7 @@ def rebuild_curve(file_path, vertices, delete_points_list):
     # rebuild the curve for every cross-section
     center = getCenter_3D(vertices)
     angles = calculateAngle_3D(vertices, center)
-    J = [20, 2, 20]
+    J = [12, 1, 12]
     coe = getCoefficients_3D(J, vertices, center, angles)
     # add points to replace the deleted points
     delta_angle = (angles[delete_points_list.get(file_path)[0] + 1] - angles[delete_points_list.get(file_path)[0]]) / (
