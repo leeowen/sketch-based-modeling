@@ -1276,6 +1276,36 @@ def rebuild_curve(file_path, vertices, delete_points_list):
     return vertices
 
 
+def maya_polygon_plane(generalisedEllipseVertices):
+    """
+    test the plane in Maya
+    """
+    width = 10.0
+    length = 10.0
+    face_count = 1
+    vertex_count = len(generalisedEllipseVertices)
+    # Create vertex positions
+    vertices = om.MFloatPointArray()
+    for v in generalisedEllipseVertices:
+        vertices.append(om.MFloatPoint(v[0] * 300, v[1] * 300, v[2] * 300))
+
+    # Vertex count for this polygon face
+    face_vertexes = om.MIntArray()
+    face_vertexes.append(vertex_count)
+
+    # Vertex indexes for this polygon face
+    vertex_indexes = om.MIntArray()
+    vertex_indexes.copy([i for i in range(vertex_count)])
+
+    # Create mesh
+    mesh_object = om.MObject()
+    mesh = om.MFnMesh()
+    mesh_object = mesh.create(vertices, face_vertexes, vertex_indexes)
+    mesh.updateSurface()
+    # Assign default shading
+    cmds.sets(mesh.name(), edit=True, forceElement="initialShadingGroup")
+
+
 if __name__ == "__main__":
     pass
 

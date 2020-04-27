@@ -4,36 +4,6 @@ sys.path.append(cmds.workspace(fn=True)+'/scripts/')
 import curve_fitting
 
 
-def maya_polygon_plane(generalisedEllipseVertices):
-    """
-    test the plane in Maya
-    """
-    width = 10.0
-    length = 10.0
-    face_count = 1
-    vertex_count = len(generalisedEllipseVertices)
-    # Create vertex positions
-    vertices = om.MFloatPointArray()
-    for v in generalisedEllipseVertices:
-        vertices.append(om.MFloatPoint(v[0] * 300, v[1] * 300, v[2] * 300))
-
-    # Vertex count for this polygon face
-    face_vertexes = om.MIntArray()
-    face_vertexes.append(vertex_count)
-
-    # Vertex indexes for this polygon face
-    vertex_indexes = om.MIntArray()
-    vertex_indexes.copy([i for i in range(vertex_count)])
-
-    # Create mesh
-    mesh_object = om.MObject()
-    mesh = om.MFnMesh()
-    mesh_object = mesh.create(vertices, face_vertexes, vertex_indexes)
-    mesh.updateSurface()
-    # Assign default shading
-    cmds.sets(mesh.name(), edit=True, forceElement="initialShadingGroup")
-
-
 """    
 file_paths = [
 'Source_Chest_cross_section_u_at_0_percentage_worldspace.dat',
@@ -355,7 +325,7 @@ for file_path in file_paths:
             composite_coefficients.append(coe)
             Ea = Ea + Ea0
             Em = Em + Em0
-            #maya_polygon_plane(composite_vertices_0)
+            #curve_fitting.maya_polygon_plane(composite_vertices_0)
             print "J0 = {}".format(J0)
 
             # for in-between segment(s)
@@ -380,7 +350,7 @@ for file_path in file_paths:
                 composite_vertices.append(composite_vertices_n)
                 composite_coefficients.append(coen)
                 print "J{} = {}".format(i, J)
-                #maya_polygon_plane(composite_vertices_n)
+                #curve_fitting.maya_polygon_plane(composite_vertices_n)
 
             # for the end segment that links the first segment
             tan0, p0 = curve_fitting.position_and_tangent_of_parametric_point_3D(composite_coefficients[-1], angles_matrix[-2][-1])
@@ -405,7 +375,7 @@ for file_path in file_paths:
             if Em < Emn:
                 Em = Emn
 
-            #maya_polygon_plane(composite_vertices_n)
+            #curve_fitting.maya_polygon_plane(composite_vertices_n)
             for i in range(len(cut_points)):
                 if i == 0:
                     f = open(save_file_path, "w+")
@@ -428,7 +398,7 @@ for file_path in file_paths:
                     f.write(str(c) + ' ')
                 f.write('\n')
                 f.write('angles: ')
-                for angle in angles:
+                for angle in angles_matrix[i]:
                     f.write(str(angle) + ' ')
                 f.write('\n')
 
