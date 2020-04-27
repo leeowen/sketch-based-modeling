@@ -428,7 +428,7 @@ for file_path in file_paths:
                     f.write(str(c) + ' ')
                 f.write('\n')
                 f.write('angles: ')
-                for angle in angles:
+                for angle in angles_matrix[i]:
                     f.write(str(angle) + ' ')
                 f.write('\n')
 
