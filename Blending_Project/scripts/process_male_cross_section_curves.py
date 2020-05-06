@@ -226,10 +226,11 @@ file_paths = [
 """
 
 file_paths = [
-'Source_Chest_cross_section_u_at_22_percentage_worldspace.dat',
-'Source_Chest_cross_section_u_at_66_percentage_worldspace.dat',
-'Source_Chest_cross_section_u_at_86_percentage_worldspace.dat',
-'Source_Chest_cross_section_u_at_96_percentage_worldspace.dat'
+'modified_Source_Chest_cross_section_u_at_22_percentage_worldspace.dat',
+'modified_Source_Chest_cross_section_u_at_66_percentage_worldspace.dat',
+'modified_Source_Chest_cross_section_u_at_86_percentage_worldspace.dat',
+'modified_Source_Chest_cross_section_u_at_96_percentage_worldspace.dat',
+'modified_Source_Chest_cross_section_u_at_100_percentage_worldspace.dat',
 ]
 
 
@@ -245,7 +246,7 @@ for file_path in file_paths:
             p = line.split()
             numPt += 1
             vertices.append(om.MVector(float(p[0]), float(p[1]), float(p[2])))
-
+    center = curve_fitting.getCenter_3D(vertices)
     file_name = file_path.replace('Source_', '')
     directory = dirPath + file_name.split('_cross_section_')[0]
 
@@ -283,49 +284,33 @@ for file_path in file_paths:
     else:
         if 'Chest' in file_path:
             # delete the unnecessary points
-            delete_points_list = {'Source_Chest_cross_section_u_at_22_percentage_worldspace.dat': [34, 37, 83, 86],
-                                  'Source_Chest_cross_section_u_at_66_percentage_worldspace.dat': [30, 39, 81, 90],
-                                  'Source_Chest_cross_section_u_at_86_percentage_worldspace.dat': [27, 42, 78, 93],
-                                  'Source_Chest_cross_section_u_at_96_percentage_worldspace.dat': [27, 42, 78, 93]
-                                  }
             cut_points = [27, 42, 78, 93]
             Ea_criteria = 0.01
             Em_criteria = 0.025
-            dir_path = cmds.workspace(fn=True) + '/data/'
             isClosed = True
 
-            vertices = []
-            numPt = 0
-            with open(dir_path + file_path, 'r') as f:
-                content = f.readlines()
-                for line in content:
-                    p = line.split()
-                    numPt += 1
-                    vertices.append(om.MVector(float(p[0]), float(p[1]), float(p[2])))
+            #curve_fitting.maya_polygon_plane(vertices)
 
-            # To rebuild the curve:
-            # delete the unnecessary points
-            # approximate the new list of points with trigonometric functions
-            vertices = curve_fitting.rebuild_curve(file_path, vertices, delete_points_list)
+            # cut curve
             center = curve_fitting.getCenter_3D(vertices)
             angles = curve_fitting.calculateAngle_3D(vertices, center)
             d_bar = curve_fitting.get_d_bar_3D(vertices, center)
             numPt = len(vertices)
-
-            # cut curve
             vertices_matrix, angles_matrix, segment_center_list = curve_fitting.cut_curve(vertices, angles, cut_points, isClosed)
 
-            # for the first segment
             composite_vertices = []
             composite_coefficients = []
 
+
+            # for the first segment
             J0, coe = curve_fitting.findJ_3D(vertices_matrix[0], angles_matrix[0], d_bar, segment_center_list[0], Ea_criteria, Em_criteria, cut_points[0])
-            composite_vertices_0, Ea0, Em0 = curve_fitting.form_vertices_of_fragment_3D(coe, vertices_matrix[0], segment_center_list[0], angles_matrix[0], d_bar, cut_points[0])
+            composite_vertices_0 = curve_fitting.form_vertices_of_fragment_3D(coe, segment_center_list[0], angles_matrix[0])
+            Ea0, Em0 = curve_fitting.calculate_Ea_Em_3D(vertices_matrix[0], composite_vertices_0, d_bar, cut_points[0])
             composite_vertices.append(composite_vertices_0)
             composite_coefficients.append(coe)
             Ea = Ea + Ea0
             Em = Em + Em0
-            #curve_fitting.maya_polygon_plane(composite_vertices_0)
+            curve_fitting.maya_polygon_plane(composite_vertices_0)
             print "J0 = {}".format(J0)
 
             # for in-between segment(s)
@@ -342,15 +327,14 @@ for file_path in file_paths:
                             'tangent y': tan0[1], 'tangent z': tan0[2],
                             'cut point index': cut_pt_index}
                 J, coen = curve_fitting.findJ_for_non_end_composite_3D(vertices_matrix[i], angles_matrix[i], d_bar, segment_center_list[i], Ea_criteria, Em_criteria, previous, curve_fitting.getCoefficients_for_non_end_composite_single)
-                composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment_3D(coen, vertices_matrix[i], segment_center_list[i],
-                                                                angles_matrix[i], d_bar, cut_pt_index)
-
+                composite_vertices_n = curve_fitting.form_vertices_of_fragment_3D(coen, segment_center_list[i], angles_matrix[i])
+                Ean, Emn = curve_fitting.calculate_Ea_Em_3D(vertices_matrix[i], composite_vertices_n, d_bar, cut_points[i])
                 Ea = (Ea * cut_pt_index + Ean * len(composite_vertices_n)) / (cut_pt_index + len(composite_vertices_n))
                 Em = max(Em, Emn)
                 composite_vertices.append(composite_vertices_n)
                 composite_coefficients.append(coen)
                 print "J{} = {}".format(i, J)
-                #curve_fitting.maya_polygon_plane(composite_vertices_n)
+                curve_fitting.maya_polygon_plane(composite_vertices_n)
 
             # for the end segment that links the first segment
             tan0, p0 = curve_fitting.position_and_tangent_of_parametric_point_3D(composite_coefficients[-1], angles_matrix[-2][-1])
@@ -365,9 +349,11 @@ for file_path in file_paths:
             next = {'position x': p1[0], 'position y': p1[1], 'position z': p1[2], 'tangent x': tan1[0], 'tangent y': tan1[1], 'tangent z': tan1[2], 'cut point index': cut_points[0]}
 
             Jn = curve_fitting.findJ_for_end_segment_3D(vertices_matrix[-1], angles_matrix[-1], d_bar, segment_center_list[-1], Ea_criteria, Em_criteria, previous, next)
+            #Jn = [10, 2, 10]
             print "J{} = {}".format(len(cut_points) - 1, Jn)
             coen = curve_fitting.getCoefficients_for_end_composite_3D(Jn, vertices_matrix[-1], segment_center_list[-1], angles_matrix[-1], previous, next)
-            composite_vertices_n, Ean, Emn = curve_fitting.form_vertices_of_fragment_3D(coen, vertices_matrix[-1], segment_center_list[-1], angles_matrix[-1], d_bar, cut_points[-1])
+            composite_vertices_n = curve_fitting.form_vertices_of_fragment_3D(coen, segment_center_list[-1], angles_matrix[-1])
+            Ean, Emn = curve_fitting. calculate_Ea_Em_3D(vertices_matrix[-1], composite_vertices_n, d_bar, cut_points[-1])
             composite_coefficients.append(coen)
             composite_vertices.append(composite_vertices_n)
 
@@ -375,7 +361,7 @@ for file_path in file_paths:
             if Em < Emn:
                 Em = Emn
 
-            #curve_fitting.maya_polygon_plane(composite_vertices_n)
+            curve_fitting.maya_polygon_plane(composite_vertices_n)
             for i in range(len(cut_points)):
                 if i == 0:
                     f = open(save_file_path, "w+")
@@ -403,3 +389,4 @@ for file_path in file_paths:
                 f.write('\n')
 
                 f.close()
+

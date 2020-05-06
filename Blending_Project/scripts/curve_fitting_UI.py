@@ -709,17 +709,27 @@ class Canvas(QtWidgets.QDialog):
         if 'Chest' in self.input_file_path:# rebuild the curve
             # delete the unnecessary points
             delete_points_list = {'Source_Chest_cross_section_u_at_22_percentage.dat': [34, 37, 83, 86],
-                                  'Source_Chest_cross_section_u_at_66_percentage.dat': [30, 39, 81, 90],
+                                  'Source_Chest_cross_section_u_at_66_percentage.dat': [27, 39, 81, 93],
                                   'Source_Chest_cross_section_u_at_86_percentage.dat': [27, 42, 78, 93],
                                   'Source_Chest_cross_section_u_at_96_percentage.dat': [27, 42, 78, 93]}
+            self.cut_points = [27, 42, 78, 93]
+            #self.vertices = curve_fitting.rebuild_curve(file_path, self.vertices, delete_points_list)
+            # delete the unnecessary points
+            filepath = self.input_file_path.split('/')[-1]
+            if filepath != 'Source_Chest_cross_section_u_at_0_percentage_worldspace.dat':
+                del self.vertices[delete_points_list.get(filepath)[2] + 1:delete_points_list.get(filepath)[3]]
+                del self.vertices[delete_points_list.get(filepath)[0] + 1:delete_points_list.get(filepath)[1]]
+                self.cut_points[1] -= delete_points_list.get(filepath)[1] - delete_points_list.get(filepath)[0] - 1
+                self.cut_points[2] -= delete_points_list.get(filepath)[1] - delete_points_list.get(filepath)[0] - 1
+                self.cut_points[3] -= delete_points_list.get(filepath)[1] - delete_points_list.get(filepath)[0] - 1 + \
+                                 delete_points_list.get(filepath)[3] - delete_points_list.get(filepath)[2] - 1
 
-            self.vertices = curve_fitting.rebuild_curve(file_path, self.vertices, delete_points_list)
             self.center = curve_fitting.getCenter_3D(self.vertices)
             self.angles = curve_fitting.calculateAngle_3D(self.vertices, self.center)
             self.d_bar = curve_fitting.get_d_bar_3D(self.vertices, self.center)
             self.numPt = len(self.vertices)
 
-            self.cut_points = [27, 42, 78, 93]
+            # cut curve
             self.vertices_matrix, self.angles_matrix, self.segment_center_list = curve_fitting.cut_curve(self.vertices, self.angles, self.cut_points, self.isClosed)
 
 

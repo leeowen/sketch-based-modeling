@@ -321,7 +321,7 @@ def getCoefficients_2D(J,vertices,center,angles):# abtain a[2j+1] and b[2j+1]
     if J<3:
         raise IllegalArgumentError('J must be bigger than 3, you input {0}'.format(J))
     I = len(vertices)
-
+    print J
     bConstArray = np.zeros(2 * J + 1)
     bCoefficientMatrix = np.ndarray(shape=(2 * J + 1, I), dtype=float, order='C')
 
@@ -621,7 +621,7 @@ def getCoefficients_for_end_composite_2D(J, vertices, center, angles, previous, 
     print res_y.message
     """
     res_x = getCoefficients_for_end_composite_single(J, vertices, center, angles, previous, next, 0)
-    return res_x.x, res_y.x
+    return res_x, res_y.x
 
 
 def getCoefficients_for_end_composite_single(J, Vertices, Center, Angles, previous, next, axis): # J is a scalar, not a vector
@@ -923,32 +923,15 @@ def form_vertices_of_fragment_2D(a, b, vertices, center, angles, d_bar, start_in
     return fragment_vertices, Ea, Em
 
 
-def form_vertices_of_fragment_3D(coe, vertices, center, angles, d_bar, start_index):
-    I = len(vertices)
-    numPt = len(d_bar)
+def form_vertices_of_fragment_3D(coe, center, angles):
+    I = len(angles)
     fragment_vertices = [[0 for i in range(3)] for j in range(I)]
-    Ea = 0.0
-    Em = 0.0
-    d = []
     for axis in range(3):
         s = form_vertices_of_fragment_single(coe[axis], center, angles, axis)
         for i in range(I):
             fragment_vertices[i][axis] = s[i]
 
-    for i in range(I):
-        d_i = 0
-        for axis in range(3):
-            d_i = d_i + (vertices[i][axis] - fragment_vertices[i][axis])**2
-        d_i = math.sqrt(d_i)
-        d.append(d_i)
-        index = (i + start_index) % numPt
-        Ea += (d_i / d_bar[index])
-        if Em < d_i / d_bar[index]:
-            Em = d_i / d_bar[index]
-
-    Ea = Ea / I
-
-    return fragment_vertices, Ea, Em
+    return fragment_vertices
 
 
 
@@ -990,7 +973,7 @@ def findJ_2D(vertices,angles,d_bar,center,Ea_criteria,Em_criteria,func_getCoeffi
     return J
 
 
-def calculate_Ea_Em(before_vertices, after_vertices, d_bar, start_index, axis):
+def calculate_Ea_Em_single(before_vertices, after_vertices, d_bar, start_index, axis):
     Ea = 0
     Em = 0
     numPt = len(d_bar)
@@ -1011,6 +994,20 @@ def calculate_Ea_Em(before_vertices, after_vertices, d_bar, start_index, axis):
     return Ea, Em
 
 
+def calculate_Ea_Em_3D(before_vertices, after_vertices, d_bar, start_index):
+    Ea = 0
+    Em = 0
+    numPt = len(d_bar)
+    for i in range(len(after_vertices)):
+        d_i = math.sqrt((before_vertices[i][0] - after_vertices[i][0])**2 + (before_vertices[i][1] - after_vertices[i][1])**2 + (before_vertices[i][2] - after_vertices[i][2])**2)
+        N = len(after_vertices[0])
+        index = (i + start_index) % numPt
+        Ea += (d_i / d_bar[index])
+        if Em < d_i / d_bar[index]:
+            Em = d_i / d_bar[index]
+    Ea = Ea / N
+    return Ea, Em
+
 # whole single curve, and first segment
 def findJ_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, start_index):
     J = [3, 1, 3]
@@ -1022,7 +1019,7 @@ def findJ_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, start_in
         while Ea >= Ea_criteria/2.5 or Em >= Em_criteria/2.5:
             tmp = getCoefficients_single(J, vertices, center, angles, axis)
             fragment_vertices_i = form_vertices_of_fragment_single(tmp, center, angles, axis)
-            Ea, Em = calculate_Ea_Em(vertices, fragment_vertices_i, d_bar, start_index, axis)
+            Ea, Em = calculate_Ea_Em_single(vertices, fragment_vertices_i, d_bar, start_index, axis)
             J[axis] += 1
 
         coe.append(tmp)
@@ -1087,7 +1084,7 @@ def find_bigger_J(vertices, angles, d_bar, center,J_small, J_big, Ea_smallJ, Em_
         while Ea < Ea_criteria and Em < Em_criteria and J > J_small:
             J -= 1
             a, b = func_getCoefficients(J, vertices, center, angles)
-            v, Ea, Em = func_formGeneralizedEllipse(a, b, vertices, center, angles, d_bar,index)
+            v, Ea, Em = func_formGeneralizedEllipse(a, b, vertices, center, angles, d_bar, index)
 
         return J + 1
 
@@ -1100,10 +1097,12 @@ def find_smaller_J(vertices, angles, d_bar, center, J_small, J_big, Ea_smallJ, E
 
     J = int((Ea_criteria - Ea_smallJ) * (J_big - J_small) / (Ea_bigJ - Ea_smallJ)) + J_small
 
-    if J<3:
+    if J < 3:
         J = 3
         return J
-    if J==J_small:
+    if J == J_small:
+        return J_small
+    if J > J_big:
         return J_small
     a, b = func_getCoefficients(J, vertices, center, angles)
     v, Ea, Em = func_formGeneralizedEllipse(a, b, vertices, center, angles, d_bar,index)
@@ -1143,7 +1142,7 @@ def findJ_for_non_end_composite_3D(vertices_one_segment, angles, d_bar, segment_
         for iterate in range(10):#while Ea >= (Ea_criteria/1.5) or Em >= (Em_criteria/1.5):
             tmp = func_getCoefficients_for_non_end_composite_single_3D(J, vertices_one_segment, segment_center, angles, previous, axis)
             fragment_vertices_i = form_vertices_of_fragment_single(tmp, segment_center, angles, axis)
-            Ea, Em = calculate_Ea_Em(vertices_one_segment, fragment_vertices_i, d_bar, start_index, axis)
+            Ea, Em = calculate_Ea_Em_single(vertices_one_segment, fragment_vertices_i, d_bar, start_index, axis)
             if Ea <= (Ea_criteria/2.5) and Em <= (Em_criteria/2.5):
                 break
             else:
@@ -1188,7 +1187,7 @@ def findJ_for_end_segment_3D(vertices, angles, d_bar, center, Ea_criteria, Em_cr
             J[axis] += 1
             coe = getCoefficients_for_end_composite_single(J[axis], vertices, center, angles, previous, next, axis)
             v = form_vertices_of_fragment_single(coe, center, angles, axis)
-            Ea, Em = calculate_Ea_Em(vertices, v, d_bar, start_index, axis)
+            Ea, Em = calculate_Ea_Em_single(vertices, v, d_bar, start_index, axis)
     return J
 
 
