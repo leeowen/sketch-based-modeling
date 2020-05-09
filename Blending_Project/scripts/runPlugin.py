@@ -77,7 +77,7 @@ for i in neck:
     cmds.parent( tmp, grp )
 
 
-chest=[0.96,0.86,0.66,0.22]
+chest=[0.86,0.66,0.22]
 for i in chest:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Chest",md=120,mw=True)
     cmds.parent( tmp, grp )
@@ -91,13 +91,11 @@ for i in belly:
 file_paths = [
 'Source_Chest_cross_section_u_at_22_percentage.dat',
 'Source_Chest_cross_section_u_at_66_percentage.dat',
-'Source_Chest_cross_section_u_at_86_percentage.dat',
-'Source_Chest_cross_section_u_at_96_percentage.dat'
+'Source_Chest_cross_section_u_at_86_percentage.dat'
 ]
 delete_points_list = {'Source_Chest_cross_section_u_at_22_percentage.dat':[34,37,83,86],
                       'Source_Chest_cross_section_u_at_66_percentage.dat':[30,39,81,90],
                       'Source_Chest_cross_section_u_at_86_percentage.dat':[28,40,80,92],
-                      'Source_Chest_cross_section_u_at_96_percentage.dat':[28,40,80,92]
                      }
                                     
 dir_path = cmds.workspace(fn=True)+'/data/'
@@ -134,7 +132,6 @@ for file_path in file_paths:
         curve_fitting.form_vertices_of_fragment_3D()
 
 belly = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.25, 0.18, 0.1, 0]
->>>>>>> 79f1b128aaf30af857d96023755f05faab91ec2d
 for i in belly:
     tmp=cmds.crossSectionExtract(mu=i, mmn="source_male_mesh", mbn="Source_Belly", md=120, mw=True)
     cmds.parent( tmp, grp )

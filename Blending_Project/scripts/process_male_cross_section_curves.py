@@ -2,6 +2,7 @@ import maya.api.OpenMaya as om
 import os
 sys.path.append(cmds.workspace(fn=True)+'/scripts/')
 import curve_fitting
+import math
 
 
 """    
@@ -223,16 +224,15 @@ file_paths = [
     'Source_RightLeg_cross_section_u_at_80_percentage_worldspace.dat',
     'Source_RightLeg_cross_section_u_at_90_percentage_worldspace.dat'
 ]
-"""
 
 file_paths = [
+'modified_Source_Chest_cross_section_u_at_0_percentage_worldspace.dat',
 'modified_Source_Chest_cross_section_u_at_22_percentage_worldspace.dat',
 'modified_Source_Chest_cross_section_u_at_66_percentage_worldspace.dat',
 'modified_Source_Chest_cross_section_u_at_86_percentage_worldspace.dat',
-'modified_Source_Chest_cross_section_u_at_96_percentage_worldspace.dat',
-'modified_Source_Chest_cross_section_u_at_100_percentage_worldspace.dat',
+'modified_Source_Chest_cross_section_u_at_100_percentage_worldspace.dat'
 ]
-
+"""
 
 dirPath = cmds.workspace(fn=True)+'/data/'
 for file_path in file_paths:
@@ -293,7 +293,8 @@ for file_path in file_paths:
 
             # cut curve
             center = curve_fitting.getCenter_3D(vertices)
-            angles = curve_fitting.calculateAngle_3D(vertices, center)
+            angles = [i*2*math.pi/numPt for i in range(numPt)]
+            #angles = curve_fitting.calculateAngle_3D(vertices, center)
             d_bar = curve_fitting.get_d_bar_3D(vertices, center)
             numPt = len(vertices)
             vertices_matrix, angles_matrix, segment_center_list = curve_fitting.cut_curve(vertices, angles, cut_points, isClosed)
@@ -349,7 +350,6 @@ for file_path in file_paths:
             next = {'position x': p1[0], 'position y': p1[1], 'position z': p1[2], 'tangent x': tan1[0], 'tangent y': tan1[1], 'tangent z': tan1[2], 'cut point index': cut_points[0]}
 
             Jn = curve_fitting.findJ_for_end_segment_3D(vertices_matrix[-1], angles_matrix[-1], d_bar, segment_center_list[-1], Ea_criteria, Em_criteria, previous, next)
-            #Jn = [10, 2, 10]
             print "J{} = {}".format(len(cut_points) - 1, Jn)
             coen = curve_fitting.getCoefficients_for_end_composite_3D(Jn, vertices_matrix[-1], segment_center_list[-1], angles_matrix[-1], previous, next)
             composite_vertices_n = curve_fitting.form_vertices_of_fragment_3D(coen, segment_center_list[-1], angles_matrix[-1])

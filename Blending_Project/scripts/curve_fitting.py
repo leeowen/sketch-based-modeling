@@ -1239,42 +1239,6 @@ def compisite_segment_with_one_end_shared_2D(index,vertices_matrix,angles_matrix
     return J,vertices,a,b,Ea,Em
 
 
-def rebuild_curve(file_path, vertices, delete_points_list):
-    # To rebuild the curve:
-    # delete the unnecessary points
-    # approximate the new list of points with trigonometric functions
-    dir_path = cmds.workspace(fn=True) + '/data/'
-    file_path = file_path.split('/')[-1]
-    del vertices[delete_points_list.get(file_path)[2] + 1:delete_points_list.get(file_path)[3]]
-    del vertices[delete_points_list.get(file_path)[0] + 1:delete_points_list.get(file_path)[1]]
-    with open(dir_path + 'removed_' + file_path, "w") as f:
-        for v in vertices:
-            f.write('{} {} {}\n'.format(v[0], v[1], v[2]))
-    # rebuild the curve for every cross-section
-    center = getCenter_3D(vertices)
-    angles = calculateAngle_3D(vertices, center)
-    J = [12, 1, 12]
-    coe = getCoefficients_3D(J, vertices, center, angles)
-    # add points to replace the deleted points
-    delta_angle = (angles[delete_points_list.get(file_path)[0] + 1] - angles[delete_points_list.get(file_path)[0]]) / (
-                          delete_points_list.get(file_path)[1] - delete_points_list.get(file_path)[0])
-    for index in range(delete_points_list.get(file_path)[0],
-                       delete_points_list.get(file_path)[1] - 1):
-        angles.insert(index + 1, delta_angle + angles[index])
-    for index in range(delete_points_list.get(file_path)[2],
-                       delete_points_list.get(file_path)[3] - 1):
-        angles.insert(index + 1, delta_angle + angles[index])
-    tmp_x = form_vertices_of_fragment_single(coe[0], center, angles, 0)
-    tmp_y = form_vertices_of_fragment_single(coe[1], center, angles, 1)
-    tmp_z = form_vertices_of_fragment_single(coe[2], center, angles, 2)
-    new_vertices = []
-    for i in range(len(tmp_x)):
-        new_vertices.append(om.MVector(tmp_x[i], tmp_y[i], tmp_z[i]))
-    vertices = new_vertices
-
-    return vertices
-
-
 def maya_polygon_plane(generalisedEllipseVertices):
     """
     test the plane in Maya
