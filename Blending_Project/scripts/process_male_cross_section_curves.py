@@ -186,7 +186,7 @@ file_paths = [
     'Source_Hip_cross_section_u_at_90_percentage_worldspace.dat',
     'Source_Hip_cross_section_u_at_100_percentage_worldspace.dat'
 ]
-"""
+
 file_paths = [
     'Source_Belly_cross_section_u_at_0_percentage_worldspace.dat',
     'Source_Belly_cross_section_u_at_10_percentage_worldspace.dat',
@@ -201,7 +201,7 @@ file_paths = [
     'Source_Belly_cross_section_u_at_90_percentage_worldspace.dat',
     'Source_Belly_cross_section_u_at_100_percentage_worldspace.dat'
 ]
-"""
+
 file_paths = [
     'Source_LeftForeArm_cross_section_u_at_0_percentage_worldspace.dat',
     'Source_LeftForeArm_cross_section_u_at_10_percentage_worldspace.dat',
