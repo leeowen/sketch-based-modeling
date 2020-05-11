@@ -137,7 +137,7 @@ for file_path in file_paths:
             angles.insert(index, delta_angle + angles[index])
         curve_fitting.form_vertices_of_fragment_3D()
 
-belly = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.25, 0.18, 0.1, 0]
+belly = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.25, 0.2, 0.1, 0]
 for i in belly:
     tmp=cmds.crossSectionExtract(mu=i, mmn="source_male_mesh", mbn="Source_Belly", md=120, mw=True)
     cmds.parent( tmp, grp )
