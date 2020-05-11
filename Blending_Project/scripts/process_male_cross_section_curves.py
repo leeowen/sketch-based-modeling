@@ -159,7 +159,7 @@ file_paths = [
     'Source_Neck_cross_section_u_at_100_percentage_worldspace.dat'
 ]
 
-"""
+
 file_paths = [
     'Source_Shoulder_cross_section_u_at_0_percentage_worldspace.dat',
     'Source_Shoulder_cross_section_u_at_10_percentage_worldspace.dat',
@@ -176,15 +176,17 @@ file_paths = [
 file_paths = [
     'Source_Hip_cross_section_u_at_0_percentage_worldspace.dat',
     'Source_Hip_cross_section_u_at_10_percentage_worldspace.dat',
-    'Source_Hip_cross_section_u_at_25_percentage_worldspace.dat',
+    'Source_Hip_cross_section_u_at_20_percentage_worldspace.dat',
+    'Source_Hip_cross_section_u_at_30_percentage_worldspace.dat',
     'Source_Hip_cross_section_u_at_40_percentage_worldspace.dat',
     'Source_Hip_cross_section_u_at_50_percentage_worldspace.dat',
     'Source_Hip_cross_section_u_at_60_percentage_worldspace.dat',
-    'Source_Hip_cross_section_u_at_75_percentage_worldspace.dat',
+    'Source_Hip_cross_section_u_at_70_percentage_worldspace.dat',
+    'Source_Hip_cross_section_u_at_80_percentage_worldspace.dat',
     'Source_Hip_cross_section_u_at_90_percentage_worldspace.dat',
     'Source_Hip_cross_section_u_at_100_percentage_worldspace.dat'
 ]
-
+"""
 file_paths = [
     'Source_Belly_cross_section_u_at_0_percentage_worldspace.dat',
     'Source_Belly_cross_section_u_at_10_percentage_worldspace.dat',

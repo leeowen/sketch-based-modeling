@@ -143,7 +143,7 @@ for i in belly:
     cmds.parent( tmp, grp )
 
 
-hip=[0.75,0.5,0.25,0.0]
+hip=[1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.0]
 for i in hip:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Hip",md=120,mw=True)
     cmds.parent( tmp, grp )
