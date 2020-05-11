@@ -172,7 +172,7 @@ file_paths = [
     'Source_Shoulder_cross_section_u_at_80_percentage_worldspace.dat',
     'Source_Shoulder_cross_section_u_at_90_percentage_worldspace.dat'
 ]
-
+"""
 file_paths = [
     'Source_Hip_cross_section_u_at_0_percentage_worldspace.dat',
     'Source_Hip_cross_section_u_at_10_percentage_worldspace.dat',
@@ -186,7 +186,7 @@ file_paths = [
     'Source_Hip_cross_section_u_at_90_percentage_worldspace.dat',
     'Source_Hip_cross_section_u_at_100_percentage_worldspace.dat'
 ]
-
+"""
 file_paths = [
     'Source_Belly_cross_section_u_at_0_percentage_worldspace.dat',
     'Source_Belly_cross_section_u_at_10_percentage_worldspace.dat',
@@ -411,8 +411,8 @@ for file_path in file_paths:
 
             # cut curve
             center = curve_fitting.getCenter_3D(vertices)
-            #angles = [i * 2 * math.pi / numPt for i in range(numPt)]
-            angles = curve_fitting.calculateAngle_3D(vertices, center)
+            angles = [i * 2 * math.pi / numPt for i in range(numPt)]
+            #angles = curve_fitting.calculateAngle_3D(vertices, center)
             d_bar = curve_fitting.get_d_bar_3D(vertices, center)
 
             J, coe = curve_fitting.findJ_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, 0)
