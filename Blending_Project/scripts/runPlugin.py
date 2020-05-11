@@ -71,13 +71,19 @@ for i in leg:
     #myfile.close()
 
     
-neck=[0.98,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0]
+neck=[1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0]
 for i in neck:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Neck",md=80,mw=True)
     cmds.parent( tmp, grp )
 
 
-chest=[0.86,0.66,0.22]
+shoulder=[0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0]
+for i in neck:
+    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Shoulder",md=120,mw=True)
+    cmds.parent( tmp, grp )
+
+
+chest=[0.86,0.66,0.44,0.22,0]
 for i in chest:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Chest",md=120,mw=True)
     cmds.parent( tmp, grp )

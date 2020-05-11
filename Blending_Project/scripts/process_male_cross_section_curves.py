@@ -156,9 +156,23 @@ file_paths = [
     'Source_Neck_cross_section_u_at_70_percentage_worldspace.dat',
     'Source_Neck_cross_section_u_at_80_percentage_worldspace.dat',
     'Source_Neck_cross_section_u_at_90_percentage_worldspace.dat',
-    'Source_Neck_cross_section_u_at_98_percentage_worldspace.dat'
+    'Source_Neck_cross_section_u_at_100_percentage_worldspace.dat'
 ]
 
+"""
+file_paths = [
+    'Source_Shoulder_cross_section_u_at_0_percentage_worldspace.dat',
+    'Source_Shoulder_cross_section_u_at_10_percentage_worldspace.dat',
+    'Source_Shoulder_cross_section_u_at_20_percentage_worldspace.dat',
+    'Source_Shoulder_cross_section_u_at_30_percentage_worldspace.dat',
+    'Source_Shoulder_cross_section_u_at_40_percentage_worldspace.dat',
+    'Source_Shoulder_cross_section_u_at_50_percentage_worldspace.dat',
+    'Source_Shoulder_cross_section_u_at_60_percentage_worldspace.dat',
+    'Source_Shoulder_cross_section_u_at_70_percentage_worldspace.dat',
+    'Source_Shoulder_cross_section_u_at_80_percentage_worldspace.dat',
+    'Source_Shoulder_cross_section_u_at_90_percentage_worldspace.dat'
+]
+"""
 file_paths = [
     'Source_Hip_cross_section_u_at_0_percentage_worldspace.dat',
     'Source_Hip_cross_section_u_at_10_percentage_worldspace.dat',
@@ -233,7 +247,8 @@ file_paths = [
 'modified_Source_Chest_cross_section_u_at_100_percentage_worldspace.dat'
 ]
 """
-
+Ea_criteria = 0.01
+Em_criteria = 0.025
 dirPath = cmds.workspace(fn=True)+'/data/'
 for file_path in file_paths:
     vertices = []
@@ -261,7 +276,8 @@ for file_path in file_paths:
         J = 6
         center = curve_fitting.getCenter(vertices)
         d_bar = curve_fitting.get_d_bar(vertices, center)
-        angles = curve_fitting.calculateAngle_2D(vertices, center)
+        #angles = curve_fitting.calculateAngle_2D(vertices, center)
+        angles = [i*2*math.pi/len(vertices) for i in range(len(vertices))]
         a, b = curve_fitting.getCoefficients_2D(J, vertices, center, angles)
         generalisedEllipseVertices, Ea, Em = curve_fitting.formGeneralizedEllipse_2D(a, b, vertices, center, angles, d_bar, 0)
 
@@ -285,8 +301,6 @@ for file_path in file_paths:
         if 'Chest' in file_path:
             # delete the unnecessary points
             cut_points = [27, 42, 78, 93]
-            Ea_criteria = 0.01
-            Em_criteria = 0.025
             isClosed = True
 
             #curve_fitting.maya_polygon_plane(vertices)
@@ -296,7 +310,6 @@ for file_path in file_paths:
             angles = [i*2*math.pi/numPt for i in range(numPt)]
             #angles = curve_fitting.calculateAngle_3D(vertices, center)
             d_bar = curve_fitting.get_d_bar_3D(vertices, center)
-            numPt = len(vertices)
             vertices_matrix, angles_matrix, segment_center_list = curve_fitting.cut_curve(vertices, angles, cut_points, isClosed)
 
             composite_vertices = []
@@ -389,4 +402,36 @@ for file_path in file_paths:
                 f.write('\n')
 
                 f.close()
+        else:
+            isClosed = True
+            # curve_fitting.maya_polygon_plane(vertices)
 
+            # cut curve
+            center = curve_fitting.getCenter_3D(vertices)
+            #angles = [i * 2 * math.pi / numPt for i in range(numPt)]
+            angles = curve_fitting.calculateAngle_3D(vertices, center)
+            d_bar = curve_fitting.get_d_bar_3D(vertices, center)
+
+            J, coe = curve_fitting.findJ_3D(vertices, angles, d_bar, center, Ea_criteria, Em_criteria, 0)
+            new_vertices = curve_fitting.form_vertices_of_fragment_3D(coe, center, angles)
+            Ea, Em = curve_fitting.calculate_Ea_Em_3D(vertices, new_vertices, d_bar, 0)
+            print file_name, J, Ea, Em
+            with open(save_file_path, "w+") as f:
+                f.write('range:0-360\n')
+                f.write('center: {} {} {}\n'.format(center[0], center[1], center[2]))
+                f.write('a: ')
+                for a in coe[0]:
+                    f.write(str(a) + ' ')
+                f.write('\n')
+                f.write('b: ')
+                for b in coe[1]:
+                    f.write(str(b) + ' ')
+                f.write('\n')
+                f.write('c: ')
+                for c in coe[2]:
+                    f.write(str(c) + ' ')
+                f.write('\n')
+                f.write('angles: ')
+                for angle in angles:
+                    f.write(str(angle) + ' ')
+                f.write('\n')
