@@ -83,13 +83,13 @@ for i in neck:
     cmds.parent( tmp, grp )
 
 
-chest=[0.86,0.66,0.44,0.22,0]
-for i in chest:
-    tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Chest",md=120,mw=True)
-    cmds.parent( tmp, grp )
+#chest=[0.86,0.66,0.44,0.22,0]
+#for i in chest:
+    #tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Chest",md=120,mw=True)
+    #cmds.parent( tmp, grp )
 
 
-belly = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.25, 0.18, 0.1, 0]
+belly = [0.75, 0.68, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0]
 for i in belly:
     tmp=cmds.crossSectionExtract(mu=i,mmn="source_male_mesh",mbn="Source_Belly",md=120,mw=True)
     cmds.parent( tmp, grp )

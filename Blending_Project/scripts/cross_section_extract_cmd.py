@@ -146,6 +146,7 @@ class CrossSectionExtractCmd(om.MPxCommand):
         
         # GET Joint DATA
         jointFn=om.MFnDagNode(self.Joint_dagPath)
+        next_joint_obj=jointFn.child(0)#initial value, can be modified later
         if jointFn.childCount()==1:
             next_joint_obj=jointFn.child(0)
         elif jointFn.childCount()>1:# Belly, Neck
